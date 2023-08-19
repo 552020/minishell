@@ -14,63 +14,6 @@ int	ft_isspace(int c)
 		return (0); // Indicates failure (it's not a whitespace)
 }
 
-size_t	count_words_tokenizer(const char *input)
-{
-	size_t	words;
-	char	*str;
-	char	quote;
-
-	str = (char *)input;
-	words = 0;
-	// Skip initial spaces
-	while (*str && ft_isspace(*str))
-		str++;
-	while (*str)
-	{
-		if (*str == '<' || *str == '>')
-		{
-			words++;
-			if (*(str + 1) == *str) // Check for << or >>
-				str++;
-		}
-		else if (*str == '|')
-		{
-			words++;
-		}
-		else if (*str == '\'' || *str == '"')
-		{
-			quote = *str;
-			if (ft_strrchr(str + 1, quote))
-			// Check if there's another matching quote
-			{
-				words++;
-				str++; // Move past the current quote
-				while (*str && *str != quote)
-					str++;
-			}
-			else
-				str++;
-		}
-		else if (ft_isspace(*str))
-		{
-			words++;
-			while (*str && ft_isspace(*str)) // Skip spaces
-				str++;
-			continue ; // To prevent str++ at the end
-		}
-		else
-		{
-			words++;
-			while (*str && !ft_isspace(*str) && *str != '<' && *str != '>'
-				&& *str != '|' && *str != '\'' && *str != '"')
-				str++;
-			continue ; // To prevent str++ at the end
-		}
-		str++;
-	}
-	return (words);
-}
-
 /* Check all special chars in the scope of the minishell*/
 int	ft_isspecial(char c)
 {
@@ -91,7 +34,53 @@ int	ft_isregularwordchar(char c, char *str)
 			return (1);
 		return (0); // Else, it's not a regular word character
 	}
-	return (1); // All other characters are considered regular word characters
+	return (1);
+	// All other characters are considered regular word characters
+}
+
+size_t	count_words_tokenizer(const char *input)
+{
+	size_t	words;
+	char	*str;
+	char	quote;
+
+	str = (char *)input;
+	words = 0;
+	// Skip initial spaces
+	while (*str && ft_isspace(*str))
+		str++;
+	while (*str)
+	{
+		if (ft_isspecial(*str))
+		{
+			words++;
+			if ((*str == '<' || *str == '>') && *(str + 1) == *str)
+				str++;
+			if (*str == '\'' || *str == '"')
+			{
+				quote = *str;
+				str++; // Move past the current quote
+				while (*str && *str != quote)
+					str++;
+			}
+			str++;
+		}
+		else if (ft_isspace(*str))
+		{
+			while (*str && ft_isspace(*str)) // Skip spaces
+				str++;
+		}
+		else if (ft_isregularwordchar(*str, str))
+		{
+			words++;
+			while (*str && ft_isregularwordchar(*str, str))
+				str++;
+			continue ; // To prevent str++ at the end
+		}
+		else
+			str++;
+	}
+	return (words);
 }
 
 t_token	*tokenizer(const char *input)
