@@ -38,6 +38,14 @@ int	ft_isregularwordchar(char c, char *str)
 	// All other characters are considered regular word characters
 }
 
+int	ft_isvalidvarname(char c)
+{
+	// Check if the character is alphanumeric or an underscore
+	if (ft_isalnum(c) || c == '_')
+		return (1);
+	return (0);
+}
+
 size_t	count_words_tokenizer(const char *input)
 {
 	size_t	words;
@@ -54,16 +62,23 @@ size_t	count_words_tokenizer(const char *input)
 		if (ft_isspecial(*str))
 		{
 			words++;
-			if ((*str == '<' || *str == '>') && *(str + 1) == *str)
+			if (*str == '$') // Handle the $VAR case
+			{
+				str++; // Move past the $
+				while (*str && ft_isvalidvarname(*str))
+					str++;
+			}
+			else if ((*str == '<' || *str == '>') && *(str + 1) == *str)
 				str++;
-			if (*str == '\'' || *str == '"')
+			else if (*str == '\'' || *str == '"')
 			{
 				quote = *str;
 				str++; // Move past the current quote
 				while (*str && *str != quote)
 					str++;
 			}
-			str++;
+			else
+				str++;
 		}
 		else if (ft_isspace(*str))
 		{
@@ -142,6 +157,17 @@ t_token	*tokenizer(const char *input)
 			token_arr[idx].str = ft_strdup("|");
 			idx++;
 			str++;
+		}
+		else if (*str == '$')
+		{
+			char *start = str;
+			str++; // Move past the $
+			while (*str && ft_isvalidvarname(*str))
+				str++;
+
+			token_arr[idx].type = T_ENV_VAR;
+			token_arr[idx].str = ft_substr(start, 0, str - start);
+			idx++;
 		}
 		else if (*str == '\'' || *str == '"')
 		{

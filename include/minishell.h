@@ -10,8 +10,9 @@ typedef enum e_token_type
 	T_REDIRECT_OUT,     // >
 	T_REDIRECT_APPEND,  // >>
 	T_REDIRECT_HEREDOC, // <<
-	T_DOUBLE_QUOTE,     // "
-	T_SINGLE_QUOTE,     // '
+	T_DOUBLE_QUOTE,     // " the whole sring in between " quotes included
+	T_SINGLE_QUOTE,     // ' the whole string in between ' quotes included
+	T_ENV_VAR,          // $ followed by a valid variable name
 }					t_token_type;
 
 typedef struct s_token
