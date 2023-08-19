@@ -43,9 +43,10 @@ int	main(void)
 		}
 		printf("%s\n", input); // Echo input
 		token_count = count_words_tokenizer(input);
+		printf("Token count: %zu\n", token_count);
 		token_arr = tokenizer(input);
 		i = 0;
-		while (i < token_count)
+		while (i < token_count + 1)
 		{
 			printf("Token %zu: type=%d, str=%s\n", i, token_arr[i].type,
 				token_arr[i].str);

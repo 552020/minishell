@@ -77,11 +77,11 @@ size_t	count_words_tokenizer(const char *input)
 				while (*str && *str != quote)
 					str++;
 			}
-			else
-				str++;
+			str++;
 		}
 		else if (ft_isspace(*str))
 		{
+			// Increment word count for the previous word
 			while (*str && ft_isspace(*str)) // Skip spaces
 				str++;
 		}
@@ -90,10 +90,14 @@ size_t	count_words_tokenizer(const char *input)
 			words++;
 			while (*str && ft_isregularwordchar(*str, str))
 				str++;
-			continue ; // To prevent str++ at the end
 		}
 		else
+		{
+			ft_putendl_fd("Warning: Unexpected character encountered during tokenization.",
+				STDERR_FILENO);
 			str++;
+		}
+		str++;
 	}
 	return (words);
 }

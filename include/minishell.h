@@ -1,5 +1,6 @@
 #include "libft.h"
 #include <stddef.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 typedef enum e_token_type
