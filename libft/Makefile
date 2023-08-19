@@ -13,7 +13,8 @@
 NAME	= libft.a
 
 CC		= gcc
-CFLAGS	= -Wall -Wextra -Werror
+CFLAGS	= -g -Wall -Wextra -Werror
+INCLUDES = -I./include  
 AR		= ar rcs
 RM		= rm -f
 
@@ -69,13 +70,13 @@ OBJECTS = $(SOURCES:.c=.o)
 B_OBJECTS = $(B_SOURCES:.c=.o)
 
 $(NAME): $(OBJECTS)
-	$(AR) $@ $^ 
+	$(AR)  $@ $^ 
 
 bonus:  $(B_OBJECTS)
-	$(AR) $(NAME) $^
+	$(AR) $(NAME)  $^
 
-%.o: %.c
-	 $(CC) $(CFLAGS) -c $<
+$(OBJECTS): %.o: %.c
+	 $(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 clean:
 	$(RM) *.o
