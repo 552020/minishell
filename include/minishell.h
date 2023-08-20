@@ -1,7 +1,11 @@
 #include "libft.h"
+#include <readline/history.h>
+#include <readline/readline.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
 typedef enum e_token_type
 {
@@ -62,3 +66,5 @@ t_token				*tokenizer(const char *input);
 size_t				count_words_tokenizer(const char *input);
 t_lexeme			*lexer(t_token *token_arr, char **envp, size_t token_count);
 int					ft_isvalidvarname(char c);
+void				collect_heredoc_content(t_token *token_arr,
+						size_t token_count);

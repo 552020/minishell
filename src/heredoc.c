@@ -1,4 +1,4 @@
-#include "minishell.c"
+#include "minishell.h"
 
 void	collect_heredoc_content(t_token *token_arr, size_t token_count)
 {
@@ -9,6 +9,7 @@ void	collect_heredoc_content(t_token *token_arr, size_t token_count)
 	char *rl_prompt;
 	char *tmp;
 
+	printf("Collecting heredoc content...\n");
 	while (i < token_count)
 	{
 		if (token_arr[i].type == T_HEREDOC)
@@ -17,7 +18,8 @@ void	collect_heredoc_content(t_token *token_arr, size_t token_count)
 			heredoc_content_str = ft_strdup("");
 			line = NULL;
 			rl_prompt = "heredoc> ";
-			while ((line = readline(rl_prompt)) && ft_strcmp(line, delimiter))
+			while ((line = readline(rl_prompt)) && ft_strncmp(line, delimiter,
+					ft_strlen(delimiter)))
 			{
 				if (heredoc_content_str)
 				{
@@ -38,4 +40,5 @@ void	collect_heredoc_content(t_token *token_arr, size_t token_count)
 		}
 		i++;
 	}
+	printf("Done collecting heredoc content.\n");
 }

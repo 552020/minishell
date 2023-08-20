@@ -86,10 +86,10 @@ t_lexeme	single_quote_lexeme(t_token *token)
 {
 	t_lexeme	lexeme;
 
-	lexeme.type = L_ARGUMENT;
+	lexeme.type = L_UNDEFINED;
 	lexeme.str = ft_strdup(token->str);
 	lexeme.original = ft_strdup(token->str);
-	lexeme.status = LEXED;
+	lexeme.status = NOT_LEXED;
 	return (lexeme);
 }
 
@@ -170,6 +170,7 @@ t_lexeme	heredoc_lexeme(t_token *token)
 	return (lexeme);
 }
 
+/* To this point we don't have a delimiter token anymore */
 t_lexeme	heredoc_delimiter_lexeme(t_token *token)
 {
 	t_lexeme	lexeme;
@@ -192,14 +193,28 @@ t_lexeme	heredoc_content_lexeme(t_token *token)
 	return (lexeme);
 }
 
+t_lexeme	word_lexeme(t_token *token)
+{
+	t_lexeme	lexeme;
+
+	lexeme.type = L_UNDEFINED;
+	lexeme.str = ft_strdup(token->str);
+	lexeme.original = ft_strdup(token->str);
+	lexeme.status = NOT_LEXED;
+	return (lexeme);
+}
+
 t_lexeme	*lexer(t_token *token_arr, char **envp, size_t token_count)
 {
 	size_t		i;
 	t_lexeme	*lexeme_arr;
+	int			command_flag;
 
+	printf("Lexing...\n");
+	printf("First round of lexing...\n");
 	lexeme_arr = malloc(sizeof(t_lexeme) * (token_count + 1));
 	i = 0;
-	while (i < token_count + 1)
+	while (i < token_count)
 	{
 		if (token_arr[i].type == T_ENV_VAR)
 			t_env_var_substitution(&token_arr[i], envp);
@@ -228,11 +243,36 @@ t_lexeme	*lexer(t_token *token_arr, char **envp, size_t token_count)
 		else if (token_arr[i].type == T_HEREDOC)
 		{
 			heredoc_lexeme(&token_arr[i]);
-			heredoc_delimiter_lexeme(&token_arr[i + 1]);
-			heredoc_content_lexeme(&token_arr[i + 2]);
+			heredoc_content_lexeme(&token_arr[i + 1]);
 		}
+		else if (token_arr[i].type == T_WORD)
+			lexeme_arr[i] = word_lexeme(&token_arr[i]);
 		else
 			;
+		i++;
+	}
+	printf("Second round of lexing...\n");
+	i = 0;
+	// 0 means we haven't encountered a command yet, 1 means we have
+	command_flag = 0;
+	while (i < token_count)
+	{
+		if (lexeme_arr[i].type == L_UNDEFINED)
+		{
+			if (command_flag == 0)
+			{
+				lexeme_arr[i].type = L_COMMAND;
+				command_flag = 1;
+			}
+			else
+			{
+				lexeme_arr[i].type = L_ARGUMENT;
+			}
+		}
+		else if (lexeme_arr[i].type == L_PIPE)
+		{
+			command_flag = 0; // Reset the command flag when encountering a pipe
+		}
 		i++;
 	}
 	return (lexeme_arr);
