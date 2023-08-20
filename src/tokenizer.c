@@ -38,14 +38,6 @@ int	ft_isregularwordchar(char c, char *str)
 	// All other characters are considered regular word characters
 }
 
-int	ft_isvalidvarname(char c)
-{
-	// Check if the character is alphanumeric or an underscore
-	if (ft_isalnum(c) || c == '_')
-		return (1);
-	return (0);
-}
-
 size_t	count_words_tokenizer(const char *input)
 {
 	size_t	words;
@@ -136,9 +128,28 @@ t_token	*tokenizer(const char *input)
 				token_arr[idx].str = ft_strdup("<");
 				if (*(str + 1) == '<')
 				{
-					token_arr[idx].type = T_REDIRECT_HEREDOC;
+					token_arr[idx].type = T_HEREDOC;
 					token_arr[idx].str = ft_strdup("<<");
 					str++;
+					// Skip spaces after '<<'
+					while (ft_isspace(*(str + 1)))
+						str++;
+					// Now, capture the delimiter
+					if (ft_isregularwordchar(*(str + 1), str + 1))
+					{
+						idx++; // Move to the next token
+						char *start = str + 1;
+						while (*str && ft_isregularwordchar(*str, str))
+							str++;
+
+						token_arr[idx].type = T_HEREDOC_DELIMITER;
+						token_arr[idx].str = ft_substr(start, 0, str - start);
+					}
+					else
+					{
+						ft_putendl_fd("Warning: Unexpected character encountered during tokenization of heredoc content.",
+							STDERR_FILENO);
+					}
 				}
 			}
 			else // if (*str == '>')

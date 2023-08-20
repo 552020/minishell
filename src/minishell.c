@@ -25,13 +25,19 @@ void	print_working_directory(void)
 	}
 }
 
-int	main(void)
+int	main(int argc, char **argv, char **envp)
 {
-	char	*input;
-	t_token	*token_arr;
-	size_t	token_count;
-	size_t	i;
+	char		*input;
+	t_token		*token_arr;
+	t_lexeme	*lexeme_arr;
+	size_t		token_count;
+	size_t		i;
 
+	if (argc != 1)
+	{
+		printf("Usage: %s\n", argv[0]);
+		return (1);
+	}
 	while (1) // Infinite loop to keep the shell running
 	{
 		input = readline("$> "); // Display prompt and read input from user
@@ -42,6 +48,7 @@ int	main(void)
 			break ;
 		}
 		printf("%s\n", input); // Echo input
+		/* Tokenization */
 		token_count = count_words_tokenizer(input);
 		printf("Token count: %zu\n", token_count);
 		token_arr = tokenizer(input);
@@ -52,8 +59,18 @@ int	main(void)
 				token_arr[i].str);
 			i++;
 		}
+		/* collecting the heredoc */
+		collect_heredoc_content(token_arr, token_count);
+		/* Lexing */
+		lexeme_arr = lexer(token_arr, envp, token_count);
+		i = 0;
+		while (i < token_count + 1)
+		{
+			printf("Lexeme %zu: type=%d, value=%s, original=%s\n", i,
+				lexeme_arr[i].type, lexeme_arr[i].str, lexeme_arr[i].original);
+			i++;
+		}
 		free(token_arr);
-		// Call your tokenizer function
 		if (strcmp(input, "pwd") == 0)
 		{
 			print_working_directory();
