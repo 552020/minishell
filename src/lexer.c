@@ -55,6 +55,7 @@ t_lexeme	t_double_quote_var_substitution(t_token *token, char **envp)
 	char		*after;
 	t_lexeme	lexeme;
 
+	printf("Double quote var substitution...\n");
 	str = token->str;
 	lexeme.str = ft_strdup("");
 	lexeme.original = ft_strdup(token->str);
@@ -79,6 +80,9 @@ t_lexeme	t_double_quote_var_substitution(t_token *token, char **envp)
 	lexeme.str = strip_quotes(token->str);
 	lexeme.type = L_UNDEFINED;
 	lexeme.status = NOT_LEXED;
+	printf("Lexeme: type=%d, value=%s, original=%s\n", lexeme.type, lexeme.str,
+		lexeme.original);
+	printf("Done double quote var substitution.\n");
 	return (lexeme);
 }
 
@@ -216,39 +220,59 @@ t_lexeme	*lexer(t_token *token_arr, char **envp, size_t token_count)
 	i = 0;
 	while (i < token_count)
 	{
+		printf("Token %zu: type=%d, str=%s\n", i, token_arr[i].type,
+			token_arr[i].str);
+		i++;
+	}
+	i = 0;
+	while (i < token_count)
+	{
 		if (token_arr[i].type == T_ENV_VAR)
-			t_env_var_substitution(&token_arr[i], envp);
+			lexeme_arr[i] = t_env_var_substitution(&token_arr[i], envp);
 		// token_arr[i] = t_env_var_substitution(&token_arr[i], envp);
 		else if (token_arr[i].type == T_DOUBLE_QUOTE)
-			t_double_quote_var_substitution(&token_arr[i], envp);
+		{
+			lexeme_arr[i] = t_double_quote_var_substitution(&token_arr[i],
+				envp);
+			printf("Lexeme: type=%d, value=%s\n", lexeme_arr[i].type,
+				lexeme_arr[i].str);
+		}
 		else if (token_arr[i].type == T_SINGLE_QUOTE)
-			single_quote_lexeme(&token_arr[i]);
+			lexeme_arr[i] = single_quote_lexeme(&token_arr[i]);
 		else if (token_arr[i].type == T_PIPE)
-			pipe_lexeme(&token_arr[i]);
+			lexeme_arr[i] = pipe_lexeme(&token_arr[i]);
 		else if (token_arr[i].type == T_REDIRECT_IN)
 		{
-			redirect_in_lexeme(&token_arr[i]);
-			redirect_in_target_lexeme(&token_arr[i + 1]);
+			lexeme_arr[i] = redirect_in_lexeme(&token_arr[i]);
+			lexeme_arr[i + 1] = redirect_in_target_lexeme(&token_arr[i + 1]);
 		}
 		else if (token_arr[i].type == T_REDIRECT_OUT)
 		{
-			redirect_out_lexeme(&token_arr[i]);
-			redirect_out_target_lexeme(&token_arr[i + 1]);
+			lexeme_arr[i] = redirect_out_lexeme(&token_arr[i]);
+			lexeme_arr[i + 1] = redirect_out_target_lexeme(&token_arr[i + 1]);
 		}
 		else if (token_arr[i].type == T_REDIRECT_APPEND)
 		{
-			redirect_append_lexeme(&token_arr[i]);
-			redirect_out_target_lexeme(&token_arr[i + 1]);
+			lexeme_arr[i] = redirect_append_lexeme(&token_arr[i]);
+			lexeme_arr[i + 1] = redirect_out_target_lexeme(&token_arr[i + 1]);
 		}
 		else if (token_arr[i].type == T_HEREDOC)
 		{
-			heredoc_lexeme(&token_arr[i]);
-			heredoc_content_lexeme(&token_arr[i + 1]);
+			lexeme_arr[i] = heredoc_lexeme(&token_arr[i]);
+			lexeme_arr[i + 1] = heredoc_content_lexeme(&token_arr[i + 1]);
 		}
 		else if (token_arr[i].type == T_WORD)
-			lexeme_arr[i] = word_lexeme(&token_arr[i]);
+			lexeme_arr[i] = lexeme_arr[i] = word_lexeme(&token_arr[i]);
 		else
 			;
+		i++;
+	}
+	i = 0;
+	printf("\nLexeme array after first loop:\n");
+	while (i < token_count)
+	{
+		printf("Token %zu: type=%d, str=%s\n", i, lexeme_arr[i].type,
+			lexeme_arr[i].str);
 		i++;
 	}
 	printf("Second round of lexing...\n");
@@ -257,6 +281,8 @@ t_lexeme	*lexer(t_token *token_arr, char **envp, size_t token_count)
 	command_flag = 0;
 	while (i < token_count)
 	{
+		printf("Lexeme %zu: type=%d, str=%s\n", i, lexeme_arr[i].type,
+			lexeme_arr[i].str);
 		if (lexeme_arr[i].type == L_UNDEFINED)
 		{
 			if (command_flag == 0)
@@ -275,5 +301,6 @@ t_lexeme	*lexer(t_token *token_arr, char **envp, size_t token_count)
 		}
 		i++;
 	}
+	printf("Done lexing.\n\n\n");
 	return (lexeme_arr);
 }

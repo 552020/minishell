@@ -65,15 +65,16 @@ int	main(int argc, char **argv, char **envp)
 			i++;
 		}
 		free(token_arr);
-		if (strcmp(input, "pwd") == 0)
-		{
-			print_working_directory();
-		}
-		else
-		{
-			printf("Unknown command\n");
-		}
-		free(input); // Free memory allocated by readline()
+		free(lexeme_arr);
+		// if (strcmp(input, "pwd") == 0)
+		// {
+		// 	print_working_directory();
+		// }
+		// else
+		// {
+		// 	printf("Unknown command\n");
+		// }
+		// free(input); // Free memory allocated by readline()
 	}
 	return (0);
 }
