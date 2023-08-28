@@ -1,6 +1,8 @@
+!!!
 You should limit yourself to the subject description. Anything that
 is not asked is not required.
 If you have any doubt about a requirement, take bash as a reference.
+!!!
 
 1) Display a prompt when waiting for a new command.
 2) Have a working history.
