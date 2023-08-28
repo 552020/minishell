@@ -1,49 +1,43 @@
-CC = gcc
+CC = cc
 
 NAME =	minishell 
 CFLAGS = -g -Wall -Wextra -Werror
 LIBFT = ./libft/libft.a
-LIBS = -lreadline
+LIBREADLINE = -lreadline
 INCLUDES = -I./include  -I./libft/include
-SRC_DIR = src
-OBJ_DIR = obj
+GREEN   = \033[32;1m
+RESET	= \033[0m
+SRC_DIR = src/
+OBJ_DIR = obj/
 
 SRCS = minishell.c tokenizer.c
+SRC	= $(addprefix $(SRC_DIR), $(SRCS))
+OBJ = $(addprefix $(OBJ_DIR), $(notdir $(SRC:.c=.o)))
 
-# OBJS = $(SRCS:.c=.o)
-OBJS = $(addprefix $(OBJ_DIR)/, $(SRCS:.c=.o))
+all: $(NAME)
 
-all: $(NAME) $(LIBFT)
-
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
-	@mkdir -p $(OBJ_DIR)
-	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@ 
-
-
-$(NAME): $(OBJS) $(LIBFT) 
-	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LIBS)
+$(NAME): $(LIBFT) $(OBJ)
+	@$(CC) $(CFLAGS) -o $(NAME) $(OBJ) $(LIBFT) $(LIBREADLINE)
+	@echo "$(GREEN)Minishell compiled with $(CFLAGS)$(RESET)"
 
 $(LIBFT):
 	@$(MAKE) -C ./libft
-	@echo "$(GREEN)Libft compiled$(RESET)"
+	@echo "$(GREEN)Libft compiled with $(CFLAGS)$(RESET)"
 
-clean: 
-	rm -f $(OBJS)
-	rm -f libft/*.o
+$(OBJ_DIR)%.o: $(SRC_DIR)%.c
+	@mkdir -p $(OBJ_DIR)
+	@$(CC) $(CFLAGS) $(INCLUDES) -c -o $@ $^
+
+clean:
+	@$(MAKE) clean -C ./libft
+	rm -rf $(OBJ_DIR)
+	@echo "$(GREEN) Cleaned $(RESET)"
 
 fclean: clean 
-	rm -f $(NAME)
-	rm -f libft/libft.a
+	@$(MAKE) fclean -C ./libft
+	@rm -f $(NAME)
+	@echo "$(GREEN) Full cleaned $(RESET)"
 
-re:
-	make fclean 
-	make all
+re: fclean all
 
 .PHONY: all clean fclean re
-
-
-
-
-
-
-
