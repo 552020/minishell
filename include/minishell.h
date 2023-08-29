@@ -7,9 +7,12 @@
 #include <string.h>
 #include <unistd.h>
 
+/* Tokenizer */
 typedef enum e_token_type
 {
-	T_WORD,              // Regular word/command/argument
+	// Maybe change T_WORD to T_CMD_OR_ARG
+	// T_WORD could also represent a filename though
+	T_WORD,              // Command, argument or filename
 	T_PIPE,              // |
 	T_REDIRECT_IN,       // <
 	T_REDIRECT_OUT,      // >
@@ -18,12 +21,19 @@ typedef enum e_token_type
 	T_HEREDOC_DELIMITER, // << delimiter
 	T_HEREDOC_CONTENT,   // << content
 	T_DOUBLE_QUOTE,
-	// " the whole sring in between " quotes included
+	// " the whole string in between " quotes included
 	T_SINGLE_QUOTE,
 	// ' the whole string in between ' quotes included
 	T_ENV_VAR, // $ followed by a valid variable name
 }					t_token_type;
 
+typedef struct s_token
+{
+	t_token_type	type;
+	char			*str;
+}					t_token;
+
+/* Lexer */
 typedef enum e_lexeme_type
 {
 	L_COMMAND,
@@ -48,12 +58,6 @@ typedef enum e_lexeme_status
 	LEXED = 1
 }					t_lexeme_status;
 
-typedef struct s_token
-{
-	t_token_type	type;
-	char			*str;
-}					t_token;
-
 typedef struct s_lexeme
 {
 	t_lexeme_type	type;
@@ -68,3 +72,30 @@ t_lexeme			*lexer(t_token *token_arr, char **envp, size_t token_count);
 int					ft_isvalidvarname(char c);
 void				collect_heredoc_content(t_token *token_arr,
 						size_t token_count);
+
+/* Parser */
+
+typedef enum e_node_type
+{
+	N_PIPE,
+	N_COMMAND,
+	N_ARGUMENT,
+	N_REDIRECT_INPUT,
+	N_REDIRECT_OUTPUT,
+	N_REDIRECT_APPEND
+}					t_node_type;
+
+typedef struct s_tree_node
+{
+	t_node_type		type;
+	char *data;                    // Data: command, filename, argument string,
+	etc.struct s_tree_node *input; // For input redirection.
+	struct s_tree_node *output;    // For output redirection.
+	struct s_list *children;       // Linked list of children nodes.
+}					t_tree_node;
+
+typedef struct s_list
+{
+	t_tree_node		*node;
+	struct s_list	*next;
+}					t_list;

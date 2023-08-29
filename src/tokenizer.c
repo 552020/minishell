@@ -15,17 +15,17 @@ int	ft_isspace(int c)
 }
 
 /* Check all special chars in the scope of the minishell*/
-int	ft_isspecial(char c)
+int	isspecialchar(char c)
 {
 	if (c == '<' || c == '>' || c == '|' || c == '$' || c == '"' || c == '\'')
 		return (1);
 	return (0);
 }
 
-/* Check if a normal char in a word*/
-int	ft_isregularwordchar(char c, char *str)
+/* Check if it's a 'normal' char */
+int	isregularchar(char c, char *str)
 {
-	if (ft_isspace(c) || ft_isspecial(c))
+	if (ft_isspace(c) || isspecialchar(c))
 		return (0);
 	if (c == '\'' || c == '"')
 	{
@@ -51,7 +51,7 @@ size_t	count_words_tokenizer(const char *input)
 		str++;
 	while (*str)
 	{
-		if (ft_isspecial(*str))
+		if (isspecialchar(*str))
 		{
 			words++;
 			if (*str == '$') // Handle the $VAR case
@@ -77,10 +77,10 @@ size_t	count_words_tokenizer(const char *input)
 			while (*str && ft_isspace(*str)) // Skip spaces
 				str++;
 		}
-		else if (ft_isregularwordchar(*str, str))
+		else if (isregularchar(*str, str))
 		{
 			words++;
-			while (*str && ft_isregularwordchar(*str, str))
+			while (*str && isregularchar(*str, str))
 				str++;
 		}
 		else
@@ -110,10 +110,10 @@ t_token	*tokenizer(const char *input)
 	{
 		if (ft_isspace(*str))
 			str++;
-		else if (ft_isregularwordchar(*str, str))
+		else if (isregularchar(*str, str))
 		{
 			char *start = str;
-			while (*str && ft_isregularwordchar(*str, str))
+			while (*str && isregularchar(*str, str))
 				str++;
 
 			token_arr[idx].type = T_WORD;
@@ -135,11 +135,11 @@ t_token	*tokenizer(const char *input)
 					while (ft_isspace(*(str + 1)))
 						str++;
 					// Now, capture the delimiter
-					if (ft_isregularwordchar(*(str + 1), str + 1))
+					if (isregularchar(*(str + 1), str + 1))
 					{
 						idx++; // Move to the next token
 						char *start = str + 1;
-						while (*str && ft_isregularwordchar(*str, str))
+						while (*str && isregularchar(*str, str))
 							str++;
 
 						token_arr[idx].type = T_HEREDOC_DELIMITER;
