@@ -24,6 +24,7 @@ int	main(int argc, char **argv, char **envp)
 	char		*input;
 	t_token		*token_arr;
 	t_lexeme	*lexeme_arr;
+	t_ast_node	*ast_root;
 	size_t		token_count;
 	size_t		i;
 
@@ -64,6 +65,8 @@ int	main(int argc, char **argv, char **envp)
 				lexeme_arr[i].type, lexeme_arr[i].str, lexeme_arr[i].original);
 			i++;
 		}
+		ast_root = build_ast(lexeme_arr, 0, token_count);
+		(void)ast_root;
 		free(token_arr);
 		free(lexeme_arr);
 		// if (strcmp(input, "pwd") == 0)

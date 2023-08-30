@@ -10,6 +10,30 @@ echo "hello world" | grep $SOME_ARGS "hello world" > output.txt
 
 # Edge and special cases
 
+## Spaces between command and arguments
+
+TODO: handle this
+
+```bash
+echo"Hello"
+```
+
+The output is command not found. Exactly `bash: echoHello: command not found`. NB: it's not giving bach echo"Hello" command not found but echoHello command not found. The double quotes got stripped.
+
+```bash
+bash-3.2$ ec"ho" "Hello"
+Hello
+bash-3.2$ ec"ho""Hello"
+bash: echoHello: command not found
+bash-3.2$ echo'Hello'
+bash: echoHello: command not found
+bash-3.2$ ec'ho''Hello'
+bash: echoHello: command not found
+bash-3.2$ ec'ho' 'Hello'
+Hello
+bash-3.2$
+```
+
 ## HEREDOC edge cases
 
 _Quoted delmiteer_ The delimiter can be quoted. If it's quoted, then the content of the heredoc will be treated literally, and no parameter expansion, command substitution, or arithmetic expansion will occur. In the following example, $HOME and `date` will be treated as literal strings and not expanded.

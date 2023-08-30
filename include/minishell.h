@@ -1,6 +1,7 @@
 #include "libft.h"
 #include <readline/history.h>
 #include <readline/readline.h>
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -66,24 +67,12 @@ typedef struct s_lexeme
 	t_lexeme_status		status;
 }						t_lexeme;
 
-t_token					*tokenizer(const char *input);
-size_t					count_words_tokenizer(const char *input);
-t_lexeme				*lexer(t_token *token_arr, char **envp,
-							size_t token_count);
-int						ft_isvalidvarname(char c);
-void					collect_heredoc_content(t_token *token_arr,
-							size_t token_count);
-
 /* Parser */
 
 typedef enum e_node_type
 {
 	N_PIPE,
 	N_COMMAND,
-	// N_ARGUMENT,
-	N_REDIRECT_INPUT,
-	N_REDIRECT_OUTPUT,
-	N_REDIRECT_APPEND
 }						t_node_type;
 
 typedef struct s_ast_node
@@ -102,3 +91,12 @@ typedef struct s_node_list
 	t_ast_node			*node;
 	struct s_node_list	*next;
 }						t_node_list;
+
+t_ast_node				*build_ast(t_lexeme *lexemes, int start, int end);
+t_token					*tokenizer(const char *input);
+size_t					count_words_tokenizer(const char *input);
+t_lexeme				*lexer(t_token *token_arr, char **envp,
+							size_t token_count);
+int						ft_isvalidvarname(char c);
+void					collect_heredoc_content(t_token *token_arr,
+							size_t token_count);
