@@ -129,6 +129,7 @@ t_token	*tokenizer(const char *input)
 				if (*(str + 1) == '<')
 				{
 					token_arr[idx].type = T_HEREDOC;
+					free(token_arr[idx].str);
 					token_arr[idx].str = ft_strdup("<<");
 					str++;
 					// Skip spaces after '<<'
@@ -147,7 +148,7 @@ t_token	*tokenizer(const char *input)
 					}
 					else
 					{
-						ft_putendl_fd("Warning: Unexpected character encountered during tokenization of heredoc content.",
+						ft_putendl_fd("Warning: Unexpected character encountered during tokenization of heredoc delimiter.",
 							STDERR_FILENO);
 					}
 				}
@@ -159,6 +160,7 @@ t_token	*tokenizer(const char *input)
 				if (*(str + 1) == '>')
 				{
 					token_arr[idx].type = T_REDIRECT_APPEND;
+					free(token_arr[idx].str);
 					token_arr[idx].str = ft_strdup(">>");
 					str++;
 				}
