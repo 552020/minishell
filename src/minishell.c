@@ -44,14 +44,14 @@ int	main(int argc, char **argv, char **envp)
 		}
 		printf("readline: %s\n", input);
 		/* Tokenization */
-		printf("\n*Tokenization*\n\n");
+		printf("\n***Tokenization***\n\n");
 		token_count = count_words_tokenizer(input);
 		printf("Token count: %zu\n\n", token_count);
 		token_arr = tokenizer(input);
 		i = 0;
 		while (i < token_count + 1)
 		{
-			printf("Token %zu: type=%d, str=%s\n", i, token_arr[i].type,
+			printf("Token %zu: type=%d, str=%s\n", i + 1, token_arr[i].type,
 				token_arr[i].str);
 			i++;
 		}
@@ -59,16 +59,16 @@ int	main(int argc, char **argv, char **envp)
 		printf("\n*Heredoc*\n\n");
 		collect_heredoc_content(token_arr, token_count);
 		/* Lexing */
-		printf("\n*Lexing*\n\n");
+		printf("***Lexing***\n\n");
 		lexeme_arr = lexer(token_arr, envp, token_count);
 		i = 0;
 		// while (i < token_count + 1)
-		while (i < token_count)
-		{
-			printf("Lexeme %zu: type=%d, value=%s, original=%s\n", i,
-				lexeme_arr[i].type, lexeme_arr[i].str, lexeme_arr[i].original);
-			i++;
-		}
+		// while (i < token_count)
+		// {
+		// 	printf("Lexeme %zu: type=%d, value=%s, original=%s\n", i,
+		// 		lexeme_arr[i].type, lexeme_arr[i].str, lexeme_arr[i].original);
+		// 	i++;
+		// }
 		ast_root = build_ast(lexeme_arr, 0, token_count - 1);
 		(void)ast_root;
 		free(token_arr);

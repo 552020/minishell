@@ -215,7 +215,7 @@ t_token	*tokenizer(const char *input)
 		}
 	}
 	// Finalization
-	token_arr[idx].type = 0; // To mark the end of the token array
+	token_arr[idx].type = T_END; // To mark the end of the token array
 	token_arr[idx].str = NULL;
 
 	return (token_arr);

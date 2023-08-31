@@ -13,19 +13,20 @@ typedef enum e_token_type
 {
 	// Maybe change T_WORD to T_CMD_OR_ARG
 	// T_WORD could also represent a filename though
-	T_WORD,              // Command argument or filename
-	T_PIPE,              // |
-	T_REDIRECT_IN,       // <
-	T_REDIRECT_OUT,      // >
-	T_REDIRECT_APPEND,   // >>
-	T_HEREDOC,           // <<
-	T_HEREDOC_DELIMITER, // << delimiter
-	T_HEREDOC_CONTENT,   // << content
+	T_WORD,              // 0 - Command argument or filename
+	T_PIPE,              // 1 - |
+	T_REDIRECT_IN,       // 2 - <
+	T_REDIRECT_OUT,      // 3 - >
+	T_REDIRECT_APPEND,   // 4 - >>
+	T_HEREDOC,           // 5 - <<
+	T_HEREDOC_DELIMITER, // 6 - << delimiter
+	T_HEREDOC_CONTENT,   // 7 - << content
 	T_DOUBLE_QUOTE,
-	// " the whole string in between " quotes included
+	// 8 - " the whole string in between " quotes included
 	T_SINGLE_QUOTE,
-	// ' the whole string in between ' quotes included
-	T_ENV_VAR, // $ followed by a valid variable name
+	// 9 - ' the whole string in between ' quotes included
+	T_ENV_VAR, // 10 - $ followed by a valid variable name
+	T_END,     // 11 - End of token array
 }						t_token_type;
 
 typedef struct s_token
@@ -100,3 +101,7 @@ t_lexeme				*lexer(t_token *token_arr, char **envp,
 int						ft_isvalidvarname(char c);
 void					collect_heredoc_content(t_token *token_arr,
 							size_t token_count);
+/* Debug */
+void					print_token_arr(t_token *token_arr, size_t token_count);
+void					print_lexeme_arr(t_lexeme *lexeme_arr,
+							size_t lexeme_count);

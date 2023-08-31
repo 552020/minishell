@@ -131,7 +131,8 @@ t_ast_node	*build_cmd_node(t_lexeme *lexemes, int start, int end)
 		{
 			// free memory
 			printf("Error: unknown lexeme type\n");
-			exit(EXIT_FAILURE);
+			printf("lexemes[%d].type = %d\n", i, lexemes[i].type);
+			// exit(EXIT_FAILURE);
 		}
 		i++;
 	}
