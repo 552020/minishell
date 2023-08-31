@@ -9,7 +9,7 @@ void	collect_heredoc_content(t_token *token_arr, size_t token_count)
 	char *rl_prompt;
 	char *tmp;
 
-	printf("Collecting heredoc content...\n");
+	// printf("Collecting heredoc content...\n");
 	while (i < token_count)
 	{
 		if (token_arr[i].type == T_HEREDOC)
@@ -40,5 +40,5 @@ void	collect_heredoc_content(t_token *token_arr, size_t token_count)
 		}
 		i++;
 	}
-	printf("Done collecting heredoc content.\n");
+	// printf("Done collecting heredoc content.\n");
 }
