@@ -62,15 +62,9 @@ int	main(int argc, char **argv, char **envp)
 		printf("***Lexing***\n\n");
 		lexeme_arr = lexer(token_arr, envp, token_count);
 		i = 0;
-		// while (i < token_count + 1)
-		// while (i < token_count)
-		// {
-		// 	printf("Lexeme %zu: type=%d, value=%s, original=%s\n", i,
-		// 		lexeme_arr[i].type, lexeme_arr[i].str, lexeme_arr[i].original);
-		// 	i++;
-		// }
+		printf("***Parsing***\n\n");
 		ast_root = build_ast(lexeme_arr, 0, token_count - 1);
-		(void)ast_root;
+		print_ast(ast_root, 7);
 		free(token_arr);
 		free(lexeme_arr);
 		// if (strcmp(input, "pwd") == 0)

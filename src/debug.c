@@ -42,8 +42,8 @@ void	print_token_arr(t_token *token_arr, size_t token_count)
 
 void	print_lexeme_arr(t_lexeme *lexeme_arr, size_t lexeme_count)
 {
-	size_t i;
-	char *lexeme_type;
+	size_t	i;
+	char	*lexeme_type;
 
 	i = 0;
 	while (i < lexeme_count)
@@ -70,8 +70,6 @@ void	print_lexeme_arr(t_lexeme *lexeme_arr, size_t lexeme_count)
 			lexeme_type = "L_FILENAME_STDIN";
 		else if (lexeme_arr[i].type == L_FILENAME_STDOUT)
 			lexeme_type = "L_FILENAME_STDOUT";
-		else if (lexeme_arr[i].type == L_BUILTIN)
-			lexeme_type = "L_BUILTIN";
 		else if (lexeme_arr[i].type == L_UNDEFINED)
 			lexeme_type = "L_UNDEFINED";
 		else
@@ -80,4 +78,33 @@ void	print_lexeme_arr(t_lexeme *lexeme_arr, size_t lexeme_count)
 			lexeme_arr[i].str);
 		i++;
 	}
+}
+
+void	print_ast(t_ast_node *node, int depth)
+{
+	// Print indentation
+	for (int i = 0; i < depth; ++i)
+		printf("- ");
+	// Print node type and data
+	if (node->type == N_PIPE)
+	{
+		printf("|\n");
+	}
+	else if (node->type == N_COMMAND)
+	{
+		printf("%s", node->data);
+		if (node->args)
+		{
+			for (int i = 0; node->args[i] != NULL; ++i)
+			{
+				printf(" %s", node->args[i]);
+			}
+		}
+		printf("\n");
+	}
+	// Print children
+	if (node->children[0])
+		print_ast(node->children[0], depth + 1);
+	if (node->children[1])
+		print_ast(node->children[1], depth + 1);
 }

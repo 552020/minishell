@@ -65,7 +65,8 @@ void	append_arg_to_command_node(t_ast_node *node, char *arg)
 		node->args[size + 1] = NULL;
 	}
 }
-
+// start is the index of the first lexeme of the command
+// end is the index of the last lexeme of the command, not including the pipe
 t_ast_node	*build_cmd_node(t_lexeme *lexemes, int start, int end)
 {
 	t_ast_node	*node;
@@ -77,17 +78,10 @@ t_ast_node	*build_cmd_node(t_lexeme *lexemes, int start, int end)
 	{
 		if (lexemes[i].type == L_COMMAND)
 		{
+			// printf("Parsing command...\n");
+			// printf("lexemes[%d].str = %s\n", i, lexemes[i].str);
 			node->data = ft_strdup(lexemes[i].str);
-			if (node->data == NULL)
-			{
-				// free memory
-				printf("Error: malloc node->data failed\n");
-				exit(EXIT_FAILURE);
-			}
-		}
-		else if (lexemes[i].type == L_BUILTIN)
-		{
-			node->data = ft_strdup(lexemes[i].str);
+			// printf("node->data = %s\n", node->data);
 			if (node->data == NULL)
 			{
 				// free memory
@@ -99,6 +93,10 @@ t_ast_node	*build_cmd_node(t_lexeme *lexemes, int start, int end)
 		{
 			append_arg_to_command_node(node, lexemes[i].str);
 		}
+		else if (lexemes[i].type == L_REDIRECT_INPUT)
+			;
+		else if (lexemes[i].type == L_REDIRECT_OUTPUT)
+			;
 		else if (lexemes[i].type == L_FILENAME_STDIN)
 		{
 			node->input_file = ft_strdup(lexemes[i].str);
@@ -141,25 +139,43 @@ t_ast_node	*build_cmd_node(t_lexeme *lexemes, int start, int end)
 
 t_ast_node	*build_ast(t_lexeme *lexemes, int start, int end)
 {
-	int i = end;
-	t_ast_node *node = NULL;
+	int i;
+	t_ast_node *node;
+
+	node = NULL;
+	i = end;
+	// printf("*** build_ast ***\n");
 	while (i >= start)
 	{
+		// printf("i = %d\n", i);
 		if (lexemes[i].type == L_PIPE)
 		{
 			node = create_node(N_PIPE);
 			node->children[1] = build_cmd_node(lexemes, i + 1, end);
+			// printf("node->children[1]->type=%d\nnode->children[1]->data=%s\n",
+			// 	node->children[1]->type, node->children[1]->data);
 			end = i - 1;
 			i = end;
 			while (i >= start && lexemes[i].type != L_PIPE)
-				--i;
-			if (i >= start)
-				node->children[0] = build_ast(lexemes, start, i - 1);
+				i--;
+			if (i > start)
+			{
+				// printf("i >= start\n");
+				node->children[0] = build_ast(lexemes, start, end);
+				// printf("node->children[0]->type=%d\nnode->children[0]->data=%s\n",
+				// 	node->children[0]->type, node->children[0]->data);
+			}
 			else
-				node->children[0] = build_cmd_node(lexemes, start, i);
+			{
+				// printf("i = start\n");
+
+				node->children[0] = build_cmd_node(lexemes, start, end);
+				// printf("node->children[0]->type=%d\n node->children[0]->data=%s\n",
+				// 	node->children[0]->type, node->children[0]->data);
+			}
 			return (node);
 		}
-		--i;
+		i--;
 	}
 	node = build_cmd_node(lexemes, start, end);
 	return (node);

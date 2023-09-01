@@ -50,7 +50,6 @@ typedef enum e_lexeme_type
 	L_HEREDOC_CONTENT,   // Content of heredoc (<<)
 	L_FILENAME_STDIN,    // Filename used in redirections
 	L_FILENAME_STDOUT,   // Filename used in redirections
-	L_BUILTIN,           // Built-in shell commands (e.g., echo, cd, pwd)
 	L_UNDEFINED          // Undefined lexeme type
 }						t_lexeme_type;
 
@@ -105,3 +104,4 @@ void					collect_heredoc_content(t_token *token_arr,
 void					print_token_arr(t_token *token_arr, size_t token_count);
 void					print_lexeme_arr(t_lexeme *lexeme_arr,
 							size_t lexeme_count);
+void					print_ast(t_ast_node *node, int depth);
