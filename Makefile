@@ -7,8 +7,8 @@ LIBREADLINE = -lreadline
 INCLUDES = -I./include  -I./libft/include
 GREEN   = \033[32;1m
 RESET	= \033[0m
-SRC_DIR = src/
-OBJ_DIR = obj/
+SRC_DIR = srcs/
+OBJ_DIR = objs/
 
 SRCS = minishell.c tokenizer.c
 SRC	= $(addprefix $(SRC_DIR), $(SRCS))
@@ -17,7 +17,7 @@ OBJ = $(addprefix $(OBJ_DIR), $(notdir $(SRC:.c=.o)))
 all: $(NAME)
 
 $(NAME): $(LIBFT) $(OBJ)
-	@$(CC) $(CFLAGS) -o $(NAME) $(OBJ) $(LIBFT) $(LIBREADLINE)
+	$(CC) $(CFLAGS) -o $(NAME) $(OBJ) $(LIBFT) $(LIBREADLINE)
 	@echo "$(GREEN)Minishell compiled with $(CFLAGS)$(RESET)"
 
 $(LIBFT):
@@ -26,7 +26,7 @@ $(LIBFT):
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.c
 	@mkdir -p $(OBJ_DIR)
-	@$(CC) $(CFLAGS) $(INCLUDES) -c -o $@ $^
+	$(CC) $(CFLAGS) $(INCLUDES) -c -o $@ $^
 
 clean:
 	@$(MAKE) clean -C ./libft
