@@ -27,6 +27,11 @@ int	main(int argc, char **argv, char **envp)
 	t_ast_node	*ast_root;
 	size_t		token_count;
 	size_t		i;
+	char		*key;
+	char		*value;
+	char		**key_value;
+	char		*key_value_str;
+	t_env_var	*table[TABLE_SIZE];
 
 	if (argc != 1)
 	{
@@ -41,6 +46,37 @@ int	main(int argc, char **argv, char **envp)
 		{
 			printf("\n");
 			break ;
+		}
+		// Handle 'env' command - just for testing
+		if (ft_strncmp(input, "env", ft_strlen(input)) == 0)
+		{
+			env(table);
+			continue ;
+		}
+		// Handle 'export' command - just for testing
+		if (ft_strncmp(input, "export ", 7) == 0)
+		{
+			key_value_str = ft_strdup(input + 7);
+			key_value = ft_split(key_value_str, '=');
+			if (key_value && key_value[0] && key_value[1])
+			{
+				key = key_value[0];
+				value = key_value[1];
+				export(table, key, value);
+			}
+			free(key_value_str);
+			free(key_value[0]);
+			free(key_value[1]);
+			free(key_value);
+			continue ;
+		}
+		// Handle  'unset' command - just for testing
+		if (ft_strncmp(input, "unset ", 6) == 0)
+		{
+			key = ft_strdup(input + 6);
+			unset(table, key);
+			free(key);
+			continue ;
 		}
 		printf("readline: %s\n", input);
 		/* Tokenization */

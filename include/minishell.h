@@ -19,6 +19,12 @@ typedef struct s_env_var
 	struct s_env_var	*next;
 }						t_env_var;
 
+void					initialize_table(t_env_var **table, char **envp);
+void					env(t_env_var **table);
+void					export(t_env_var **table, const char *key,
+							const char *value);
+void					unset(t_env_var **table, const char *key);
+
 /* Tokenizer */
 typedef enum e_token_type
 {
