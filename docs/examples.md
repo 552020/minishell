@@ -87,3 +87,17 @@ OUTER
 
 
 ```
+
+_Multiple Heredocs_
+```bash
+╰─➤  cat << EOF1 << EOF2 << EOF3
+heredoc> hello world 1
+heredoc> EOF1
+heredoc> hello world 2
+heredoc> EOF2
+heredoc> hello world 3
+heredoc> EOF3
+hello world 1
+hello world 2
+hello world 3
+```

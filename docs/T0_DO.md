@@ -1,6 +1,6 @@
 # TO DOs
 
-- Fix heredoc: the delimiter string is not saved correctly
+- heredoc: heredocs are passed to the stdin are not strings passed as argument to a command, multiple heredocs with different delimiters are possible
 - ttyname and ttyslot. They seem to be unnecessary for the project, check if someone else is using them.
 
 - `echo"Hello"` - see examples and edge cases.

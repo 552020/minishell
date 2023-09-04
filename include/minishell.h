@@ -8,6 +8,17 @@
 #include <string.h>
 #include <unistd.h>
 
+/* Environment Variables*/
+
+#define TABLE_SIZE 100
+
+typedef struct s_env_var
+{
+	char				*key;
+	char				*value;
+	struct s_env_var	*next;
+}						t_env_var;
+
 /* Tokenizer */
 typedef enum e_token_type
 {

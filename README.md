@@ -71,5 +71,12 @@ The ttyslot() function is designed to return the index of the current terminal i
 It stands for "input/output control". 
 It is a general-purpose interface that is used for configuring or getting the status of device-specific parameters. 
 In the context of terminal I\O it is often usde to chage terminal settings that cannot be changed using more specialized functions like 'tcsetattr' or 'tcgetattr'.
+https://en.wikipedia.org/wiki/Ioctl
+
+Probably it is used only to exit heredoc when CTRL + C or D are pressed while collecting heredoc. 
+
+## getenv
+
+Probably we can not use it if we use envp to get the environemnt variables. Why getenv is actually better than envp: https://42born2code.slack.com/archives/CN9RHKQHW/p1676033337151939. 
 
 
