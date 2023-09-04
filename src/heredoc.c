@@ -15,6 +15,7 @@ void	collect_heredoc_content(t_token *token_arr, size_t token_count)
 		if (token_arr[i].type == T_HEREDOC)
 		{
 			delimiter = token_arr[i + 1].str;
+			printf("delimiter: %s\n", delimiter);
 			heredoc_content_str = ft_strdup("");
 			line = NULL;
 			rl_prompt = "heredoc> ";
@@ -25,7 +26,6 @@ void	collect_heredoc_content(t_token *token_arr, size_t token_count)
 				{
 					tmp = heredoc_content_str;
 					heredoc_content_str = ft_strjoin(heredoc_content_str, "\n");
-					free(tmp);
 					heredoc_content_str = ft_strjoin(heredoc_content_str, line);
 					free(tmp);
 				}

@@ -121,8 +121,11 @@ t_ast_node	*build_cmd_node(t_lexeme *lexemes, int start, int end)
 		{
 			node->append = true;
 		}
+		else if (lexemes[i].type == L_HEREDOC)
+			;
 		else if (lexemes[i].type == L_HEREDOC_CONTENT)
 		{
+			printf("lexemes[%d].str = %s\n", i + 1, lexemes[i].str);
 			append_arg_to_command_node(node, lexemes[i].str);
 		}
 		else
