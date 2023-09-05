@@ -36,15 +36,15 @@ void	insert_node_ht(t_env_var **table, const char *key, const char *value)
 	idx = hash(key);
 	node = table[idx];
 	if (node == NULL)
-	{
 		table[idx] = create_node_ht(key, value);
-	}
 	else
 	{
+		if (node->key == NULL)
+			printf("node->key == NULL\n");
+		if (node->value == NULL)
+			printf("node->value == NULL\n");
 		while (node->next != NULL)
-		{
 			node = node->next;
-		}
 		node->next = create_node_ht(key, value);
 	}
 }
@@ -55,9 +55,30 @@ void	initialize_table(t_env_var **table, char **envp)
 	char	**key_value;
 
 	i = 0;
+	while (i < TABLE_SIZE)
+	{
+		table[i] = NULL;
+		i++;
+	}
+	printf("Initializing table...\n");
+	i = 0;
 	while (envp[i] != NULL)
 	{
 		key_value = ft_split(envp[i], '=');
+		if (!key_value)
+		{
+			// free memory
+			printf("Error: ft_split in init table failed\n");
+			exit(EXIT_FAILURE);
+		}
+		if (!key_value[0])
+		{
+			// free memory
+			printf("Error: key_value[0] == NULL\n");
+			exit(EXIT_FAILURE);
+		}
+		if (!key_value[1])
+			key_value[1] = ft_strdup("");
 		insert_node_ht(table, key_value[0], key_value[1]);
 		free(key_value[0]);
 		free(key_value[1]);
@@ -74,6 +95,7 @@ void	env(t_env_var **table)
 	i = 0;
 	while (i < TABLE_SIZE)
 	{
+		// printf("table[%d]:\n", i);
 		node = table[i];
 		while (node != NULL)
 		{
