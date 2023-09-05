@@ -38,6 +38,7 @@ int	main(int argc, char **argv, char **envp)
 		printf("Usage: %s\n", argv[0]);
 		return (1);
 	}
+	initialize_table(table, envp);
 	while (1) // Infinite loop to keep the shell running
 	{
 		input = readline("$> "); // Display prompt and read input from user

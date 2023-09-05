@@ -55,9 +55,32 @@ void	initialize_table(t_env_var **table, char **envp)
 	char	**key_value;
 
 	i = 0;
+	while (i < TABLE_SIZE)
+	{
+		table[i] = NULL;
+		i++;
+	}
+	i = 0;
 	while (envp[i] != NULL)
 	{
 		key_value = ft_split(envp[i], '=');
+		if (key_value == NULL)
+		{
+			// free memory
+			printf("Error initializing environment variables\n");
+			exit(EXIT_FAILURE);
+		}
+		if (key_value[0] == NULL)
+		{
+			// free memory
+			printf("Error initializing environment variables\n");
+			printf("Key is NULL\n");
+			exit(EXIT_FAILURE);
+		}
+		if (key_value[1] == NULL)
+		{
+			key_value[1] = ft_strdup("");
+		}
 		insert_node_ht(table, key_value[0], key_value[1]);
 		free(key_value[0]);
 		free(key_value[1]);
