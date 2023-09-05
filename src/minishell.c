@@ -1,10 +1,4 @@
 #include "minishell.h"
-#include <readline/history.h>
-#include <readline/readline.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
 
 // cc minishell.c -lreadline
 
@@ -25,13 +19,25 @@ void	print_working_directory(void)
 	}
 }
 
-int	main(void)
+int	main(int argc, char **argv, char **envp)
 {
-	char	*input;
-	t_token	*token_arr;
-	size_t	token_count;
-	size_t	i;
+	char		*input;
+	t_token		*token_arr;
+	t_lexeme	*lexeme_arr;
+	t_ast_node	*ast_root;
+	size_t		token_count;
+	size_t		i;
+	char		*key;
+	char		*value;
+	char		**key_value;
+	char		*key_value_str;
+	t_env_var	*table[TABLE_SIZE];
 
+	if (argc != 1)
+	{
+		printf("Usage: %s\n", argv[0]);
+		return (1);
+	}
 	while (1) // Infinite loop to keep the shell running
 	{
 		input = readline("$> "); // Display prompt and read input from user
@@ -41,28 +47,71 @@ int	main(void)
 			printf("\n");
 			break ;
 		}
-		printf("%s\n", input); // Echo input
+		// Handle 'env' command - just for testing
+		if (ft_strncmp(input, "env", ft_strlen(input)) == 0)
+		{
+			env(table);
+			continue ;
+		}
+		// Handle 'export' command - just for testing
+		if (ft_strncmp(input, "export ", 7) == 0)
+		{
+			key_value_str = ft_strdup(input + 7);
+			key_value = ft_split(key_value_str, '=');
+			if (key_value && key_value[0] && key_value[1])
+			{
+				key = key_value[0];
+				value = key_value[1];
+				export(table, key, value);
+			}
+			free(key_value_str);
+			free(key_value[0]);
+			free(key_value[1]);
+			free(key_value);
+			continue ;
+		}
+		// Handle  'unset' command - just for testing
+		if (ft_strncmp(input, "unset ", 6) == 0)
+		{
+			key = ft_strdup(input + 6);
+			unset(table, key);
+			free(key);
+			continue ;
+		}
+		printf("readline: %s\n", input);
+		/* Tokenization */
+		printf("\n***Tokenization***\n\n");
 		token_count = count_words_tokenizer(input);
-		printf("Token count: %zu\n", token_count);
+		printf("Token count: %zu\n\n", token_count);
 		token_arr = tokenizer(input);
 		i = 0;
 		while (i < token_count + 1)
 		{
-			printf("Token %zu: type=%d, str=%s\n", i, token_arr[i].type,
+			printf("Token %zu: type=%d, str=%s\n", i + 1, token_arr[i].type,
 				token_arr[i].str);
 			i++;
 		}
+		/* collecting the heredoc */
+		printf("\n*Heredoc*\n\n");
+		collect_heredoc_content(token_arr, token_count);
+		/* Lexing */
+		printf("***Lexing***\n\n");
+		lexeme_arr = lexer(token_arr, envp, token_count);
+		i = 0;
+		printf("***Parsing***\n\n");
+		ast_root = build_ast(lexeme_arr, 0, token_count - 1);
+		print_ast(ast_root, 7);
 		free(token_arr);
-		// Call your tokenizer function
-		if (strcmp(input, "pwd") == 0)
-		{
-			print_working_directory();
-		}
-		else
-		{
-			printf("Unknown command\n");
-		}
-		free(input); // Free memory allocated by readline()
+		free(lexeme_arr);
+		// if (strcmp(input, "pwd") == 0)
+		// {
+		// 	print_working_directory();
+		// }
+		// else
+		// {
+		// 	printf("Unknown command\n");
+		// }
+		// free(input); // Free memory allocated by readline()
 	}
 	return (0);
 }

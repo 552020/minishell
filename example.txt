@@ -1,5 +1,0 @@
-echo$USER
-
-echo $USER | grep $ARGS $OTHER_ARGS
-
-hello world | grep "hello world" > output.txt
