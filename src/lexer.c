@@ -282,7 +282,7 @@ lexer(t_token *token_arr, char **envp, size_t token_count)
 				lexeme_arr[i] = word_lexeme(&token_arr[i]); // changed this line as well
 		}
 		else
-			continue ;
+			break ; // ask what should be done here
 		i++;
 	}
 	i = 0;
