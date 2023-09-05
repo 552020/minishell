@@ -267,10 +267,10 @@ t_lexeme	*lexer(t_token *token_arr, char **envp, size_t token_count)
 		{
 			if (lexeme_arr[i].type != L_FILENAME_STDIN
 				|| lexeme_arr[i].type != L_FILENAME_STDOUT)
-				lexeme_arr[i] = lexeme_arr[i] = word_lexeme(&token_arr[i]);
+				lexeme_arr[i] = word_lexeme(&token_arr[i]);
 		}
 		else
-			;
+			break ; // ask what should be done here
 		i++;
 	}
 	i = 0;
