@@ -29,8 +29,45 @@ command or a pipe node.
 	◦ exit with no options
 */
 
-
-void executer(t_lexeme lexeme_arr)
+int count_pipes(t_lexeme *lexeme_arr, size_t token_count)
 {
-	
+	size_t i;
+	size_t num_of_pipes;
+
+	i = token_count;
+	num_of_pipes = 0;
+	while (i >= 0)
+	{
+		if (lexeme_arr[i].type == L_PIPE)
+			num_of_pipes++;
+		i--;
+	}
+	printf("num_of_pipes: %d\n", num_of_pipes);
+	return (num_of_pipes);
+}
+
+
+// int count_pipes(t_ast_node *ast_root)
+// {
+// 	int i;
+// 	int num_of_pipes;
+
+// 	i = 0;
+// 	num_of_pipes = 0;
+// 	while (&ast_root[i])
+// 	{
+// 		if (ast_root[i].node->type == N_PIPE)
+// 			num_of_pipes++;
+// 		i++;
+// 	}
+// 	printf("num_of_pipes: %d\n", num_of_pipes);
+// 	return (num_of_pipes);
+// }
+
+void executer(t_ast_node *ast_root, size_t pipe_count)
+{
+	size_t i;
+
+	i = pipe_count;
+	while()
 }

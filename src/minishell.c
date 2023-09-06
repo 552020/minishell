@@ -104,7 +104,13 @@ int	main(int argc, char **argv, char **envp)
 		ast_root = build_ast(lexeme_arr, 0, token_count - 1);
 		print_ast(ast_root, 7);
 
-		/* helo */
+		/* execution */
+		int pipe_count;
+
+		pipe_count = count_pipes(lexeme_arr, token_count);
+
+		/* end of execution */
+		
 		free(token_arr);
 		free(lexeme_arr);
 		// if (strcmp(input, "pwd") == 0)
