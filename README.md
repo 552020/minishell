@@ -79,4 +79,19 @@ Probably it is used only to exit heredoc when CTRL + C or D are pressed while co
 
 Probably we can not use it if we use envp to get the environemnt variables. Why getenv is actually better than envp: https://42born2code.slack.com/archives/CN9RHKQHW/p1676033337151939. 
 
+## tcsetattr
+
+`tcsetattr(int fd, int optional_actions, const struct termios *termios_p)`
+
+- Used to set terminal attributes (like baud rate, flow control, etc.) for the terminal referred by the fd. 
+- <termios.h> termios means 'TERMinal Input Output Settings'
+
+Use: it could be use to soppress the CTRL + C sign when interrupting a process with a signal: 
+- https://42born2code.slack.com/archives/CMX2R5JSW/p1659104268134569
+- https://42born2code.slack.com/archives/CN9RHKQHW/p1632837006412900
+- https://42born2code.slack.com/archives/CMX2R5JSW/p1632256884432600
+
+
+The man page group it together with: cfgetispeed, cfgetospeed, cfmakeraw, cfsetispeed, cfsetospeed,
+     cfsetspeed, tcgetattr, tcsetattr – manipulating the termios structure
 
