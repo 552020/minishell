@@ -51,6 +51,7 @@ size_t	count_words_tokenizer(const char *input)
 		str++;
 	while (*str)
 	{
+		printf("str: %c\n", *str);
 		if (isspecialchar(*str))
 		{
 			words++;
@@ -69,7 +70,6 @@ size_t	count_words_tokenizer(const char *input)
 				while (*str && *str != quote)
 					str++;
 			}
-			str++;
 		}
 		else if (ft_isspace(*str))
 		{
@@ -126,7 +126,9 @@ t_token	*tokenizer(const char *input)
 			{
 				token_arr[idx].type = T_REDIRECT_IN;
 				token_arr[idx].str = ft_strdup("<");
+				// if (*(str + 1) == '<')
 				if (*(str + 1) == '<')
+
 				{
 					token_arr[idx].type = T_HEREDOC;
 					free(token_arr[idx].str);
@@ -140,7 +142,8 @@ t_token	*tokenizer(const char *input)
 					{
 						idx++; // Move to the next token
 						char *start = str + 1;
-						while (*str && isregularchar(*str, str))
+						while (*str && isregularchar(*str, str)
+							&& !ft_isspace(*str))
 							str++;
 
 						token_arr[idx].type = T_HEREDOC_DELIMITER;
