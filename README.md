@@ -1,6 +1,8 @@
 # Minishell
 
-# Functions
+## Functions
+
+- `access`: check accessibility of a file.
 
 - `readline`: Reads a line from the terminal and returns it.
 
@@ -14,14 +16,6 @@
 
 - `add_historya`: Adds a line to the readline history.
 
-- `printf`: Prints formatted output to stdout.
-
-- `malloc`: Allocates memory.
-
-- `free`: Deallocates memory that was previously allocated by malloc, calloc or realloc.
-
-- `write`: Writes data to a file descriptor.
-
 - `access`: Checks if the calling process can access the file at a given path.
 
 - `isatty`: Check if a file descriptor is a valid terminal device
@@ -32,7 +26,20 @@ Functions:
 - *known*: access, fork, wait, waitpid, wait3, wait4, signal, sigaction, sigemptyset, sidaddset, kill, execve, dup, dup2, pipe, strerror, perror
 - *new*: readline, rl_clear_history, rl_on_new_line, rl_replace_line, rl_display, add_history, getcwd, chdir, stat, lstat, fstat, unlink, opendir, readdir, closedir, isatty, ttyname, ttyslot, ioctl, getenv, tcsetattr, tcgetattr, tgetent, thetflag, tgetnum, tgetstr, tgoto, tupts
 
-## Functions we already 
+## Functions 
+
+## access
+
+- access, faccessat – check accessibility of a file
+- <unistd.h>
+- `int access(const char *path, int mode);`
+- The second argument 'mode' can be R_OK (read), W_OK (write), X_OK (execute/search), F_OK (existence)
+- It returns 0 if successful, -1 if not and sets errno.
+
+## stat family
+
+- stat, lstat, fstat
+
 
 ## readline
 
