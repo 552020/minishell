@@ -109,7 +109,7 @@ int	main(int argc, char **argv, char **envp)
 
 		// pipe_count = 
 		count_pipes(lexeme_arr, token_count);
-
+	
 		/* end of execution */
 		
 		free(token_arr);

@@ -1,4 +1,7 @@
 #include "minishell.h"
+#include <sys/wait.h>
+
+
 /*
 You can start with:
 
@@ -62,10 +65,96 @@ size_t count_pipes(t_lexeme *lexeme_arr, size_t token_count)
 // 	return (num_of_pipes);
 // }
 
-// void executer(t_ast_node *ast_root, size_t pipe_count)
-// {
-// 	size_t i;
+void execute_pipeline(t_ast_node *node) {
+    if (node == NULL) {
+        return;
+    }
 
-// 	i = pipe_count;
-// 	while()
-// }
+    if (node->type == N_PIPE) 
+	{
+        // If the node is a pipe, create a pipe and execute children
+        // int pipe_fd[2];
+        // if (pipe(pipe_fd) == -1) {
+        //     perror("pipe");
+        //     exit(EXIT_FAILURE);
+        // }
+
+        // Execute the left child with output redirected to the pipe
+        // pid_t left_pid = fork();
+        // if (left_pid == -1) {
+        //     perror("fork");
+        //     exit(EXIT_FAILURE);
+        // }
+
+        // if (left_pid == 0) {
+        //     close(pipe_fd[0]); // Close the read end of the pipe
+        //     dup2(pipe_fd[1], STDOUT_FILENO); // Redirect stdout to the pipe
+        //     close(pipe_fd[1]); // Close the write end of the pipe
+        //     execute_pipeline(node->children[0]);
+        //     exit(EXIT_SUCCESS);
+        // }
+
+        // Execute the right child with input from the pipe
+        pid_t right_pid = fork();
+        if (right_pid == -1) {
+            perror("fork");
+            exit(EXIT_FAILURE);
+        }
+
+        if (right_pid == 0) {
+            close(pipe_fd[1]); // Close the write end of the pipe
+            dup2(pipe_fd[0], STDIN_FILENO); // Redirect stdin from the pipe
+            close(pipe_fd[0]); // Close the read end of the pipe
+            execute_pipeline(node->children[1]);
+            exit(EXIT_SUCCESS);
+        }
+
+        // Close both ends of the pipe in the parent
+        close(pipe_fd[0]);
+        close(pipe_fd[1]);
+
+        // Wait for both child processes to finish
+        waitpid(left_pid, NULL, 0);
+        waitpid(right_pid, NULL, 0);
+    } else {
+        // If the node is not a pipe, execute the command
+        execute_command(node);
+    }
+}
+
+void handle_pipes(t_ast_node *ast_root)
+{
+	int pipe_fd[2];
+    pid_t pid;
+	
+	// size_t i;
+
+	// i = -1;
+	// can add node check if not checked before
+	printf("hello");
+	// printf("pipe_count: %ld\n", pipe_count);
+	printf("ast_root->type: %d\n", ast_root->type);
+	if (ast_root->type == N_PIPE)
+	{
+		if (pipe(pipe_fd) == -1)
+		{
+			perror("pipe error");
+			exit(EXIT_FAILURE);
+		}
+		pid = fork();
+		if (pid == -1) 
+		{
+            perror("fork error");
+            exit(EXIT_FAILURE);
+        }
+		if (pid == 0) {
+            close(pipe_fd[0]); // Close the read end of the pipe
+            dup2(pipe_fd[1], STDOUT_FILENO); // Redirect stdout to the pipe
+            // close(pipe_fd[1]); // Close the write end of the pipe
+           	handle_pipes(ast_root->children[0]);
+            exit(EXIT_SUCCESS);
+        }
+
+
+	}
+}
