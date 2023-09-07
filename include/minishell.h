@@ -125,4 +125,4 @@ void					print_ast(t_ast_node *node, int depth);
 
 /* Execution */
 
-int	count_pipes(t_lexeme *lexeme_arr, size_t token_count);
+size_t	count_pipes(t_lexeme *lexeme_arr, size_t token_count);

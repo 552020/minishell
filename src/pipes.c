@@ -29,18 +29,17 @@ command or a pipe node.
 	◦ exit with no options
 */
 
-int count_pipes(t_lexeme *lexeme_arr, size_t token_count)
+size_t count_pipes(t_lexeme *lexeme_arr, size_t token_count)
 {
-	int i;
+	size_t i;
 	size_t num_of_pipes;
 
-	i = token_count;
+	i = -1;
 	num_of_pipes = 0;
-	while (i >= 0)
+	while (++i != token_count + 1)
 	{
 		if (lexeme_arr[i].type == L_PIPE)
 			num_of_pipes++;
-		i--;
 	}
 	printf("num_of_pipes: %ld\n", num_of_pipes);
 	return (num_of_pipes);
