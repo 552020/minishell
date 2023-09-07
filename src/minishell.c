@@ -105,9 +105,10 @@ int	main(int argc, char **argv, char **envp)
 		print_ast(ast_root, 7);
 
 		/* execution */
-		int pipe_count;
+		// int pipe_count;
 
-		pipe_count = count_pipes(lexeme_arr, token_count);
+		// pipe_count = 
+		count_pipes(lexeme_arr, token_count);
 
 		/* end of execution */
 		
