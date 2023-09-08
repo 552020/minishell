@@ -218,6 +218,12 @@ t_lexeme	*lexer(t_token *token_arr, char **envp, size_t token_count)
 	// printf("Lexing...\n");
 	printf("First round\n\n");
 	lexeme_arr = malloc(sizeof(t_lexeme) * (token_count + 1));
+	if (!lexeme_arr)
+	{
+		printf("Error: malloc lexeme_arr failed\n");
+		return (NULL);
+	}
+	ft_memset(lexeme_arr, 0, sizeof(t_lexeme) * (token_count + 1));
 	// print_token_arr(token_arr, token_count);
 	i = 0;
 	while (i < token_count)
