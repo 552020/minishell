@@ -67,7 +67,8 @@ typedef enum e_lexeme_type
 	L_HEREDOC_CONTENT,   // Content of heredoc (<<)
 	L_FILENAME_STDIN,    // Filename used in redirections
 	L_FILENAME_STDOUT,   // Filename used in redirections
-	L_UNDEFINED          // Undefined lexeme type
+	L_UNDEFINED,         // Undefined lexeme type
+	L_END                // End of lexeme array
 }						t_lexeme_type;
 
 typedef enum e_lexeme_status
