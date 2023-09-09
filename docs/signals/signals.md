@@ -31,3 +31,22 @@
 ### Go Crazy and history
 
 - Type a command line, then use ctrl-C and press "Enter". The buffer should be clean and there should be nothing left to execute.
+
+## Scenarios
+
+1. Shell awaiting input
+	- A. Empty prompt
+		- CTRL + C: fresh new line
+		- CTRL + D: It exits the shell
+		- CTRL + \: Does nothing
+	- B. Not empty prompt
+		- CTRL + C: fresh new line, nothing is saved to history
+		- CTRL + D: Does nothing! Yes, CTRL + D behaves differently if the line is empty or not. 
+		- CTRL + \: Does nothing
+
+2. Interactive mode
+	- A. heredoc mode
+	- B. blocking command mode 
+
+3. During command execution
+		
