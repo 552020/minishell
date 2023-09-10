@@ -319,7 +319,6 @@ void handle_pipes(t_ast_node *ast_root, char *dir_paths,char ** envp)
         // Wait for both child processes to finish
         waitpid(left_pid, NULL, 0);
         waitpid(right_pid, NULL, 0);
-<<<<<<< HEAD
 	}
     else
     {
@@ -337,47 +336,3 @@ void handle_pipes(t_ast_node *ast_root, char *dir_paths,char ** envp)
 // ex2:  cat test.txt | grep "hello" >> test.txt (appends)
 // ex3:  cat test.txt | grep "hello" >> test.txt | cat test.txt (does not append)
 // 3)implement open file and close file for redirections correctly
-=======
-    } else {
-        // If the node is not a pipe, execute the command
-        execute_command(node);
-    }
-}
-
-void handle_pipes(t_ast_node *ast_root)
-{
-	int pipe_fd[2];
-    pid_t pid;
-	
-	// size_t i;
-
-	// i = -1;
-	// can add node check if not checked before
-	printf("hello");
-	// printf("pipe_count: %ld\n", pipe_count);
-	printf("ast_root->type: %d\n", ast_root->type);
-	if (ast_root->type == N_PIPE)
-	{
-		if (pipe(pipe_fd) == -1)
-		{
-			perror("pipe error");
-			exit(EXIT_FAILURE);
-		}
-		pid = fork();
-		if (pid == -1) 
-		{
-            perror("fork error");
-            exit(EXIT_FAILURE);
-        }
-		if (pid == 0) {
-            close(pipe_fd[0]); // Close the read end of the pipe
-            dup2(pipe_fd[1], STDOUT_FILENO); // Redirect stdout to the pipe
-            // close(pipe_fd[1]); // Close the write end of the pipe
-           	handle_pipes(ast_root->children[0]);
-            exit(EXIT_SUCCESS);
-        }
-
-
-	}
-}
->>>>>>> 4d65f2b (ongoing)
