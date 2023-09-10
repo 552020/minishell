@@ -32,6 +32,7 @@ command or a pipe node.
 	◦ exit with no options
 */
 
+// nor using this
 size_t count_pipes(t_lexeme *lexeme_arr, size_t token_count)
 {
 	size_t i;
@@ -238,10 +239,8 @@ void execute_command(t_ast_node *node, char *dir_paths, char **envp)
 
     // Prepare a new array for command and its arguments
     char *cmd_and_args[1024]; // Adjust the array size before func
-
     // Copy the command into the new array
     cmd_and_args[0] = node->data;
-
     // Copy the arguments into the new array
     while(node->args[x] != NULL) 
     {
@@ -256,12 +255,10 @@ void execute_command(t_ast_node *node, char *dir_paths, char **envp)
         printf ("cmd_and_args[%d]: %s\n", x, cmd_and_args[x]);
         x++;
     }
-    // path is correct,
-    // we need to pass arguments including the command so joined data and args
+    // we need to pass arguments including the command thus joined data and args
     if (execve(path, cmd_and_args, envp) == -1)
     {
         printf("execve error\n");
-  		// error_exit();
     }
 }
 
@@ -274,10 +271,6 @@ void handle_pipes(t_ast_node *ast_root, char *dir_paths,char ** envp)
     pid_t left_pid;
     pid_t right_pid;
 	
-    if (ast_root == NULL)
-    {
-        return;
-	}
     // printf("hello");
 	// printf("pipe_count: %ld\n", pipe_count);
 	printf("ast_root->type: %d\n", ast_root->type);
@@ -331,6 +324,15 @@ void handle_pipes(t_ast_node *ast_root, char *dir_paths,char ** envp)
     {
         printf("executing command......\n");
         execute_command(ast_root, dir_paths, envp);
-
     }
 }
+
+
+
+// Notes:
+// 1) when there is no pipe, minishell exits after executing the command
+// 2) implement redirections that can be used with and without rl_dump_functions
+// ex1:  cat test.txt | >> test.txt (appends)
+// ex2:  cat test.txt | grep "hello" >> test.txt (appends)
+// ex3:  cat test.txt | grep "hello" >> test.txt | cat test.txt (does not append)
+// 3)implement open file and close file for redirections correctly
