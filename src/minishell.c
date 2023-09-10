@@ -107,9 +107,18 @@ int	main(int argc, char **argv, char **envp)
 		/* execution */
 		// int pipe_count;
 
+
+		// Finding PATH environment variable
+		unsigned int idx = hash("PATH");
+		printf("Found PATH environment variable %s\n", table[idx]->value);
+		handle_pipes(ast_root, table[hash("PATH")]->value, envp);
+
+
+
+
+		// printf("");
 		// pipe_count = 
-		count_pipes(lexeme_arr, token_count);
-	
+		// count_pipes(lexeme_arr, token_count);
 		/* end of execution */
 		
 		free(token_arr);
