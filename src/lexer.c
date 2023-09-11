@@ -218,6 +218,12 @@ t_lexeme	*lexer(t_token *token_arr, char **envp, size_t token_count)
 	// printf("Lexing...\n");
 	printf("First round\n\n");
 	lexeme_arr = malloc(sizeof(t_lexeme) * (token_count + 1));
+	if (!lexeme_arr)
+	{
+		printf("Error: malloc lexeme_arr failed\n");
+		return (NULL);
+	}
+	ft_memset(lexeme_arr, 0, sizeof(t_lexeme) * (token_count + 1));
 	// print_token_arr(token_arr, token_count);
 	i = 0;
 	while (i < token_count)
@@ -239,9 +245,12 @@ t_lexeme	*lexer(t_token *token_arr, char **envp, size_t token_count)
 		else if (token_arr[i].type == T_REDIRECT_IN)
 		{
 			lexeme_arr[i] = redirect_in_lexeme(&token_arr[i]);
-			if (i > 0)
-				lexeme_arr[i - 1] = redirect_in_target_lexeme(&token_arr[i
-					- 1]);
+			if (i + 1 < token_count)
+			{
+				lexeme_arr[i + 1] = redirect_in_target_lexeme(&token_arr[i
+					+ 1]);
+				i++;
+			}
 		}
 		else if (token_arr[i].type == T_REDIRECT_OUT)
 		{
@@ -256,7 +265,9 @@ t_lexeme	*lexer(t_token *token_arr, char **envp, size_t token_count)
 		else if (token_arr[i].type == T_REDIRECT_APPEND)
 		{
 			lexeme_arr[i] = redirect_append_lexeme(&token_arr[i]);
-			lexeme_arr[i + 1] = redirect_out_target_lexeme(&token_arr[i + 1]);
+			if (lexeme_arr[i + 1].type != L_END && i + 1 < token_count)
+				lexeme_arr[i + 1] = redirect_out_target_lexeme(&token_arr[i
+					+ 1]);
 		}
 		else if (token_arr[i].type == T_HEREDOC)
 		{
