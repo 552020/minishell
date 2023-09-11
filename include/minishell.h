@@ -100,7 +100,7 @@ typedef struct s_ast_node
 	char **args;                    // Arguments: command arguments
 	char *input_file;               // For input redirection.
 	char *output_file;              // For output redirection.
-	bool append;                    // For output redirection.
+	bool append;   	                // For output redirection.
 	struct s_ast_node *children[2]; // For output redirection.
 }						t_ast_node;
 

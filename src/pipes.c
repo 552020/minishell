@@ -205,21 +205,20 @@ void execute_command(t_ast_node *node, char *dir_paths, char **envp)
 {
     char	*path;
     if (node->input_file != NULL) 
-    {
         freopen(node->input_file, "r", stdin);
-    }
     if (node->output_file != NULL) 
     {
         if (node->append) 
-        {
             freopen(node->output_file, "a", stdout);
-        }
         else 
         {
             freopen(node->output_file, "w", stdout);
         }
     }
-    path = path_finder(node->data, dir_paths);
+    if (node->data)
+        path = path_finder(node->data, dir_paths);
+    // else
+        // in case of there is no command add smtg here 
     printf("path: %s\n", path);
     if (!path)
 	{
@@ -265,6 +264,7 @@ void execute_command(t_ast_node *node, char *dir_paths, char **envp)
 // cahnge name to ast node
 // also remove dir paths and take it from 
 // envp or hash table within the function execute_command
+// can't use envp, get all the info from ht
 void handle_pipes(t_ast_node *ast_root, char *dir_paths,char ** envp)
 {
 	int pipe_fd[2];
@@ -322,6 +322,7 @@ void handle_pipes(t_ast_node *ast_root, char *dir_paths,char ** envp)
 	}
     else
     {
+        // create another child process for that case otherwise it will exit
         printf("executing command......\n");
         execute_command(ast_root, dir_paths, envp);
     }
