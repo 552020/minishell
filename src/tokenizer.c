@@ -51,7 +51,7 @@ size_t	count_words_tokenizer(const char *input)
 		str++;
 	while (*str)
 	{
-		printf("str: %c\n", *str);
+		// printf("str: %c\n", *str);
 		if (isspecialchar(*str))
 		{
 			words++;
