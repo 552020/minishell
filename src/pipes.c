@@ -104,10 +104,14 @@ void execute_command(t_ast_node *node, char *dir_paths, char **envp)
             freopen(node->output_file, "w", stdout);
         }
     }
+    path = NULL;
     if (node->data)
         path = path_finder(node->data, dir_paths);
-    // else
-        // in case of there is no command add smtg here 
+    else
+        {
+            // in case of there is no command add smtg here
+            printf("no commands to execute");
+        }
     printf("path: %s\n", path);
     if (!path)
 	{
