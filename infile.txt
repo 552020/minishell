@@ -1,8 +1,14 @@
 Hello world
 This is computer
 <<<<<<< HEAD
+<<<<<<< HEAD
 hello world
 123
 abc
 =======
 >>>>>>> 3246e1c (ongoing)
+=======
+hello world
+123
+abc
+>>>>>>> e14e052 (pipes working)
