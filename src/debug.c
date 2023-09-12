@@ -108,3 +108,47 @@ void	print_ast(t_ast_node *node, int depth)
 	if (node->children[1])
 		print_ast(node->children[1], depth + 1);
 }
+
+int	get_max_depth(t_ast_node *node)
+{
+	int	left_depth;
+
+	if (!node)
+		return (0);
+	if (node->type == N_COMMAND)
+		return (1);
+	// If it's a pipe node, we compute the depth of the left child
+	left_depth = get_max_depth(node->children[0]);
+	// Since it's a pipe, it means there's an additional depth
+	left_depth++;
+	return (left_depth);
+}
+
+void	print_indentation(int depth, bool is_last_sibling[], int last_index)
+{
+	int	i;
+
+	i = 0;
+	while (i < depth - 1)
+	{
+		if (i == last_index)
+		{
+			if (is_last_sibling[i])
+				printf("    ");
+			else
+				printf("│   ");
+		}
+		else
+		{
+			printf("    ");
+		}
+		i++;
+	}
+	if (depth > 0)
+	{
+		if (is_last_sibling[last_index])
+			printf("└── ");
+		else
+			printf("├── ");
+	}
+}
