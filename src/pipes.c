@@ -1,6 +1,4 @@
 #include "minishell.h"
-#include <sys/wait.h>
-
 
 /*
 You can start with:

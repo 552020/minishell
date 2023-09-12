@@ -78,10 +78,10 @@ t_ast_node	*build_cmd_node(t_lexeme *lexemes, int start, int end)
 	{
 		if (lexemes[i].type == L_COMMAND)
 		{
-			printf("Parsing command...\n");
-			printf("lexemes[%d].str = %s\n", i, lexemes[i].str);
+			// printf("Parsing command...\n");
+			// printf("lexemes[%d].str = %s\n", i, lexemes[i].str);
 			node->data = ft_strdup(lexemes[i].str);
-			printf("node->data = %s\n", node->data);
+			// printf("node->data = %s\n", node->data);
 			if (node->data == NULL)
 			{
 				// free memory
@@ -147,10 +147,10 @@ t_ast_node	*build_ast(t_lexeme *lexemes, int start, int end)
 
 	node = NULL;
 	i = end;
-	printf("*** build_ast ***\n");
+	// printf("*** build_ast ***\n");
 	while (i >= start)
 	{
-		printf("i = %d\n", i);
+		// printf("i = %d\n", i);
 		if (lexemes[i].type == L_PIPE)
 		{
 			node = create_node(N_PIPE);

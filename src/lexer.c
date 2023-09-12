@@ -209,8 +209,7 @@ t_lexeme	word_lexeme(t_token *token)
 	return (lexeme);
 }
 
-t_lexeme	*
-lexer(t_token *token_arr, char **envp, size_t token_count)
+t_lexeme	*lexer(t_token *token_arr, char **envp, size_t token_count)
 {
 	size_t		i;
 	t_lexeme	*lexeme_arr;
@@ -279,10 +278,10 @@ lexer(t_token *token_arr, char **envp, size_t token_count)
 		{
 			if (lexeme_arr[i].type != L_FILENAME_STDIN
 				|| lexeme_arr[i].type != L_FILENAME_STDOUT)
-				lexeme_arr[i] = word_lexeme(&token_arr[i]); // changed this line as well
+				lexeme_arr[i] = word_lexeme(&token_arr[i]);
 		}
 		else
-			break ; // ask what should be done here
+			continue ;
 		i++;
 	}
 	i = 0;
