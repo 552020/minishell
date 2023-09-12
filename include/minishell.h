@@ -126,7 +126,8 @@ void					print_ast(t_ast_node *node, int depth);
 
 /* Execution */
 
-size_t	count_pipes(t_lexeme *lexeme_arr, size_t token_count);
-unsigned int	hash(const char *key);
+size_t	count_pipes(t_lexeme *lexeme_arr, size_t token_count); // not using these
+unsigned int	hash(const char *key); // not using these
+void handle_without_pipes(t_ast_node *ast_root, char *dir_paths,char ** envp);
 void handle_pipes(t_ast_node *ast_root, char *dir_paths,char ** envp);
 

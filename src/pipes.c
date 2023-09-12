@@ -49,89 +49,6 @@ size_t count_pipes(t_lexeme *lexeme_arr, size_t token_count)
 	return (num_of_pipes);
 }
 
-// int count_pipes(t_ast_node *ast_root)
-// {
-// 	int i;
-// 	int num_of_pipes;
-
-// 	i = 0;
-// 	num_of_pipes = 0;
-// 	while (&ast_root[i])
-// 	{
-// 		if (ast_root[i].node->type == N_PIPE)
-// 			num_of_pipes++;
-// 		i++;
-// 	}
-// 	printf("num_of_pipes: %d\n", num_of_pipes);
-// 	return (num_of_pipes);
-// }
-
-// Function to execute a single command node
-// void execute_command(t_ast_node *node) {
-//     pid_t pid;
-//     int status;
-
-//     pid = fork();
-//     if (pid == -1) {
-//         perror("fork");
-//         exit(EXIT_FAILURE);
-//     }
-
-//     if (pid == 0) { // Child process
-//         // Redirect input if needed
-//         if (node->input_file != NULL) {
-//             freopen(node->input_file, "r", stdin);
-//         }
-
-//         // Redirect output if needed
-//         if (node->output_file != NULL) {
-//             if (node->append) {
-//                 freopen(node->output_file, "a", stdout);
-//             } else {
-//                 freopen(node->output_file, "w", stdout);
-//             }
-//         }
-
-//         // Execute the command
-//         execvp(node->data, node->args);
-
-//         // If execvp fails, print an error message and exit
-//         perror("execvp");
-//         exit(EXIT_FAILURE);
-//     } else { // Parent process
-//         // Wait for the child to finish
-//         waitpid(pid, &status, 0);
-
-//         // Check the exit status of the child process
-//         if (WIFEXITED(status)) {
-//             printf("Child process exited with status %d\n", WEXITSTATUS(status));
-//         }
-//     }
-// }
-
-// void execute_command(t_ast_node *node) {
-//     // Redirect input if needed
-//     if (node->input_file != NULL) {
-//         freopen(node->input_file, "r", stdin);
-//     }
-
-//     // Redirect output if needed
-//     if (node->output_file != NULL) {
-//         if (node->append) {
-//             freopen(node->output_file, "a", stdout);
-//         } else {
-//             freopen(node->output_file, "w", stdout);
-//         }
-//     }
-
-//     // Execute the command using execvp
-//     execvp(node->data, node->args);
-
-//     // If execvp fails, print an error message and exit
-//     perror("execvp");
-//     exit(EXIT_FAILURE);
-// }
-
 void	error_exit(void)
 {
 	perror("Error");
@@ -172,34 +89,6 @@ char	*path_finder(char *cmd, char *dir_paths)
 }
 
 
-
-// void	execute(char *argv, char **envp)
-// {
-// 	char	**cmd;
-// 	char	*path;
-// 	int		i;
-
-// 	i = 0;
-// 	while (argv[i] != '\'' && argv[i])
-// 		i++;
-// 	if (argv[i] == '\'' && argv[ft_strlen(argv) - 1] == '\'')
-// 		cmd = cmd_with_single_quotes_parser(argv);
-// 	else
-// 		cmd = ft_split(argv, ' ');
-// 	i = 0;
-// 	path = path_finder(cmd[0], envp);
-// 	if (!path)
-// 	{
-// 		while (cmd[i])
-// 			free(cmd[i++]);
-// 		free(cmd);
-// 		error_exit();
-// 	}
-// 	if (execve(path, cmd, envp) == -1)
-// 		error_exit();
-// }
-
-
 // change the opem file functions
 void execute_command(t_ast_node *node, char *dir_paths, char **envp)
 {
@@ -228,12 +117,6 @@ void execute_command(t_ast_node *node, char *dir_paths, char **envp)
 
     printf ("node->data: %s\n", node->data);
     int x;
-    // x = 0;
-    // while (node->args[x])
-    // {
-    //     printf ("node->args[%d]: %s\n", x, node->args[x]);
-    //     x++;
-    // }
     x = 0;
 
     // Prepare a new array for command and its arguments
@@ -260,6 +143,27 @@ void execute_command(t_ast_node *node, char *dir_paths, char **envp)
         printf("execve error\n");
     }
 }
+
+
+
+void handle_without_pipes(t_ast_node *ast_root, char *dir_paths,char ** envp)
+{
+    pid_t pid;
+
+    pid = fork();
+    if (pid == -1) 
+	{
+        perror("fork error");
+        exit(EXIT_FAILURE);
+    }
+    if (pid == 0) 
+	{
+        printf("executing command......\n");
+        execute_command(ast_root, dir_paths, envp);
+    }
+    waitpid(pid, NULL, 0);
+}
+
 
 // cahnge name to ast node
 // also remove dir paths and take it from 
@@ -328,12 +232,23 @@ void handle_pipes(t_ast_node *ast_root, char *dir_paths,char ** envp)
     }
 }
 
-
-
 // Notes:
-// 1) when there is no pipe, minishell exits after executing the command
-// 2) implement redirections that can be used with and without rl_dump_functions
+// 1) implement redirections that can be used with and without rl_dump_functions
 // ex1:  cat test.txt | >> test.txt (appends)
 // ex2:  cat test.txt | grep "hello" >> test.txt (appends)
 // ex3:  cat test.txt | grep "hello" >> test.txt | cat test.txt (does not append)
-// 3)implement open file and close file for redirections correctly
+// 2)implement open file and close file for redirections correctly
+// Errors:
+
+// 1)
+// correct:
+// cat infile.txt | grep h
+// This is computer
+// hello world
+
+// wrong:
+// cat infile.txt | grep h
+// stuck at lexing first round
+
+// 2) cat infile.txt >> outfile.txt | cat outfile.txt (this sometimes appends sometimes not in shell)
+//   our version does not append and I dont know if it should
