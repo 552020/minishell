@@ -102,7 +102,10 @@ int	main(int argc, char **argv, char **envp)
 		i = 0;
 		printf("***Parsing***\n\n");
 		ast_root = build_ast(lexeme_arr, 0, token_count - 1);
+		printf("\n***Printing AST***\n\n");
 		print_ast(ast_root, 7);
+		printf("\n***Printing AST NEW***\n\n");
+		print_ast_new(ast_root);
 		free(token_arr);
 		free(lexeme_arr);
 		// if (strcmp(input, "pwd") == 0)

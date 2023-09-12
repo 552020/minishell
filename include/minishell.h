@@ -123,3 +123,4 @@ void					print_token_arr(t_token *token_arr, size_t token_count);
 void					print_lexeme_arr(t_lexeme *lexeme_arr,
 							size_t lexeme_count);
 void					print_ast(t_ast_node *node, int depth);
+void					print_ast_new(t_ast_node *node);
