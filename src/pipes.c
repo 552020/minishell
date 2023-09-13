@@ -33,11 +33,11 @@ char	*path_finder(char *cmd, char *dir_paths)
 
 	dir_path_arr = ft_split(dir_paths, ':');
     i = 0;
-    while (dir_path_arr[i])
-    {
-        printf("dir_path_arr[%d]: %s\n", i, dir_path_arr[i]);
-        i++;
-    }
+    // while (dir_path_arr[i])
+    // {
+    //     printf("dir_path_arr[%d]: %s\n", i, dir_path_arr[i]);
+    //     i++;
+    // }
 
 	i = 0;
 	while (dir_path_arr[i])
@@ -66,6 +66,7 @@ void execute_command(t_ast_node *node, char *dir_paths, char **envp)
     char	*path;
 
     // might need to initialize filein and fileout to NULL;
+    // insert heredoc here
     // Redirections
     if (node->input_file != NULL)
     {
@@ -76,7 +77,7 @@ void execute_command(t_ast_node *node, char *dir_paths, char **envp)
     {
         if (node->append)
             fileout = open(node->output_file, O_WRONLY | O_CREAT | O_APPEND, 0777);
-        else 
+        else if (!node->append)
             fileout = open(node->output_file, O_WRONLY | O_CREAT | O_TRUNC, 0777);
 		dup2(fileout, STDOUT_FILENO);
     }
@@ -86,7 +87,7 @@ void execute_command(t_ast_node *node, char *dir_paths, char **envp)
     else
         {
             // in case of there is no command add smtg here
-            printf("no commands to execute");
+            printf("no commands to execute\n");
         }
     printf("path: %s\n", path);
     if (!path)
@@ -114,7 +115,8 @@ void execute_command(t_ast_node *node, char *dir_paths, char **envp)
     // x = 0;
 
     // Copy the command into the new array
-    cmd_and_args[0] = node->data;
+    if (node->data)
+        cmd_and_args[0] = node->data;
     // Copy the arguments into the new array
     // added if condition to avoid executing a single command without arguments
     if (node->args != NULL) 
@@ -135,10 +137,9 @@ void execute_command(t_ast_node *node, char *dir_paths, char **envp)
         x++;
     }
     // we need to pass arguments including the command thus joined data and args
-    if (execve(path, cmd_and_args, envp) == -1)
-    {
-        printf("execve error\n");
-    }
+    if (node->data) 
+        if (execve(path, cmd_and_args, envp) == -1)
+            printf("execve error\n");
 }
 
 
