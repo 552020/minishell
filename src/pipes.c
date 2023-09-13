@@ -93,17 +93,33 @@ void execute_command(t_ast_node *node, char *dir_paths, char **envp)
 
     // Prepare a new array for command and its arguments
     char *cmd_and_args[1024]; // Adjust the array size before func
+    printf("command is %s\n", node->data);
+    // if (node->args != NULL) 
+    // {
+    //     while (node->args[x])
+    //     {
+    //         printf("args[%d] is %s\n", x,node->args[x]);
+    //         x++;
+    //     }   
+    // }
+    // x = 0;
+
     // Copy the command into the new array
     cmd_and_args[0] = node->data;
     // Copy the arguments into the new array
-    while(node->args[x] != NULL) 
+    // added if condition to avoid executing a single command without arguments
+    if (node->args != NULL) 
     {
-        cmd_and_args[x + 1] = node->args[x];
-        x++;
+        while (node->args[x] != NULL) 
+        {
+            cmd_and_args[x + 1] = node->args[x];
+            x++;
+        }
     }
     // Ensure the new array is terminated with a NULL pointer
     cmd_and_args[x + 1] = NULL;
     x = 0;
+    printf("!!!!!!!!!!!!!!!!!!!!!!! \n");
     while (cmd_and_args[x])
     {
         printf ("cmd_and_args[%d]: %s\n", x, cmd_and_args[x]);
