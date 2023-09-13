@@ -61,17 +61,24 @@ char	*path_finder(char *cmd, char *dir_paths)
 // change the opem file functions
 void execute_command(t_ast_node *node, char *dir_paths, char **envp)
 {
+    int filein;
+    int fileout;
     char	*path;
-    if (node->input_file != NULL) 
-        freopen(node->input_file, "r", stdin);
+
+    // might need to initialize filein and fileout to NULL;
+    // Redirections
+    if (node->input_file != NULL)
+    {
+        filein = open(node->input_file, O_RDONLY, 0777);
+        dup2(filein, STDIN_FILENO);
+    }
     if (node->output_file != NULL) 
     {
-        if (node->append) 
-            freopen(node->output_file, "a", stdout);
+        if (node->append)
+            fileout = open(node->output_file, O_WRONLY | O_CREAT | O_APPEND, 0777);
         else 
-        {
-            freopen(node->output_file, "w", stdout);
-        }
+            fileout = open(node->output_file, O_WRONLY | O_CREAT | O_TRUNC, 0777);
+		dup2(fileout, STDOUT_FILENO);
     }
     path = NULL;
     if (node->data)

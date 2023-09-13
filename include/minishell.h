@@ -8,6 +8,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <fcntl.h> // for O_RDONLY etc.
 
 /* Environment Variables*/
 

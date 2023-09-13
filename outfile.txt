@@ -1,20 +1,34 @@
-Hello world
-This is computer
-hello world
-123
-abc
-Hello world
-This is computer
-hello world
-123
-abc
-Hello world
-This is computer
-hello world
-123
-abc
-Hello world
-This is computer
-hello world
-123
-abc
+dir_path_arr[0]: /nfs/homes/bsengeze/bin
+dir_path_arr[1]: /usr/local/sbin
+dir_path_arr[2]: /usr/local/bin
+dir_path_arr[3]: /usr/sbin
+dir_path_arr[4]: /usr/bin
+dir_path_arr[5]: /sbin
+dir_path_arr[6]: /bin
+dir_path_arr[7]: /usr/games
+dir_path_arr[8]: /usr/local/games
+dir_path_arr[9]: /snap/bin
+path: /usr/bin/cat
+node->data: cat
+command is cat
+!!!!!!!!!!!!!!!!!!!!!!! 
+cmd_and_args[0]: cat
+ast_root->type: 1
+executing command......
+dir_path_arr[0]: /nfs/homes/bsengeze/bin
+dir_path_arr[1]: /usr/local/sbin
+dir_path_arr[2]: /usr/local/bin
+dir_path_arr[3]: /usr/sbin
+dir_path_arr[4]: /usr/bin
+dir_path_arr[5]: /sbin
+dir_path_arr[6]: /bin
+dir_path_arr[7]: /usr/games
+dir_path_arr[8]: /usr/local/games
+dir_path_arr[9]: /snap/bin
+path: /usr/bin/echo
+node->data: echo
+command is echo
+!!!!!!!!!!!!!!!!!!!!!!! 
+cmd_and_args[0]: echo
+cmd_and_args[1]: 1
+1
