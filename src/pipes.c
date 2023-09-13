@@ -19,6 +19,7 @@ size_t count_pipes(t_lexeme *lexeme_arr, size_t token_count)
 
 void	error_exit(void)
 {
+    // TODO : add free
 	perror("Error");
 	exit(EXIT_FAILURE);
 }
@@ -83,6 +84,7 @@ void execute_command(t_ast_node *node, char *dir_paths, char **envp)
     printf("path: %s\n", path);
     if (!path)
 	{
+            // TODO : add free if exit
             printf("no exec found\n");
 		// error_exit();
 	}
@@ -141,6 +143,7 @@ void handle_without_pipes(t_ast_node *ast_root, char *dir_paths,char ** envp)
     pid = fork();
     if (pid == -1) 
 	{
+            // TODO : add free
         perror("fork error");
         exit(EXIT_FAILURE);
     }
@@ -170,6 +173,7 @@ void handle_pipes(t_ast_node *ast_root, char *dir_paths,char ** envp)
 	{
 		if (pipe(pipe_fd) == -1)
 		{
+            // TODO : add free
 			perror("pipe error\n");
 			exit(EXIT_FAILURE);
 		}
@@ -177,6 +181,7 @@ void handle_pipes(t_ast_node *ast_root, char *dir_paths,char ** envp)
 		left_pid = fork();
 		if (left_pid == -1) 
 		{
+            // TODO : add free
             perror("fork error");
             exit(EXIT_FAILURE);
         }
@@ -186,12 +191,14 @@ void handle_pipes(t_ast_node *ast_root, char *dir_paths,char ** envp)
             dup2(pipe_fd[1], STDOUT_FILENO); // Redirect stdout to the pipe
             // close(pipe_fd[1]); // Close the write end of the pipe
            	handle_pipes(ast_root->children[0], dir_paths, envp);
+            // TODO : add free (maybe)
             exit(EXIT_SUCCESS);
         }
         // Execute the right child with input from the pipe
         right_pid = fork();
         if (right_pid == -1)
         {
+            // TODO : add free
             perror("fork error");
             exit(EXIT_FAILURE);
         }
@@ -202,6 +209,7 @@ void handle_pipes(t_ast_node *ast_root, char *dir_paths,char ** envp)
             dup2(pipe_fd[0], STDIN_FILENO); // Redirect stdin from the pipe
             // close(pipe_fd[0]); // Close the read end of the pipe
             handle_pipes(ast_root->children[1], dir_paths, envp);
+            // TODO : add free (maybe)
             exit(EXIT_SUCCESS);
         }
         // Close both ends of the pipe in the parent
