@@ -64,7 +64,6 @@ typedef enum e_lexeme_type
 	L_REDIRECT_APPEND,   // Append redirection operator (>>)
 	L_HEREDOC,           // Heredoc redirection operator (<<)
 	L_HEREDOC_DELIMITER, // Delimiter for heredoc (<<)
-	L_HEREDOC_CONTENT,   // Content of heredoc (<<)
 	L_FILENAME_STDIN,    // Filename used in redirections
 	L_FILENAME_STDOUT,   // Filename used in redirections
 	L_UNDEFINED,         // Undefined lexeme type
@@ -102,6 +101,7 @@ typedef struct s_ast_node
 	char *output_file;              // For output redirection.
 	bool append;                    // For output redirection.
 	bool heredoc;                   // For heredoc redirection.
+	char *heredoc_del;              // For heredoc redirection.
 	struct s_ast_node *children[2]; // For output redirection.
 }						t_ast_node;
 
