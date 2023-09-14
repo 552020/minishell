@@ -38,13 +38,12 @@ typedef enum e_token_type
 	T_REDIRECT_APPEND,   // 4 - >>
 	T_HEREDOC,           // 5 - <<
 	T_HEREDOC_DELIMITER, // 6 - << delimiter
-	T_HEREDOC_CONTENT,   // 7 - << content
 	T_DOUBLE_QUOTE,
-	// 8 - " the whole string in between " quotes included
+	// 7 - " the whole string in between " quotes included
 	T_SINGLE_QUOTE,
-	// 9 - ' the whole string in between ' quotes included
-	T_ENV_VAR, // 10 - $ followed by a valid variable name
-	T_END,     // 11 - End of token array
+	// 8 - ' the whole string in between ' quotes included
+	T_ENV_VAR, // 9 - $ followed by a valid variable name
+	T_END,     // 10 - End of token array
 }						t_token_type;
 
 typedef struct s_token

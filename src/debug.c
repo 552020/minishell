@@ -26,8 +26,6 @@ void	print_token_arr(t_token *token_arr, size_t token_count)
 			token_type = "T_DOUBLE_QUOTE";
 		else if (token_arr[i].type == T_SINGLE_QUOTE)
 			token_type = "T_SINGLE_QUOTE";
-		else if (token_arr[i].type == T_HEREDOC_CONTENT)
-			token_type = "T_HEREDOC_CONTENT";
 		else if (token_arr[i].type == T_ENV_VAR)
 			token_type = "T_ENV_VAR";
 		else if (token_arr[i].type == T_END)
