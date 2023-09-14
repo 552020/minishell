@@ -69,6 +69,7 @@ size_t	count_words_tokenizer(const char *input)
 				str++; // Move past the current quote
 				while (*str && *str != quote)
 					str++;
+				str++; // Move past the current quote
 			}
 		}
 		else if (ft_isspace(*str))
