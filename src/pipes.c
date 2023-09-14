@@ -64,7 +64,20 @@ void execute_command(t_ast_node *node, char *dir_paths, char **envp)
     int filein;
     int fileout;
     char	*path;
+    char **cmd_and_args_arr;
+    int cmd_and_args_count;
+    int i;
+    i = -1;
 
+    // count the total number of arguments and command to create array for execve
+    cmd_and_args_count = 0;
+    if (node->data)
+        while(node->data[++i])
+            cmd_and_args_count++;
+    i = -1;
+    if (node->args)
+        while (node->args[++i])
+            cmd_and_args_count++;
     // might need to initialize filein and fileout to NULL;
     // insert heredoc here
     // Redirections
@@ -101,21 +114,28 @@ void execute_command(t_ast_node *node, char *dir_paths, char **envp)
             // in case of there is no command add smtg here
             printf("no commands to execute\n");
         }
-    printf("path: %s\n", path);
+    // printf("path: %s\n", path);
     if (!path)
 	{
             // TODO : add free if exit
             printf("no exec found\n");
 		// error_exit();
 	}
-
-    printf ("node->data: %s\n", node->data);
+    // printf ("node->data: %s\n", node->data);
     int x;
     x = 0;
 
     // Prepare a new array for command and its arguments
-    char *cmd_and_args[1024]; // Adjust the array size before func
-    printf("command is %s\n", node->data);
+    // char *cmd_and_args_arr[1024]; // Adjust the array size before func
+    cmd_and_args_arr = (char **)malloc(sizeof(char *) * (cmd_and_args_count + 1));
+    // to do : add free
+    if(!cmd_and_args_arr)
+    {
+        // TODO : add free
+        printf("malloc error\n");
+    }
+
+    // printf("command is %s\n", node->data);
     // if (node->args != NULL) 
     // {
     //     while (node->args[x])
@@ -128,29 +148,29 @@ void execute_command(t_ast_node *node, char *dir_paths, char **envp)
 
     // Copy the command into the new array
     if (node->data)
-        cmd_and_args[0] = node->data;
+        cmd_and_args_arr[0] = node->data;
     // Copy the arguments into the new array
     // added if condition to avoid executing a single command without arguments
     if (node->args != NULL) 
     {
         while (node->args[x] != NULL) 
         {
-            cmd_and_args[x + 1] = node->args[x];
+            cmd_and_args_arr[x + 1] = node->args[x];
             x++;
         }
     }
     // Ensure the new array is terminated with a NULL pointer
-    cmd_and_args[x + 1] = NULL;
+    cmd_and_args_arr[x + 1] = NULL;
     x = 0;
-    printf("!!!!!!!!!!!!!!!!!!!!!!! \n");
-    while (cmd_and_args[x])
-    {
-        printf ("cmd_and_args[%d]: %s\n", x, cmd_and_args[x]);
-        x++;
-    }
+    // printf("!!!!!!!!!!!!!!!!!!!!!!! \n");
+    // while (cmd_and_args_arr[x])
+    // {
+    //     printf ("cmd_and_args_arr[%d]: %s\n", x, cmd_and_args_arr[x]);
+    //     x++;
+    // }
     // we need to pass arguments including the command thus joined data and args
     if (node->data) 
-        if (execve(path, cmd_and_args, envp) == -1)
+        if (execve(path, cmd_and_args_arr, envp) == -1)
             printf("execve error\n");
 }
 
@@ -186,9 +206,7 @@ void handle_pipes(t_ast_node *ast_root, char *dir_paths,char ** envp)
     pid_t left_pid;
     pid_t right_pid;
 	
-    // printf("hello");
-	// printf("pipe_count: %ld\n", pipe_count);
-	printf("ast_root->type: %d\n", ast_root->type);
+	// printf("ast_root->type: %d\n", ast_root->type);
 	if (ast_root->type == N_PIPE)
 	{
 		if (pipe(pipe_fd) == -1)
@@ -209,7 +227,7 @@ void handle_pipes(t_ast_node *ast_root, char *dir_paths,char ** envp)
             printf(" left child process created\n");
             close(pipe_fd[0]); // Close the read end of the pipe
             dup2(pipe_fd[1], STDOUT_FILENO); // Redirect stdout to the pipe
-            // close(pipe_fd[1]); // Close the write end of the pipe
+            close(pipe_fd[1]); // Close the write end of the pipe
            	handle_pipes(ast_root->children[0], dir_paths, envp);
             // TODO : add free (maybe)
             exit(EXIT_SUCCESS);
@@ -227,7 +245,7 @@ void handle_pipes(t_ast_node *ast_root, char *dir_paths,char ** envp)
             printf(" right child process created\n");
             close(pipe_fd[1]); // Close the write end of the pipe
             dup2(pipe_fd[0], STDIN_FILENO); // Redirect stdin from the pipe
-            // close(pipe_fd[0]); // Close the read end of the pipe
+            close(pipe_fd[0]); // Close the read end of the pipe
             handle_pipes(ast_root->children[1], dir_paths, envp);
             // TODO : add free (maybe)
             exit(EXIT_SUCCESS);
@@ -243,7 +261,7 @@ void handle_pipes(t_ast_node *ast_root, char *dir_paths,char ** envp)
     else
     {
         // create another child process for that case otherwise it will exit
-        printf("executing command......\n");
+        // printf("executing command......\n");
         execute_command(ast_root, dir_paths, envp);
     }
 }
