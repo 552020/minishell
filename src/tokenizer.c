@@ -102,6 +102,8 @@ t_token	*tokenizer(const char *input)
 
 	token_arr = (t_token *)malloc(sizeof(t_token)
 		* (count_words_tokenizer(input) + 1));
+	ft_memset(token_arr, 0, sizeof(t_token) * (count_words_tokenizer(input)
+			+ 1));
 	if (!token_arr)
 		return (NULL);
 	str = (char *)input;
