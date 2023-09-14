@@ -187,17 +187,6 @@ t_lexeme	heredoc_delimiter_lexeme(t_token *token)
 	return (lexeme);
 }
 
-t_lexeme	heredoc_content_lexeme(t_token *token)
-{
-	t_lexeme	lexeme;
-
-	lexeme.type = L_HEREDOC_CONTENT;
-	lexeme.str = ft_strdup(token->str);
-	lexeme.original = ft_strdup(token->str);
-	lexeme.status = LEXED;
-	return (lexeme);
-}
-
 t_lexeme	word_lexeme(t_token *token)
 {
 	t_lexeme	lexeme;
@@ -272,7 +261,8 @@ t_lexeme	*lexer(t_token *token_arr, char **envp, size_t token_count)
 		else if (token_arr[i].type == T_HEREDOC)
 		{
 			lexeme_arr[i] = heredoc_lexeme(&token_arr[i]);
-			lexeme_arr[i + 1] = heredoc_content_lexeme(&token_arr[i + 1]);
+			lexeme_arr[i + 1] = heredoc_delimiter_lexeme(&token_arr[i + 1]);
+			i++;
 		}
 		else if (token_arr[i].type == T_WORD)
 		{
