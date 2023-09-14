@@ -71,7 +71,13 @@ void execute_command(t_ast_node *node, char *dir_paths, char **envp)
     if (node->input_file != NULL)
     {
         filein = open(node->input_file, O_RDONLY, 0777);
+        if (filein == -1)
+        {
+            // todo : add free
+            printf("filein error\n");
+        }
         dup2(filein, STDIN_FILENO);
+        close(filein);
     }
     if (node->output_file != NULL) 
     {
@@ -79,7 +85,13 @@ void execute_command(t_ast_node *node, char *dir_paths, char **envp)
             fileout = open(node->output_file, O_WRONLY | O_CREAT | O_APPEND, 0777);
         else if (!node->append)
             fileout = open(node->output_file, O_WRONLY | O_CREAT | O_TRUNC, 0777);
-		dup2(fileout, STDOUT_FILENO);
+		if (fileout == -1)
+        {
+            // todo : add free
+            printf("fileout error\n");
+        }
+        dup2(fileout, STDOUT_FILENO);
+        close(fileout);
     }
     path = NULL;
     if (node->data)
