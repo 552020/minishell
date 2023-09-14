@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/wait.h>
 
 /* Environment Variables*/
 
@@ -100,7 +101,7 @@ typedef struct s_ast_node
 	char **args;                    // Arguments: command arguments
 	char *input_file;               // For input redirection.
 	char *output_file;              // For output redirection.
-	bool append;                    // For output redirection.
+	bool append;   	                // For output redirection.
 	struct s_ast_node *children[2]; // For output redirection.
 }						t_ast_node;
 
@@ -123,3 +124,11 @@ void					print_token_arr(t_token *token_arr, size_t token_count);
 void					print_lexeme_arr(t_lexeme *lexeme_arr,
 							size_t lexeme_count);
 void					print_ast(t_ast_node *node, int depth);
+
+/* Execution */
+
+size_t	count_pipes(t_lexeme *lexeme_arr, size_t token_count); // not using these
+unsigned int	hash(const char *key); // not using these
+void handle_without_pipes(t_ast_node *ast_root, char *dir_paths,char ** envp);
+void handle_pipes(t_ast_node *ast_root, char *dir_paths,char ** envp);
+

@@ -103,6 +103,27 @@ int	main(int argc, char **argv, char **envp)
 		printf("***Parsing***\n\n");
 		ast_root = build_ast(lexeme_arr, 0, token_count - 1);
 		print_ast(ast_root, 7);
+
+		/* execution */
+		
+		// Finding PATH environment variable
+		// unsigned int idx = hash("PATH");
+		// printf("Found PATH environment variable %s\n", table[idx]->value);
+
+
+		// size_t pipe_count;
+		// pipe_count = count_pipes(lexeme_arr, token_count);
+		if (ast_root->type == N_PIPE)
+			handle_pipes(ast_root, table[hash("PATH")]->value, envp);
+		else if (ast_root->type == N_COMMAND)
+			handle_without_pipes(ast_root, table[hash("PATH")]->value, envp);
+
+
+
+		// printf("");
+	
+		/* end of execution */
+		
 		free(token_arr);
 		free(lexeme_arr);
 		// if (strcmp(input, "pwd") == 0)
