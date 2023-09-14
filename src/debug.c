@@ -62,8 +62,6 @@ void	print_lexeme_arr(t_lexeme *lexeme_arr, size_t lexeme_count)
 			lexeme_type = "L_HEREDOC";
 		else if (lexeme_arr[i].type == L_HEREDOC_DELIMITER)
 			lexeme_type = "L_HEREDOC_DELIMITER";
-		else if (lexeme_arr[i].type == L_HEREDOC_CONTENT)
-			lexeme_type = "L_HEREDOC_CONTENT";
 		else if (lexeme_arr[i].type == L_FILENAME_STDIN)
 			lexeme_type = "L_FILENAME_STDIN";
 		else if (lexeme_arr[i].type == L_FILENAME_STDOUT)
