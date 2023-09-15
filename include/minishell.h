@@ -6,13 +6,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 #include <sys/wait.h>
+#include <unistd.h>
 
 /* Environment Variables*/
 
 #define TABLE_SIZE 100
 
+typedef struct s_env_table
+{
+	t_env_var			*table[TABLE_SIZE];
+	int count; // This will keep track of the number of environment variables.
+}						t_env_table;
 typedef struct s_env_var
 {
 	char				*key;
@@ -20,11 +25,11 @@ typedef struct s_env_var
 	struct s_env_var	*next;
 }						t_env_var;
 
-void					initialize_table(t_env_var **table, char **envp);
-void					env(t_env_var **table);
-void					export(t_env_var **table, const char *key,
+void					initialize_table(t_env_table *env_table,
+							char **envp) void env(t_env_var **table);
+void					export(t_env_table *env_table, const char *key,
 							const char *value);
-void					unset(t_env_var **table, const char *key);
+void					unset(t_env_table *env_table, const char *key);
 
 /* Tokenizer */
 typedef enum e_token_type
@@ -101,7 +106,7 @@ typedef struct s_ast_node
 	char **args;                    // Arguments: command arguments
 	char *input_file;               // For input redirection.
 	char *output_file;              // For output redirection.
-	bool append;   	                // For output redirection.
+	bool append;                    // For output redirection.
 	struct s_ast_node *children[2]; // For output redirection.
 }						t_ast_node;
 
@@ -127,8 +132,11 @@ void					print_ast(t_ast_node *node, int depth);
 
 /* Execution */
 
-size_t	count_pipes(t_lexeme *lexeme_arr, size_t token_count); // not using these
-unsigned int	hash(const char *key); // not using these
-void handle_without_pipes(t_ast_node *ast_root, char *dir_paths,char ** envp);
-void handle_pipes(t_ast_node *ast_root, char *dir_paths,char ** envp);
-
+size_t					count_pipes(t_lexeme *lexeme_arr, size_t token_count);
+// not using these
+unsigned int			hash(const char *key);
+// not using these
+void					handle_without_pipes(t_ast_node *ast_root,
+							char *dir_paths, char **envp);
+void					handle_pipes(t_ast_node *ast_root, char *dir_paths,
+							char **envp);

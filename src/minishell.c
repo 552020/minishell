@@ -27,18 +27,18 @@ int	main(int argc, char **argv, char **envp)
 	t_ast_node	*ast_root;
 	size_t		token_count;
 	size_t		i;
-	t_env_var	*table[TABLE_SIZE];
+	t_env_table	*env_table;
+	char		*key;
+	char		*value;
+	char		**key_value;
+	char		*key_value_str;
 
-	// char		*key;
-	// char		*value;
-	// char		**key_value;
-	// char		*key_value_str;
 	if (argc != 1)
 	{
 		printf("Usage: %s\n", argv[0]);
 		return (1);
 	}
-	initialize_table(table, envp);
+	initialize_table(env_table, envp);
 	while (1) // Infinite loop to keep the shell running
 	{
 		input = readline("$> "); // Display prompt and read input from user
@@ -52,7 +52,7 @@ int	main(int argc, char **argv, char **envp)
 		if (ft_strncmp(input, "env", ft_strlen(input)) == 0)
 		{
 			printf("env command\n");
-			env(table);
+			env(env_table->table);
 			continue ;
 		}
 		// Handle 'export' command - just for testing
@@ -64,7 +64,7 @@ int	main(int argc, char **argv, char **envp)
 		// 	{
 		// 		key = key_value[0];
 		// 		value = key_value[1];
-		// 		export(table, key, value);
+		// 		export(env_table->table, key, value);
 		// 	}
 		// 	free(key_value_str);
 		// 	free(key_value[0]);
@@ -76,7 +76,7 @@ int	main(int argc, char **argv, char **envp)
 		// if (ft_strncmp(input, "unset ", 6) == 0)
 		// {
 		// 	key = ft_strdup(input + 6);
-		// 	unset(table, key);
+		// 	unset(env_table->table, key);
 		// 	free(key);
 		// 	continue ;
 		// }
@@ -103,27 +103,18 @@ int	main(int argc, char **argv, char **envp)
 		printf("***Parsing***\n\n");
 		ast_root = build_ast(lexeme_arr, 0, token_count - 1);
 		print_ast(ast_root, 7);
-
 		/* execution */
-		
 		// Finding PATH environment variable
 		// unsigned int idx = hash("PATH");
 		// printf("Found PATH environment variable %s\n", table[idx]->value);
-
-
 		// size_t pipe_count;
 		// pipe_count = count_pipes(lexeme_arr, token_count);
 		if (ast_root->type == N_PIPE)
 			handle_pipes(ast_root, table[hash("PATH")]->value, envp);
 		else if (ast_root->type == N_COMMAND)
 			handle_without_pipes(ast_root, table[hash("PATH")]->value, envp);
-
-
-
 		// printf("");
-	
 		/* end of execution */
-		
 		free(token_arr);
 		free(lexeme_arr);
 		// if (strcmp(input, "pwd") == 0)
