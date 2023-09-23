@@ -108,3 +108,176 @@ void	print_ast(t_ast_node *node, int depth)
 	if (node->children[1])
 		print_ast(node->children[1], depth + 1);
 }
+
+int	get_max_depth(t_ast_node *node)
+{
+	int	left_depth;
+
+	if (!node)
+		return (0);
+	if (node->type == N_COMMAND)
+		return (1);
+	// If it's a pipe node, we compute the depth of the left child
+	left_depth = get_max_depth(node->children[0]);
+	// Since it's a pipe, it means there's an additional depth
+	left_depth++;
+	return (left_depth);
+}
+
+void	print_indentation(int depth, bool is_last_sibling[], int last_index)
+{
+	int	i;
+
+	i = 0;
+	while (i < depth - 1)
+	{
+		if (i == last_index)
+		{
+			if (is_last_sibling[i])
+				printf("    ");
+			else
+				printf("│   ");
+		}
+		else
+			printf("    ");
+		i++;
+	}
+	if (depth > 0)
+	{
+		if (is_last_sibling[last_index])
+			printf("└── ");
+		else
+			printf("├── ");
+	}
+}
+
+void	print_node(t_ast_node *node, int depth, bool is_last_sibling[])
+{
+	int	i;
+
+	if (!node)
+		return ;
+	print_indentation(depth, is_last_sibling, depth - 1);
+	// Print node type and data
+	if (node->type == N_PIPE)
+	{
+		printf("|\n");
+	}
+	else if (node->type == N_COMMAND)
+	{
+		printf("%s", node->data);
+		i = 0;
+		while (node->args && node->args[i] != NULL)
+		{
+			printf(" %s", node->args[i]);
+			i++;
+		}
+		printf("\n");
+	}
+	// Print children
+	if (node->children[0])
+	{
+		print_node(node->children[0], depth + 1, is_last_sibling);
+	}
+	if (node->children[1])
+	{
+		is_last_sibling[depth] = true;
+		print_node(node->children[1], depth + 1, is_last_sibling);
+	}
+}
+
+void	print_ast_new(t_ast_node *root)
+{
+	bool is_last_sibling[100] = {false};
+	// Assuming a max depth of 100; can be dynamically allocated if needed
+	print_node(root, 0, is_last_sibling);
+}
+
+void	print_node_info(t_ast_node *node)
+{
+	int	i;
+
+	if (!node)
+	{
+		printf("Node is NULL\n");
+		return ;
+	}
+	// Print node type
+	switch (node->type)
+	{
+	case N_PIPE:
+		printf("Type: PIPE\n");
+		break ;
+	case N_COMMAND:
+		printf("Type: COMMAND\n");
+		break ;
+	default:
+		printf("Type: UNKNOWN\n");
+		break ;
+	}
+	// Print data
+	if (node->data)
+	{
+		printf("Data: %s\n", node->data);
+	}
+	else
+	{
+		printf("Data: NULL\n");
+	}
+	// Print arguments
+	if (node->args)
+	{
+		printf("Arguments: ");
+		i = 0;
+		while (node->args[i] != NULL)
+		{
+			printf("%s", node->args[i]);
+			if (node->args[i + 1] != NULL)
+				printf(", ");
+			i++;
+		}
+		printf("\n");
+	}
+	else
+	{
+		printf("Arguments: NULL\n");
+	}
+	// Print input redirection
+	if (node->input_file)
+	{
+		printf("Input Redirection: %s\n", node->input_file);
+	}
+	else
+	{
+		printf("Input Redirection: NULL\n");
+	}
+	// Print output redirection
+	if (node->output_file)
+	{
+		printf("Output Redirection: %s\n", node->output_file);
+		printf("Append Mode: %s\n", node->append ? "TRUE" : "FALSE");
+	}
+	else
+	{
+		printf("Output Redirection: NULL\n");
+	}
+	printf("-----------\n");
+	// Recursively print children
+	if (node->children[0])
+	{
+		printf("Child 1:\n");
+		print_node_info(node->children[0]);
+	}
+	if (node->children[1])
+	{
+		printf("Child 2:\n");
+		print_node_info(node->children[1]);
+	}
+}
+
+void	debug_ast(t_ast_node *root)
+{
+	printf("------ DEBUGGING AST ------\n");
+	print_node_info(root);
+	printf("------ END OF AST ------\n");
+}
