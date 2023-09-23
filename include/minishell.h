@@ -6,8 +6,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 #include <sys/wait.h>
+#include <unistd.h>
 
 /* Environment Variables*/
 
@@ -49,13 +49,12 @@ typedef enum e_token_type
 	T_REDIRECT_APPEND,   // 4 - >>
 	T_HEREDOC,           // 5 - <<
 	T_HEREDOC_DELIMITER, // 6 - << delimiter
-	T_HEREDOC_CONTENT,   // 7 - << content
 	T_DOUBLE_QUOTE,
-	// 8 - " the whole string in between " quotes included
+	// 7 - " the whole string in between " quotes included
 	T_SINGLE_QUOTE,
-	// 9 - ' the whole string in between ' quotes included
-	T_ENV_VAR, // 10 - $ followed by a valid variable name
-	T_END,     // 11 - End of token array
+	// 8 - ' the whole string in between ' quotes included
+	T_ENV_VAR, // 9 - $ followed by a valid variable name
+	T_END,     // 10 - End of token array
 }						t_token_type;
 
 typedef struct s_token
@@ -76,7 +75,6 @@ typedef enum e_lexeme_type
 	L_REDIRECT_APPEND,   // Append redirection operator (>>)
 	L_HEREDOC,           // Heredoc redirection operator (<<)
 	L_HEREDOC_DELIMITER, // Delimiter for heredoc (<<)
-	L_HEREDOC_CONTENT,   // Content of heredoc (<<)
 	L_FILENAME_STDIN,    // Filename used in redirections
 	L_FILENAME_STDOUT,   // Filename used in redirections
 	L_UNDEFINED,         // Undefined lexeme type
@@ -112,7 +110,9 @@ typedef struct s_ast_node
 	char **args;                    // Arguments: command arguments
 	char *input_file;               // For input redirection.
 	char *output_file;              // For output redirection.
-	bool append;   	                // For output redirection.
+	bool append;                    // For output redirection.
+	bool heredoc;                   // For heredoc redirection.
+	char *heredoc_del;              // For heredoc redirection.
 	struct s_ast_node *children[2]; // For output redirection.
 }						t_ast_node;
 
@@ -140,8 +140,11 @@ void					debug_ast(t_ast_node *node);
 
 /* Execution */
 
-size_t	count_pipes(t_lexeme *lexeme_arr, size_t token_count); // not using these
-unsigned int	hash(const char *key); // not using these
-void handle_without_pipes(t_ast_node *ast_root, char *dir_paths,char ** envp);
-void handle_pipes(t_ast_node *ast_root, char *dir_paths,char ** envp);
-
+size_t					count_pipes(t_lexeme *lexeme_arr, size_t token_count);
+// not using these
+unsigned int			hash(const char *key);
+// not using these
+void					handle_without_pipes(t_ast_node *ast_root,
+							char *dir_paths, char **envp);
+void					handle_pipes(t_ast_node *ast_root, char *dir_paths,
+							char **envp);
