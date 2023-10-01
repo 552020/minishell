@@ -57,36 +57,22 @@ char	*path_finder(char *cmd, char *dir_paths)
 	return (NULL);
 }
 
-
-// change the opem file functions
-void execute_command(t_ast_node *node, char *dir_paths, char **envp)
+void handle_redirections(t_ast_node *node)
 {
     int filein;
     int fileout;
-    char	*path;
-    char **cmd_and_args_arr;
-    int cmd_and_args_count;
-    int i;
-    i = -1;
 
-    // count the total number of arguments and command to create array for execve
-    cmd_and_args_count = 0;
-    if (node->data)
-        while(node->data[++i])
-            cmd_and_args_count++;
-    i = -1;
-    if (node->args)
-        while (node->args[++i])
-            cmd_and_args_count++;
-    // might need to initialize filein and fileout to NULL;
     // insert heredoc here
-    // Redirections
-    if (node->input_file != NULL)
+    filein = 0;
+    fileout = 1;
+    if (node->input_file)
     {
+        printf("Entered input file\n");
+        // printf("input file is %s!!!!!!!!!!!!!!!!!!!\n", node->input_file);
         filein = open(node->input_file, O_RDONLY, 0777);
         if (filein == -1)
         {
-            // todo : add free
+            // todo : add free and proper exit
             printf("filein error\n");
         }
         dup2(filein, STDIN_FILENO);
@@ -100,12 +86,33 @@ void execute_command(t_ast_node *node, char *dir_paths, char **envp)
             fileout = open(node->output_file, O_WRONLY | O_CREAT | O_TRUNC, 0777);
 		if (fileout == -1)
         {
-            // todo : add free
+            // todo : add free and proper exit
             printf("fileout error\n");
         }
         dup2(fileout, STDOUT_FILENO);
         close(fileout);
     }
+}
+
+// change the opem file functions
+void execute_command(t_ast_node *node, char *dir_paths, char **envp)
+{
+    char	*path;
+    char **cmd_and_args_arr;
+    int cmd_and_args_count;
+    int i;
+    i = -1;
+    
+    handle_redirections(node);
+    // count the total number of arguments and command to create array for execve
+    cmd_and_args_count = 0;
+    if (node->data)
+        while(node->data[++i])
+            cmd_and_args_count++;
+    i = -1;
+    if (node->args)
+        while (node->args[++i])
+            cmd_and_args_count++;
     path = NULL;
     if (node->data)
         path = path_finder(node->data, dir_paths);
@@ -169,6 +176,7 @@ void execute_command(t_ast_node *node, char *dir_paths, char **envp)
     //     x++;
     // }
     // we need to pass arguments including the command thus joined data and args
+
     if (node->data) 
         if (execve(path, cmd_and_args_arr, envp) == -1)
             printf("execve error\n");
@@ -207,6 +215,7 @@ void handle_pipes(t_ast_node *ast_root, char *dir_paths,char ** envp)
     pid_t right_pid;
 	
 	// printf("ast_root->type: %d\n", ast_root->type);
+
 	if (ast_root->type == N_PIPE)
 	{
 		if (pipe(pipe_fd) == -1)
@@ -228,6 +237,8 @@ void handle_pipes(t_ast_node *ast_root, char *dir_paths,char ** envp)
             close(pipe_fd[0]); // Close the read end of the pipe
             dup2(pipe_fd[1], STDOUT_FILENO); // Redirect stdout to the pipe
             close(pipe_fd[1]); // Close the write end of the pipe
+
+            handle_redirections(ast_root->children[0]);
            	handle_pipes(ast_root->children[0], dir_paths, envp);
             // TODO : add free (maybe)
             exit(EXIT_SUCCESS);
@@ -246,6 +257,8 @@ void handle_pipes(t_ast_node *ast_root, char *dir_paths,char ** envp)
             close(pipe_fd[1]); // Close the write end of the pipe
             dup2(pipe_fd[0], STDIN_FILENO); // Redirect stdin from the pipe
             close(pipe_fd[0]); // Close the read end of the pipe
+
+            handle_redirections(ast_root->children[1]);
             handle_pipes(ast_root->children[1], dir_paths, envp);
             // TODO : add free (maybe)
             exit(EXIT_SUCCESS);
