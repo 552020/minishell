@@ -60,6 +60,7 @@ int	main(int argc, char **argv, char **envp)
 			continue ;
 		}
 		// Handle 'export' command - just for testing
+		//
 		// if (ft_strncmp(input, "export ", 7) == 0)
 		// {
 		// 	key_value_str = ft_strdup(input + 7);
