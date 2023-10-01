@@ -13,6 +13,17 @@
 
 #define TABLE_SIZE 42
 
+typedef enum e_debug_level
+{
+	DEBUG_OFF,       // No debugging
+	DEBUG_TOKENIZER, // Debug the tokenizer
+	DEBUG_LEXER,     // Debug the lexer
+	DEBUG_AST,       // Debug the AST
+	DEBUG_ALL        // Debug everything
+}						t_debug_level;
+
+extern t_debug_level	DEBUG_LEVEL;
+
 typedef struct s_env_var
 {
 	char				*key;
@@ -44,13 +55,12 @@ typedef enum e_token_type
 	T_REDIRECT_APPEND,   // 4 - >>
 	T_HEREDOC,           // 5 - <<
 	T_HEREDOC_DELIMITER, // 6 - << delimiter
-	T_HEREDOC_CONTENT,   // 7 - << content
 	T_DOUBLE_QUOTE,
-	// 8 - " the whole string in between " quotes included
+	// 7 - " the whole string in between " quotes included
 	T_SINGLE_QUOTE,
-	// 9 - ' the whole string in between ' quotes included
-	T_ENV_VAR, // 10 - $ followed by a valid variable name
-	T_END,     // 11 - End of token array
+	// 8 - ' the whole string in between ' quotes included
+	T_ENV_VAR, // 9 - $ followed by a valid variable name
+	T_END,     // 10 - End of token array
 }						t_token_type;
 
 typedef struct s_token
@@ -71,7 +81,6 @@ typedef enum e_lexeme_type
 	L_REDIRECT_APPEND,   // Append redirection operator (>>)
 	L_HEREDOC,           // Heredoc redirection operator (<<)
 	L_HEREDOC_DELIMITER, // Delimiter for heredoc (<<)
-	L_HEREDOC_CONTENT,   // Content of heredoc (<<)
 	L_FILENAME_STDIN,    // Filename used in redirections
 	L_FILENAME_STDOUT,   // Filename used in redirections
 	L_UNDEFINED,         // Undefined lexeme type
@@ -108,6 +117,8 @@ typedef struct s_ast_node
 	char *input_file;               // For input redirection.
 	char *output_file;              // For output redirection.
 	bool append;                    // For output redirection.
+	bool heredoc;                   // For heredoc redirection.
+	char *heredoc_del;              // For heredoc redirection.
 	struct s_ast_node *children[2]; // For output redirection.
 }						t_ast_node;
 
@@ -130,6 +141,8 @@ void					print_token_arr(t_token *token_arr, size_t token_count);
 void					print_lexeme_arr(t_lexeme *lexeme_arr,
 							size_t lexeme_count);
 void					print_ast(t_ast_node *node, int depth);
+void					print_ast_new(t_ast_node *node);
+void					debug_ast(t_ast_node *node);
 
 /* Execution */
 

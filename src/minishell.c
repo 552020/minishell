@@ -21,14 +21,16 @@ void	print_working_directory(void)
 
 int	main(int argc, char **argv, char **envp)
 {
-	char		*input;
-	t_token		*token_arr;
-	t_lexeme	*lexeme_arr;
-	t_ast_node	*ast_root;
-	size_t		token_count;
-	size_t		i;
-	t_env_table	*env_table;
+	char			*input;
+	t_token			*token_arr;
+	t_lexeme		*lexeme_arr;
+	t_ast_node		*ast_root;
+	size_t			token_count;
+	size_t			i;
+	t_env_var		*table[TABLE_SIZE];
+	t_debug_level	DEBUG_LEVEL;
 
+	DEBUG_LEVEL = DEBUG_OFF;
 	// char		*key;
 	// char		*value;
 	// char		**key_value;
@@ -81,12 +83,17 @@ int	main(int argc, char **argv, char **envp)
 		// 	free(key);
 		// 	continue ;
 		// }
-		printf("readline: %s\n", input);
+		if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_TOKENIZER)
+			printf("readline: %s\n", input);
 		/* Tokenization */
-		printf("\n***Tokenization***\n\n");
+		if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_TOKENIZER)
+			printf("\n***Tokenization***\n\n");
 		token_count = count_words_tokenizer(input);
-		printf("Token count: %zu\n\n", token_count);
+		if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_TOKENIZER)
+			printf("Token count: %zu\n\n", token_count);
 		token_arr = tokenizer(input);
+		if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_TOKENIZER)
+			print_token_arr(token_arr, token_count);
 		i = 0;
 		while (i < token_count + 1)
 		{
@@ -94,15 +101,21 @@ int	main(int argc, char **argv, char **envp)
 				token_arr[i].str);
 			i++;
 		}
-		/* collecting the heredoc */
-		printf("\n*Heredoc*\n\n");
-		collect_heredoc_content(token_arr, token_count);
 		/* Lexing */
 		printf("***Lexing***\n\n");
 		lexeme_arr = lexer(token_arr, envp, token_count);
-		i = 0;
-		printf("***Parsing***\n\n");
+		if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_AST)
+			printf("***Parsing***\n\n");
 		ast_root = build_ast(lexeme_arr, 0, token_count - 1);
+		if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_AST)
+		{
+			printf("\n***Printing AST***\n\n");
+			print_ast(ast_root, 7);
+			printf("\n***Printing AST NEW***\n\n");
+			print_ast_new(ast_root);
+			printf("\n*** AST nodes content ***\n\n");
+			debug_ast(ast_root);
+		}
 		print_ast(ast_root, 7);
 		/* execution */
 		// Finding PATH environment variable
@@ -113,11 +126,12 @@ int	main(int argc, char **argv, char **envp)
 		if (ast_root->type == N_PIPE)
 			handle_pipes(ast_root, "PATH", envp);
 		else if (ast_root->type == N_COMMAND)
-			handle_without_pipes(ast_root, "PATH", envp);
+			handle_without_pipes(ast_root, table[hash("PATH")]->value, envp);
 		// printf("");
 		/* end of execution */
 		free(token_arr);
 		free(lexeme_arr);
+		// TODO: We need to free the AST
 		// if (strcmp(input, "pwd") == 0)
 		// {
 		// 	print_working_directory();

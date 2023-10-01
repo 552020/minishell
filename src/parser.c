@@ -16,6 +16,8 @@ t_ast_node	*create_node(t_node_type type)
 	new_node->input_file = NULL;
 	new_node->output_file = NULL;
 	new_node->append = false;
+	new_node->heredoc = false;
+	new_node->heredoc_del = NULL;
 	new_node->children[0] = NULL;
 	new_node->children[1] = NULL;
 	return (new_node);
@@ -122,11 +124,13 @@ t_ast_node	*build_cmd_node(t_lexeme *lexemes, int start, int end)
 			node->append = true;
 		}
 		else if (lexemes[i].type == L_HEREDOC)
-			;
-		else if (lexemes[i].type == L_HEREDOC_CONTENT)
 		{
-			printf("lexemes[%d].str = %s\n", i + 1, lexemes[i].str);
-			append_arg_to_command_node(node, lexemes[i].str);
+			node->heredoc = true;
+		}
+		else if (lexemes[i].type == L_HEREDOC_DELIMITER)
+		{
+			// printf("lexemes[%d].str = %s\n", i + 1, lexemes[i].str);
+			node->heredoc_del = ft_strdup(lexemes[i].str);
 		}
 		else
 		{
