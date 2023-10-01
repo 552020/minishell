@@ -6,13 +6,27 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 #include <sys/wait.h>
+<<<<<<< HEAD
 #include <fcntl.h> // for O_RDONLY etc.
+=======
+#include <unistd.h>
+>>>>>>> main
 
 /* Environment Variables*/
 
-#define TABLE_SIZE 100
+#define TABLE_SIZE 42
+
+typedef enum e_debug_level
+{
+	DEBUG_OFF,       // No debugging
+	DEBUG_TOKENIZER, // Debug the tokenizer
+	DEBUG_LEXER,     // Debug the lexer
+	DEBUG_AST,       // Debug the AST
+	DEBUG_ALL        // Debug everything
+}						t_debug_level;
+
+extern t_debug_level	DEBUG_LEVEL;
 
 typedef struct s_env_var
 {
@@ -21,11 +35,17 @@ typedef struct s_env_var
 	struct s_env_var	*next;
 }						t_env_var;
 
-void					initialize_table(t_env_var **table, char **envp);
+typedef struct s_env_table
+{
+	t_env_var			*table[TABLE_SIZE];
+	int count; // This will keep track of the number of environment variables.
+}						t_env_table;
+
+void					initialize_table(t_env_table *env_table, char **envp);
 void					env(t_env_var **table);
-void					export(t_env_var **table, const char *key,
+void					export(t_env_table *env_table, const char *key,
 							const char *value);
-void					unset(t_env_var **table, const char *key);
+void					unset(t_env_table *env_table, const char *key);
 
 /* Tokenizer */
 typedef enum e_token_type
@@ -39,13 +59,12 @@ typedef enum e_token_type
 	T_REDIRECT_APPEND,   // 4 - >>
 	T_HEREDOC,           // 5 - <<
 	T_HEREDOC_DELIMITER, // 6 - << delimiter
-	T_HEREDOC_CONTENT,   // 7 - << content
 	T_DOUBLE_QUOTE,
-	// 8 - " the whole string in between " quotes included
+	// 7 - " the whole string in between " quotes included
 	T_SINGLE_QUOTE,
-	// 9 - ' the whole string in between ' quotes included
-	T_ENV_VAR, // 10 - $ followed by a valid variable name
-	T_END,     // 11 - End of token array
+	// 8 - ' the whole string in between ' quotes included
+	T_ENV_VAR, // 9 - $ followed by a valid variable name
+	T_END,     // 10 - End of token array
 }						t_token_type;
 
 typedef struct s_token
@@ -66,7 +85,6 @@ typedef enum e_lexeme_type
 	L_REDIRECT_APPEND,   // Append redirection operator (>>)
 	L_HEREDOC,           // Heredoc redirection operator (<<)
 	L_HEREDOC_DELIMITER, // Delimiter for heredoc (<<)
-	L_HEREDOC_CONTENT,   // Content of heredoc (<<)
 	L_FILENAME_STDIN,    // Filename used in redirections
 	L_FILENAME_STDOUT,   // Filename used in redirections
 	L_UNDEFINED,         // Undefined lexeme type
@@ -102,7 +120,9 @@ typedef struct s_ast_node
 	char **args;                    // Arguments: command arguments
 	char *input_file;               // For input redirection.
 	char *output_file;              // For output redirection.
-	bool append;   	                // For output redirection.
+	bool append;                    // For output redirection.
+	bool heredoc;                   // For heredoc redirection.
+	char *heredoc_del;              // For heredoc redirection.
 	struct s_ast_node *children[2]; // For output redirection.
 }						t_ast_node;
 
@@ -125,11 +145,24 @@ void					print_token_arr(t_token *token_arr, size_t token_count);
 void					print_lexeme_arr(t_lexeme *lexeme_arr,
 							size_t lexeme_count);
 void					print_ast(t_ast_node *node, int depth);
+void					print_ast_new(t_ast_node *node);
+void					debug_ast(t_ast_node *node);
 
 /* Execution */
 
+<<<<<<< HEAD
 size_t	count_pipes(t_lexeme *lexeme_arr, size_t token_count); // not using these
 unsigned int	hash(const char *key); // not using these
 void handle_without_pipes(t_ast_node *ast_root, char *dir_paths,char ** envp);
 void handle_pipes(t_ast_node *ast_root, char *dir_paths,char ** envp);
 void handle_redirections(t_ast_node *node);
+=======
+size_t					count_pipes(t_lexeme *lexeme_arr, size_t token_count);
+// not using these
+unsigned int			hash(const char *key);
+// not using these
+void					handle_without_pipes(t_ast_node *ast_root,
+							char *dir_paths, char **envp);
+void					handle_pipes(t_ast_node *ast_root, char *dir_paths,
+							char **envp);
+>>>>>>> main

@@ -187,17 +187,6 @@ t_lexeme	heredoc_delimiter_lexeme(t_token *token)
 	return (lexeme);
 }
 
-t_lexeme	heredoc_content_lexeme(t_token *token)
-{
-	t_lexeme	lexeme;
-
-	lexeme.type = L_HEREDOC_CONTENT;
-	lexeme.str = ft_strdup(token->str);
-	lexeme.original = ft_strdup(token->str);
-	lexeme.status = LEXED;
-	return (lexeme);
-}
-
 t_lexeme	word_lexeme(t_token *token)
 {
 	t_lexeme	lexeme;
@@ -216,7 +205,7 @@ t_lexeme	*lexer(t_token *token_arr, char **envp, size_t token_count)
 	int			command_flag;
 
 	// printf("Lexing...\n");
-	printf("First round\n\n");
+	// printf("First round\n\n");
 	lexeme_arr = malloc(sizeof(t_lexeme) * (token_count + 1));
 	if (!lexeme_arr)
 	{
@@ -273,7 +262,8 @@ t_lexeme	*lexer(t_token *token_arr, char **envp, size_t token_count)
 		else if (token_arr[i].type == T_HEREDOC)
 		{
 			lexeme_arr[i] = heredoc_lexeme(&token_arr[i]);
-			lexeme_arr[i + 1] = heredoc_content_lexeme(&token_arr[i + 1]);
+			lexeme_arr[i + 1] = heredoc_delimiter_lexeme(&token_arr[i + 1]);
+			i++;
 		}
 		else if (token_arr[i].type == T_WORD)
 		{
@@ -288,7 +278,7 @@ t_lexeme	*lexer(t_token *token_arr, char **envp, size_t token_count)
 	i = 0;
 	// printf("Lexeme array after first round:\n");
 	print_lexeme_arr(lexeme_arr, token_count);
-	printf("\nSecond round\n\n");
+	// printf("\nSecond round\n\n");
 	i = 0;
 	// 0 means we haven't encountered a command yet, 1 means we have
 	command_flag = 0;
@@ -314,7 +304,7 @@ t_lexeme	*lexer(t_token *token_arr, char **envp, size_t token_count)
 		i++;
 	}
 	// printf("Lexeme array after second round:\n");
-	print_lexeme_arr(lexeme_arr, token_count);
-	printf("\n*Done lexing*\n\n\n");
+	// print_lexeme_arr(lexeme_arr, token_count);
+	// printf("\n*Done lexing*\n\n\n");
 	return (lexeme_arr);
 }
