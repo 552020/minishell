@@ -24,6 +24,8 @@ typedef enum e_debug_level
 
 extern t_debug_level	DEBUG_LEVEL;
 
+/* envp */
+
 typedef struct s_env_var
 {
 	char				*key;
@@ -42,6 +44,8 @@ void					env(t_env_var **table);
 void					export(t_env_table *env_table, const char *key,
 							const char *value);
 void					unset(t_env_table *env_table, const char *key);
+char					**convert_hash_table_to_array(t_env_table *env_table);
+char					*ft_getenv(t_env_var **table, const char *key);
 
 /* Tokenizer */
 typedef enum e_token_type
@@ -146,12 +150,13 @@ void					debug_ast(t_ast_node *node);
 
 /* Execution */
 
-size_t	count_pipes(t_lexeme *lexeme_arr, size_t token_count);
-			// not using these
-unsigned int	hash(const char *key);                          
-					// not using these
-void					handle_without_pipes(t_ast_node *ast_root,
-							char *dir_paths, char **envp);
+size_t					count_pipes(t_lexeme *lexeme_arr, size_t token_count);
+// not using these
+unsigned int			hash(const char *key);
+// not using these
+void	handle_without_pipes(t_ast_node *ast_root,
+							char *dir_paths,
+							char **envp);
 void					handle_pipes(t_ast_node *ast_root, char *dir_paths,
 							char **envp);
 void					handle_redirections(t_ast_node *node);

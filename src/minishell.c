@@ -27,21 +27,22 @@ int	main(int argc, char **argv, char **envp)
 	t_ast_node		*ast_root;
 	size_t			token_count;
 	size_t			i;
-	t_env_var		*table[TABLE_SIZE];
 	t_debug_level	DEBUG_LEVEL;
+	t_env_table		table;
+	char			**my_envp;
+	char			*my_env_value;
 
 	DEBUG_LEVEL = DEBUG_OFF;
 	// char		*key;
 	// char		*value;
 	// char		**key_value;
 	// char		*key_value_str;
-	env_table = NULL;
 	if (argc != 1)
 	{
 		printf("Usage: %s\n", argv[0]);
 		return (1);
 	}
-	initialize_table(env_table, envp);
+	initialize_table(&table, envp);
 	while (1) // Infinite loop to keep the shell running
 	{
 		input = readline("$> "); // Display prompt and read input from user
@@ -55,7 +56,7 @@ int	main(int argc, char **argv, char **envp)
 		if (ft_strncmp(input, "env", ft_strlen(input)) == 0)
 		{
 			printf("env command\n");
-			env(env_table->table);
+			env(table.table);
 			continue ;
 		}
 		// Handle 'export' command - just for testing
@@ -98,7 +99,7 @@ int	main(int argc, char **argv, char **envp)
 		while (i < token_count + 1)
 		{
 			printf("Token %zu: type=%d, str=%s\n", i + 1, token_arr[i].type,
-				token_arr[i].str);
+					token_arr[i].str);
 			i++;
 		}
 		/* Lexing */
@@ -123,10 +124,12 @@ int	main(int argc, char **argv, char **envp)
 		// printf("Found PATH environment variable %s\n", table[idx]->value);
 		// size_t pipe_count;
 		// pipe_count = count_pipes(lexeme_arr, token_count);
+		my_envp = convert_hash_table_to_array(&table);
+		my_env_value = ft_getenv(table.table, "PATH");
 		if (ast_root->type == N_PIPE)
-			handle_pipes(ast_root, "PATH", envp);
+			handle_pipes(ast_root, my_env_value, my_envp);
 		else if (ast_root->type == N_COMMAND)
-			handle_without_pipes(ast_root, table[hash("PATH")]->value, envp);
+			handle_without_pipes(ast_root, my_env_value, my_envp);
 		// printf("");
 		/* end of execution */
 		free(token_arr);

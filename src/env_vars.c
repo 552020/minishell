@@ -129,6 +129,24 @@ void	export(t_env_table *env_table, const char *key, const char *value)
 	env_table->count++;
 }
 
+char	*ft_getenv(t_env_var **table, const char *key)
+{
+	unsigned int	idx;
+	t_env_var		*node;
+
+	idx = hash(key);
+	node = table[idx];
+	while (node != NULL)
+	{
+		if (ft_strncmp(node->key, key, ft_strlen(key)) == 0)
+		{
+			return (node->value);
+		}
+		node = node->next;
+	}
+	return (NULL); // key not found
+}
+
 void	unset(t_env_table *env_table, const char *key)
 {
 	unsigned int	idx;
