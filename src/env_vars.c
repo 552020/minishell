@@ -117,7 +117,7 @@ void	export(t_env_table *env_table, const char *key, const char *value)
 	node = env_table->table[hash(key)];
 	while (node != NULL)
 	{
-		if (ft_strcmp(node->key, key) == 0)
+		if (ft_strncmp(node->key, key, ft_strlen(key)) == 0)
 		{
 			free(node->value);
 			node->value = ft_strdup(value);

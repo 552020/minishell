@@ -28,11 +28,12 @@ int	main(int argc, char **argv, char **envp)
 	size_t		token_count;
 	size_t		i;
 	t_env_table	*env_table;
-	char		*key;
-	char		*value;
-	char		**key_value;
-	char		*key_value_str;
 
+	// char		*key;
+	// char		*value;
+	// char		**key_value;
+	// char		*key_value_str;
+	env_table = NULL;
 	if (argc != 1)
 	{
 		printf("Usage: %s\n", argv[0]);
@@ -110,9 +111,9 @@ int	main(int argc, char **argv, char **envp)
 		// size_t pipe_count;
 		// pipe_count = count_pipes(lexeme_arr, token_count);
 		if (ast_root->type == N_PIPE)
-			handle_pipes(ast_root, table[hash("PATH")]->value, envp);
+			handle_pipes(ast_root, "PATH", envp);
 		else if (ast_root->type == N_COMMAND)
-			handle_without_pipes(ast_root, table[hash("PATH")]->value, envp);
+			handle_without_pipes(ast_root, "PATH", envp);
 		// printf("");
 		/* end of execution */
 		free(token_arr);
