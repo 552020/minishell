@@ -36,7 +36,9 @@ void	insert_node_ht(t_env_var **table, const char *key, const char *value)
 	idx = hash(key);
 	node = table[idx];
 	if (node == NULL)
+	{
 		table[idx] = create_node_ht(key, value);
+	}
 	else
 	{
 		if (node->key == NULL)
@@ -49,7 +51,7 @@ void	insert_node_ht(t_env_var **table, const char *key, const char *value)
 	}
 }
 
-void	initialize_table(t_env_var **table, char **envp)
+void	initialize_table(t_env_table *env_table, char **envp)
 {
 	int		i;
 	char	**key_value;
@@ -57,10 +59,11 @@ void	initialize_table(t_env_var **table, char **envp)
 	i = 0;
 	while (i < TABLE_SIZE)
 	{
-		table[i] = NULL;
+		env_table->table[i] = NULL;
 		i++;
 	}
-	printf("Initializing table...\n");
+	env_table->count = 0;
+	// printf("Initializing table...\n");
 	i = 0;
 	while (envp[i] != NULL)
 	{
@@ -79,7 +82,8 @@ void	initialize_table(t_env_var **table, char **envp)
 		}
 		if (!key_value[1])
 			key_value[1] = ft_strdup("");
-		insert_node_ht(table, key_value[0], key_value[1]);
+		insert_node_ht(env_table->table, key_value[0], key_value[1]);
+		env_table->count++;
 		free(key_value[0]);
 		free(key_value[1]);
 		free(key_value);
@@ -106,11 +110,11 @@ void	env(t_env_var **table)
 	}
 }
 
-void	export(t_env_var **table, const char *key, const char *value)
+void	export(t_env_table *env_table, const char *key, const char *value)
 {
 	t_env_var	*node;
 
-	node = table[hash(key)];
+	node = env_table->table[hash(key)];
 	while (node != NULL)
 	{
 		if (ft_strncmp(node->key, key, ft_strlen(key)) == 0)
@@ -121,17 +125,18 @@ void	export(t_env_var **table, const char *key, const char *value)
 		}
 		node = node->next;
 	}
-	insert_node_ht(table, key, value);
+	insert_node_ht(env_table->table, key, value);
+	env_table->count++;
 }
 
-void	unset(t_env_var **table, const char *key)
+void	unset(t_env_table *env_table, const char *key)
 {
-	unsigned int idx;
-	t_env_var *node;
-	t_env_var *prev;
+	unsigned int	idx;
+	t_env_var		*node;
+	t_env_var		*prev;
 
 	idx = hash(key);
-	node = table[idx];
+	node = env_table->table[idx];
 	prev = NULL;
 	while (node != NULL)
 	{
@@ -139,7 +144,7 @@ void	unset(t_env_var **table, const char *key)
 		{
 			if (prev == NULL)
 			{
-				table[idx] = node->next;
+				env_table->table[idx] = node->next;
 			}
 			else
 			{
@@ -148,9 +153,44 @@ void	unset(t_env_var **table, const char *key)
 			free(node->key);
 			free(node->value);
 			free(node);
+			env_table->count--;
 			return ;
 		}
 		prev = node;
 		node = node->next;
 	}
+}
+
+char	**convert_hash_table_to_array(t_env_table *env_table)
+{
+	int i;
+	int j;
+	char **envp;
+	char *temp;
+	t_env_var *node;
+
+	envp = (char **)malloc(sizeof(char *) * (env_table->count + 1));
+	if (envp == NULL)
+	{
+		perror("Failed to allocate memory for envp");
+		// free memory
+		exit(EXIT_FAILURE);
+	}
+	i = 0;
+	j = 0;
+	while (i < TABLE_SIZE)
+	{
+		node = env_table->table[i];
+		while (node != NULL)
+		{
+			temp = ft_strjoin(node->key, "=");
+			envp[j] = ft_strjoin(temp, node->value);
+			free(temp);
+			j++;
+			node = node->next;
+		}
+		i++;
+	}
+	envp[j] = NULL;
+	return (envp);
 }

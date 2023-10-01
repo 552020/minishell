@@ -35,12 +35,13 @@ int	main(int argc, char **argv, char **envp)
 	// char		*value;
 	// char		**key_value;
 	// char		*key_value_str;
+	env_table = NULL;
 	if (argc != 1)
 	{
 		printf("Usage: %s\n", argv[0]);
 		return (1);
 	}
-	initialize_table(table, envp);
+	initialize_table(env_table, envp);
 	while (1) // Infinite loop to keep the shell running
 	{
 		input = readline("$> "); // Display prompt and read input from user
@@ -54,7 +55,7 @@ int	main(int argc, char **argv, char **envp)
 		if (ft_strncmp(input, "env", ft_strlen(input)) == 0)
 		{
 			printf("env command\n");
-			env(table);
+			env(env_table->table);
 			continue ;
 		}
 		// Handle 'export' command - just for testing
@@ -66,7 +67,7 @@ int	main(int argc, char **argv, char **envp)
 		// 	{
 		// 		key = key_value[0];
 		// 		value = key_value[1];
-		// 		export(table, key, value);
+		// 		export(env_table->table, key, value);
 		// 	}
 		// 	free(key_value_str);
 		// 	free(key_value[0]);
@@ -78,7 +79,7 @@ int	main(int argc, char **argv, char **envp)
 		// if (ft_strncmp(input, "unset ", 6) == 0)
 		// {
 		// 	key = ft_strdup(input + 6);
-		// 	unset(table, key);
+		// 	unset(env_table->table, key);
 		// 	free(key);
 		// 	continue ;
 		// }
@@ -123,7 +124,7 @@ int	main(int argc, char **argv, char **envp)
 		// size_t pipe_count;
 		// pipe_count = count_pipes(lexeme_arr, token_count);
 		if (ast_root->type == N_PIPE)
-			handle_pipes(ast_root, table[hash("PATH")]->value, envp);
+			handle_pipes(ast_root, "PATH", envp);
 		else if (ast_root->type == N_COMMAND)
 			handle_without_pipes(ast_root, table[hash("PATH")]->value, envp);
 		// printf("");

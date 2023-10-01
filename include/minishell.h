@@ -11,7 +11,7 @@
 
 /* Environment Variables*/
 
-#define TABLE_SIZE 100
+#define TABLE_SIZE 42
 
 typedef enum e_debug_level
 {
@@ -31,11 +31,17 @@ typedef struct s_env_var
 	struct s_env_var	*next;
 }						t_env_var;
 
-void					initialize_table(t_env_var **table, char **envp);
+typedef struct s_env_table
+{
+	t_env_var			*table[TABLE_SIZE];
+	int count; // This will keep track of the number of environment variables.
+}						t_env_table;
+
+void					initialize_table(t_env_table *env_table, char **envp);
 void					env(t_env_var **table);
-void					export(t_env_var **table, const char *key,
+void					export(t_env_table *env_table, const char *key,
 							const char *value);
-void					unset(t_env_var **table, const char *key);
+void					unset(t_env_table *env_table, const char *key);
 
 /* Tokenizer */
 typedef enum e_token_type
