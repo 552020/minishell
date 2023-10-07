@@ -197,7 +197,7 @@ void handle_without_pipes(t_ast_node *ast_root, char *dir_paths,char ** envp)
     }
     if (pid == 0) 
 	{
-        printf("executing command......\n");
+        // printf("executing command......\n");
         execute_command(ast_root, dir_paths, envp);
     }
     waitpid(pid, NULL, 0);

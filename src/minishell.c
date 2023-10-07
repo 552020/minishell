@@ -32,7 +32,7 @@ int	main(int argc, char **argv, char **envp)
 	char			**my_envp;
 	char			*my_env_value;
 
-	DEBUG_LEVEL = DEBUG_OFF;
+	DEBUG_LEVEL = DEBUG_ALL;
 	// char		*key;
 	// char		*value;
 	// char		**key_value;
@@ -95,16 +95,18 @@ int	main(int argc, char **argv, char **envp)
 			printf("Token count: %zu\n\n", token_count);
 		token_arr = tokenizer(input);
 		if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_TOKENIZER)
-			print_token_arr(token_arr, token_count);
-		i = 0;
-		while (i < token_count + 1)
 		{
-			printf("Token %zu: type=%d, str=%s\n", i + 1, token_arr[i].type,
+			print_token_arr(token_arr, token_count);
+			i = 0;
+			while (i < token_count + 1)
+			{
+				printf("Token %zu: type=%d, str=%s\n", i + 1, token_arr[i].type,
 					token_arr[i].str);
-			i++;
+				i++;
+			}
 		}
+
 		/* Lexing */
-		printf("***Lexing***\n\n");
 		lexeme_arr = lexer(token_arr, envp, token_count);
 		if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_AST)
 			printf("***Parsing***\n\n");
@@ -118,7 +120,7 @@ int	main(int argc, char **argv, char **envp)
 			printf("\n*** AST nodes content ***\n\n");
 			debug_ast(ast_root);
 		}
-		print_ast(ast_root, 7);
+		// print_ast(ast_root, 7);
 		/* execution */
 		// Finding PATH environment variable
 		// unsigned int idx = hash("PATH");
