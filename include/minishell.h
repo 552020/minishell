@@ -160,3 +160,4 @@ void	handle_without_pipes(t_ast_node *ast_root,
 void					handle_pipes(t_ast_node *ast_root, char *dir_paths,
 							char **envp);
 void					handle_redirections(t_ast_node *node);
+void ft_heredoc(char *delimiter);
