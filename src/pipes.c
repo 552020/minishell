@@ -141,7 +141,9 @@ void handle_redirections(t_ast_node *node)
         dup2(filein, STDIN_FILENO);
         close(filein);
     }
-    if (node->heredoc)
+    printf("node->heredoc: %d\n", node->heredoc);
+    printf("node->heredoc_del: %s\n", node->heredoc_del);
+    if (node->heredoc && node->heredoc_del)
         ft_heredoc(node->heredoc_del);
     if (node->output_file != NULL) 
     {
@@ -297,7 +299,8 @@ void handle_pipes(t_ast_node *ast_root, char *dir_paths,char ** envp)
             perror("fork error");
             exit(EXIT_FAILURE);
         }
-		if (left_pid == 0) {
+		if (left_pid == 0) 
+        {
             // printf(" left child process created\n");
             close(pipe_fd[0]); // Close the read end of the pipe
             dup2(pipe_fd[1], STDOUT_FILENO); // Redirect stdout to the pipe
