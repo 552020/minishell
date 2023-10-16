@@ -43,7 +43,9 @@ size_t	count_words_tokenizer(const char *input)
 	size_t	words;
 	char	*str;
 	char	quote;
+	int		k;
 
+	k = 1;
 	str = (char *)input;
 	words = 0;
 	// Skip initial spaces
@@ -54,6 +56,7 @@ size_t	count_words_tokenizer(const char *input)
 		// printf("str: %c\n", *str);
 		if (isspecialchar(*str))
 		{
+			printf("if is ispecialchar\n");
 			words++;
 			if (*str == '$') // Handle the $VAR case
 			{
@@ -80,9 +83,15 @@ size_t	count_words_tokenizer(const char *input)
 		}
 		else if (isregularchar(*str, str))
 		{
+			printf("k: %d\n", k);
+			k++;
+			printf("if isregularchar\n");
 			words++;
 			while (*str && isregularchar(*str, str))
+			{
+				printf("here\n");
 				str++;
+			}
 		}
 		else
 		{
@@ -92,6 +101,7 @@ size_t	count_words_tokenizer(const char *input)
 		}
 		str++;
 	}
+	printf("words before return: %ld\n", words);
 	return (words);
 }
 
@@ -102,7 +112,7 @@ t_token	*tokenizer(const char *input)
 	size_t idx;
 
 	token_arr = (t_token *)malloc(sizeof(t_token)
-		* (count_words_tokenizer(input) + 1));
+			* (count_words_tokenizer(input) + 1));
 	ft_memset(token_arr, 0, sizeof(t_token) * (count_words_tokenizer(input)
 			+ 1));
 	if (!token_arr)
