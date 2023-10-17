@@ -34,11 +34,14 @@ size_t	count_words_tokenizer(const char *str)
 	char	quote;
 
 	words = 0;
-	while (*str && ft_isspace(*str))
-		str++;
 	while (*str)
 	{
-		if (isspecialchar(*str))
+		if (ft_isspace(*str))
+		{
+			while (*str && ft_isspace(*str))
+				str++;
+		}
+		else if (isspecialchar(*str))
 		{
 			words++;
 			if (*str == '$')
@@ -57,11 +60,6 @@ size_t	count_words_tokenizer(const char *str)
 					str++;
 				str++;
 			}
-		}
-		else if (ft_isspace(*str))
-		{
-			while (*str && ft_isspace(*str))
-				str++;
 		}
 		else if (isregularchar(*str, str))
 		{
