@@ -133,17 +133,17 @@ typedef struct s_node_list
 }						t_node_list;
 
 t_ast_node				*build_ast(t_lexeme *lexemes, int start, int end);
-t_token					*tokenizer(const char *input);
+t_token					*tokenizer(const char *input, size_t token_count);
 size_t					count_words_tokenizer(const char *input);
 t_lexeme				*lexer(t_token *token_arr, char **envp,
 							size_t token_count);
 int						ft_isvalidvarname(char c);
-void	collect_heredoc_content(t_token *token_arr,
-								size_t token_count);
+void					collect_heredoc_content(t_token *token_arr,
+							size_t token_count);
 /* Debug */
 void					print_token_arr(t_token *token_arr, size_t token_count);
-void	print_lexeme_arr(t_lexeme *lexeme_arr,
-						size_t lexeme_count);
+void					print_lexeme_arr(t_lexeme *lexeme_arr,
+							size_t lexeme_count);
 void					print_ast(t_ast_node *node, int depth);
 void					print_ast_new(t_ast_node *node);
 void					debug_ast(t_ast_node *node);
@@ -154,9 +154,8 @@ size_t					count_pipes(t_lexeme *lexeme_arr, size_t token_count);
 // not using these
 unsigned int			hash(const char *key);
 // not using these
-void	handle_without_pipes(t_ast_node *ast_root,
-							char *dir_paths,
-							char **envp);
+void					handle_without_pipes(t_ast_node *ast_root,
+							char *dir_paths, char **envp);
 void					handle_pipes(t_ast_node *ast_root, char *dir_paths,
 							char **envp);
 void					handle_redirections(t_ast_node *node);

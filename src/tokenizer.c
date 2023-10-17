@@ -71,8 +71,7 @@ size_t	count_words_tokenizer(const char *str)
 		}
 		else
 		{
-			ft_putendl_fd("Warning: Unexpected character encountered during tokenization.",
-				STDERR_FILENO);
+			ft_putendl_fd("Warning: Unexpected char.", STDERR_FILENO);
 			str++;
 		}
 		if (*str != '\0')
@@ -81,16 +80,14 @@ size_t	count_words_tokenizer(const char *str)
 	return (words);
 }
 
-t_token	*tokenizer(const char *input)
+t_token	*tokenizer(const char *input, size_t token_count)
 {
 	t_token *token_arr;
 	char *str;
 	size_t idx;
 
-	token_arr = (t_token *)malloc(sizeof(t_token)
-			* (count_words_tokenizer(input) + 1));
-	ft_memset(token_arr, 0, sizeof(t_token) * (count_words_tokenizer(input)
-			+ 1));
+	token_arr = (t_token *)malloc(sizeof(t_token) * (token_count + 1));
+	ft_memset(token_arr, 0, sizeof(t_token) * (token_count + 1));
 	if (!token_arr)
 		return (NULL);
 	str = (char *)input;

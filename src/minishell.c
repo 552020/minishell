@@ -93,7 +93,7 @@ int	main(int argc, char **argv, char **envp)
 		token_count = count_words_tokenizer(input);
 		if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_TOKENIZER)
 			printf("Token count: %zu\n\n", token_count);
-		token_arr = tokenizer(input);
+		token_arr = tokenizer(input, token_count);
 		if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_TOKENIZER)
 			print_token_arr(token_arr, token_count);
 		// i = 0;
