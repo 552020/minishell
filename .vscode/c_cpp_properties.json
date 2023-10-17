@@ -2,7 +2,7 @@
   "configurations": [
     {
       "name": "Linux",
-      "includePath": ["${workspaceFolder}/**", "${workspaceFolder}/dev/include"],
+      "includePath": ["${workspaceFolder}/**", "${workspaceFolder}/include", "${workspaceFolder}/src"],
 
       "defines": [],
       "compilerPath": "/usr/bin/gcc",
