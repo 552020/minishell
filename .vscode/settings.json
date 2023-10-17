@@ -1,8 +1,16 @@
+
 {
   "[c]": {
     "editor.defaultFormatter": "keyhr.42-c-format",
     "editor.formatOnSave": true
   },
   "editor.insertSpaces": false,
-  "editor.tabSize": 4
+  "editor.tabSize": 4,
+  "keybindings": [
+    {
+      "key": "ctrl+f",
+      "command": "-editor.action.startFindReplaceAction",
+      "when": "editorFocus"
+    }
+  ]
 }

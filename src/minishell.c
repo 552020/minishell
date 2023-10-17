@@ -26,12 +26,12 @@ int	main(int argc, char **argv, char **envp)
 	t_lexeme		*lexeme_arr;
 	t_ast_node		*ast_root;
 	size_t			token_count;
-	size_t			i;
 	t_debug_level	DEBUG_LEVEL;
 	t_env_table		table;
 	char			**my_envp;
 	char			*my_env_value;
 
+	// size_t			i;
 	DEBUG_LEVEL = DEBUG_ALL;
 	// char		*key;
 	// char		*value;
@@ -143,7 +143,7 @@ int	main(int argc, char **argv, char **envp)
 		// }
 		// else
 		// {
-		// 	printf("Unknown command\n");
+		printf("Unknown command\n");
 		// }
 		// free(input); // Free memory allocated by readline()
 	}

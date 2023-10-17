@@ -50,10 +50,15 @@ size_t	count_words_tokenizer(const char *input)
 	words = 0;
 	// Skip initial spaces
 	while (*str && ft_isspace(*str))
+	{
 		str++;
+		printf("initial spaces\n");
+		printf("str: %c\n", *str);
+	}
 	while (*str)
 	{
-		// printf("str: %c\n", *str);
+		printf("while *str\n");
+		printf("str: %c\n", *str);
 		if (isspecialchar(*str))
 		{
 			printf("if is ispecialchar\n");
@@ -90,8 +95,13 @@ size_t	count_words_tokenizer(const char *input)
 			while (*str && isregularchar(*str, str))
 			{
 				printf("here\n");
+				printf("str: %c\n", *str);
 				str++;
 			}
+			printf("after skipping regular chars\n");
+			if (!*str)
+				printf("str is null\n");
+			printf("str: %c\n", *str);
 		}
 		else
 		{
@@ -99,7 +109,8 @@ size_t	count_words_tokenizer(const char *input)
 				STDERR_FILENO);
 			str++;
 		}
-		str++;
+		if (*str != '\0')
+			str++;
 	}
 	printf("words before return: %ld\n", words);
 	return (words);
