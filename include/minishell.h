@@ -73,6 +73,20 @@ typedef struct s_token
 	char				*str;
 }						t_token;
 
+int						ft_isspace(int c);
+int						isspecialchar(char c);
+int						isregularchar(char c, const char *str);
+void					skip_spaces(const char **str_ptr);
+void					count_word_special_char(const char **str_ptr,
+							size_t *words);
+size_t					count_words_tokenizer(const char *str);
+void					assign_redirect_in_heredoc(const char **str_ptr,
+							t_token *token_arr, size_t *idx);
+void					assign_redirect_out_append(const char **str_ptr,
+							t_token *token_arr, size_t *idx);
+void					assign_redirect_in_out_heredoc_append(const char **str_ptr,
+							t_token *token_arr, size_t *idx);
+
 /* Lexer */
 typedef enum e_lexeme_type
 {
