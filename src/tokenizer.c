@@ -15,7 +15,7 @@ int	isspecialchar(char c)
 	return (0);
 }
 
-int	isregularchar(char c, char *str)
+int	isregularchar(char c, const char *str)
 {
 	if (ft_isspace(c) || isspecialchar(c))
 		return (0);
@@ -28,13 +28,11 @@ int	isregularchar(char c, char *str)
 	return (1);
 }
 
-size_t	count_words_tokenizer(const char *input)
+size_t	count_words_tokenizer(const char *str)
 {
 	size_t	words;
-	char	*str;
 	char	quote;
 
-	str = (char *)input;
 	words = 0;
 	while (*str && ft_isspace(*str))
 		str++;
