@@ -12,5 +12,11 @@
       "command": "-editor.action.startFindReplaceAction",
       "when": "editorFocus"
     }
-  ]
+],
+"cSpell.words": [
+	"isregularchar",
+	"isspecialchar",
+	"isvalidvarname",
+	"putendl"
+]
 }

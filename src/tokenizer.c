@@ -2,19 +2,12 @@
 
 int	ft_isspace(int c)
 {
-	// ' ' (space) is 32 in ASCII
-	// '\t' (horizontal tab) is 9 in ASCII
-	// '\n' (newline) is 10 in ASCII
-	// '\v' (vertical tab) is 11 in ASCII
-	// '\f' (form feed) is 12 in ASCII
-	// '\r' (carriage return) is 13 in ASCII
 	if (c == 32 || (c >= 9 && c <= 13))
-		return (1); // Indicates success (it's a whitespace)
+		return (1);
 	else
-		return (0); // Indicates failure (it's not a whitespace)
+		return (0);
 }
 
-/* Check all special chars in the scope of the minishell*/
 int	isspecialchar(char c)
 {
 	if (c == '<' || c == '>' || c == '|' || c == '$' || c == '"' || c == '\'')
@@ -22,20 +15,17 @@ int	isspecialchar(char c)
 	return (0);
 }
 
-/* Check if it's a 'normal' char */
 int	isregularchar(char c, char *str)
 {
 	if (ft_isspace(c) || isspecialchar(c))
 		return (0);
 	if (c == '\'' || c == '"')
 	{
-		// If there's no matching quote, treat it as a regular character
 		if (!ft_strrchr(str, c))
 			return (1);
-		return (0); // Else, it's not a regular word character
+		return (0);
 	}
 	return (1);
-	// All other characters are considered regular word characters
 }
 
 size_t	count_words_tokenizer(const char *input)
@@ -48,24 +38,16 @@ size_t	count_words_tokenizer(const char *input)
 	k = 1;
 	str = (char *)input;
 	words = 0;
-	// Skip initial spaces
 	while (*str && ft_isspace(*str))
-	{
 		str++;
-		printf("initial spaces\n");
-		printf("str: %c\n", *str);
-	}
 	while (*str)
 	{
-		printf("while *str\n");
-		printf("str: %c\n", *str);
 		if (isspecialchar(*str))
 		{
-			printf("if is ispecialchar\n");
 			words++;
-			if (*str == '$') // Handle the $VAR case
+			if (*str == '$')
 			{
-				str++; // Move past the $
+				str++;
 				while (*str && ft_isvalidvarname(*str))
 					str++;
 			}
@@ -74,16 +56,15 @@ size_t	count_words_tokenizer(const char *input)
 			else if (*str == '\'' || *str == '"')
 			{
 				quote = *str;
-				str++; // Move past the current quote
+				str++;
 				while (*str && *str != quote)
 					str++;
-				str++; // Move past the current quote
+				str++;
 			}
 		}
 		else if (ft_isspace(*str))
 		{
-			// Increment word count for the previous word
-			while (*str && ft_isspace(*str)) // Skip spaces
+			while (*str && ft_isspace(*str))
 				str++;
 		}
 		else if (isregularchar(*str, str))
@@ -150,7 +131,6 @@ t_token	*tokenizer(const char *input)
 			{
 				token_arr[idx].type = T_REDIRECT_IN;
 				token_arr[idx].str = ft_strdup("<");
-				// if (*(str + 1) == '<')
 				if (*(str + 1) == '<')
 
 				{
@@ -158,13 +138,11 @@ t_token	*tokenizer(const char *input)
 					free(token_arr[idx].str);
 					token_arr[idx].str = ft_strdup("<<");
 					str++;
-					// Skip spaces after '<<'
 					while (ft_isspace(*(str + 1)))
 						str++;
-					// Now, capture the delimiter
 					if (isregularchar(*(str + 1), str + 1))
 					{
-						idx++; // Move to the next token
+						idx++;
 						char *start = str + 1;
 						while (*str && isregularchar(*str, str)
 							&& !ft_isspace(*str))
@@ -180,7 +158,7 @@ t_token	*tokenizer(const char *input)
 					}
 				}
 			}
-			else // if (*str == '>')
+			else
 			{
 				token_arr[idx].type = T_REDIRECT_OUT;
 				token_arr[idx].str = ft_strdup(">");
@@ -241,8 +219,7 @@ t_token	*tokenizer(const char *input)
 			str++;
 		}
 	}
-	// Finalization
-	token_arr[idx].type = T_END; // To mark the end of the token array
+	token_arr[idx].type = T_END;
 	token_arr[idx].str = NULL;
 
 	return (token_arr);
