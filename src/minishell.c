@@ -26,7 +26,6 @@ int	main(int argc, char **argv, char **envp)
 	t_lexeme		*lexeme_arr;
 	t_ast_node		*ast_root;
 	size_t			token_count;
-	size_t			i;
 	t_debug_level	DEBUG_LEVEL;
 	t_env_table		table;
 	char			**my_envp;
@@ -93,19 +92,18 @@ int	main(int argc, char **argv, char **envp)
 		token_count = count_words_tokenizer(input);
 		if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_TOKENIZER)
 			printf("Token count: %zu\n\n", token_count);
-		token_arr = tokenizer(input);
+		token_arr = create_token_array(token_count);
+		token_arr = tokenizer(token_arr, input);
 		if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_TOKENIZER)
-		{
 			print_token_arr(token_arr, token_count);
-			i = 0;
-			while (i < token_count + 1)
-			{
-				printf("Token %zu: type=%d, str=%s\n", i + 1, token_arr[i].type,
-					token_arr[i].str);
-				i++;
-			}
-		}
-
+		// i = 0;
+		// printf("\n");
+		// while (i < token_count + 1)
+		// {
+		// 	printf("Token %zu: type=%d, str=%s\n", i + 1, token_arr[i].type,
+		// 		token_arr[i].str);
+		// 	i++;
+		// }
 		/* Lexing */
 		lexeme_arr = lexer(token_arr, envp, token_count);
 		if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_AST)
@@ -144,7 +142,7 @@ int	main(int argc, char **argv, char **envp)
 		// }
 		// else
 		// {
-		// 	printf("Unknown command\n");
+		printf("Unknown command\n");
 		// }
 		// free(input); // Free memory allocated by readline()
 	}

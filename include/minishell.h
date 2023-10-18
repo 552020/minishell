@@ -9,9 +9,16 @@
 #include <string.h>
 #include <sys/wait.h>
 
+#ifndef MINISHELL_H
+# define MINISHELL_H
+
+/* Error messages*/
+
+# define UNEXPECTED_CHAR_WARNING "Warning: Unexpected character during tokenization."
+
 /* Environment Variables*/
 
-#define TABLE_SIZE 42
+# define TABLE_SIZE 42
 
 typedef enum e_debug_level
 {
@@ -73,6 +80,30 @@ typedef struct s_token
 	char				*str;
 }						t_token;
 
+int						ft_isspace(int c);
+int						isspecialchar(char c);
+int						isregularchar(char c, const char *str);
+void					skip_spaces(const char **str_ptr);
+void					count_word_special_char(const char **str_ptr,
+							size_t *words);
+size_t					count_words_tokenizer(const char *str);
+t_token					*create_token_array(size_t token_count);
+void					assign_redirect_in_heredoc(const char **str_ptr,
+							t_token *token_arr, size_t *idx);
+void					assign_redirect_out_append(const char **str_ptr,
+							t_token *token_arr, size_t *idx);
+void					assign_redirect_in_out_heredoc_append(const char **str_ptr,
+							t_token *token_arr, size_t *idx);
+void					handle_unexpected_char(const char **str_ptr);
+void					assign_word(const char **str_ptr, t_token *token_arr,
+							size_t *idx);
+void					assign_pipe(const char **str_ptr, t_token *token_arr,
+							size_t *idx);
+void					assign_env_var(const char **str_ptr, t_token *token_arr,
+							size_t *idx);
+void					assign_quotes(const char **str_ptr, t_token *token_arr,
+							size_t *idx);
+
 /* Lexer */
 typedef enum e_lexeme_type
 {
@@ -133,17 +164,17 @@ typedef struct s_node_list
 }						t_node_list;
 
 t_ast_node				*build_ast(t_lexeme *lexemes, int start, int end);
-t_token					*tokenizer(const char *input);
+t_token					*tokenizer(t_token *token_arr, const char *input);
 size_t					count_words_tokenizer(const char *input);
 t_lexeme				*lexer(t_token *token_arr, char **envp,
 							size_t token_count);
 int						ft_isvalidvarname(char c);
-void	collect_heredoc_content(t_token *token_arr,
-								size_t token_count);
+void					collect_heredoc_content(t_token *token_arr,
+							size_t token_count);
 /* Debug */
 void					print_token_arr(t_token *token_arr, size_t token_count);
-void	print_lexeme_arr(t_lexeme *lexeme_arr,
-						size_t lexeme_count);
+void					print_lexeme_arr(t_lexeme *lexeme_arr,
+							size_t lexeme_count);
 void					print_ast(t_ast_node *node, int depth);
 void					print_ast_new(t_ast_node *node);
 void					debug_ast(t_ast_node *node);
@@ -154,10 +185,11 @@ size_t					count_pipes(t_lexeme *lexeme_arr, size_t token_count);
 // not using these
 unsigned int			hash(const char *key);
 // not using these
-void	handle_without_pipes(t_ast_node *ast_root,
-							char *dir_paths,
-							char **envp);
+void					handle_without_pipes(t_ast_node *ast_root,
+							char *dir_paths, char **envp);
 void					handle_pipes(t_ast_node *ast_root, char *dir_paths,
 							char **envp);
 void					handle_redirections(t_ast_node *node);
-void ft_heredoc(char *delimiter);
+void					ft_heredoc(char *delimiter);
+
+#endif
