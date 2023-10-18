@@ -9,9 +9,16 @@
 #include <string.h>
 #include <sys/wait.h>
 
+#ifndef MINISHELL_H
+# define MINISHELL_H
+
+/* Error messages*/
+
+# define UNEXPECTED_CHAR_WARNING "Warning: Unexpected character during tokenization."
+
 /* Environment Variables*/
 
-#define TABLE_SIZE 42
+# define TABLE_SIZE 42
 
 typedef enum e_debug_level
 {
@@ -80,12 +87,22 @@ void					skip_spaces(const char **str_ptr);
 void					count_word_special_char(const char **str_ptr,
 							size_t *words);
 size_t					count_words_tokenizer(const char *str);
+t_token					*create_token_array(size_t token_count);
 void					assign_redirect_in_heredoc(const char **str_ptr,
 							t_token *token_arr, size_t *idx);
 void					assign_redirect_out_append(const char **str_ptr,
 							t_token *token_arr, size_t *idx);
 void					assign_redirect_in_out_heredoc_append(const char **str_ptr,
 							t_token *token_arr, size_t *idx);
+void					handle_unexpected_char(const char **str_ptr);
+void					assign_word(const char **str_ptr, t_token *token_arr,
+							size_t *idx);
+void					assign_pipe(const char **str_ptr, t_token *token_arr,
+							size_t *idx);
+void					assign_env_var(const char **str_ptr, t_token *token_arr,
+							size_t *idx);
+void					assign_quotes(const char **str_ptr, t_token *token_arr,
+							size_t *idx);
 
 /* Lexer */
 typedef enum e_lexeme_type
@@ -147,7 +164,7 @@ typedef struct s_node_list
 }						t_node_list;
 
 t_ast_node				*build_ast(t_lexeme *lexemes, int start, int end);
-t_token					*tokenizer(const char *input, size_t token_count);
+t_token					*tokenizer(t_token *token_arr, const char *input);
 size_t					count_words_tokenizer(const char *input);
 t_lexeme				*lexer(t_token *token_arr, char **envp,
 							size_t token_count);
@@ -173,3 +190,5 @@ void					handle_without_pipes(t_ast_node *ast_root,
 void					handle_pipes(t_ast_node *ast_root, char *dir_paths,
 							char **envp);
 void					handle_redirections(t_ast_node *node);
+
+#endif

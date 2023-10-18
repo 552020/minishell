@@ -19,4 +19,9 @@
 	"isvalidvarname",
 	"putendl"
 ],
+"workbench.colorCustomizations": {
+	"activityBar.background": "#203210",
+	"titleBar.activeBackground": "#2D4717",
+	"titleBar.activeForeground": "#F9FCF6"
+},
 }

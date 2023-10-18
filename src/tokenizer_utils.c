@@ -36,3 +36,9 @@ void	skip_spaces(const char **str_ptr)
 			(*str_ptr)++;
 	}
 }
+
+void	handle_unexpected_char(const char **str_ptr)
+{
+	ft_putendl_fd(UNEXPECTED_CHAR_WARNING, 2);
+	(*str_ptr)++;
+}
