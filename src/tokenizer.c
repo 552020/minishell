@@ -102,7 +102,7 @@ t_token	*tokenizer(const char *input)
 	size_t idx;
 
 	token_arr = (t_token *)malloc(sizeof(t_token)
-		* (count_words_tokenizer(input) + 1));
+			* (count_words_tokenizer(input) + 1));
 	ft_memset(token_arr, 0, sizeof(t_token) * (count_words_tokenizer(input)
 			+ 1));
 	if (!token_arr)
@@ -143,12 +143,12 @@ t_token	*tokenizer(const char *input)
 					// Now, capture the delimiter
 					if (isregularchar(*(str + 1), str + 1))
 					{
+						str++;
 						idx++; // Move to the next token
-						char *start = str + 1;
+						char *start = str;
 						while (*str && isregularchar(*str, str)
 							&& !ft_isspace(*str))
 							str++;
-
 						token_arr[idx].type = T_HEREDOC_DELIMITER;
 						token_arr[idx].str = ft_substr(start, 0, str - start);
 					}
