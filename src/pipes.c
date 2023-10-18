@@ -57,19 +57,82 @@ char	*path_finder(char *cmd, char *dir_paths)
 	return (NULL);
 }
 
+
+
+// void	here_doc(char *limiter, int argc)
+// {
+// 	pid_t	pid;
+// 	int		fd[2];
+// 	char	*line;
+
+// 	if (argc < 6)
+// 		wrong_input();
+// 	if (pipe(fd) == -1)
+// 		error_exit();
+// 	pid = fork();
+// 	if (pid == 0)
+// 	{
+// 		close(fd[0]);
+// 		line = NULL;
+// 		while (line != limiter)
+// 		{
+// 			line = get_next_line(0);
+// 			if (ft_strncmp(line, limiter, ft_strlen(limiter)) == 0 && 
+// 				ft_strlen(limiter) == ft_strlen(line) - 1)
+// 				exit(EXIT_SUCCESS);
+// 			write(fd[1], line, ft_strlen(line));
+// 		}
+// 	}
+// 	close(fd[1]);
+// 	dup2(fd[0], STDIN_FILENO);
+// 	wait(NULL);
+// }
+
+void ft_heredoc(char *delimiter)
+{
+    pid_t	pid;
+	int		fd[2];
+    // Prompt the user for input until the heredoc delimiter is entered
+    char *line;
+	if (pipe(fd) == -1)
+		error_exit();
+    pid = fork();
+	if (pid == 0)
+    {
+		close(fd[0]);
+		line = NULL;
+		while (1)
+		{
+			line = readline("heredoc> ");
+            line = ft_strjoin(line, "\n");
+			if (ft_strncmp(line, delimiter, ft_strlen(delimiter)) == 0 && 
+				ft_strlen(delimiter) == ft_strlen(line) - 1)
+            {
+                free(line);
+				exit(EXIT_SUCCESS);
+            }
+			write(fd[1], line, ft_strlen(line));
+            free(line);
+		}
+	}
+    close(fd[1]);
+	dup2(fd[0], STDIN_FILENO);
+	wait(NULL);
+}
+
 void handle_redirections(t_ast_node *node)
 {
     int filein;
     int fileout;
 
-    // insert heredoc here
+    // insert heredoc here    try  "<< infile.txt cat"
     filein = 0;
     fileout = 1;
     if (node->input_file)
     {
         printf("Entered input file\n");
         // printf("input file is %s!!!!!!!!!!!!!!!!!!!\n", node->input_file);
-        filein = open(node->input_file, O_RDONLY, 0777);
+            filein = open(node->input_file, O_RDONLY, 0777);
         if (filein == -1)
         {
             // todo : add free and proper exit
@@ -78,6 +141,10 @@ void handle_redirections(t_ast_node *node)
         dup2(filein, STDIN_FILENO);
         close(filein);
     }
+    printf("node->heredoc: %d\n", node->heredoc);
+    printf("node->heredoc_del: %s\n", node->heredoc_del);
+    if (node->heredoc && node->heredoc_del)
+        ft_heredoc(node->heredoc_del);
     if (node->output_file != NULL) 
     {
         if (node->append)
@@ -197,7 +264,7 @@ void handle_without_pipes(t_ast_node *ast_root, char *dir_paths,char ** envp)
     }
     if (pid == 0) 
 	{
-        printf("executing command......\n");
+        // printf("executing command......\n");
         execute_command(ast_root, dir_paths, envp);
     }
     waitpid(pid, NULL, 0);
@@ -232,8 +299,9 @@ void handle_pipes(t_ast_node *ast_root, char *dir_paths,char ** envp)
             perror("fork error");
             exit(EXIT_FAILURE);
         }
-		if (left_pid == 0) {
-            printf(" left child process created\n");
+		if (left_pid == 0) 
+        {
+            // printf(" left child process created\n");
             close(pipe_fd[0]); // Close the read end of the pipe
             dup2(pipe_fd[1], STDOUT_FILENO); // Redirect stdout to the pipe
             close(pipe_fd[1]); // Close the write end of the pipe
@@ -253,7 +321,7 @@ void handle_pipes(t_ast_node *ast_root, char *dir_paths,char ** envp)
         }
         if (right_pid == 0)
         {
-            printf(" right child process created\n");
+            // printf(" right child process created\n");
             close(pipe_fd[1]); // Close the write end of the pipe
             dup2(pipe_fd[0], STDIN_FILENO); // Redirect stdin from the pipe
             close(pipe_fd[0]); // Close the read end of the pipe

@@ -31,7 +31,6 @@ int	main(int argc, char **argv, char **envp)
 	char			**my_envp;
 	char			*my_env_value;
 
-	// size_t			i;
 	DEBUG_LEVEL = DEBUG_ALL;
 	// char		*key;
 	// char		*value;
@@ -106,7 +105,6 @@ int	main(int argc, char **argv, char **envp)
 		// 	i++;
 		// }
 		/* Lexing */
-		printf("***Lexing***\n\n");
 		lexeme_arr = lexer(token_arr, envp, token_count);
 		if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_AST)
 			printf("***Parsing***\n\n");
@@ -120,7 +118,7 @@ int	main(int argc, char **argv, char **envp)
 			printf("\n*** AST nodes content ***\n\n");
 			debug_ast(ast_root);
 		}
-		print_ast(ast_root, 7);
+		// print_ast(ast_root, 7);
 		/* execution */
 		// Finding PATH environment variable
 		// unsigned int idx = hash("PATH");

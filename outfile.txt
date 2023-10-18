@@ -1,5 +1,1 @@
-Entered input file
-Entered input file
-Hello world
 123
-abc
