@@ -19,14 +19,6 @@ int	main(int argc, char **argv, char **envp)
 	{
 		input = read_input();
 		tokenize_main(&token_count, &token_arr, input, DEBUG_LEVEL);
-		// i = 0;
-		// printf("\n");
-		// while (i < token_count + 1)
-		// {
-		// 	printf("Token %zu: type=%d, str=%s\n", i + 1, token_arr[i].type,
-		// 		token_arr[i].str);
-		// 	i++;
-		// }
 		/* Lexing */
 		lexeme_arr = lexer(token_arr, envp, token_count);
 		if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_AST)
