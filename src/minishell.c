@@ -13,17 +13,13 @@ int	main(int argc, char **argv, char **envp)
 	char			*my_env_value;
 
 	DEBUG_LEVEL = DEBUG_ALL;
-	// char		*key;
-	// char		*value;
-	// char		**key_value;
-	// char		*key_value_str;
 	if (argc != 1)
 	{
 		printf("Usage: %s\n", argv[0]);
 		return (1);
 	}
 	initialize_table(&table, envp);
-	while (1) // Infinite loop to keep the shell running
+	while (1)
 	{
 		input = readline("$> ");
 		add_history(input);
