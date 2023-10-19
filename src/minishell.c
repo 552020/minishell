@@ -25,20 +25,14 @@ int	main(int argc, char **argv, char **envp)
 	initialize_table(&table, envp);
 	while (1) // Infinite loop to keep the shell running
 	{
-		input = readline("$> "); // Display prompt and read input from user
-		add_history(input);      // Add input to history
-		if (!input)              // Handle EOF (End Of File, ctrl-D)
+		input = readline("$> ");
+		add_history(input);
+		if (!input) // Handle EOF (End Of File, ctrl-D)
 		{
 			printf("\n");
 			break ;
 		}
-		// Handle 'env' command - just for testing
-		if (ft_strncmp(input, "env", ft_strlen(input)) == 0)
-		{
-			printf("env command\n");
-			env(table.table);
-			continue ;
-		}
+	
 		// Handle 'export' command - just for testing
 		//
 		// if (ft_strncmp(input, "export ", 7) == 0)
