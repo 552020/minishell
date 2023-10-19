@@ -32,14 +32,6 @@ int	main(int argc, char **argv, char **envp)
 			printf("\n");
 			break ;
 		}
-		// Handle  'unset' command - just for testing
-		// if (ft_strncmp(input, "unset ", 6) == 0)
-		// {
-		// 	key = ft_strdup(input + 6);
-		// 	unset(env_table->table, key);
-		// 	free(key);
-		// 	continue ;
-		// }
 		if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_TOKENIZER)
 			printf("readline: %s\n", input);
 		/* Tokenization */
