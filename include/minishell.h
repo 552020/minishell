@@ -20,17 +20,6 @@
 
 # define TABLE_SIZE 42
 
-typedef enum e_debug_level
-{
-	DEBUG_OFF,       // No debugging
-	DEBUG_TOKENIZER, // Debug the tokenizer
-	DEBUG_LEXER,     // Debug the lexer
-	DEBUG_AST,       // Debug the AST
-	DEBUG_ALL        // Debug everything
-}						t_debug_level;
-
-extern t_debug_level	DEBUG_LEVEL;
-
 /* envp */
 
 typedef struct s_env_var
@@ -164,6 +153,21 @@ typedef struct s_node_list
 }						t_node_list;
 
 t_ast_node				*build_ast(t_lexeme *lexemes, int start, int end);
+
+/* Debugger */
+
+typedef enum e_debug_level
+{
+	DEBUG_OFF,       // No debugging
+	DEBUG_TOKENIZER, // Debug the tokenizer
+	DEBUG_LEXER,     // Debug the lexer
+	DEBUG_AST,       // Debug the AST
+	DEBUG_ALL        // Debug everything
+}						t_debug_level;
+
+extern t_debug_level	DEBUG_LEVEL;
+
+/* Varia */
 t_token					*tokenizer(t_token *token_arr, const char *input);
 size_t					count_words_tokenizer(const char *input);
 t_lexeme				*lexer(t_token *token_arr, char **envp,
