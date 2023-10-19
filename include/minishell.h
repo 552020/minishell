@@ -168,6 +168,8 @@ typedef enum e_debug_level
 extern t_debug_level	DEBUG_LEVEL;
 
 /* Varia */
+void					check_input(int argc, char **argv);
+char					*read_input(void);
 t_token					*tokenizer(t_token *token_arr, const char *input);
 size_t					count_words_tokenizer(const char *input);
 t_lexeme				*lexer(t_token *token_arr, char **envp,

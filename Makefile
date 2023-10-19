@@ -8,8 +8,8 @@ INCLUDES = -I./include  -I./libft/include
 SRC_DIR = src
 OBJ_DIR = obj
 
-SRCS = minishell.c tokenizer.c tokenizer_utils.c tokenizer_assign.c lexer.c utils.c parser.c debug.c env_vars.c \
-		pipes.c tokenizer_count_words.c tokenizer_assign_redirect.c builtin_pwd.c
+SRCS = minishell.c tokenizer.c tokenizer_utils.c tokenizer_assign.c lexer.c utils.c parser.c debug.c env_vars.c check_input.c \
+		pipes.c tokenizer_count_words.c tokenizer_assign_redirect.c builtin_pwd.c read_input.c
 # OBJS = $(SRCS:.c=.o)
 OBJS = $(addprefix $(OBJ_DIR)/, $(SRCS:.c=.o))
 

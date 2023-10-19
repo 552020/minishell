@@ -17,13 +17,7 @@ int	main(int argc, char **argv, char **envp)
 	initialize_table(&table, envp);
 	while (1)
 	{
-		input = readline("$> ");
-		add_history(input);
-		if (!input) // Handle EOF (End Of File, ctrl-D)
-		{
-			printf("\n");
-			break ;
-		}
+		input = read_input();
 		if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_TOKENIZER)
 			printf("readline: %s\n", input);
 		/* Tokenization */
