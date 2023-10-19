@@ -1,34 +1,24 @@
 #include "minishell.h"
 
+t_debug_level	DEBUG_LEVEL = DEBUG_ALL;
+
 int	main(int argc, char **argv, char **envp)
 {
-	t_env_table		table;
-	char			*input;
-	size_t			token_count;
-	t_token			*token_arr;
-	t_lexeme		*lexeme_arr;
-	t_ast_node		*ast_root;
-	t_debug_level	DEBUG_LEVEL;
-	char			**my_envp;
-	char			*my_env_value;
+	t_env_table	table;
+	char		*input;
+	size_t		token_count;
+	t_token		*token_arr;
+	t_lexeme	*lexeme_arr;
+	t_ast_node	*ast_root;
+	char		**my_envp;
+	char		*my_env_value;
 
-	DEBUG_LEVEL = DEBUG_ALL;
 	check_input(argc, argv);
 	initialize_table(&table, envp);
 	while (1)
 	{
 		input = read_input();
-	
-		/* Tokenization */
-		if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_TOKENIZER)
-			printf("\n***Tokenization***\n\n");
-		token_count = count_words_tokenizer(input);
-		if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_TOKENIZER)
-			printf("Token count: %zu\n\n", token_count);
-		token_arr = create_token_array(token_count);
-		token_arr = tokenizer(token_arr, input);
-		if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_TOKENIZER)
-			print_token_arr(token_arr, token_count);
+		tokenize_main(&token_count, &token_arr, input, DEBUG_LEVEL);
 		// i = 0;
 		// printf("\n");
 		// while (i < token_count + 1)

@@ -12,6 +12,21 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+/* Debugger */
+/* Needs to be high */
+/* TODO: Achthung external variable*/
+
+typedef enum e_debug_level
+{
+	DEBUG_OFF,       // No debugging
+	DEBUG_TOKENIZER, // Debug the tokenizer
+	DEBUG_LEXER,     // Debug the lexer
+	DEBUG_AST,       // Debug the AST
+	DEBUG_ALL        // Debug everything
+}						t_debug_level;
+
+extern t_debug_level	DEBUG_LEVEL;
+
 /* Error messages*/
 
 # define UNEXPECTED_CHAR_WARNING "Warning: Unexpected character during tokenization."
@@ -92,6 +107,8 @@ void					assign_env_var(const char **str_ptr, t_token *token_arr,
 							size_t *idx);
 void					assign_quotes(const char **str_ptr, t_token *token_arr,
 							size_t *idx);
+void					tokenize_main(size_t *token_count, t_token **token_arr,
+							char *input, t_debug_level DEBUG_LEVEL);
 
 /* Lexer */
 typedef enum e_lexeme_type
@@ -153,19 +170,6 @@ typedef struct s_node_list
 }						t_node_list;
 
 t_ast_node				*build_ast(t_lexeme *lexemes, int start, int end);
-
-/* Debugger */
-
-typedef enum e_debug_level
-{
-	DEBUG_OFF,       // No debugging
-	DEBUG_TOKENIZER, // Debug the tokenizer
-	DEBUG_LEXER,     // Debug the lexer
-	DEBUG_AST,       // Debug the AST
-	DEBUG_ALL        // Debug everything
-}						t_debug_level;
-
-extern t_debug_level	DEBUG_LEVEL;
 
 /* Varia */
 void					check_input(int argc, char **argv);
