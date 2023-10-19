@@ -16,7 +16,7 @@ char	*lookup_env_value(char *var_name, char **envp)
 	return (""); // bash returns an empty string if the variable is not found
 }
 
-t_lexeme	t_env_var_substitution(t_token *token, char **envp)
+t_lexeme	t_env_var_subs(t_token *token, char **envp)
 {
 	t_lexeme lexeme;
 	char *value;

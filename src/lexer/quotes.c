@@ -14,7 +14,7 @@ char	*strip_quotes(char *str)
 	// Return a substring without the first and last characters
 }
 
-t_lexeme	t_double_quote_var_substitution(t_token *token, char **envp)
+t_lexeme	t_double_quotes_var_subs(t_token *token, char **envp)
 {
 	char		*str;
 	char		*end;

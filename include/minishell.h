@@ -151,11 +151,23 @@ t_lexeme				redirect_out_target_lexeme(t_token *token);
 t_lexeme				redirect_append_lexeme(t_token *token);
 t_lexeme				heredoc_lexeme(t_token *token);
 t_lexeme				heredoc_delimiter_lexeme(t_token *token);
-t_lexeme				t_double_quote_var_substitution(t_token *token,
-							char **envp);
+t_lexeme				t_double_quotes_var_subs(t_token *token, char **envp);
 t_lexeme				single_quote_lexeme(t_token *token);
-t_lexeme				t_env_var_substitution(t_token *token, char **envp);
+t_lexeme				t_env_var_subs(t_token *token, char **envp);
 char					*lookup_env_value(char *var_name, char **envp);
+t_lexeme				*create_lexer_array(size_t token_count);
+t_lexeme				*lexer(t_token *token_arr, t_lexeme *lexeme_arr,
+							char **envp, size_t token_count);
+void					redirect_in_wrapper(t_lexeme *lexeme_arr,
+							t_token *token_arr, size_t *i, size_t token_count);
+void					redirect_out_wrapper(t_lexeme *lexeme_arr,
+							t_token *token_arr, size_t *i, size_t token_count);
+void					redirect_append_wrapper(t_lexeme *lexeme_arr,
+							t_token *token_arr, size_t *i, size_t token_count);
+void					heredoc_wrapper(t_lexeme *lexeme_arr,
+							t_token *token_arr, size_t *i);
+void					undefined_wrapper(t_lexeme *lexeme_arr,
+							t_token *token_arr, size_t *i);
 /* Parser */
 
 typedef enum e_node_type
@@ -190,8 +202,7 @@ void					check_input(int argc, char **argv);
 char					*read_input(void);
 t_token					*tokenizer(t_token *token_arr, const char *input);
 size_t					count_words_tokenizer(const char *input);
-t_lexeme				*lexer(t_token *token_arr, char **envp,
-							size_t token_count);
+
 int						ft_isvalidvarname(char c);
 void					collect_heredoc_content(t_token *token_arr,
 							size_t token_count);
