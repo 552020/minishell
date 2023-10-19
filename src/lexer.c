@@ -204,8 +204,6 @@ t_lexeme	*lexer(t_token *token_arr, char **envp, size_t token_count)
 	t_lexeme	*lexeme_arr;
 	int			command_flag;
 
-	// printf("Lexing...\n");
-	// printf("First round\n\n");
 	lexeme_arr = malloc(sizeof(t_lexeme) * (token_count + 1));
 	if (!lexeme_arr)
 	{
@@ -214,19 +212,15 @@ t_lexeme	*lexer(t_token *token_arr, char **envp, size_t token_count)
 	}
 	// TODO: maybe use ft_bzero instead or ft_calloc
 	ft_memset(lexeme_arr, 0, sizeof(t_lexeme) * (token_count + 1));
-	// print_token_arr(token_arr, token_count);
 	i = 0;
 	while (i < token_count)
 	{
 		if (token_arr[i].type == T_ENV_VAR)
 			lexeme_arr[i] = t_env_var_substitution(&token_arr[i], envp);
-		// token_arr[i] = t_env_var_substitution(&token_arr[i], envp);
 		else if (token_arr[i].type == T_DOUBLE_QUOTE)
 		{
 			lexeme_arr[i] = t_double_quote_var_substitution(&token_arr[i],
 				envp);
-			// printf("Lexeme: type=%d, value=%s\n", lexeme_arr[i].type,
-			// 	lexeme_arr[i].str);
 		}
 		else if (token_arr[i].type == T_SINGLE_QUOTE)
 			lexeme_arr[i] = single_quote_lexeme(&token_arr[i]);
@@ -276,11 +270,9 @@ t_lexeme	*lexer(t_token *token_arr, char **envp, size_t token_count)
 		i++;
 	}
 	i = 0;
-	// printf("Lexeme array after first round:\n");
-	// print_lexeme_arr(lexeme_arr, token_count);
-	// printf("\nSecond round\n\n");
 	i = 0;
 	// 0 means we haven't encountered a command yet, 1 means we have
+	// TODO: write a macro for that
 	command_flag = 0;
 	while (i < token_count)
 	{

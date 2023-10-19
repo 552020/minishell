@@ -19,7 +19,7 @@ int	main(int argc, char **argv, char **envp)
 	{
 		input = read_input();
 		tokenize_main(&token_count, &token_arr, input, DEBUG_LEVEL);
-		/* Lexing */
+		
 		lexeme_arr = lexer(token_arr, envp, token_count);
 		if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_AST)
 			printf("***Parsing***\n\n");
