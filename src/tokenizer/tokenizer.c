@@ -12,7 +12,7 @@ t_token	*create_token_array(size_t token_count)
 
 t_token	*tokenizer(t_token *token_arr, const char *str)
 {
-	size_t idx;
+	size_t	idx;
 
 	idx = 0;
 	while (*str)
@@ -34,4 +34,17 @@ t_token	*tokenizer(t_token *token_arr, const char *str)
 	token_arr[idx].type = T_END;
 	token_arr[idx].str = NULL;
 	return (token_arr);
+}
+
+void	tokenize(size_t *token_count, t_token **token_arr, char *input)
+{
+	if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_TOKENIZER)
+		printf("\n***Tokenization***\n\n");
+	*token_count = count_words_tokenizer(input);
+	if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_TOKENIZER)
+		printf("Token count: %zu\n\n", *token_count);
+	*token_arr = create_token_array(*token_count);
+	*token_arr = tokenizer(*token_arr, input);
+	if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_TOKENIZER)
+		print_token_arr(*token_arr, *token_count);
 }

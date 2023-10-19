@@ -12,13 +12,9 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-/* Error messages*/
-
-# define UNEXPECTED_CHAR_WARNING "Warning: Unexpected character during tokenization."
-
-/* Environment Variables*/
-
-# define TABLE_SIZE 42
+/* Debugger */
+/* Needs to be high */
+/* TODO: Achthung external variable*/
 
 typedef enum e_debug_level
 {
@@ -30,6 +26,14 @@ typedef enum e_debug_level
 }						t_debug_level;
 
 extern t_debug_level	DEBUG_LEVEL;
+
+/* Error messages*/
+
+# define UNEXPECTED_CHAR_WARNING "Warning: Unexpected character during tokenization."
+
+/* Environment Variables*/
+
+# define TABLE_SIZE 42
 
 /* envp */
 
@@ -103,6 +107,8 @@ void					assign_env_var(const char **str_ptr, t_token *token_arr,
 							size_t *idx);
 void					assign_quotes(const char **str_ptr, t_token *token_arr,
 							size_t *idx);
+void					tokenize(size_t *token_count, t_token **token_arr,
+							char *input);
 
 /* Lexer */
 typedef enum e_lexeme_type
@@ -136,6 +142,32 @@ typedef struct s_lexeme
 	t_lexeme_status		status;
 }						t_lexeme;
 
+t_lexeme				word_lexeme(t_token *token);
+t_lexeme				pipe_lexeme(t_token *token);
+t_lexeme				redirect_in_lexeme(t_token *token);
+t_lexeme				redirect_out_lexeme(t_token *token);
+t_lexeme				redirect_in_target_lexeme(t_token *token);
+t_lexeme				redirect_out_target_lexeme(t_token *token);
+t_lexeme				redirect_append_lexeme(t_token *token);
+t_lexeme				heredoc_lexeme(t_token *token);
+t_lexeme				heredoc_delimiter_lexeme(t_token *token);
+t_lexeme				t_double_quotes_var_subs(t_token *token, char **envp);
+t_lexeme				single_quote_lexeme(t_token *token);
+t_lexeme				t_env_var_subs(t_token *token, char **envp);
+char					*lookup_env_value(char *var_name, char **envp);
+t_lexeme				*create_lexer_array(size_t token_count);
+t_lexeme				*lexer(t_token *token_arr, t_lexeme *lexeme_arr,
+							char **envp, size_t token_count);
+void					redirect_in_wrapper(t_lexeme *lexeme_arr,
+							t_token *token_arr, size_t *i, size_t token_count);
+void					redirect_out_wrapper(t_lexeme *lexeme_arr,
+							t_token *token_arr, size_t *i, size_t token_count);
+void					redirect_append_wrapper(t_lexeme *lexeme_arr,
+							t_token *token_arr, size_t *i, size_t token_count);
+void					heredoc_wrapper(t_lexeme *lexeme_arr,
+							t_token *token_arr, size_t *i);
+void					undefined_wrapper(t_lexeme *lexeme_arr,
+							t_token *token_arr, size_t *i);
 /* Parser */
 
 typedef enum e_node_type
@@ -164,10 +196,13 @@ typedef struct s_node_list
 }						t_node_list;
 
 t_ast_node				*build_ast(t_lexeme *lexemes, int start, int end);
+
+/* Varia */
+void					check_input(int argc, char **argv);
+char					*read_input(void);
 t_token					*tokenizer(t_token *token_arr, const char *input);
 size_t					count_words_tokenizer(const char *input);
-t_lexeme				*lexer(t_token *token_arr, char **envp,
-							size_t token_count);
+
 int						ft_isvalidvarname(char c);
 void					collect_heredoc_content(t_token *token_arr,
 							size_t token_count);
@@ -191,5 +226,9 @@ void					handle_pipes(t_ast_node *ast_root, char *dir_paths,
 							char **envp);
 void					handle_redirections(t_ast_node *node);
 void					ft_heredoc(char *delimiter);
+void					insert_node_ht(t_env_var **table, const char *key,
+							const char *value);
+void					lexemize(size_t *token_count, t_token **token_arr,
+							t_lexeme **lexeme_arr, char **envp);
 
 #endif
