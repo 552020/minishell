@@ -1,21 +1,5 @@
 #include "minishell.h"
 
-#define MAX_PATH_SIZE 1024
-
-void	print_working_directory(void)
-{
-	char	buffer[MAX_PATH_SIZE];
-
-	if (getcwd(buffer, sizeof(buffer)) != NULL)
-	{
-		printf("%s\n", buffer);
-	}
-	else
-	{
-		perror("Error getting current working directory");
-	}
-}
-
 int	main(int argc, char **argv, char **envp)
 {
 	char			*input;
@@ -133,14 +117,6 @@ int	main(int argc, char **argv, char **envp)
 		free(token_arr);
 		free(lexeme_arr);
 		// TODO: We need to free the AST
-		// if (strcmp(input, "pwd") == 0)
-		// {
-		// 	print_working_directory();
-		// }
-		// else
-		// {
-		printf("Unknown command\n");
-		// }
 		// free(input); // Free memory allocated by readline()
 	}
 	return (0);
