@@ -2,13 +2,13 @@
 
 int	main(int argc, char **argv, char **envp)
 {
+	t_env_table		table;
 	char			*input;
+	size_t			token_count;
 	t_token			*token_arr;
 	t_lexeme		*lexeme_arr;
 	t_ast_node		*ast_root;
-	size_t			token_count;
 	t_debug_level	DEBUG_LEVEL;
-	t_env_table		table;
 	char			**my_envp;
 	char			*my_env_value;
 
@@ -18,8 +18,7 @@ int	main(int argc, char **argv, char **envp)
 	while (1)
 	{
 		input = read_input();
-		if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_TOKENIZER)
-			printf("readline: %s\n", input);
+	
 		/* Tokenization */
 		if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_TOKENIZER)
 			printf("\n***Tokenization***\n\n");

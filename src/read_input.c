@@ -11,5 +11,7 @@ char	*read_input(void)
 		// break:
 		// TODO: what to implement instead of this break
 	}
+	if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_TOKENIZER)
+		printf("readline: %s\n", input);
 	return (input);
 }
