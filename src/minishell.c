@@ -32,25 +32,6 @@ int	main(int argc, char **argv, char **envp)
 			printf("\n");
 			break ;
 		}
-	
-		// Handle 'export' command - just for testing
-		//
-		// if (ft_strncmp(input, "export ", 7) == 0)
-		// {
-		// 	key_value_str = ft_strdup(input + 7);
-		// 	key_value = ft_split(key_value_str, '=');
-		// 	if (key_value && key_value[0] && key_value[1])
-		// 	{
-		// 		key = key_value[0];
-		// 		value = key_value[1];
-		// 		export(env_table->table, key, value);
-		// 	}
-		// 	free(key_value_str);
-		// 	free(key_value[0]);
-		// 	free(key_value[1]);
-		// 	free(key_value);
-		// 	continue ;
-		// }
 		// Handle  'unset' command - just for testing
 		// if (ft_strncmp(input, "unset ", 6) == 0)
 		// {
