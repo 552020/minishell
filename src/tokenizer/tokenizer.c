@@ -36,8 +36,7 @@ t_token	*tokenizer(t_token *token_arr, const char *str)
 	return (token_arr);
 }
 
-void	tokenize_main(size_t *token_count, t_token **token_arr, char *input,
-		t_debug_level DEBUG_LEVEL)
+void	tokenize(size_t *token_count, t_token **token_arr, char *input)
 {
 	if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_TOKENIZER)
 		printf("\n***Tokenization***\n\n");

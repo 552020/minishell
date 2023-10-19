@@ -107,8 +107,8 @@ void					assign_env_var(const char **str_ptr, t_token *token_arr,
 							size_t *idx);
 void					assign_quotes(const char **str_ptr, t_token *token_arr,
 							size_t *idx);
-void					tokenize_main(size_t *token_count, t_token **token_arr,
-							char *input, t_debug_level DEBUG_LEVEL);
+void					tokenize(size_t *token_count, t_token **token_arr,
+							char *input);
 
 /* Lexer */
 typedef enum e_lexeme_type
@@ -228,5 +228,7 @@ void					handle_redirections(t_ast_node *node);
 void					ft_heredoc(char *delimiter);
 void					insert_node_ht(t_env_var **table, const char *key,
 							const char *value);
+void					lexemize(size_t *token_count, t_token **token_arr,
+							t_lexeme **lexeme_arr, char **envp);
 
 #endif

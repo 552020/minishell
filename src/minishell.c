@@ -18,9 +18,8 @@ int	main(int argc, char **argv, char **envp)
 	while (1)
 	{
 		input = read_input();
-		tokenize_main(&token_count, &token_arr, input, DEBUG_LEVEL);
-		lexeme_arr = create_lexer_array(token_count);
-		lexeme_arr = lexer(token_arr, lexeme_arr, envp, token_count);
+		tokenize(&token_count, &token_arr, input);
+		lexemize(&token_count, &token_arr, &lexeme_arr, envp);
 		if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_AST)
 			printf("***Parsing***\n\n");
 		ast_root = build_ast(lexeme_arr, 0, token_count - 1);

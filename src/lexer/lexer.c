@@ -76,3 +76,15 @@ t_lexeme	*lexer(t_token *token_arr, t_lexeme *lexeme_arr, char **envp,
 	command_and_args(token_count, lexeme_arr);
 	return (lexeme_arr);
 }
+
+void	lexemize(size_t *token_count, t_token **token_arr,
+		t_lexeme **lexeme_arr, char **envp)
+{
+	*lexeme_arr = create_lexer_array(*token_count);
+	*lexeme_arr = lexer(*token_arr, *lexeme_arr, envp, *token_count);
+	if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_LEXER)
+	{
+		printf("\n***Printing lexemes***\n\n");
+		print_lexeme_arr(*lexeme_arr, *token_count);
+	}
+}
