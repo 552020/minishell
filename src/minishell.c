@@ -1,8 +1,5 @@
 #include "minishell.h"
 
-// cc minishell.c -lreadline
-
-// You can choose the size of this buffer according to your needs.
 #define MAX_PATH_SIZE 1024
 
 void	print_working_directory(void)
