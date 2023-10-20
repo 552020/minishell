@@ -20,37 +20,18 @@ int	main(int argc, char **argv, char **envp)
 		input = read_input();
 		tokenize(&token_count, &token_arr, input);
 		lexemize(&token_count, &token_arr, &lexeme_arr, envp);
-		if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_AST)
-			printf("***Parsing***\n\n");
-		ast_root = build_ast(lexeme_arr, 0, token_count - 1);
-		if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_AST)
-		{
-			printf("\n***Printing AST***\n\n");
-			print_ast(ast_root, 7);
-			printf("\n***Printing AST NEW***\n\n");
-			print_ast_new(ast_root);
-			printf("\n*** AST nodes content ***\n\n");
-			debug_ast(ast_root);
-		}
-		// print_ast(ast_root, 7);
-		/* execution */
-		// Finding PATH environment variable
-		// unsigned int idx = hash("PATH");
-		// printf("Found PATH environment variable %s\n", table[idx]->value);
-		// size_t pipe_count;
-		// pipe_count = count_pipes(lexeme_arr, token_count);
+		parse(&ast_root, lexeme_arr, token_count);
 		my_envp = convert_hash_table_to_array(&table);
 		my_env_value = ft_getenv(table.table, "PATH");
 		if (ast_root->type == N_PIPE)
 			handle_pipes(ast_root, my_env_value, my_envp);
 		else if (ast_root->type == N_COMMAND)
 			handle_without_pipes(ast_root, my_env_value, my_envp);
-		// printf("");
-		/* end of execution */
 		free(token_arr);
 		free(lexeme_arr);
 		// TODO: We need to free the AST
-		// free(input); // Free memory allocated by readline()
+		// free(input);
+		// Free memory allocated by readline()
 	}
 	return (0);
 }

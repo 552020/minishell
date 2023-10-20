@@ -1,149 +1,22 @@
 #include "minishell.h"
 
-t_ast_node	*create_node(t_node_type type)
+void	parse(t_ast_node **ast_root, t_lexeme *lexemes, size_t token_count)
 {
-	t_ast_node	*new_node;
-
-	new_node = (t_ast_node *)malloc(sizeof(t_ast_node));
-	if (new_node == NULL)
+	if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_AST)
+		printf("***Parsing***\n\n");
+	*ast_root = parser(lexemes, 0, token_count - 1);
+	if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_AST)
 	{
-		// TODO: Free all allocated memory
-		exit(EXIT_FAILURE);
-	}
-	new_node->type = type;
-	new_node->data = NULL;
-	new_node->args = NULL;
-	new_node->input_file = NULL;
-	new_node->output_file = NULL;
-	new_node->append = false;
-	new_node->heredoc = false;
-	new_node->heredoc_del = NULL;
-	new_node->children[0] = NULL;
-	new_node->children[1] = NULL;
-	return (new_node);
-}
-
-void	append_arg_to_command_node(t_ast_node *node, char *arg)
-{
-	char	**new_args;
-	int		size;
-	int		i;
-
-	if (node->args == NULL)
-	{
-		node->args = (char **)malloc(sizeof(char *) * 2);
-		if (node->args == NULL)
-		{
-			// TODO: free memory
-			exit(EXIT_FAILURE);
-		}
-		node->args[0] = ft_strdup(arg);
-		node->args[1] = NULL;
-	}
-	else
-	{
-		size = 0;
-		while (node->args[size] != NULL)
-			size++;
-		new_args = (char **)malloc(sizeof(char *) * (size + 2));
-		if (new_args == NULL)
-		{
-			// free memory
-			exit(EXIT_FAILURE);
-		}
-		i = -1;
-		while (++i < size)
-		{
-			new_args[i] = ft_strdup(node->args[i]);
-			if (new_args[i] == NULL)
-			{
-				// free memory
-				exit(EXIT_FAILURE);
-			}
-		}
-		free(node->args);
-		node->args = new_args;
-		node->args[size] = ft_strdup(arg);
-		node->args[size + 1] = NULL;
-	}
-}
-void	print_and_exit(char *str)
-{
-	// TODO: free memory
-	printf("%s\n", str);
-	exit(EXIT_FAILURE);
-}
-
-void	handle_cmd_and_args(t_lexeme *lexemes, int idx, t_ast_node **node)
-{
-	if (lexemes[idx].type == L_COMMAND)
-	{
-		(*node)->data = ft_strdup(lexemes[idx].str);
-		if ((*node)->data == NULL)
-			print_and_exit("Error: malloc node->data failed");
-	}
-	else if (lexemes[idx].type == L_ARGUMENT)
-		append_arg_to_command_node(*node, lexemes[idx].str);
-}
-
-void	handle_simple_redirects(t_lexeme *lexemes, int idx, t_ast_node **node)
-{
-	if (lexemes[idx].type == L_REDIRECT_INPUT)
-		;
-	else if (lexemes[idx].type == L_REDIRECT_OUTPUT)
-		;
-	else if (lexemes[idx].type == L_FILENAME_STDIN)
-	{
-		(*node)->input_file = ft_strdup(lexemes[idx].str);
-		if ((*node)->input_file == NULL)
-			print_and_exit("Error: malloc node->input_file failed");
-	}
-	else if (lexemes[idx].type == L_FILENAME_STDOUT)
-	{
-		(*node)->output_file = ft_strdup(lexemes[idx].str);
-		if ((*node)->output_file == NULL)
-			print_and_exit("Error: malloc node->output_file failed");
+		printf("\n***Printing AST***\n\n");
+		print_ast(*ast_root, 7);
+		printf("\n***Printing AST NEW***\n\n");
+		print_ast_new(*ast_root);
+		printf("\n*** AST nodes content ***\n\n");
+		debug_ast(*ast_root);
 	}
 }
 
-void	hanlde_double_redirects(t_lexeme *lexemes, int idx, t_ast_node **node)
-{
-	if (lexemes[idx].type == L_REDIRECT_INPUT)
-		;
-	else if (lexemes[idx].type == L_REDIRECT_OUTPUT)
-		;
-	else if (lexemes[idx].type == L_FILENAME_STDIN)
-	{
-		(*node)->input_file = ft_strdup(lexemes[idx].str);
-		if ((*node)->input_file == NULL)
-			print_and_exit("Error: malloc node->input_file failed");
-	}
-	else if (lexemes[idx].type == L_FILENAME_STDOUT)
-	{
-		(*node)->output_file = ft_strdup(lexemes[idx].str);
-		if ((*node)->output_file == NULL)
-			print_and_exit("Error: malloc node->output_file failed");
-	}
-}
-
-t_ast_node	*build_cmd_node(t_lexeme *lexemes, int start, int end)
-{
-	t_ast_node	*node;
-	int			i;
-
-	node = create_node(N_COMMAND);
-	i = start;
-	while (i <= end)
-	{
-		handle_cmd_and_args(lexemes, i, &node);
-		handle_simple_redirects(lexemes, i, &node);
-		hanlde_double_redirects(lexemes, i, &node);
-		i++;
-	}
-	return (node);
-}
-
-t_ast_node	*build_ast(t_lexeme *lexemes, int start, int end)
+t_ast_node	*parser(t_lexeme *lexemes, int start, int end)
 {
 	int i;
 	t_ast_node *node;
@@ -161,7 +34,7 @@ t_ast_node	*build_ast(t_lexeme *lexemes, int start, int end)
 			while (i >= start && lexemes[i].type != L_PIPE)
 				i--;
 			if (i > start)
-				node->children[0] = build_ast(lexemes, start, end);
+				node->children[0] = parser(lexemes, start, end);
 			else
 				node->children[0] = build_cmd_node(lexemes, start, end);
 			return (node);
