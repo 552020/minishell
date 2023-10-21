@@ -141,8 +141,6 @@ void handle_redirections(t_ast_node *node)
         dup2(filein, STDIN_FILENO);
         close(filein);
     }
-    printf("node->heredoc: %d\n", node->heredoc);
-    printf("node->heredoc_del: %s\n", node->heredoc_del);
     if (node->heredoc && node->heredoc_del)
         ft_heredoc(node->heredoc_del);
     if (node->output_file != NULL) 
@@ -171,7 +169,6 @@ void execute_command(t_ast_node *node, char *dir_paths, char **envp)
     i = -1;
     
     handle_redirections(node);
-    // count the total number of arguments and command to create array for execve
     cmd_and_args_count = 0;
     if (node->data)
         while(node->data[++i])
@@ -188,19 +185,14 @@ void execute_command(t_ast_node *node, char *dir_paths, char **envp)
             // in case of there is no command add smtg here
             printf("no commands to execute\n");
         }
-    // printf("path: %s\n", path);
     if (!path)
 	{
             // TODO : add free if exit
             printf("no exec found\n");
 		// error_exit();
 	}
-    // printf ("node->data: %s\n", node->data);
     int x;
     x = 0;
-
-    // Prepare a new array for command and its arguments
-    // char *cmd_and_args_arr[1024]; // Adjust the array size before func
     cmd_and_args_arr = (char **)malloc(sizeof(char *) * (cmd_and_args_count + 1));
     // to do : add free
     if(!cmd_and_args_arr)
@@ -209,22 +201,9 @@ void execute_command(t_ast_node *node, char *dir_paths, char **envp)
         printf("malloc error\n");
     }
 
-    // printf("command is %s\n", node->data);
-    // if (node->args != NULL) 
-    // {
-    //     while (node->args[x])
-    //     {
-    //         printf("args[%d] is %s\n", x,node->args[x]);
-    //         x++;
-    //     }   
-    // }
-    // x = 0;
-
     // Copy the command into the new array
     if (node->data)
         cmd_and_args_arr[0] = node->data;
-    // Copy the arguments into the new array
-    // added if condition to avoid executing a single command without arguments
     if (node->args != NULL) 
     {
         while (node->args[x] != NULL) 
@@ -233,17 +212,9 @@ void execute_command(t_ast_node *node, char *dir_paths, char **envp)
             x++;
         }
     }
-    // Ensure the new array is terminated with a NULL pointer
     cmd_and_args_arr[x + 1] = NULL;
     x = 0;
-    // printf("!!!!!!!!!!!!!!!!!!!!!!! \n");
-    // while (cmd_and_args_arr[x])
-    // {
-    //     printf ("cmd_and_args_arr[%d]: %s\n", x, cmd_and_args_arr[x]);
-    //     x++;
-    // }
-    // we need to pass arguments including the command thus joined data and args
-
+  
     if (node->data) 
         if (execve(path, cmd_and_args_arr, envp) == -1)
             printf("execve error\n");

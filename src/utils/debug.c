@@ -180,6 +180,7 @@ void	print_node(t_ast_node *node, int depth, bool is_last_sibling[])
 		is_last_sibling[depth] = true;
 		print_node(node->children[1], depth + 1, is_last_sibling);
 	}
+
 }
 
 void	print_ast_new(t_ast_node *root)
@@ -257,6 +258,14 @@ void	print_node_info(t_ast_node *node)
 	{
 		printf("Output Redirection: NULL\n");
 	}
+	if (node->heredoc)
+	{
+		printf("node->heredoc: %d\n", node->heredoc);
+	    printf("node->heredoc_del: %s\n", node->heredoc_del);
+	}
+	else
+		printf("Heredoc : NULL\n");
+
 	printf("-----------\n");
 	// Recursively print children
 	if (node->children[0])
