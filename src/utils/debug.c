@@ -211,16 +211,10 @@ void	print_node_info(t_ast_node *node)
 		printf("Type: UNKNOWN\n");
 		break ;
 	}
-	// Print data
 	if (node->data)
-	{
 		printf("Data: %s\n", node->data);
-	}
 	else
-	{
 		printf("Data: NULL\n");
-	}
-	// Print arguments
 	if (node->args)
 	{
 		printf("Arguments: ");
@@ -235,28 +229,25 @@ void	print_node_info(t_ast_node *node)
 		printf("\n");
 	}
 	else
-	{
 		printf("Arguments: NULL\n");
-	}
-	// Print input redirection
 	if (node->input_file)
-	{
 		printf("Input Redirection: %s\n", node->input_file);
-	}
 	else
-	{
 		printf("Input Redirection: NULL\n");
-	}
-	// Print output redirection
 	if (node->output_file)
 	{
 		printf("Output Redirection: %s\n", node->output_file);
 		printf("Append Mode: %s\n", node->append ? "TRUE" : "FALSE");
 	}
 	else
-	{
 		printf("Output Redirection: NULL\n");
+	if (node->heredoc)
+	{
+		printf("Heredoc: TRUE\n");
+		printf("Heredoc Delimiter: %s\n", node->heredoc_del);
 	}
+	else
+		printf("Heredoc: FALSE\n");
 	printf("-----------\n");
 	// Recursively print children
 	if (node->children[0])
