@@ -74,6 +74,8 @@ t_lexeme	*lexer(t_token *token_arr, t_lexeme *lexeme_arr, char **envp,
 		i++;
 	}
 	command_and_args(token_count, lexeme_arr);
+	if (token_arr[i].type == T_END)
+		lexeme_arr[i].type = L_END;
 	return (lexeme_arr);
 }
 

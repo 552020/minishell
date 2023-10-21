@@ -44,7 +44,7 @@ void	print_lexeme_arr(t_lexeme *lexeme_arr, size_t lexeme_count)
 	char	*lexeme_type;
 
 	i = 0;
-	while (i < lexeme_count)
+	while (i < lexeme_count + 1)
 	{
 		if (lexeme_arr[i].type == L_COMMAND)
 			lexeme_type = "L_COMMAND";
@@ -68,6 +68,8 @@ void	print_lexeme_arr(t_lexeme *lexeme_arr, size_t lexeme_count)
 			lexeme_type = "L_FILENAME_STDOUT";
 		else if (lexeme_arr[i].type == L_UNDEFINED)
 			lexeme_type = "L_UNDEFINED";
+		else if (lexeme_arr[i].type == L_END)
+			lexeme_type = "L_END";
 		else
 			lexeme_type = "L_UNKNOWN";
 		printf("Lexeme %zu: type=%s, str=%s\n", i, lexeme_type,
@@ -184,7 +186,8 @@ void	print_node(t_ast_node *node, int depth, bool is_last_sibling[])
 
 void	print_ast_new(t_ast_node *root)
 {
-	bool is_last_sibling[100] = {false};
+	bool	is_last_sibling[100] = {false};
+
 	// Assuming a max depth of 100; can be dynamically allocated if needed
 	print_node(root, 0, is_last_sibling);
 }
@@ -198,7 +201,6 @@ void	print_node_info(t_ast_node *node)
 		printf("Node is NULL\n");
 		return ;
 	}
-	// Print node type
 	switch (node->type)
 	{
 	case N_PIPE:
@@ -211,16 +213,10 @@ void	print_node_info(t_ast_node *node)
 		printf("Type: UNKNOWN\n");
 		break ;
 	}
-	// Print data
 	if (node->data)
-	{
 		printf("Data: %s\n", node->data);
-	}
 	else
-	{
 		printf("Data: NULL\n");
-	}
-	// Print arguments
 	if (node->args)
 	{
 		printf("Arguments: ");
@@ -235,40 +231,25 @@ void	print_node_info(t_ast_node *node)
 		printf("\n");
 	}
 	else
-	{
 		printf("Arguments: NULL\n");
-	}
-	// Print input redirection
 	if (node->input_file)
-	{
 		printf("Input Redirection: %s\n", node->input_file);
-	}
 	else
-	{
 		printf("Input Redirection: NULL\n");
-	}
-	// Print output redirection
 	if (node->output_file)
 	{
 		printf("Output Redirection: %s\n", node->output_file);
 		printf("Append Mode: %s\n", node->append ? "TRUE" : "FALSE");
 	}
 	else
-	{
 		printf("Output Redirection: NULL\n");
-	}
 	printf("-----------\n");
-	// Recursively print children
 	if (node->children[0])
-	{
 		printf("Child 1:\n");
-		print_node_info(node->children[0]);
-	}
+	print_node_info(node->children[0]);
 	if (node->children[1])
-	{
 		printf("Child 2:\n");
-		print_node_info(node->children[1]);
-	}
+	print_node_info(node->children[1]);
 }
 
 void	debug_ast(t_ast_node *root)
