@@ -23,6 +23,8 @@ int	main(int argc, char **argv, char **envp)
 		parse(&ast_root, lexeme_arr, token_count);
 		my_envp = convert_hash_table_to_array(&table);
 		my_env_value = ft_getenv(table.table, "PATH");
+		// heredoc needs to be implemented here, store it in the variable of ast no
+		
 		if (ast_root->type == N_PIPE)
 			handle_pipes(ast_root, my_env_value, my_envp);
 		else if (ast_root->type == N_COMMAND)

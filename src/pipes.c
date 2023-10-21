@@ -1,21 +1,21 @@
 #include "minishell.h"
 
 // not using this for now
-size_t count_pipes(t_lexeme *lexeme_arr, size_t token_count)
-{
-	size_t i;
-	size_t num_of_pipes;
+// size_t count_pipes(t_lexeme *lexeme_arr, size_t token_count)
+// {
+// 	size_t i;
+// 	size_t num_of_pipes;
 
-	i = -1;
-	num_of_pipes = 0;
-	while (++i != token_count + 1)
-	{
-		if (lexeme_arr[i].type == L_PIPE)
-			num_of_pipes++;
-	}
-	printf("num_of_pipes: %ld\n", num_of_pipes);
-	return (num_of_pipes);
-}
+// 	i = -1;
+// 	num_of_pipes = 0;
+// 	while (++i != token_count + 1)
+// 	{
+// 		if (lexeme_arr[i].type == L_PIPE)
+// 			num_of_pipes++;
+// 	}
+// 	printf("num_of_pipes: %ld\n", num_of_pipes);
+// 	return (num_of_pipes);
+// }
 
 void	error_exit(void)
 {
@@ -57,37 +57,6 @@ char	*path_finder(char *cmd, char *dir_paths)
 	return (NULL);
 }
 
-
-
-// void	here_doc(char *limiter, int argc)
-// {
-// 	pid_t	pid;
-// 	int		fd[2];
-// 	char	*line;
-
-// 	if (argc < 6)
-// 		wrong_input();
-// 	if (pipe(fd) == -1)
-// 		error_exit();
-// 	pid = fork();
-// 	if (pid == 0)
-// 	{
-// 		close(fd[0]);
-// 		line = NULL;
-// 		while (line != limiter)
-// 		{
-// 			line = get_next_line(0);
-// 			if (ft_strncmp(line, limiter, ft_strlen(limiter)) == 0 && 
-// 				ft_strlen(limiter) == ft_strlen(line) - 1)
-// 				exit(EXIT_SUCCESS);
-// 			write(fd[1], line, ft_strlen(line));
-// 		}
-// 	}
-// 	close(fd[1]);
-// 	dup2(fd[0], STDIN_FILENO);
-// 	wait(NULL);
-// }
-
 void ft_heredoc(char *delimiter)
 {
     pid_t	pid;
@@ -117,7 +86,7 @@ void ft_heredoc(char *delimiter)
 	}
     close(fd[1]);
 	dup2(fd[0], STDIN_FILENO);
-	wait(NULL);
+    waitpid(pid, NULL, 0);
 }
 
 void handle_redirections(t_ast_node *node)
@@ -214,7 +183,7 @@ void execute_command(t_ast_node *node, char *dir_paths, char **envp)
     }
     cmd_and_args_arr[x + 1] = NULL;
     x = 0;
-  
+    
     if (node->data) 
         if (execve(path, cmd_and_args_arr, envp) == -1)
             printf("execve error\n");
@@ -241,11 +210,6 @@ void handle_without_pipes(t_ast_node *ast_root, char *dir_paths,char ** envp)
     waitpid(pid, NULL, 0);
 }
 
-
-// cahnge name to ast node
-// also remove dir paths and take it from 
-// envp or hash table within the function execute_command
-// can't use envp, get all the info from ht
 void handle_pipes(t_ast_node *ast_root, char *dir_paths,char ** envp)
 {
 	int pipe_fd[2];
@@ -312,8 +276,7 @@ void handle_pipes(t_ast_node *ast_root, char *dir_paths,char ** envp)
 	}
     else
     {
-        // create another child process for that case otherwise it will exit
-        // printf("executing command......\n");
+ 
         execute_command(ast_root, dir_paths, envp);
     }
 }
