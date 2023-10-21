@@ -18,7 +18,8 @@ void	assign_redirect_in_heredoc(const char **str_ptr, t_token *token_arr,
 		if (isregularchar(*(*str_ptr + 1), *str_ptr + 1))
 		{
 			(*idx)++;
-			start = *str_ptr + 1;
+			(*str_ptr)++;
+			start = *str_ptr;
 			while (**str_ptr && isregularchar(**str_ptr, *str_ptr)
 				&& !ft_isspace(**str_ptr))
 				(*str_ptr)++;
