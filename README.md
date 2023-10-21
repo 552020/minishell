@@ -24,7 +24,8 @@ Minishell` is a simple Unix shell developed in C as part of the School 42 curric
 
 ## Features
 
-- [x] Command execution using PATH variable or direct path
+- [x] Display a prompt when waiting for a new command.
+- [x] Working history.
 - [x] Input redirection (`<`) and output redirection (`>` & `>>`)
 - [x] Handling of environment variables (like `$PATH`)
 - [x] Signal management (e.g., `ctrl-C`, `ctrl-D`)
@@ -36,12 +37,7 @@ Minishell` is a simple Unix shell developed in C as part of the School 42 curric
 
 ## Installation
 
-- Clone the repository to your local machine:
-
-```bash
-git clone https://github.com/552020/minishell.git
-```
-
+- Clone the repository to your local machine: `git clone https://github.com/552020/minishell.git`
 - Navigate to the relevant directory `cd minishell`
 - Compile the project with `make`
 - Run minishell: `./minishell`
