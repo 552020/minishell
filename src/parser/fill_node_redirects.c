@@ -38,4 +38,11 @@ void	handle_double_redirects(t_lexeme *lexemes, int idx, t_ast_node **node)
 		if ((*node)->output_file == NULL)
 			print_and_exit("Error: malloc node->output_file failed");
 	}
+	else if (lexemes[idx].type == L_HEREDOC_DELIMITER)
+	{
+		(*node)->heredoc_del = ft_strdup(lexemes[idx].str);
+		if ((*node)->heredoc_del == NULL)
+			print_and_exit("Error: malloc node->heredoc_delimiter failed");
+		(*node)->heredoc = true;
+	}
 }
