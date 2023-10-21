@@ -57,7 +57,7 @@ char	*path_finder(char *cmd, char *dir_paths)
 	return (NULL);
 }
 
-void ft_heredoc(char *delimiter)
+void ft_heredoc(t_ast_node *node, char *delimiter)
 {
     pid_t	pid;
 	int		fd[2];
@@ -85,7 +85,8 @@ void ft_heredoc(char *delimiter)
 		}
 	}
     close(fd[1]);
-	dup2(fd[0], STDIN_FILENO);
+    node->arg = read(fd[0]);
+	// dup2(fd[0], STDIN_FILENO);
     waitpid(pid, NULL, 0);
 }
 
@@ -110,8 +111,8 @@ void handle_redirections(t_ast_node *node)
         dup2(filein, STDIN_FILENO);
         close(filein);
     }
-    if (node->heredoc && node->heredoc_del)
-        ft_heredoc(node->heredoc_del);
+    // if (node->heredoc && node->heredoc_del)
+    //     ft_heredoc(node->heredoc_del);
     if (node->output_file != NULL) 
     {
         if (node->append)
@@ -301,3 +302,6 @@ void handle_pipes(t_ast_node *ast_root, char *dir_paths,char ** envp)
 
 // 2) cat infile.txt >> outfile.txt | cat outfile.txt (this sometimes appends sometimes not in shell)
 //   our version does not append and I dont know if it should
+
+
+// 3) echo 123 > infile.txt >> infile >> infile.txt

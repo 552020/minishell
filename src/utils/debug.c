@@ -76,6 +76,7 @@ void	print_lexeme_arr(t_lexeme *lexeme_arr, size_t lexeme_count)
 	}
 }
 
+// for is not allowed!!!
 void	print_ast(t_ast_node *node, int depth)
 {
 	// Print indentation
