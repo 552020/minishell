@@ -48,11 +48,23 @@ git clone https://github.com/552020/minishell.git
 
 ## Usage
 
-Description and examples of how to use the shell.
-
-## Usage
-
 Once `Minishell` is started, you can interact with it like any traditional Unix shell. Enter commands, use redirections (`<`, `>`, `>>`), and leverage pipes (`|`). `Minishell` also supports specific built-in commands like `echo`, `cd`, and `pwd`. To exit, type `exit` or press `CTRL-D`.
+
+## Constraints
+
+### Allowed Functions
+
+For the development of `Minishell`, we were restricted to using a specific set of functions. The permitted external functions are:
+
+- I/O Functions: `readline`, `rl_clear_history`, `rl_on_new_line`, `rl_replace_line`, `rl_redisplay`, `add_history`, `printf`, `write`, `read`, `open`, `close`
+- Memory Management: `malloc`, `free`
+- Process Management: `fork`, `wait`, `waitpid`, `wait3`, `wait4`, `exit`, `execve`
+- Signal Handling: `signal`, `sigaction`, `sigemptyset`, `sigaddset`, `kill`
+- File and Directory Handling: `access`, `getcwd`, `chdir`, `stat`, `lstat`, `fstat`, `unlink`, `dup`, `dup2`, `pipe`, `opendir`, `readdir`, `closedir`
+- Error Handling: `strerror`, `perror`
+- Terminal Control: `isatty`, `ttyname`, `ttyslot`, `ioctl`, `getenv`, `tcsetattr`, `tcgetattr`, `tgetent`, `tgetflag`, `tgetnum`, `tgetstr`, `tgoto`, `tputs`
+
+In addition to the aforementioned functions, we were permitted to use our self-coded `libft` library. This library, a previous project from the School 42 curriculum, contains a set of 40 functions that serve as replacements for common C library functions like `strcpy`, `calloc`, and so on.
 
 ## Functions
 
