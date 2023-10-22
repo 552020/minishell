@@ -47,7 +47,7 @@ t_lexeme	*lexer(t_token *token_arr, t_lexeme *lexeme_arr, char **envp,
 	size_t	i;
 
 	i = 0;
-	while (token_arr[i].type != T_END)
+	while (i < token_count)
 	{
 		if (token_arr[i].type == T_ENV_VAR)
 			lexeme_arr[i] = t_env_var_subs(&token_arr[i], envp);
@@ -67,15 +67,17 @@ t_lexeme	*lexer(t_token *token_arr, t_lexeme *lexeme_arr, char **envp,
 			heredoc_wrapper(lexeme_arr, token_arr, &i);
 		else if (token_arr[i].type == T_WORD)
 			undefined_wrapper(lexeme_arr, token_arr, &i);
-		else if (token_arr[i].type == T_END)
-		{
-			lexeme_arr[i].type = L_END;
-			lexeme_arr[i].str = NULL;
-		}
+		// else if (token_arr[i].type == T_END)
+		//{
+		//	lexeme_arr[i].type = L_END;
+		//	lexeme_arr[i].str = NULL;
+		//}
 		else
 			continue ;
 		i++;
 	}
+	lexeme_arr[i].type = L_END;
+	lexeme_arr[i].str = NULL;
 	command_and_args(token_count, lexeme_arr);
 	return (lexeme_arr);
 }
@@ -88,40 +90,47 @@ int	lexeme_is_operator(t_lexeme_type type)
 	return (0);
 }
 
-void	check_syntax_error(t_lexeme *lexeme_arr)
+int	check_syntax_error(t_lexeme *lexeme_arr)
 {
 	int	i;
 
 	i = 0;
 	while (lexeme_arr[i].type != L_END)
 	{
+		printf("lexeme_arr[%d].type = %d\n", i, lexeme_arr[i].type);
 		if (lexeme_is_operator(lexeme_arr[i].type))
 		{
-			if (lexeme_is_operator(lexeme_arr[i + 1].type))
+			if (lexeme_arr[i + 1].type == L_END)
+			{
+				printf("Syntax error: unexpected end of input\n");
+				return (1);
+			}
+			else if (lexeme_is_operator(lexeme_arr[i + 1].type))
 			{
 				printf("Syntax error: unexpected token %s\n", lexeme_arr[i
 					+ 1].str);
-				exit(1);
-			}
-			else if (lexeme_arr[i + 1].type == L_END)
-			{
-				printf("Syntax error: unexpected end of input\n");
-				exit(1);
+				//	printf("Syntax error: unexpected token\n");
+				return (1);
 			}
 		}
 		i++;
 	}
+	return (0);
 }
 
-void	lexemize(size_t *token_count, t_token **token_arr,
-		t_lexeme **lexeme_arr, char **envp)
+int	lexemize(size_t *token_count, t_token **token_arr, t_lexeme **lexeme_arr,
+		char **envp)
 {
 	*lexeme_arr = create_lexer_array(*token_count);
 	*lexeme_arr = lexer(*token_arr, *lexeme_arr, envp, *token_count);
 	if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_LEXER)
 	{
-		printf("\n***Printing lexemes***\n\n");
+		printf("\n***Lexer***\n\n");
 		print_lexeme_arr(*lexeme_arr, *token_count);
 	}
-	check_syntax_error(*lexeme_arr);
+	if (check_syntax_error(*lexeme_arr))
+	{
+		return (FAILURE);
+	}
+	return (SUCCESS);
 }

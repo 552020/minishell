@@ -6,7 +6,7 @@ void	print_token_arr(t_token *token_arr, size_t token_count)
 	char	*token_type;
 
 	i = 0;
-	while (i < token_count)
+	while (i < token_count + 1)
 	{
 		if (token_arr[i].type == T_WORD)
 			token_type = "T_WORD";
@@ -44,7 +44,7 @@ void	print_lexeme_arr(t_lexeme *lexeme_arr, size_t lexeme_count)
 	char	*lexeme_type;
 
 	i = 0;
-	while (i < lexeme_count)
+	while (i < lexeme_count + 1)
 	{
 		if (lexeme_arr[i].type == L_COMMAND)
 			lexeme_type = "L_COMMAND";
@@ -68,12 +68,15 @@ void	print_lexeme_arr(t_lexeme *lexeme_arr, size_t lexeme_count)
 			lexeme_type = "L_FILENAME_STDOUT";
 		else if (lexeme_arr[i].type == L_UNDEFINED)
 			lexeme_type = "L_UNDEFINED";
+		else if (lexeme_arr[i].type == L_END)
+			lexeme_type = "L_END";
 		else
 			lexeme_type = "L_UNKNOWN";
 		printf("Lexeme %zu: type=%s, str=%s\n", i, lexeme_type,
 			lexeme_arr[i].str);
 		i++;
 	}
+	printf("\n");
 }
 
 void	print_ast(t_ast_node *node, int depth)
@@ -184,7 +187,8 @@ void	print_node(t_ast_node *node, int depth, bool is_last_sibling[])
 
 void	print_ast_new(t_ast_node *root)
 {
-	bool is_last_sibling[100] = {false};
+	bool	is_last_sibling[100] = {false};
+
 	// Assuming a max depth of 100; can be dynamically allocated if needed
 	print_node(root, 0, is_last_sibling);
 }
