@@ -41,8 +41,6 @@ void	command_and_args(size_t token_count, t_lexeme *lexeme_arr)
 	}
 }
 
-// TODO: operators check before coming here
-// If two operators are next to each other, it's an error
 t_lexeme	*lexer(t_token *token_arr, t_lexeme *lexeme_arr, char **envp,
 		size_t token_count)
 {
