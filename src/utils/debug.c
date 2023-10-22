@@ -246,8 +246,6 @@ void	print_node_info(t_ast_node *node)
 	}
 	else
 		printf("Output Redirection: NULL\n");
-<<<<<<< HEAD
-	}
 	if (node->heredoc)
 	{
 		printf("node->heredoc: %d\n", node->heredoc);
@@ -256,8 +254,6 @@ void	print_node_info(t_ast_node *node)
 	else
 		printf("Heredoc : NULL\n");
 
-=======
->>>>>>> origin/main
 	printf("-----------\n");
 	if (node->children[0])
 		printf("Child 1:\n");
