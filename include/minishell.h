@@ -208,12 +208,13 @@ size_t count_pipes(t_lexeme *lexeme_arr, size_t token_count);
 // not using these
 unsigned int hash(const char *key);
 // not using these
-void handle_without_pipes(t_ast_node *ast_root, char *dir_paths, char **envp);
-void handle_pipes(t_ast_node *ast_root, char *dir_paths, char **envp);
-void handle_redirections(t_ast_node *node);
-void ft_heredoc(char *delimiter);
-void insert_node_ht(t_env_var **table, const char *key, const char *value);
-void lexemize(size_t *token_count, t_token **token_arr, t_lexeme **lexeme_arr,
+void  handle_without_pipes(t_ast_node *ast_root, char *dir_paths, char **envp);
+void  handle_pipes(t_ast_node *ast_root, char *dir_paths, char **envp);
+void  handle_redirections(t_ast_node *node);
+void  handle_heredocs(t_ast_node *node);
+void ft_heredoc(t_ast_node *node, char *delimiter);
+void  insert_node_ht(t_env_var **table, const char *key, const char *value);
+void  lexemize(size_t *token_count, t_token **token_arr, t_lexeme **lexeme_arr,
               char **envp);
 
 #endif

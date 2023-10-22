@@ -1,25 +1,9 @@
 #include "minishell.h"
 
-// not using this for now
-// size_t count_pipes(t_lexeme *lexeme_arr, size_t token_count)
-// {
-// 	size_t i;
-// 	size_t num_of_pipes;
-
-// 	i = -1;
-// 	num_of_pipes = 0;
-// 	while (++i != token_count + 1)
-// 	{
-// 		if (lexeme_arr[i].type == L_PIPE)
-// 			num_of_pipes++;
-// 	}
-// 	printf("num_of_pipes: %ld\n", num_of_pipes);
-// 	return (num_of_pipes);
-// }
 
 void	error_exit(void)
 {
-    // TODO : add free
+    // TODO : add free and proper exit
 	perror("Error");
 	exit(EXIT_FAILURE);
 }
@@ -33,13 +17,6 @@ char	*path_finder(char *cmd, char *dir_paths)
 
 	dir_path_arr = ft_split(dir_paths, ':');
     i = 0;
-    // while (dir_path_arr[i])
-    // {
-    //     printf("dir_path_arr[%d]: %s\n", i, dir_path_arr[i]);
-    //     i++;
-    // }
-
-	i = 0;
 	while (dir_path_arr[i])
 	{
 		path_except_cmd = ft_strjoin(dir_path_arr[i], "/");
@@ -57,19 +34,41 @@ char	*path_finder(char *cmd, char *dir_paths)
 	return (NULL);
 }
 
+
+void	handle_heredocs(t_ast_node *node)
+{
+    // if (node->type == N_PIPE)
+    // {
+
+    // }
+	// if (node->children[1])
+	// 	handle_heredocs(node);
+	// if (node->children[0])
+	// 	handle_heredocs(node);
+	if (node->heredoc)
+    {
+        if (!node->heredoc_del)
+        {
+            // check bash for correct statement
+            printf("there is heredoc but not heredoc_del\n");
+        }
+		ft_heredoc(node,node->heredoc_del);
+    }
+}
+
 void ft_heredoc(t_ast_node *node, char *delimiter)
 {
     pid_t	pid;
 	int		fd[2];
     // Prompt the user for input until the heredoc delimiter is entered
     char *line;
+	line = NULL;
 	if (pipe(fd) == -1)
 		error_exit();
     pid = fork();
 	if (pid == 0)
     {
 		close(fd[0]);
-		line = NULL;
 		while (1)
 		{
 			line = readline("heredoc> ");
@@ -84,25 +83,63 @@ void ft_heredoc(t_ast_node *node, char *delimiter)
             free(line);
 		}
 	}
-    close(fd[1]);
-    node->arg = read(fd[0]);
-	// dup2(fd[0], STDIN_FILENO);
-    waitpid(pid, NULL, 0);
+    else
+    {
+        close(fd[1]);
+        // node->arg = read(fd[0]);
+        // dup2(fd[0], STDIN_FILENO);
+        char *content = NULL;
+        while (1) 
+        {
+            line = readline(NULL);
+            line = ft_strjoin(line, "\n");
+            content = ft_strjoin(content, line);
+            if (ft_strncmp(line, delimiter, ft_strlen(delimiter)) == 0 && 
+                ft_strlen(delimiter) == ft_strlen(line) - 1)
+            {
+                free(line);
+                break;
+            }
+            free(line);
+        }
+        close(fd[0]); // Close the read end of the pipe
+        waitpid(pid, NULL, 0);
+        node->args[0] = content;
+        node->args[1] = NULL;
+        free(content);
+    }
+        // printf("%s\n", node->args[0]);
+        // close(fd[0]);
+        // waitpid(pid, NULL, 0);
 }
+
+//   else {
+//         // In the parent process
+//         close(pipe_fd[1]); // Close the write end of the pipe
+
+//         // Read from the read end of the pipe using readline and store the content in node->arg
+//         char *content = NULL;
+//         char *line;
+//         while ((line = readline(NULL)) != NULL) {
+//             content = ft_strjoin(content, line);
+//             free(line);
+//         }
+//         close(pipe_fd[0]); // Close the read end of the pipe
+//         waitpid(pid, NULL, 0);
+
+//         node->arg = content;
+//     }
 
 void handle_redirections(t_ast_node *node)
 {
     int filein;
     int fileout;
 
-    // insert heredoc here    try  "<< infile.txt cat"
     filein = 0;
     fileout = 1;
     if (node->input_file)
     {
-        printf("Entered input file\n");
-        // printf("input file is %s!!!!!!!!!!!!!!!!!!!\n", node->input_file);
-            filein = open(node->input_file, O_RDONLY, 0777);
+        filein = open(node->input_file, O_RDONLY, 0777);
         if (filein == -1)
         {
             // todo : add free and proper exit
@@ -111,8 +148,6 @@ void handle_redirections(t_ast_node *node)
         dup2(filein, STDIN_FILENO);
         close(filein);
     }
-    // if (node->heredoc && node->heredoc_del)
-    //     ft_heredoc(node->heredoc_del);
     if (node->output_file != NULL) 
     {
         if (node->append)
