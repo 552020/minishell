@@ -6,7 +6,7 @@ void	print_token_arr(t_token *token_arr, size_t token_count)
 	char	*token_type;
 
 	i = 0;
-	while (i < token_count)
+	while (i < token_count + 1)
 	{
 		if (token_arr[i].type == T_WORD)
 			token_type = "T_WORD";
@@ -76,6 +76,7 @@ void	print_lexeme_arr(t_lexeme *lexeme_arr, size_t lexeme_count)
 			lexeme_arr[i].str);
 		i++;
 	}
+	printf("\n");
 }
 
 void	print_ast(t_ast_node *node, int depth)

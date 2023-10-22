@@ -45,4 +45,6 @@ void	handle_double_redirects(t_lexeme *lexemes, int idx, t_ast_node **node)
 			print_and_exit("Error: malloc node->heredoc_delimiter failed");
 		(*node)->heredoc = true;
 	}
+	else if (lexemes[idx].type == L_REDIRECT_APPEND)
+		(*node)->append = true;
 }
