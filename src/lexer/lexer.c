@@ -14,13 +14,13 @@ t_lexeme	*create_lexer_array(size_t token_count)
 	return (lexeme_arr);
 }
 
+// 0 means we haven't encountered a command yet, 1 means we have
+// TODO: write a macro for that
 void	command_and_args(size_t token_count, t_lexeme *lexeme_arr)
 {
 	size_t	i;
 	int		command_flag;
 
-	// 0 means we haven't encountered a command yet, 1 means we have
-	// TODO: write a macro for that
 	i = 0;
 	command_flag = 0;
 	while (i < token_count)
