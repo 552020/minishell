@@ -246,6 +246,7 @@ void					handle_pipes(t_ast_node *ast_root, char *dir_paths,
 							char **envp);
 void					handle_redirections(t_ast_node *node);
 void					ft_heredoc(t_ast_node *node, char *delimiter);
+void					handle_heredocs(t_ast_node *node);
 void					insert_node_ht(t_env_var **table, const char *key,
 							const char *value);
 int						lexemize(size_t *token_count, t_token **token_arr,
