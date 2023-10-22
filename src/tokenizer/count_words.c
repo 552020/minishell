@@ -24,6 +24,8 @@ void	count_word_special_char(const char **str_ptr, size_t *words)
 				(*str_ptr)++;
 			(*str_ptr)++;
 		}
+		else
+			(*str_ptr)++;
 	}
 }
 
@@ -48,8 +50,6 @@ size_t	count_words_tokenizer(const char *str)
 			ft_putendl_fd("Warning: Unexpected char.", STDERR_FILENO);
 			str++;
 		}
-		if (*str != '\0')
-			str++;
 	}
 	return (words);
 }
