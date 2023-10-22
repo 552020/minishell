@@ -16,15 +16,15 @@ int	main(int argc, char **argv, char **envp)
 
 	check_input(argc, argv);
 	initialize_table(&table, envp);
+	my_envp = convert_hash_table_to_array(&table);
+	my_env_value = ft_getenv(table.table, "PATH");
 	while (1)
 	{
 		input = read_input();
 		tokenize(&token_count, &token_arr, input);
-		if (lexemize(&token_count, &token_arr, &lexeme_arr, envp) == SUCCESS)
+		if (lexemize(&token_count, &token_arr, &lexeme_arr, my_envp) == SUCCESS)
 		{
 			parse(&ast_root, lexeme_arr, token_count);
-			my_envp = convert_hash_table_to_array(&table);
-			my_env_value = ft_getenv(table.table, "PATH");
 			if (ast_root->type == N_PIPE)
 				handle_pipes(ast_root, my_env_value, my_envp);
 			else if (ast_root->type == N_COMMAND)
