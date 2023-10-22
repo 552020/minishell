@@ -89,18 +89,20 @@ void ft_heredoc(t_ast_node *node, char *delimiter)
         // node->arg = read(fd[0]);
         // dup2(fd[0], STDIN_FILENO);
         char *content = NULL;
+        // try same line after
+        char *line_parent = NULL;
         while (1) 
         {
-            line = readline(NULL);
-            line = ft_strjoin(line, "\n");
-            content = ft_strjoin(content, line);
-            if (ft_strncmp(line, delimiter, ft_strlen(delimiter)) == 0 && 
-                ft_strlen(delimiter) == ft_strlen(line) - 1)
+            line_parent = readline(NULL);
+            line_parent = ft_strjoin(line, "\n");
+            content = ft_strjoin(content, line_parent);
+            if (ft_strncmp(line_parent, delimiter, ft_strlen(delimiter)) == 0 && 
+                ft_strlen(delimiter) == ft_strlen(line_parent) - 1)
             {
-                free(line);
+                free(line_parent);
                 break;
             }
-            free(line);
+            free(line_parent);
         }
         close(fd[0]); // Close the read end of the pipe
         waitpid(pid, NULL, 0);
