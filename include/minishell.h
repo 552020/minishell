@@ -1,4 +1,5 @@
 #include "libft.h"
+#include <errno.h>
 #include <fcntl.h> // for O_RDONLY etc.
 #include <readline/history.h>
 #include <readline/readline.h>
@@ -66,7 +67,7 @@ typedef enum e_token_type
 {
 	// Maybe change T_WORD to T_CMD_OR_ARG
 	// T_WORD could also represent a filename though
-	T_WORD,              // 0 - Command, argument or filename
+	T_WORD,              // 0 - Command argument or filename
 	T_PIPE,              // 1 - |
 	T_REDIRECT_IN,       // 2 - <
 	T_REDIRECT_OUT,      // 3 - >
