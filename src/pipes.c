@@ -167,7 +167,7 @@ void handle_redirections(t_ast_node *node)
 }
 
 // change the opem file functions
-void execute_command(t_ast_node *node, char *dir_paths, char **envp)
+void execute(t_ast_node *node, char *dir_paths, char ** envp, t_env_table *env_table)
 {
     char	*path;
     char **cmd_and_args_arr;
@@ -222,14 +222,31 @@ void execute_command(t_ast_node *node, char *dir_paths, char **envp)
     cmd_and_args_arr[x + 1] = NULL;
     x = 0;
     
-    if (node->data) 
+    if (ft_strncmp(node->data, "env", 3) == 0 && 
+            ft_strlen(node->data) == 3)
+            env(env_table->table);
+    else if (ft_strncmp(node->data, "export", 6) == 0 && 
+            ft_strlen(node->data) == 6)
+            export(env_table, dir_paths, *envp);
+    else if (ft_strncmp(node->data, "pwd", 3) == 0 && 
+            ft_strlen(node->data) == 3)
+            print_working_directory();
+    else if (ft_strncmp(node->data, "unset", 5) == 0 && 
+            ft_strlen(node->data) == 5)
+            unset(env_table, dir_paths);
+    else if (ft_strncmp(node->data, "cd", 2) == 0 && 
+            ft_strlen(node->data) == 2)
+            ;
+            // cd(table->table, dir_paths);
+    else if (node->data)
+    {
         if (execve(path, cmd_and_args_arr, envp) == -1)
             printf("execve error\n");
+    }  
+  
 }
 
-
-
-void handle_without_pipes(t_ast_node *ast_root, char *dir_paths,char ** envp)
+void handle_without_pipes(t_ast_node *ast_root, char *dir_paths, char ** envp, t_env_table *env_table)
 {
     pid_t pid;
 
@@ -243,12 +260,14 @@ void handle_without_pipes(t_ast_node *ast_root, char *dir_paths,char ** envp)
     if (pid == 0) 
 	{
         // printf("executing command......\n");
-        execute_command(ast_root, dir_paths, envp);
+        execute(ast_root, dir_paths, envp, env_table);
+        // execute(ast_root, dir_paths, envp, env_table);
     }
     waitpid(pid, NULL, 0);
 }
 
-void handle_pipes(t_ast_node *ast_root, char *dir_paths,char ** envp)
+
+void handle_pipes(t_ast_node *ast_root, char *dir_paths, char ** envp, t_env_table *env_table)
 {
 	int pipe_fd[2];
     pid_t left_pid;
@@ -280,7 +299,7 @@ void handle_pipes(t_ast_node *ast_root, char *dir_paths,char ** envp)
             close(pipe_fd[1]); // Close the write end of the pipe
 
             handle_redirections(ast_root->children[0]);
-           	handle_pipes(ast_root->children[0], dir_paths, envp);
+           	handle_pipes(ast_root->children[0], dir_paths, envp, env_table);
             // TODO : add free (maybe)
             exit(EXIT_SUCCESS);
         }
@@ -300,7 +319,7 @@ void handle_pipes(t_ast_node *ast_root, char *dir_paths,char ** envp)
             close(pipe_fd[0]); // Close the read end of the pipe
 
             handle_redirections(ast_root->children[1]);
-            handle_pipes(ast_root->children[1], dir_paths, envp);
+            handle_pipes(ast_root->children[1], dir_paths, envp, env_table);
             // TODO : add free (maybe)
             exit(EXIT_SUCCESS);
         }
@@ -314,8 +333,7 @@ void handle_pipes(t_ast_node *ast_root, char *dir_paths,char ** envp)
 	}
     else
     {
- 
-        execute_command(ast_root, dir_paths, envp);
+        execute(ast_root, dir_paths, envp, env_table);
     }
 }
 

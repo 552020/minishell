@@ -26,9 +26,9 @@ int	main(int argc, char **argv, char **envp)
 		// heredoc needs to be implemented here
 		handle_heredocs(ast_root);
 		if (ast_root->type == N_PIPE)
-			handle_pipes(ast_root, my_env_value, my_envp);
+			handle_pipes(ast_root, my_env_value, my_envp, &table);
 		else if (ast_root->type == N_COMMAND)
-			handle_without_pipes(ast_root, my_env_value, my_envp);
+			handle_without_pipes(ast_root, my_env_value, my_envp, &table);
 		free(token_arr);
 		free(lexeme_arr);
 		// TODO: We need to free the AST
