@@ -13,9 +13,12 @@ void	count_word_special_char(const char **str_ptr, size_t *words)
 			while (**str_ptr && ft_isvalidvarname(**str_ptr))
 				(*str_ptr)++;
 		}
-		else if ((**str_ptr == '<' || **str_ptr == '>') && *(*str_ptr
-				+ 1) == **str_ptr)
+		else if ((**str_ptr == '<' || **str_ptr == '>'))
+		{
 			(*str_ptr)++;
+			if (**str_ptr == *(*str_ptr - 1))
+				(*str_ptr)++;
+		}
 		else if (**str_ptr == '\'' || **str_ptr == '"')
 		{
 			quote = **str_ptr;
