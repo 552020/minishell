@@ -187,43 +187,16 @@ int	count_cmd_and_args(t_ast_node *node)
 		}
 	return (count);
 }
-void	execute(t_ast_node *node, char *dir_paths, char **envp,
-		t_env_table *env_table)
-{
-	char	*path;
-	char	**cmd_and_args_arr;
-	int		cmd_and_args_count;
-	int		i;
-	int		x;
 
-	i = -1;
-	handle_redirections(node);
+char	**build_cmd_and_args_arr(t_ast_node *node, int cmd_and_args_count)
+{
+	char	**cmd_and_args_arr;
+	int		i;
+
+	i = 0;
 	cmd_and_args_count = count_cmd_and_args(node);
-	// if (node->cmd)
-	// 	while (node->cmd[++i])
-	// 		cmd_and_args_count++;
-	// i = -1;
-	// if (node->args)
-	// 	while (node->args[++i])
-	// 		cmd_and_args_count++;
-	path = NULL;
-	if (node->cmd)
-		path = path_finder(node->cmd, dir_paths);
-	else
-	{
-		// in case of there is no command add smtg here
-		printf("no commands to execute\n");
-	}
-	if (!path)
-	{
-		// TODO : add free if exit
-		printf("no exec found\n");
-		// error_exit();
-	}
-	x = 0;
 	cmd_and_args_arr = (char **)malloc(sizeof(char *) * (cmd_and_args_count
 			+ 1));
-	// to do : add free
 	if (!cmd_and_args_arr)
 	{
 		// TODO : add free
@@ -234,32 +207,36 @@ void	execute(t_ast_node *node, char *dir_paths, char **envp,
 		cmd_and_args_arr[0] = node->cmd;
 	if (node->args != NULL)
 	{
-		while (node->args[x] != NULL)
+		while (node->args[i] != NULL)
 		{
-			cmd_and_args_arr[x + 1] = node->args[x];
-			x++;
+			cmd_and_args_arr[i + 1] = node->args[i];
+			i++;
 		}
 	}
-	cmd_and_args_arr[x + 1] = NULL;
-	x = 0;
+	cmd_and_args_arr[i + 1] = NULL;
+	return (cmd_and_args_arr);
+}
+
+int	command_is_builtin(t_ast_node *node)
+{
 	if (ft_strncmp(node->cmd, "env", 3) == 0 && ft_strlen(node->cmd) == 3)
-		env(env_table->table);
+		return (SUCCESS);
 	else if (ft_strncmp(node->cmd, "export", 6) == 0
 		&& ft_strlen(node->cmd) == 6)
-		export(env_table, dir_paths, *envp);
+		return (SUCCESS);
 	else if (ft_strncmp(node->cmd, "pwd", 3) == 0 && ft_strlen(node->cmd) == 3)
-		print_working_directory();
+		return (SUCCESS);
 	else if (ft_strncmp(node->cmd, "unset", 5) == 0
 		&& ft_strlen(node->cmd) == 5)
-		unset(env_table, dir_paths);
+		return (SUCCESS);
 	else if (ft_strncmp(node->cmd, "cd", 2) == 0 && ft_strlen(node->cmd) == 2)
-		;
-	// cd(table->table, dir_paths);
-	else if (node->cmd)
-	{
-		if (execve(path, cmd_and_args_arr, envp) == -1)
-			printf("execve error\n");
-	}
+		return (SUCCESS);
+	else if (ft_strncmp(node->cmd, "echo", 4) == 0 && ft_strlen(node->cmd) == 4)
+		return (SUCCESS);
+	else if (ft_strncmp(node->cmd, "exit", 4) == 0 && ft_strlen(node->cmd) == 4)
+		return (SUCCESS);
+	else
+		return (FAILURE);
 }
 
 void	execute_builtin(t_ast_node *node, char *dir_paths, char **envp,
@@ -272,15 +249,78 @@ void	execute_builtin(t_ast_node *node, char *dir_paths, char **envp,
 	(void)dir_paths;
 	(void)envp;
 	(void)env_table;
+	(void)cmd_and_args_arr;
 	handle_redirections(node);
 	cmd_and_args_count = count_cmd_and_args(node);
+	cmd_and_args_arr = build_cmd_and_args_arr(node, cmd_and_args_count);
+	if (ft_strncmp(node->cmd, "env", 3) == 0 && ft_strlen(node->cmd) == 3)
+		env(env_table->table);
+	if (ft_strncmp(node->cmd, "export", 6) == 0 && ft_strlen(node->cmd) == 6)
+	{
+		// TODO: implement ARG="arg" in the lexer
+		export(env_table, cmd_and_args_arr, &envp);
+	}
+	if (ft_strncmp(node->cmd, "unset", 5) == 0 && ft_strlen(node->cmd) == 5)
+		unset(env_table, cmd_and_args_arr, &envp);
+	if (ft_strncmp(node->cmd, "pwd", 3) == 0 && ft_strlen(node->cmd) == 3)
+		print_working_directory();
+	if (ft_strncmp(node->cmd, "cd", 2) == 0 && ft_strlen(node->cmd) == 2)
+	{
+		// TODO: implement cd
+		printf("cd\n");
+	}
+	if (ft_strncmp(node->cmd, "echo", 4) == 0 && ft_strlen(node->cmd) == 4)
+	{
+		// TODO: implement echo
+		printf("echo\n");
+	}
+	if (ft_strncmp(node->cmd, "exit", 4) == 0 && ft_strlen(node->cmd) == 4)
+	{
+		// TODO: implemet exit
+		printf("exit\n");
+	}
+}
+void	execute(t_ast_node *node, char *dir_paths, char **envp,
+		t_env_table *env_table)
+{
+	char	*path;
+	char	**cmd_and_args_arr;
+	int		cmd_and_args_count;
+
+	(void)env_table;
+	handle_redirections(node);
+	cmd_and_args_count = count_cmd_and_args(node);
+	path = NULL;
+	if (node->cmd)
+	{
+		path = path_finder(node->cmd, dir_paths);
+		if (!path)
+		{
+			// TODO : add free if exit
+			printf("no exec found\n");
+			// error_exit();
+		}
+	}
+	else
+		printf("no commands to execute\n");
+	cmd_and_args_arr = build_cmd_and_args_arr(node, cmd_and_args_count);
+	if (node->cmd)
+	{
+		if (execve(path, cmd_and_args_arr, envp) == -1)
+			printf("execve error\n");
+	}
 }
 
-void	handle_without_pipes(t_ast_node *ast_root, char *dir_paths, char **envp,
+void	handle_without_pipes(t_ast_node *node, char *dir_paths, char **envp,
 		t_env_table *env_table)
 {
 	pid_t	pid;
 
+	if (command_is_builtin(node))
+	{
+		execute_builtin(node, dir_paths, envp, env_table);
+		return ;
+	}
 	pid = fork();
 	if (pid == -1)
 	{
@@ -291,21 +331,21 @@ void	handle_without_pipes(t_ast_node *ast_root, char *dir_paths, char **envp,
 	if (pid == 0)
 	{
 		// printf("executing command......\n");
-		execute(ast_root, dir_paths, envp, env_table);
-		// execute(ast_root, dir_paths, envp, env_table);
+		execute(node, dir_paths, envp, env_table);
+		// execute(node, dir_paths, envp, env_table);
 	}
 	waitpid(pid, NULL, 0);
 }
 
-void	handle_pipes(t_ast_node *ast_root, char *dir_paths, char **envp,
+void	handle_pipes(t_ast_node *node, char *dir_paths, char **envp,
 		t_env_table *env_table)
 {
 	int		pipe_fd[2];
 	pid_t	left_pid;
 	pid_t	right_pid;
 
-	// printf("ast_root->type: %d\n", ast_root->type);
-	if (ast_root->type == N_PIPE)
+	// printf("node->type: %d\n", node->type);
+	if (node->type == N_PIPE)
 	{
 		if (pipe(pipe_fd) == -1)
 		{
@@ -324,11 +364,13 @@ void	handle_pipes(t_ast_node *ast_root, char *dir_paths, char **envp,
 		if (left_pid == 0)
 		{
 			// printf(" left child process created\n");
-			close(pipe_fd[0]);               // Close the read end of the pipe
+			close(pipe_fd[0]);
+			// Close the read end of the pipe
 			dup2(pipe_fd[1], STDOUT_FILENO); // Redirect stdout to the pipe
-			close(pipe_fd[1]);               // Close the write end of the pipe
-			handle_redirections(ast_root->children[0]);
-			handle_pipes(ast_root->children[0], dir_paths, envp, env_table);
+			close(pipe_fd[1]);
+			// Close the write end of the pipe
+			handle_redirections(node->children[0]);
+			handle_pipes(node->children[0], dir_paths, envp, env_table);
 			// TODO : add free (maybe)
 			exit(EXIT_SUCCESS);
 		}
@@ -343,11 +385,13 @@ void	handle_pipes(t_ast_node *ast_root, char *dir_paths, char **envp,
 		if (right_pid == 0)
 		{
 			// printf(" right child process created\n");
-			close(pipe_fd[1]);              // Close the write end of the pipe
+			close(pipe_fd[1]);
+			// Close the write end of the pipe
 			dup2(pipe_fd[0], STDIN_FILENO); // Redirect stdin from the pipe
-			close(pipe_fd[0]);              // Close the read end of the pipe
-			handle_redirections(ast_root->children[1]);
-			handle_pipes(ast_root->children[1], dir_paths, envp, env_table);
+			close(pipe_fd[0]);
+			// Close the read end of the pipe
+			handle_redirections(node->children[1]);
+			handle_pipes(node->children[1], dir_paths, envp, env_table);
 			// TODO : add free (maybe)
 			exit(EXIT_SUCCESS);
 		}
@@ -360,7 +404,10 @@ void	handle_pipes(t_ast_node *ast_root, char *dir_paths, char **envp,
 	}
 	else
 	{
-		execute(ast_root, dir_paths, envp, env_table);
+		if (command_is_builtin(node))
+			execute_builtin(node, dir_paths, envp, env_table);
+		else
+			execute(node, dir_paths, envp, env_table);
 	}
 }
 

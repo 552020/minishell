@@ -16,6 +16,9 @@
 /* Needs to be high */
 /* TODO: Achthung external variable*/
 
+# define SUCCESS 1
+# define FAILURE 0
+
 typedef enum e_debug_level
 {
 	DEBUG_OFF,       // No debugging
@@ -52,9 +55,9 @@ typedef struct s_env_table
 
 void					initialize_table(t_env_table *env_table, char **envp);
 void					env(t_env_var **table);
-void					export(t_env_table *env_table, const char *key,
-							const char *value);
-void					unset(t_env_table *env_table, const char *key);
+
+void					unset(t_env_table *env_table, char **args,
+							char ***envp);
 char					**convert_hash_table_to_array(t_env_table *env_table);
 char					*ft_getenv(t_env_var **table, const char *key);
 
@@ -251,5 +254,7 @@ void					insert_node_ht(t_env_var **table, const char *key,
 							const char *value);
 void					lexemize(size_t *token_count, t_token **token_arr,
 							t_lexeme **lexeme_arr, char **envp);
+void					export(t_env_table *env_table, char **args,
+							char ***envp_ptr);
 
 #endif
