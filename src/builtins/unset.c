@@ -1,10 +1,10 @@
 #include "minishell.h"
 
-void	unset(t_env_table *env_table, const char *key)
+void	single_unset(t_env_table *env_table, const char *key, char ***envp_ptr)
 {
-	unsigned int idx;
-	t_env_var *node;
-	t_env_var *prev;
+	unsigned int	idx;
+	t_env_var		*node;
+	t_env_var		*prev;
 
 	idx = hash(key);
 	node = env_table->table[idx];
@@ -26,5 +26,17 @@ void	unset(t_env_table *env_table, const char *key)
 		prev = node;
 		node = node->next;
 	}
-	// TODO: before exiting the array should be updated
+	*envp_ptr = convert_hash_table_to_array(env_table);
+}
+
+void	unset(t_env_table *env_table, char **args, char ***envp)
+{
+	int i;
+
+	i = 0;
+	while (args[i])
+	{
+		single_unset(env_table, args[i], envp);
+		i++;
+	}
 }
