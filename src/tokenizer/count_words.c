@@ -37,6 +37,8 @@ size_t	count_words_tokenizer(const char *str)
 	while (*str)
 	{
 		skip_spaces(&str);
+		if (*str == '\0')
+			break ;
 		if (isspecialchar(*str))
 			count_word_special_char(&str, &words);
 		else if (isregularchar(*str, str))
