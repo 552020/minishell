@@ -82,14 +82,14 @@ void	print_ast(t_ast_node *node, int depth)
 	// Print indentation
 	for (int i = 0; i < depth; ++i)
 		printf("- ");
-	// Print node type and data
+	// Print node type and cmd
 	if (node->type == N_PIPE)
 	{
 		printf("|\n");
 	}
 	else if (node->type == N_COMMAND)
 	{
-		printf("%s", node->data);
+		printf("%s", node->cmd);
 		if (node->args)
 		{
 			for (int i = 0; node->args[i] != NULL; ++i)
@@ -155,14 +155,14 @@ void	print_node(t_ast_node *node, int depth, bool is_last_sibling[])
 	if (!node)
 		return ;
 	print_indentation(depth, is_last_sibling, depth - 1);
-	// Print node type and data
+	// Print node type and cmd
 	if (node->type == N_PIPE)
 	{
 		printf("|\n");
 	}
 	else if (node->type == N_COMMAND)
 	{
-		printf("%s", node->data);
+		printf("%s", node->cmd);
 		i = 0;
 		while (node->args && node->args[i] != NULL)
 		{
@@ -181,7 +181,6 @@ void	print_node(t_ast_node *node, int depth, bool is_last_sibling[])
 		is_last_sibling[depth] = true;
 		print_node(node->children[1], depth + 1, is_last_sibling);
 	}
-
 }
 
 void	print_ast_new(t_ast_node *root)
@@ -213,14 +212,14 @@ void	print_node_info(t_ast_node *node)
 		printf("Type: UNKNOWN\n");
 		break ;
 	}
-	// Print data
-	if (node->data)
+	// Print cmd
+	if (node->cmd)
 	{
-		printf("Data: %s\n", node->data);
+		printf("Cmd: %s\n", node->cmd);
 	}
 	else
 	{
-		printf("Data: NULL\n");
+		printf("Cmd: NULL\n");
 	}
 	// Print arguments
 	if (node->args)
@@ -262,11 +261,10 @@ void	print_node_info(t_ast_node *node)
 	if (node->heredoc)
 	{
 		printf("node->heredoc: %d\n", node->heredoc);
-	    printf("node->heredoc_del: %s\n", node->heredoc_del);
+		printf("node->heredoc_del: %s\n", node->heredoc_del);
 	}
 	else
 		printf("Heredoc : NULL\n");
-
 	printf("-----------\n");
 	// Recursively print children
 	if (node->children[0])
