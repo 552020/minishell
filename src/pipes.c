@@ -169,7 +169,24 @@ void	handle_redirections(t_ast_node *node)
 	}
 }
 
-// change the opem file functions
+// change the open file functions
+int	count_cmd_and_args(t_ast_node *node)
+{
+	int	count;
+	int	i;
+
+	count = 0;
+	i = 0;
+	if (node->cmd)
+		count++;
+	if (node->args)
+		while (node->args[i])
+		{
+			count++;
+			i++;
+		}
+	return (count);
+}
 void	execute(t_ast_node *node, char *dir_paths, char **envp,
 		t_env_table *env_table)
 {
@@ -181,14 +198,14 @@ void	execute(t_ast_node *node, char *dir_paths, char **envp,
 
 	i = -1;
 	handle_redirections(node);
-	cmd_and_args_count = 0;
-	if (node->cmd)
-		while (node->cmd[++i])
-			cmd_and_args_count++;
-	i = -1;
-	if (node->args)
-		while (node->args[++i])
-			cmd_and_args_count++;
+	cmd_and_args_count = count_cmd_and_args(node);
+	// if (node->cmd)
+	// 	while (node->cmd[++i])
+	// 		cmd_and_args_count++;
+	// i = -1;
+	// if (node->args)
+	// 	while (node->args[++i])
+	// 		cmd_and_args_count++;
 	path = NULL;
 	if (node->cmd)
 		path = path_finder(node->cmd, dir_paths);
@@ -248,11 +265,15 @@ void	execute(t_ast_node *node, char *dir_paths, char **envp,
 void	execute_builtin(t_ast_node *node, char *dir_paths, char **envp,
 		t_env_table *env_table)
 {
+	int		cmd_and_args_count;
+	char	**cmd_and_args_arr;
+
 	(void)node;
 	(void)dir_paths;
 	(void)envp;
 	(void)env_table;
 	handle_redirections(node);
+	cmd_and_args_count = count_cmd_and_args(node);
 }
 
 void	handle_without_pipes(t_ast_node *ast_root, char *dir_paths, char **envp,
