@@ -266,5 +266,6 @@ int						lexemize(size_t *token_count, t_token **token_arr,
 /* Executor */
 
 void					error_exit(void);
+char					*path_finder(char *cmd, char *dir_paths);
 
 #endif
