@@ -28,6 +28,7 @@ void	ft_heredoc(t_ast_node *node, char *delimiter)
 	char	*content;
 	char	*line_parent;
 
+	// char	*tmp;
 	// Prompt the user for input until the heredoc delimiter is entered
 	line = NULL;
 	if (pipe(fd) == -1)
@@ -50,33 +51,27 @@ void	ft_heredoc(t_ast_node *node, char *delimiter)
 			free(line);
 		}
 	}
-	else
+	close(fd[1]);
+	waitpid(pid, NULL, 0);
+	content = NULL;
+	line_parent = NULL;
+	while (1)
 	{
-		close(fd[1]);
-		// node->arg = read(fd[0]);
-		// dup2(fd[0], STDIN_FILENO);
-		content = NULL;
-		// try same line after
-		line_parent = NULL;
-		while (1)
+		// line_parent = readline(NULL);
+		// line_parent = ft_strjoin(line, "\n");
+		content = ft_strjoin(content, line_parent);
+		if (ft_strncmp(line_parent, delimiter, ft_strlen(delimiter)) == 0
+			&& ft_strlen(delimiter) == ft_strlen(line_parent) - 1)
 		{
-			line_parent = readline(NULL);
-			line_parent = ft_strjoin(line, "\n");
-			content = ft_strjoin(content, line_parent);
-			if (ft_strncmp(line_parent, delimiter, ft_strlen(delimiter)) == 0
-				&& ft_strlen(delimiter) == ft_strlen(line_parent) - 1)
-			{
-				free(line_parent);
-				break ;
-			}
 			free(line_parent);
+			break ;
 		}
-		close(fd[0]); // Close the read end of the pipe
-		waitpid(pid, NULL, 0);
-		node->args[0] = content;
-		node->args[1] = NULL;
-		free(content);
+		free(line_parent);
 	}
+	close(fd[0]); // Close the read end of the pipe
+	node->args[0] = content;
+	node->args[1] = NULL;
+	free(content);
 	// printf("%s\n", node->args[0]);
 	// close(fd[0]);
 	// waitpid(pid, NULL, 0);
