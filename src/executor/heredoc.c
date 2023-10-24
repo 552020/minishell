@@ -25,11 +25,11 @@ void	ft_heredoc(t_ast_node *node, char *delimiter)
 	pid_t	pid;
 	int		fd[2];
 	char	*line;
+	char	*tmp;
 	char	*content;
 	char	*line_parent;
 
-	// char	*tmp;
-	// Prompt the user for input until the heredoc delimiter is entered
+	// printf("Entering ft_heredoc\n");
 	line = NULL;
 	if (pipe(fd) == -1)
 		error_exit();
@@ -39,6 +39,7 @@ void	ft_heredoc(t_ast_node *node, char *delimiter)
 		close(fd[0]);
 		while (1)
 		{
+			// printf("first while loop\n");
 			line = readline("heredoc> ");
 			if (ft_strncmp(line, delimiter, ft_strlen(delimiter)) == 0
 				&& ft_strlen(delimiter) == ft_strlen(line))
@@ -53,44 +54,31 @@ void	ft_heredoc(t_ast_node *node, char *delimiter)
 	}
 	close(fd[1]);
 	waitpid(pid, NULL, 0);
-	content = NULL;
-	line_parent = NULL;
+	content = ft_strdup("");
 	while (1)
 	{
-		// line_parent = readline(NULL);
-		// line_parent = ft_strjoin(line, "\n");
-		content = ft_strjoin(content, line_parent);
-		if (ft_strncmp(line_parent, delimiter, ft_strlen(delimiter)) == 0
-			&& ft_strlen(delimiter) == ft_strlen(line_parent) - 1)
-		{
-			free(line_parent);
+		// printf("second while loop\n");
+		line_parent = get_next_line(fd[0]);
+		if (!line_parent)
 			break ;
-		}
+		tmp = content;
+		content = ft_strjoin(content, line_parent);
 		free(line_parent);
+		free(tmp);
 	}
-	close(fd[0]); // Close the read end of the pipe
-	node->args[0] = content;
+	close(fd[0]);
+	if (node->args == NULL)
+		append_first_arg(node, content);
+	printf("content: %s\n", content);
+	printf("node->args[0]: %s\n", node->args[0]);
 	node->args[1] = NULL;
-	free(content);
-	// printf("%s\n", node->args[0]);
-	// close(fd[0]);
-	// waitpid(pid, NULL, 0);
+	if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_AST)
+	{
+		printf("\n***Printing AST***\n\n");
+		print_ast(node, 7);
+		printf("\n***Printing AST NEW***\n\n");
+		print_ast_new(node);
+		printf("\n*** AST nodes content ***\n\n");
+		debug_ast(node);
+	}
 }
-
-//   else {
-//         // In the parent process
-//         close(pipe_fd[1]); // Close the write end of the pipe
-
-//
-// Read from the read end of the pipe using readline and store the content in node->arg
-//         char *content = NULL;
-//         char *line;
-//         while ((line = readline(NULL)) != NULL) {
-//             content = ft_strjoin(content, line);
-//             free(line);
-//         }
-//         close(pipe_fd[0]); // Close the read end of the pipe
-//         waitpid(pid, NULL, 0);
-
-//         node->arg = content;
-//     }
