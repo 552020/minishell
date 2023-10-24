@@ -11,7 +11,7 @@ t_ast_node	*create_node(t_node_type type)
 		exit(EXIT_FAILURE);
 	}
 	new_node->type = type;
-	new_node->data = NULL;
+	new_node->cmd = NULL;
 	new_node->args = NULL;
 	new_node->input_file = NULL;
 	new_node->output_file = NULL;

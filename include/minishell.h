@@ -56,9 +56,12 @@ typedef struct s_env_table
 
 void					initialize_table(t_env_table *env_table, char **envp);
 void					env(t_env_var **table);
-void					export(t_env_table *env_table, const char *key,
-							const char *value);
-void					unset(t_env_table *env_table, const char *key);
+
+void					export(t_env_table *env_table, char **args,
+							char ***envp);
+void					unset(t_env_table *env_table, char **args,
+							char ***envp);
+
 char					**convert_hash_table_to_array(t_env_table *env_table);
 char					*ft_getenv(t_env_var **table, const char *key);
 
@@ -183,7 +186,7 @@ typedef enum e_node_type
 typedef struct s_ast_node
 {
 	t_node_type			type;
-	char *data;                     // Data: command, filename
+	char *cmd;                      // Data: command, filename
 	char **args;                    // Arguments: command arguments
 	char *input_file;               // For input redirection.
 	char *output_file;              // For output redirection.
@@ -240,13 +243,21 @@ size_t					count_pipes(t_lexeme *lexeme_arr, size_t token_count);
 // not using these
 unsigned int			hash(const char *key);
 // not using these
-void					handle_without_pipes(t_ast_node *ast_root,
-							char *dir_paths, char **envp);
+void	handle_without_pipes(t_ast_node *ast_root,
+
+							char *dir_paths,
+							char **envp,
+							t_env_table *env_table);
 void					handle_pipes(t_ast_node *ast_root, char *dir_paths,
-							char **envp);
+							char **envp, t_env_table *env_table);
 void					handle_redirections(t_ast_node *node);
-void					ft_heredoc(t_ast_node *node, char *delimiter);
 void					handle_heredocs(t_ast_node *node);
+void					ft_heredoc(t_ast_node *node, char *delimiter);
+
+void					execute(t_ast_node *node, char *dir_paths, char **envp,
+							t_env_table *env_table);
+void					print_working_directory(void);
+
 void					insert_node_ht(t_env_var **table, const char *key,
 							const char *value);
 int						lexemize(size_t *token_count, t_token **token_arr,
