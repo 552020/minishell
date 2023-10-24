@@ -14,7 +14,7 @@ int main(int argc, char **argv)
 
 	if(access(path, F_OK) == -1)
 	{
-		perror("File does not exit or error checking exitence\n");
+		perror("File does not exit or error checking exitence\n")
 		return (1);
 	}
 	if (access(path, R_OK) == 0)

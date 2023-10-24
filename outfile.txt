@@ -1,1 +1,7 @@
+Entered input file
+node->heredoc: 0
+node->heredoc_del: (null)
+Entered input file
+node->heredoc: 0
+node->heredoc_del: (null)
 123

@@ -1,6 +1,7 @@
 #include "minishell.h"
 
 t_debug_level	DEBUG_LEVEL = DEBUG_ALL;
+// t_debug_level	DEBUG_LEVEL = DEBUG_OFF;
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -19,16 +20,18 @@ int	main(int argc, char **argv, char **envp)
 	{
 		input = read_input();
 		tokenize(&token_count, &token_arr, input);
-		lexemize(&token_count, &token_arr, &lexeme_arr, envp);
-		parse(&ast_root, lexeme_arr, token_count);
-		my_envp = convert_hash_table_to_array(&table);
-		my_env_value = ft_getenv(table.table, "PATH");
-		// heredoc needs to be implemented here
-		handle_heredocs(ast_root);
-		if (ast_root->type == N_PIPE)
-			handle_pipes(ast_root, my_env_value, my_envp, &table);
-		else if (ast_root->type == N_COMMAND)
-			handle_without_pipes(ast_root, my_env_value, my_envp, &table);
+		if (lexemize(&token_count, &token_arr, &lexeme_arr, envp) == SUCCESS)
+		{
+			parse(&ast_root, lexeme_arr, token_count);
+			my_envp = convert_hash_table_to_array(&table);
+			my_env_value = ft_getenv(table.table, "PATH");
+			// heredoc needs to be implemented here
+			handle_heredocs(ast_root);
+			if (ast_root->type == N_PIPE)
+				handle_pipes(ast_root, my_env_value, my_envp, &table);
+			else if (ast_root->type == N_COMMAND)
+				handle_without_pipes(ast_root, my_env_value, my_envp, &table);
+		}
 		free(token_arr);
 		free(lexeme_arr);
 		// TODO: We need to free the AST
