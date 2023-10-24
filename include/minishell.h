@@ -263,4 +263,8 @@ void					insert_node_ht(t_env_var **table, const char *key,
 int						lexemize(size_t *token_count, t_token **token_arr,
 							t_lexeme **lexeme_arr, char **envp);
 
+/* Executor */
+
+void					error_exit(void);
+
 #endif

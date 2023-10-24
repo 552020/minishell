@@ -1,12 +1,5 @@
 #include "minishell.h"
 
-void	error_exit(void)
-{
-	// TODO : add free and proper exit
-	perror("Error");
-	exit(EXIT_FAILURE);
-}
-
 char	*path_finder(char *cmd, char *dir_paths)
 {
 	char	*path;
