@@ -1,8 +1,9 @@
 #include "minishell.h"
 
-void	export(t_env_table *env_table, const char *key, const char *value)
+void	single_export(t_env_table *env_table, const char *key,
+		const char *value, char ***envp_ptr)
 {
-	t_env_var *node;
+	t_env_var	*node;
 
 	node = env_table->table[hash(key)];
 	while (node != NULL)
@@ -17,5 +18,23 @@ void	export(t_env_table *env_table, const char *key, const char *value)
 	}
 	insert_node_ht(env_table->table, key, value);
 	env_table->count++;
-	// TODO: before exiting the array should be updated
+	*envp_ptr = convert_hash_table_to_array(env_table);
+}
+
+void	export(t_env_table *env_table, char **args, char ***envp)
+{
+	int i;
+	char *key;
+	char *value;
+
+	i = 0;
+	while (args[i])
+	{
+		key = ft_split(args[i], '=')[0];
+		value = ft_split(args[i], '=')[1];
+		if (value == NULL)
+			value = "";
+		single_export(env_table, key, value, envp);
+		i++;
+	}
 }

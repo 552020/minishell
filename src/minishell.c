@@ -12,7 +12,7 @@ int	main(int argc, char **argv, char **envp)
 	t_lexeme	*lexeme_arr;
 	t_ast_node	*ast_root;
 	char		**my_envp;
-	char		*my_env_value;
+	char		*var_path_value;
 
 	check_input(argc, argv);
 	initialize_table(&table, envp);
