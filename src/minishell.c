@@ -16,6 +16,8 @@ int	main(int argc, char **argv, char **envp)
 
 	check_input(argc, argv);
 	initialize_table(&table, envp);
+	my_envp = convert_hash_table_to_array(&table);
+	var_path_value = ft_getenv(table.table, "PATH");
 	while (1)
 	{
 		input = read_input();
@@ -23,8 +25,6 @@ int	main(int argc, char **argv, char **envp)
 		if (lexemize(&token_count, &token_arr, &lexeme_arr, envp) == SUCCESS)
 		{
 			parse(&ast_root, lexeme_arr, token_count);
-			my_envp = convert_hash_table_to_array(&table);
-			var_path_value = ft_getenv(table.table, "PATH");
 			handle_heredocs(ast_root);
 			if (ast_root->type == N_PIPE)
 				handle_pipes(ast_root, var_path_value, my_envp, &table);
