@@ -1,25 +1,8 @@
 #include "minishell.h"
 
-// not using this for now
-size_t count_pipes(t_lexeme *lexeme_arr, size_t token_count)
-{
-	size_t i;
-	size_t num_of_pipes;
-
-	i = -1;
-	num_of_pipes = 0;
-	while (++i != token_count + 1)
-	{
-		if (lexeme_arr[i].type == L_PIPE)
-			num_of_pipes++;
-	}
-	printf("num_of_pipes: %ld\n", num_of_pipes);
-	return (num_of_pipes);
-}
-
 void	error_exit(void)
 {
-    // TODO : add free
+	// TODO : add free and proper exit
 	perror("Error");
 	exit(EXIT_FAILURE);
 }
@@ -29,16 +12,9 @@ char	*path_finder(char *cmd, char *dir_paths)
 	char	*path;
 	char	*path_except_cmd;
 	int		i;
-    char    **dir_path_arr;
+	char	**dir_path_arr;
 
 	dir_path_arr = ft_split(dir_paths, ':');
-    i = 0;
-    // while (dir_path_arr[i])
-    // {
-    //     printf("dir_path_arr[%d]: %s\n", i, dir_path_arr[i]);
-    //     i++;
-    // }
-
 	i = 0;
 	while (dir_path_arr[i])
 	{
@@ -57,294 +33,382 @@ char	*path_finder(char *cmd, char *dir_paths)
 	return (NULL);
 }
 
-
-
-// void	here_doc(char *limiter, int argc)
-// {
-// 	pid_t	pid;
-// 	int		fd[2];
-// 	char	*line;
-
-// 	if (argc < 6)
-// 		wrong_input();
-// 	if (pipe(fd) == -1)
-// 		error_exit();
-// 	pid = fork();
-// 	if (pid == 0)
-// 	{
-// 		close(fd[0]);
-// 		line = NULL;
-// 		while (line != limiter)
-// 		{
-// 			line = get_next_line(0);
-// 			if (ft_strncmp(line, limiter, ft_strlen(limiter)) == 0 && 
-// 				ft_strlen(limiter) == ft_strlen(line) - 1)
-// 				exit(EXIT_SUCCESS);
-// 			write(fd[1], line, ft_strlen(line));
-// 		}
-// 	}
-// 	close(fd[1]);
-// 	dup2(fd[0], STDIN_FILENO);
-// 	wait(NULL);
-// }
-
-void ft_heredoc(char *delimiter)
+void	handle_heredocs(t_ast_node *node)
 {
-    pid_t	pid;
+	// if (node->type == N_PIPE)
+	// {
+	// }
+	// if (node->children[1])
+	// 	handle_heredocs(node);
+	// if (node->children[0])
+	// 	handle_heredocs(node);
+	if (node->heredoc)
+	{
+		if (!node->heredoc_del)
+		{
+			// check bash for correct statement
+			printf("there is heredoc but not heredoc_del\n");
+		}
+		ft_heredoc(node, node->heredoc_del);
+	}
+}
+
+void	ft_heredoc(t_ast_node *node, char *delimiter)
+{
+	pid_t	pid;
 	int		fd[2];
-    // Prompt the user for input until the heredoc delimiter is entered
-    char *line;
+	char	*line;
+	char	*content;
+	char	*line_parent;
+
+	// Prompt the user for input until the heredoc delimiter is entered
+	line = NULL;
 	if (pipe(fd) == -1)
 		error_exit();
-    pid = fork();
+	pid = fork();
 	if (pid == 0)
-    {
+	{
 		close(fd[0]);
-		line = NULL;
 		while (1)
 		{
 			line = readline("heredoc> ");
-            line = ft_strjoin(line, "\n");
-			if (ft_strncmp(line, delimiter, ft_strlen(delimiter)) == 0 && 
-				ft_strlen(delimiter) == ft_strlen(line) - 1)
-            {
-                free(line);
+			line = ft_strjoin(line, "\n");
+			if (ft_strncmp(line, delimiter, ft_strlen(delimiter)) == 0
+				&& ft_strlen(delimiter) == ft_strlen(line) - 1)
+			{
+				free(line);
 				exit(EXIT_SUCCESS);
-            }
+			}
 			write(fd[1], line, ft_strlen(line));
-            free(line);
+			free(line);
 		}
 	}
-    close(fd[1]);
-	dup2(fd[0], STDIN_FILENO);
-	wait(NULL);
-}
-
-void handle_redirections(t_ast_node *node)
-{
-    int filein;
-    int fileout;
-
-    // insert heredoc here    try  "<< infile.txt cat"
-    filein = 0;
-    fileout = 1;
-    if (node->input_file)
-    {
-        printf("Entered input file\n");
-        // printf("input file is %s!!!!!!!!!!!!!!!!!!!\n", node->input_file);
-            filein = open(node->input_file, O_RDONLY, 0777);
-        if (filein == -1)
-        {
-            // todo : add free and proper exit
-            printf("filein error\n");
-        }
-        dup2(filein, STDIN_FILENO);
-        close(filein);
-    }
-    printf("node->heredoc: %d\n", node->heredoc);
-    printf("node->heredoc_del: %s\n", node->heredoc_del);
-    if (node->heredoc && node->heredoc_del)
-        ft_heredoc(node->heredoc_del);
-    if (node->output_file != NULL) 
-    {
-        if (node->append)
-            fileout = open(node->output_file, O_WRONLY | O_CREAT | O_APPEND, 0777);
-        else if (!node->append)
-            fileout = open(node->output_file, O_WRONLY | O_CREAT | O_TRUNC, 0777);
-		if (fileout == -1)
-        {
-            // todo : add free and proper exit
-            printf("fileout error\n");
-        }
-        dup2(fileout, STDOUT_FILENO);
-        close(fileout);
-    }
-}
-
-// change the opem file functions
-void execute_command(t_ast_node *node, char *dir_paths, char **envp)
-{
-    char	*path;
-    char **cmd_and_args_arr;
-    int cmd_and_args_count;
-    int i;
-    i = -1;
-    
-    handle_redirections(node);
-    // count the total number of arguments and command to create array for execve
-    cmd_and_args_count = 0;
-    if (node->data)
-        while(node->data[++i])
-            cmd_and_args_count++;
-    i = -1;
-    if (node->args)
-        while (node->args[++i])
-            cmd_and_args_count++;
-    path = NULL;
-    if (node->data)
-        path = path_finder(node->data, dir_paths);
-    else
-        {
-            // in case of there is no command add smtg here
-            printf("no commands to execute\n");
-        }
-    // printf("path: %s\n", path);
-    if (!path)
+	else
 	{
-            // TODO : add free if exit
-            printf("no exec found\n");
-		// error_exit();
+		close(fd[1]);
+		// node->arg = read(fd[0]);
+		// dup2(fd[0], STDIN_FILENO);
+		content = NULL;
+		// try same line after
+		line_parent = NULL;
+		while (1)
+		{
+			line_parent = readline(NULL);
+			line_parent = ft_strjoin(line, "\n");
+			content = ft_strjoin(content, line_parent);
+			if (ft_strncmp(line_parent, delimiter, ft_strlen(delimiter)) == 0
+				&& ft_strlen(delimiter) == ft_strlen(line_parent) - 1)
+			{
+				free(line_parent);
+				break ;
+			}
+			free(line_parent);
+		}
+		close(fd[0]); // Close the read end of the pipe
+		waitpid(pid, NULL, 0);
+		node->args[0] = content;
+		node->args[1] = NULL;
+		free(content);
 	}
-    // printf ("node->data: %s\n", node->data);
-    int x;
-    x = 0;
-
-    // Prepare a new array for command and its arguments
-    // char *cmd_and_args_arr[1024]; // Adjust the array size before func
-    cmd_and_args_arr = (char **)malloc(sizeof(char *) * (cmd_and_args_count + 1));
-    // to do : add free
-    if(!cmd_and_args_arr)
-    {
-        // TODO : add free
-        printf("malloc error\n");
-    }
-
-    // printf("command is %s\n", node->data);
-    // if (node->args != NULL) 
-    // {
-    //     while (node->args[x])
-    //     {
-    //         printf("args[%d] is %s\n", x,node->args[x]);
-    //         x++;
-    //     }   
-    // }
-    // x = 0;
-
-    // Copy the command into the new array
-    if (node->data)
-        cmd_and_args_arr[0] = node->data;
-    // Copy the arguments into the new array
-    // added if condition to avoid executing a single command without arguments
-    if (node->args != NULL) 
-    {
-        while (node->args[x] != NULL) 
-        {
-            cmd_and_args_arr[x + 1] = node->args[x];
-            x++;
-        }
-    }
-    // Ensure the new array is terminated with a NULL pointer
-    cmd_and_args_arr[x + 1] = NULL;
-    x = 0;
-    // printf("!!!!!!!!!!!!!!!!!!!!!!! \n");
-    // while (cmd_and_args_arr[x])
-    // {
-    //     printf ("cmd_and_args_arr[%d]: %s\n", x, cmd_and_args_arr[x]);
-    //     x++;
-    // }
-    // we need to pass arguments including the command thus joined data and args
-
-    if (node->data) 
-        if (execve(path, cmd_and_args_arr, envp) == -1)
-            printf("execve error\n");
+	// printf("%s\n", node->args[0]);
+	// close(fd[0]);
+	// waitpid(pid, NULL, 0);
 }
 
+//   else {
+//         // In the parent process
+//         close(pipe_fd[1]); // Close the write end of the pipe
 
+//
+// Read from the read end of the pipe using readline and store the content in node->arg
+//         char *content = NULL;
+//         char *line;
+//         while ((line = readline(NULL)) != NULL) {
+//             content = ft_strjoin(content, line);
+//             free(line);
+//         }
+//         close(pipe_fd[0]); // Close the read end of the pipe
+//         waitpid(pid, NULL, 0);
 
-void handle_without_pipes(t_ast_node *ast_root, char *dir_paths,char ** envp)
+//         node->arg = content;
+//     }
+
+void	handle_redirections(t_ast_node *node)
 {
-    pid_t pid;
+	int	filein;
+	int	fileout;
 
-    pid = fork();
-    if (pid == -1) 
+	filein = 0;
+	fileout = 1;
+	if (node->input_file)
 	{
-            // TODO : add free
-        perror("fork error");
-        exit(EXIT_FAILURE);
-    }
-    if (pid == 0) 
+		filein = open(node->input_file, O_RDONLY, 0777);
+		if (filein == -1)
+		{
+			// todo : add free and proper exit
+			printf("filein error\n");
+		}
+		dup2(filein, STDIN_FILENO);
+		close(filein);
+	}
+	if (node->output_file != NULL)
 	{
-        // printf("executing command......\n");
-        execute_command(ast_root, dir_paths, envp);
-    }
-    waitpid(pid, NULL, 0);
+		if (node->append)
+			fileout = open(node->output_file, O_WRONLY | O_CREAT | O_APPEND,
+				0777);
+		else if (!node->append)
+			fileout = open(node->output_file, O_WRONLY | O_CREAT | O_TRUNC,
+				0777);
+		if (fileout == -1)
+		{
+			// todo : add free and proper exit
+			printf("fileout error\n");
+		}
+		dup2(fileout, STDOUT_FILENO);
+		close(fileout);
+	}
 }
 
-
-// cahnge name to ast node
-// also remove dir paths and take it from 
-// envp or hash table within the function execute_command
-// can't use envp, get all the info from ht
-void handle_pipes(t_ast_node *ast_root, char *dir_paths,char ** envp)
+// change the open file functions
+int	count_cmd_and_args(t_ast_node *node)
 {
-	int pipe_fd[2];
-    pid_t left_pid;
-    pid_t right_pid;
-	
-	// printf("ast_root->type: %d\n", ast_root->type);
+	int	count;
+	int	i;
 
-	if (ast_root->type == N_PIPE)
+	count = 0;
+	i = 0;
+	if (node->cmd)
+		count++;
+	if (node->args)
+		while (node->args[i])
+		{
+			count++;
+			i++;
+		}
+	return (count);
+}
+
+char	**build_cmd_and_args_arr(t_ast_node *node, int cmd_and_args_count)
+{
+	char	**cmd_and_args_arr;
+	int		i;
+
+	i = 0;
+	cmd_and_args_count = count_cmd_and_args(node);
+	cmd_and_args_arr = (char **)malloc(sizeof(char *) * (cmd_and_args_count
+			+ 1));
+	if (!cmd_and_args_arr)
+	{
+		// TODO : add free
+		printf("malloc error\n");
+	}
+	// Copy the command into the new array
+	if (node->cmd)
+		cmd_and_args_arr[0] = node->cmd;
+	if (node->args != NULL)
+	{
+		while (node->args[i] != NULL)
+		{
+			cmd_and_args_arr[i + 1] = node->args[i];
+			i++;
+		}
+	}
+	cmd_and_args_arr[i + 1] = NULL;
+	return (cmd_and_args_arr);
+}
+
+int	command_is_builtin(t_ast_node *node)
+{
+	if (ft_strncmp(node->cmd, "env", 3) == 0 && ft_strlen(node->cmd) == 3)
+		return (SUCCESS);
+	else if (ft_strncmp(node->cmd, "export", 6) == 0
+		&& ft_strlen(node->cmd) == 6)
+		return (SUCCESS);
+	else if (ft_strncmp(node->cmd, "pwd", 3) == 0 && ft_strlen(node->cmd) == 3)
+		return (SUCCESS);
+	else if (ft_strncmp(node->cmd, "unset", 5) == 0
+		&& ft_strlen(node->cmd) == 5)
+		return (SUCCESS);
+	else if (ft_strncmp(node->cmd, "cd", 2) == 0 && ft_strlen(node->cmd) == 2)
+		return (SUCCESS);
+	else if (ft_strncmp(node->cmd, "echo", 4) == 0 && ft_strlen(node->cmd) == 4)
+		return (SUCCESS);
+	else if (ft_strncmp(node->cmd, "exit", 4) == 0 && ft_strlen(node->cmd) == 4)
+		return (SUCCESS);
+	else
+		return (FAILURE);
+}
+
+void	execute_builtin(t_ast_node *node, char *dir_paths, char **envp,
+		t_env_table *env_table)
+{
+	int		cmd_and_args_count;
+	char	**cmd_and_args_arr;
+
+	(void)node;
+	(void)dir_paths;
+	(void)envp;
+	(void)env_table;
+	(void)cmd_and_args_arr;
+	handle_redirections(node);
+	cmd_and_args_count = count_cmd_and_args(node);
+	cmd_and_args_arr = build_cmd_and_args_arr(node, cmd_and_args_count);
+	if (ft_strncmp(node->cmd, "env", 3) == 0 && ft_strlen(node->cmd) == 3)
+		env(env_table->table);
+	if (ft_strncmp(node->cmd, "export", 6) == 0 && ft_strlen(node->cmd) == 6)
+	{
+		// TODO: implement ARG="arg" in the lexer
+		export(env_table, cmd_and_args_arr, &envp);
+	}
+	if (ft_strncmp(node->cmd, "unset", 5) == 0 && ft_strlen(node->cmd) == 5)
+		unset(env_table, cmd_and_args_arr, &envp);
+	if (ft_strncmp(node->cmd, "pwd", 3) == 0 && ft_strlen(node->cmd) == 3)
+		print_working_directory();
+	if (ft_strncmp(node->cmd, "cd", 2) == 0 && ft_strlen(node->cmd) == 2)
+	{
+		// TODO: implement cd
+		printf("cd\n");
+	}
+	if (ft_strncmp(node->cmd, "echo", 4) == 0 && ft_strlen(node->cmd) == 4)
+	{
+		// TODO: implement echo
+		printf("echo\n");
+	}
+	if (ft_strncmp(node->cmd, "exit", 4) == 0 && ft_strlen(node->cmd) == 4)
+	{
+		// TODO: implemet exit
+		printf("exit\n");
+	}
+}
+void	execute(t_ast_node *node, char *dir_paths, char **envp,
+		t_env_table *env_table)
+{
+	char	*path;
+	char	**cmd_and_args_arr;
+	int		cmd_and_args_count;
+
+	(void)env_table;
+	handle_redirections(node);
+	cmd_and_args_count = count_cmd_and_args(node);
+	path = NULL;
+	if (node->cmd)
+	{
+		path = path_finder(node->cmd, dir_paths);
+		if (!path)
+		{
+			// TODO : add free if exit
+			printf("no exec found\n");
+			// error_exit();
+		}
+	}
+	else
+		printf("no commands to execute\n");
+	cmd_and_args_arr = build_cmd_and_args_arr(node, cmd_and_args_count);
+	if (node->cmd)
+	{
+		if (execve(path, cmd_and_args_arr, envp) == -1)
+			printf("execve error\n");
+	}
+}
+
+void	handle_without_pipes(t_ast_node *node, char *dir_paths, char **envp,
+		t_env_table *env_table)
+{
+	pid_t	pid;
+
+	if (command_is_builtin(node))
+	{
+		execute_builtin(node, dir_paths, envp, env_table);
+		return ;
+	}
+	pid = fork();
+	if (pid == -1)
+	{
+		// TODO : add free
+		perror("fork error");
+		exit(EXIT_FAILURE);
+	}
+	if (pid == 0)
+	{
+		// printf("executing command......\n");
+		execute(node, dir_paths, envp, env_table);
+		// execute(node, dir_paths, envp, env_table);
+	}
+	waitpid(pid, NULL, 0);
+}
+
+void	handle_pipes(t_ast_node *node, char *dir_paths, char **envp,
+		t_env_table *env_table)
+{
+	int		pipe_fd[2];
+	pid_t	left_pid;
+	pid_t	right_pid;
+
+	// printf("node->type: %d\n", node->type);
+	if (node->type == N_PIPE)
 	{
 		if (pipe(pipe_fd) == -1)
 		{
-            // TODO : add free
+			// TODO : add free
 			perror("pipe error\n");
 			exit(EXIT_FAILURE);
 		}
-        // Execute the left child with output redirected to the pipe
+		// Execute the left child with output redirected to the pipe
 		left_pid = fork();
-		if (left_pid == -1) 
+		if (left_pid == -1)
 		{
-            // TODO : add free
-            perror("fork error");
-            exit(EXIT_FAILURE);
-        }
-		if (left_pid == 0) 
-        {
-            // printf(" left child process created\n");
-            close(pipe_fd[0]); // Close the read end of the pipe
-            dup2(pipe_fd[1], STDOUT_FILENO); // Redirect stdout to the pipe
-            close(pipe_fd[1]); // Close the write end of the pipe
-
-            handle_redirections(ast_root->children[0]);
-           	handle_pipes(ast_root->children[0], dir_paths, envp);
-            // TODO : add free (maybe)
-            exit(EXIT_SUCCESS);
-        }
-        // Execute the right child with input from the pipe
-        right_pid = fork();
-        if (right_pid == -1)
-        {
-            // TODO : add free
-            perror("fork error");
-            exit(EXIT_FAILURE);
-        }
-        if (right_pid == 0)
-        {
-            // printf(" right child process created\n");
-            close(pipe_fd[1]); // Close the write end of the pipe
-            dup2(pipe_fd[0], STDIN_FILENO); // Redirect stdin from the pipe
-            close(pipe_fd[0]); // Close the read end of the pipe
-
-            handle_redirections(ast_root->children[1]);
-            handle_pipes(ast_root->children[1], dir_paths, envp);
-            // TODO : add free (maybe)
-            exit(EXIT_SUCCESS);
-        }
-        // Close both ends of the pipe in the parent
-        close(pipe_fd[0]);
-        close(pipe_fd[1]);
-
-        // Wait for both child processes to finish
-        waitpid(left_pid, NULL, 0);
-        waitpid(right_pid, NULL, 0);
+			// TODO : add free
+			perror("fork error");
+			exit(EXIT_FAILURE);
+		}
+		if (left_pid == 0)
+		{
+			// printf(" left child process created\n");
+			close(pipe_fd[0]);
+			// Close the read end of the pipe
+			dup2(pipe_fd[1], STDOUT_FILENO); // Redirect stdout to the pipe
+			close(pipe_fd[1]);
+			// Close the write end of the pipe
+			handle_redirections(node->children[0]);
+			handle_pipes(node->children[0], dir_paths, envp, env_table);
+			// TODO : add free (maybe)
+			exit(EXIT_SUCCESS);
+		}
+		// Execute the right child with input from the pipe
+		right_pid = fork();
+		if (right_pid == -1)
+		{
+			// TODO : add free
+			perror("fork error");
+			exit(EXIT_FAILURE);
+		}
+		if (right_pid == 0)
+		{
+			// printf(" right child process created\n");
+			close(pipe_fd[1]);
+			// Close the write end of the pipe
+			dup2(pipe_fd[0], STDIN_FILENO); // Redirect stdin from the pipe
+			close(pipe_fd[0]);
+			// Close the read end of the pipe
+			handle_redirections(node->children[1]);
+			handle_pipes(node->children[1], dir_paths, envp, env_table);
+			// TODO : add free (maybe)
+			exit(EXIT_SUCCESS);
+		}
+		// Close both ends of the pipe in the parent
+		close(pipe_fd[0]);
+		close(pipe_fd[1]);
+		// Wait for both child processes to finish
+		waitpid(left_pid, NULL, 0);
+		waitpid(right_pid, NULL, 0);
 	}
-    else
-    {
-        // create another child process for that case otherwise it will exit
-        // printf("executing command......\n");
-        execute_command(ast_root, dir_paths, envp);
-    }
+	else
+	{
+		if (command_is_builtin(node))
+			execute_builtin(node, dir_paths, envp, env_table);
+		else
+			execute(node, dir_paths, envp, env_table);
+	}
 }
 
 // Notes:
@@ -367,3 +431,5 @@ void handle_pipes(t_ast_node *ast_root, char *dir_paths,char ** envp)
 
 // 2) cat infile.txt >> outfile.txt | cat outfile.txt (this sometimes appends sometimes not in shell)
 //   our version does not append and I dont know if it should
+
+// 3) echo 123 > infile.txt >> infile >> infile.txt
