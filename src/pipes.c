@@ -266,8 +266,12 @@ void	execute_builtin(t_ast_node *node, char *dir_paths, char **envp,
 		print_working_directory();
 	if (ft_strncmp(node->cmd, "cd", 2) == 0 && ft_strlen(node->cmd) == 2)
 	{
-		// TODO: implement cd
-		printf("cd\n");
+		if (node->args)
+			change_directory(node->args[0]);
+		else
+		{
+			printf("Sorry! Cd works only with some args!\n");
+		}
 	}
 	if (ft_strncmp(node->cmd, "echo", 4) == 0 && ft_strlen(node->cmd) == 4)
 	{

@@ -13,8 +13,8 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-# define FAILURE 1
-# define SUCCESS 0
+# define FAILURE 0
+# define SUCCESS 1
 
 /* Debugger */
 /* Needs to be high */
@@ -243,9 +243,10 @@ size_t					count_pipes(t_lexeme *lexeme_arr, size_t token_count);
 // not using these
 unsigned int			hash(const char *key);
 // not using these
-void					handle_without_pipes(t_ast_node *ast_root,
+void	handle_without_pipes(t_ast_node *ast_root,
 
-							char *dir_paths, char **envp,
+							char *dir_paths,
+							char **envp,
 							t_env_table *env_table);
 void					handle_pipes(t_ast_node *ast_root, char *dir_paths,
 							char **envp, t_env_table *env_table);
@@ -257,14 +258,10 @@ void					execute(t_ast_node *node, char *dir_paths, char **envp,
 							t_env_table *env_table);
 void					print_working_directory(void);
 
-						
-
-
-
-
 void					insert_node_ht(t_env_var **table, const char *key,
 							const char *value);
 int						lexemize(size_t *token_count, t_token **token_arr,
 							t_lexeme **lexeme_arr, char **envp);
+int						change_directory(const char *path);
 
 #endif
