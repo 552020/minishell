@@ -227,6 +227,9 @@ size_t					count_words_tokenizer(const char *input);
 int						ft_isvalidvarname(char c);
 void					collect_heredoc_content(t_token *token_arr,
 							size_t token_count);
+void					free_ast(t_ast_node *node);
+void					free_hash_table(t_env_table *env_table);
+void					free_envp(char **envp);
 /* Debug */
 void					print_token_arr(t_token *token_arr, size_t token_count);
 void					print_lexeme_arr(t_lexeme *lexeme_arr,
@@ -243,9 +246,10 @@ size_t					count_pipes(t_lexeme *lexeme_arr, size_t token_count);
 // not using these
 unsigned int			hash(const char *key);
 // not using these
-void					handle_without_pipes(t_ast_node *ast_root,
+void	handle_without_pipes(t_ast_node *ast_root,
 
-							char *dir_paths, char **envp,
+							char *dir_paths,
+							char **envp,
 							t_env_table *env_table);
 void					handle_pipes(t_ast_node *ast_root, char *dir_paths,
 							char **envp, t_env_table *env_table);
@@ -256,11 +260,6 @@ void					ft_heredoc(t_ast_node *node, char *delimiter);
 void					execute(t_ast_node *node, char *dir_paths, char **envp,
 							t_env_table *env_table);
 void					print_working_directory(void);
-
-						
-
-
-
 
 void					insert_node_ht(t_env_var **table, const char *key,
 							const char *value);
