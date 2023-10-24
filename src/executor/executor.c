@@ -247,7 +247,7 @@ void	execute_builtin(t_ast_node *node, char *dir_paths, char **envp,
 		printf("exit\n");
 	}
 }
-void	execute(t_ast_node *node, char *dir_paths, char **envp,
+void	execute_cmd(t_ast_node *node, char *dir_paths, char **envp,
 		t_env_table *env_table)
 {
 	char	*path;
@@ -298,8 +298,8 @@ void	handle_without_pipes(t_ast_node *node, char *dir_paths, char **envp,
 	if (pid == 0)
 	{
 		// printf("executing command......\n");
-		execute(node, dir_paths, envp, env_table);
-		// execute(node, dir_paths, envp, env_table);
+		execute_cmd(node, dir_paths, envp, env_table);
+		// execute_cmd(node, dir_paths, envp, env_table);
 	}
 	waitpid(pid, NULL, 0);
 }
@@ -374,6 +374,15 @@ void	handle_pipes(t_ast_node *node, char *dir_paths, char **envp,
 		if (command_is_builtin(node))
 			execute_builtin(node, dir_paths, envp, env_table);
 		else
-			execute(node, dir_paths, envp, env_table);
+			execute_cmd(node, dir_paths, envp, env_table);
 	}
+}
+
+void	execute(t_ast_node *ast_root, char *dir_paths, char **my_envp,
+		t_env_table *env_table)
+{
+	if (ast_root->type == N_PIPE)
+		handle_pipes(ast_root, dir_paths, my_envp, env_table);
+	else if (ast_root->type == N_COMMAND)
+		handle_without_pipes(ast_root, dir_paths, my_envp, env_table);
 }
