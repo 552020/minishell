@@ -39,14 +39,14 @@ void	ft_heredoc(t_ast_node *node, char *delimiter)
 		while (1)
 		{
 			line = readline("heredoc> ");
-			line = ft_strjoin(line, "\n");
 			if (ft_strncmp(line, delimiter, ft_strlen(delimiter)) == 0
-				&& ft_strlen(delimiter) == ft_strlen(line) - 1)
+				&& ft_strlen(delimiter) == ft_strlen(line))
 			{
 				free(line);
 				exit(EXIT_SUCCESS);
 			}
 			write(fd[1], line, ft_strlen(line));
+			write(fd[1], "\n", 1);
 			free(line);
 		}
 	}
