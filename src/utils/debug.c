@@ -188,7 +188,8 @@ void	print_node(t_ast_node *node, int depth, bool is_last_sibling[])
 
 void	print_ast_new(t_ast_node *root)
 {
-	bool is_last_sibling[100] = {false};
+	bool	is_last_sibling[100] = {false};
+
 	// Assuming a max depth of 100; can be dynamically allocated if needed
 	print_node(root, 0, is_last_sibling);
 }
@@ -224,6 +225,7 @@ void	print_node_info(t_ast_node *node)
 		printf("Cmd: NULL\n");
 	}
 	// Print arguments
+
 	if (node->args)
 	{
 		printf("Arguments: ");
@@ -250,25 +252,14 @@ void	print_node_info(t_ast_node *node)
 	}
 	else
 		printf("Output Redirection: NULL\n");
-	if (node->heredoc)
-	{
-		printf("node->heredoc: %d\n", node->heredoc);
-		printf("node->heredoc_del: %s\n", node->heredoc_del);
-	}
-	else
-		printf("Heredoc : NULL\n");
+
 	printf("-----------\n");
-	// Recursively print children
 	if (node->children[0])
-	{
 		printf("Child 1:\n");
-		print_node_info(node->children[0]);
-	}
+	print_node_info(node->children[0]);
 	if (node->children[1])
-	{
 		printf("Child 2:\n");
-		print_node_info(node->children[1]);
-	}
+	print_node_info(node->children[1]);
 }
 
 void	debug_ast(t_ast_node *root)

@@ -31,6 +31,7 @@ int	main(int argc, char **argv, char **envp)
 				handle_pipes(ast_root, var_path_value, my_envp, &table);
 			else if (ast_root->type == N_COMMAND)
 				handle_without_pipes(ast_root, var_path_value, my_envp, &table);
+
 		}
 		free(token_arr);
 		free(lexeme_arr);
