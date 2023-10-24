@@ -237,6 +237,11 @@ void					debug_ast(t_ast_node *node);
 t_ast_node				*create_node(t_node_type type);
 t_ast_node				*build_cmd_node(t_lexeme *lexemes, int start, int end);
 
+/* Heredoc */
+
+void					handle_heredocs(t_ast_node *node);
+void					ft_heredoc(t_ast_node *node, char *delimiter);
+
 /* Execution */
 
 size_t					count_pipes(t_lexeme *lexeme_arr, size_t token_count);
