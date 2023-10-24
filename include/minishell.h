@@ -13,8 +13,8 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-# define FAILURE 1
-# define SUCCESS 0
+# define FAILURE 0
+# define SUCCESS 1
 
 /* Debugger */
 /* Needs to be high */
@@ -260,6 +260,8 @@ void					ft_heredoc(t_ast_node *node, char *delimiter);
 void					execute(t_ast_node *node, char *dir_paths, char **envp,
 							t_env_table *env_table);
 void					print_working_directory(void);
+void					ft_exit(int exit_code, t_ast_node *node, char **envp,
+							t_env_table *table);
 
 void					insert_node_ht(t_env_var **table, const char *key,
 							const char *value);
