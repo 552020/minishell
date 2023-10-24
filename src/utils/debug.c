@@ -215,13 +215,13 @@ void	print_node_info(t_ast_node *node)
 		break ;
 	}
 	// Print data
-	if (node->data)
+	if (node->cmd)
 	{
-		printf("Data: %s\n", node->data);
+		printf("cmd: %s\n", node->cmd);
 	}
 	else
 	{
-		printf("Data: NULL\n");
+		printf("Cmd: NULL\n");
 	}
 	// Print arguments
 	if (node->args)
@@ -250,27 +250,25 @@ void	print_node_info(t_ast_node *node)
 	}
 	else
 		printf("Output Redirection: NULL\n");
-}
-if (node->heredoc)
-{
-	printf("node->heredoc: %d\n", node->heredoc);
-	printf("node->heredoc_del: %s\n", node->heredoc_del);
-}
-else
-	printf("Heredoc : NULL\n");
-
-printf("-----------\n");
-// Recursively print children
-if (node->children[0])
-{
-	printf("Child 1:\n");
-	print_node_info(node->children[0]);
-}
-if (node->children[1])
-{
-	printf("Child 2:\n");
-	print_node_info(node->children[1]);
-}
+	if (node->heredoc)
+	{
+		printf("node->heredoc: %d\n", node->heredoc);
+		printf("node->heredoc_del: %s\n", node->heredoc_del);
+	}
+	else
+		printf("Heredoc : NULL\n");
+	printf("-----------\n");
+	// Recursively print children
+	if (node->children[0])
+	{
+		printf("Child 1:\n");
+		print_node_info(node->children[0]);
+	}
+	if (node->children[1])
+	{
+		printf("Child 2:\n");
+		print_node_info(node->children[1]);
+	}
 }
 
 void	debug_ast(t_ast_node *root)
