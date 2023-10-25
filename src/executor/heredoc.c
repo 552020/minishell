@@ -2,13 +2,13 @@
 
 void	handle_heredocs(t_ast_node *node)
 {
-	// if (node->type == N_PIPE)
-	// {
-	// }
-	// if (node->children[1])
-	// 	handle_heredocs(node);
-	// if (node->children[0])
-	// 	handle_heredocs(node);
+	if (node->type == N_PIPE)
+	{
+		if (node->children[0])
+			handle_heredocs(node->children[0]);
+		if (node->children[1])
+			handle_heredocs(node->children[1]);
+	}
 	if (node->heredoc)
 	{
 		if (!node->heredoc_del)
