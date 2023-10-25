@@ -13,6 +13,7 @@ void	append_first_arg(t_ast_node *node, char *arg)
 	{
 		;
 	}
+	node->args[1] = NULL;
 }
 
 void	append_other_args(t_ast_node *node, char *arg)

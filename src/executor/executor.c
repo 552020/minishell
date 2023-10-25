@@ -1,138 +1,5 @@
 #include "minishell.h"
 
-void	error_exit(void)
-{
-	// TODO : add free and proper exit
-	perror("Error");
-	exit(EXIT_FAILURE);
-}
-
-char	*path_finder(char *cmd, char *dir_paths)
-{
-	char	*path;
-	char	*path_except_cmd;
-	int		i;
-	char	**dir_path_arr;
-
-	dir_path_arr = ft_split(dir_paths, ':');
-	i = 0;
-	while (dir_path_arr[i])
-	{
-		path_except_cmd = ft_strjoin(dir_path_arr[i], "/");
-		path = ft_strjoin(path_except_cmd, cmd);
-		free(path_except_cmd);
-		if (access(path, X_OK) == 0)
-			return (path);
-		free(path);
-		i++;
-	}
-	i = 0;
-	while (dir_path_arr[i])
-		free(dir_path_arr[i++]);
-	free(dir_path_arr);
-	return (NULL);
-}
-
-void	handle_heredocs(t_ast_node *node)
-{
-	// if (node->type == N_PIPE)
-	// {
-	// }
-	// if (node->children[1])
-	// 	handle_heredocs(node);
-	// if (node->children[0])
-	// 	handle_heredocs(node);
-	if (node->heredoc)
-	{
-		if (!node->heredoc_del)
-		{
-			// check bash for correct statement
-			printf("there is heredoc but not heredoc_del\n");
-		}
-		ft_heredoc(node, node->heredoc_del);
-	}
-}
-
-void	ft_heredoc(t_ast_node *node, char *delimiter)
-{
-	pid_t	pid;
-	int		fd[2];
-	char	*line;
-	char	*content;
-	char	*line_parent;
-
-	// Prompt the user for input until the heredoc delimiter is entered
-	line = NULL;
-	if (pipe(fd) == -1)
-		error_exit();
-	pid = fork();
-	if (pid == 0)
-	{
-		close(fd[0]);
-		while (1)
-		{
-			line = readline("heredoc> ");
-			line = ft_strjoin(line, "\n");
-			if (ft_strncmp(line, delimiter, ft_strlen(delimiter)) == 0
-				&& ft_strlen(delimiter) == ft_strlen(line) - 1)
-			{
-				free(line);
-				exit(EXIT_SUCCESS);
-			}
-			write(fd[1], line, ft_strlen(line));
-			free(line);
-		}
-	}
-	else
-	{
-		close(fd[1]);
-		// node->arg = read(fd[0]);
-		// dup2(fd[0], STDIN_FILENO);
-		content = NULL;
-		// try same line after
-		line_parent = NULL;
-		while (1)
-		{
-			line_parent = readline(NULL);
-			line_parent = ft_strjoin(line, "\n");
-			content = ft_strjoin(content, line_parent);
-			if (ft_strncmp(line_parent, delimiter, ft_strlen(delimiter)) == 0
-				&& ft_strlen(delimiter) == ft_strlen(line_parent) - 1)
-			{
-				free(line_parent);
-				break ;
-			}
-			free(line_parent);
-		}
-		close(fd[0]); // Close the read end of the pipe
-		waitpid(pid, NULL, 0);
-		node->args[0] = content;
-		node->args[1] = NULL;
-		free(content);
-	}
-	// printf("%s\n", node->args[0]);
-	// close(fd[0]);
-	// waitpid(pid, NULL, 0);
-}
-
-//   else {
-//         // In the parent process
-//         close(pipe_fd[1]); // Close the write end of the pipe
-
-//
-// Read from the read end of the pipe using readline and store the content in node->arg
-//         char *content = NULL;
-//         char *line;
-//         while ((line = readline(NULL)) != NULL) {
-//             content = ft_strjoin(content, line);
-//             free(line);
-//         }
-//         close(pipe_fd[0]); // Close the read end of the pipe
-//         waitpid(pid, NULL, 0);
-
-//         node->arg = content;
-//     }
-
 void	handle_redirections(t_ast_node *node)
 {
 	int	filein;
@@ -166,6 +33,11 @@ void	handle_redirections(t_ast_node *node)
 		}
 		dup2(fileout, STDOUT_FILENO);
 		close(fileout);
+	}
+	if (node->heredoc)
+	{
+		dup2(node->heredoc_fd, STDIN_FILENO);
+		close(node->heredoc_fd);
 	}
 }
 
@@ -280,7 +152,7 @@ void	execute_builtin(t_ast_node *node, char *dir_paths, char **envp,
 		printf("exit\n");
 	}
 }
-void	execute(t_ast_node *node, char *dir_paths, char **envp,
+void	execute_cmd(t_ast_node *node, char *dir_paths, char **envp,
 		t_env_table *env_table)
 {
 	char	*path;
@@ -288,6 +160,7 @@ void	execute(t_ast_node *node, char *dir_paths, char **envp,
 	int		cmd_and_args_count;
 
 	(void)env_table;
+	// printf("before redirections\n");
 	handle_redirections(node);
 	cmd_and_args_count = count_cmd_and_args(node);
 	path = NULL;
@@ -316,6 +189,7 @@ void	handle_without_pipes(t_ast_node *node, char *dir_paths, char **envp,
 {
 	pid_t	pid;
 
+	// printf("hanlding without pipes\n");
 	if (command_is_builtin(node))
 	{
 		execute_builtin(node, dir_paths, envp, env_table);
@@ -330,9 +204,8 @@ void	handle_without_pipes(t_ast_node *node, char *dir_paths, char **envp,
 	}
 	if (pid == 0)
 	{
-		// printf("executing command......\n");
-		execute(node, dir_paths, envp, env_table);
-		// execute(node, dir_paths, envp, env_table);
+		// printf("before execute_cmd\n");
+		execute_cmd(node, dir_paths, envp, env_table);
 	}
 	waitpid(pid, NULL, 0);
 }
@@ -407,29 +280,15 @@ void	handle_pipes(t_ast_node *node, char *dir_paths, char **envp,
 		if (command_is_builtin(node))
 			execute_builtin(node, dir_paths, envp, env_table);
 		else
-			execute(node, dir_paths, envp, env_table);
+			execute_cmd(node, dir_paths, envp, env_table);
 	}
 }
 
-// Notes:
-// 1) implement redirections that can be used with and without rl_dump_functions
-// ex1:  cat test.txt | >> test.txt (appends)
-// ex2:  cat test.txt | grep "hello" >> test.txt (appends)
-// ex3:  cat test.txt | grep "hello" >> test.txt | cat test.txt (does not append)
-// 2)implement open file and close file for redirections correctly
-// Errors:
-
-// 1)
-// correct:
-// cat infile.txt | grep h
-// This is computer
-// hello world
-
-// wrong:
-// cat infile.txt | grep h
-// stuck at lexing first round
-
-// 2) cat infile.txt >> outfile.txt | cat outfile.txt (this sometimes appends sometimes not in shell)
-//   our version does not append and I dont know if it should
-
-// 3) echo 123 > infile.txt >> infile >> infile.txt
+void	execute(t_ast_node *ast_root, char *dir_paths, char **my_envp,
+		t_env_table *env_table)
+{
+	if (ast_root->type == N_PIPE)
+		handle_pipes(ast_root, dir_paths, my_envp, env_table);
+	else if (ast_root->type == N_COMMAND)
+		handle_without_pipes(ast_root, dir_paths, my_envp, env_table);
+}
