@@ -273,6 +273,7 @@ void					insert_node_ht(t_env_var **table, const char *key,
 							const char *value);
 int						lexemize(size_t *token_count, t_token **token_arr,
 							t_lexeme **lexeme_arr, char **envp);
+int						change_directory(const char *path);
 
 /* Executor */
 
