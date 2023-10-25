@@ -130,6 +130,7 @@ int	lexemize(size_t *token_count, t_token **token_arr, t_lexeme **lexeme_arr,
 		printf("\n***Lexer***\n\n");
 		print_lexeme_arr(*lexeme_arr, *token_count);
 	}
+	free(*token_arr);
 	if (check_syntax_error(*lexeme_arr))
 	{
 		return (FAILURE);

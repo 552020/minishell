@@ -28,11 +28,6 @@ int	main(int argc, char **argv, char **envp)
 			handle_heredocs(ast_root);
 			execute(ast_root, var_path_value, my_envp, &table);
 		}
-		free(token_arr);
-		free(lexeme_arr);
-		// TODO: We need to free the AST
-		// free(input);
-		// Free memory allocated by readline()
 	}
 	return (0);
 }
