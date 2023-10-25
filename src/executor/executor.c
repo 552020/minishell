@@ -152,8 +152,7 @@ void	execute_builtin(t_ast_node *node, char *dir_paths, char **envp,
 	}
 	if (ft_strncmp(node->cmd, "exit", 4) == 0 && ft_strlen(node->cmd) == 4)
 	{
-		// TODO: implemet exit
-		printf("exit\n");
+		ft_exit(0, node, envp, env_table);
 	}
 }
 void	execute_cmd(t_ast_node *node, char *dir_paths, char **envp,
@@ -282,7 +281,9 @@ void	handle_pipes(t_ast_node *node, char *dir_paths, char **envp,
 	else
 	{
 		if (command_is_builtin(node))
+		{
 			execute_builtin(node, dir_paths, envp, env_table);
+		}
 		else
 			execute_cmd(node, dir_paths, envp, env_table);
 	}

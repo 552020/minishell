@@ -111,11 +111,11 @@ char	*ft_getenv(t_env_var **table, const char *key)
 
 char	**convert_hash_table_to_array(t_env_table *env_table)
 {
-	int i;
-	int j;
-	char **envp;
-	char *temp;
-	t_env_var *node;
+	int			i;
+	int			j;
+	char		**envp;
+	char		*temp;
+	t_env_var	*node;
 
 	envp = (char **)malloc(sizeof(char *) * (env_table->count + 1));
 	if (envp == NULL)
@@ -141,4 +141,36 @@ char	**convert_hash_table_to_array(t_env_table *env_table)
 	}
 	envp[j] = NULL;
 	return (envp);
+}
+
+void	free_envp(char **envp)
+{
+	int	i;
+
+	i = 0;
+	while (envp[i])
+		free(envp[i++]);
+	free(envp);
+}
+
+void	free_hash_table(t_env_table *env_table)
+{
+	int i;
+	t_env_var *node;
+	t_env_var *temp;
+
+	i = 0;
+	while (i < TABLE_SIZE)
+	{
+		node = env_table->table[i];
+		while (node != NULL)
+		{
+			temp = node;
+			node = node->next;
+			free(temp->key);
+			free(temp->value);
+			free(temp);
+		}
+		i++;
+	}
 }

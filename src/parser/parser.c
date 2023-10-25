@@ -14,12 +14,13 @@ void	parse(t_ast_node **ast_root, t_lexeme *lexemes, size_t token_count)
 		printf("\n*** AST nodes content ***\n\n");
 		debug_ast(*ast_root);
 	}
+	free(lexemes);
 }
 
 t_ast_node	*parser(t_lexeme *lexemes, int start, int end)
 {
-	int i;
-	t_ast_node *node;
+	int			i;
+	t_ast_node	*node;
 
 	node = NULL;
 	i = end;
@@ -43,4 +44,42 @@ t_ast_node	*parser(t_lexeme *lexemes, int start, int end)
 	}
 	node = build_cmd_node(lexemes, start, end);
 	return (node);
+}
+
+void	free_str_arr(char **arr)
+{
+	int	i;
+
+	i = 0;
+	while (arr[i])
+	{
+		free(arr[i]);
+		i++;
+	}
+	free(arr);
+}
+
+void	free_ast(t_ast_node *node)
+{
+	if (node == NULL)
+		return ;
+	if (node->type == N_COMMAND)
+	{
+		if (node->cmd)
+			free(node->cmd);
+		if (node->args)
+			free_str_arr(node->args);
+		if (node->input_file)
+			free(node->input_file);
+		if (node->output_file)
+			free(node->output_file);
+		if (node->heredoc_del)
+			free(node->heredoc_del);
+	}
+	else if (node->type == N_PIPE)
+	{
+		free_ast(node->children[0]);
+		free_ast(node->children[1]);
+	}
+	free(node);
 }

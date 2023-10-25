@@ -61,6 +61,7 @@ void	tokenize(size_t *token_count, t_token **token_arr, char *input)
 		printf("Token count: %zu\n\n", *token_count);
 	*token_arr = create_token_array(*token_count);
 	*token_arr = tokenizer(*token_arr, trimmed);
+	free(trimmed);
 	if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_TOKENIZER)
 		print_token_arr(*token_arr, *token_count);
 }
