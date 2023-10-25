@@ -34,6 +34,11 @@ void	handle_redirections(t_ast_node *node)
 		dup2(fileout, STDOUT_FILENO);
 		close(fileout);
 	}
+	if (node->heredoc)
+	{
+		dup2(node->heredoc_fd, STDIN_FILENO);
+		close(node->heredoc_fd);
+	}
 }
 
 // change the open file functions
@@ -155,6 +160,7 @@ void	execute_cmd(t_ast_node *node, char *dir_paths, char **envp,
 	int		cmd_and_args_count;
 
 	(void)env_table;
+	// printf("before redirections\n");
 	handle_redirections(node);
 	cmd_and_args_count = count_cmd_and_args(node);
 	path = NULL;
@@ -183,6 +189,7 @@ void	handle_without_pipes(t_ast_node *node, char *dir_paths, char **envp,
 {
 	pid_t	pid;
 
+	// printf("hanlding without pipes\n");
 	if (command_is_builtin(node))
 	{
 		execute_builtin(node, dir_paths, envp, env_table);
@@ -197,9 +204,8 @@ void	handle_without_pipes(t_ast_node *node, char *dir_paths, char **envp,
 	}
 	if (pid == 0)
 	{
-		// printf("executing command......\n");
+		// printf("before execute_cmd\n");
 		execute_cmd(node, dir_paths, envp, env_table);
-		// execute_cmd(node, dir_paths, envp, env_table);
 	}
 	waitpid(pid, NULL, 0);
 }

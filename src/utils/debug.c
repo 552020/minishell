@@ -250,13 +250,33 @@ void	print_node_info(t_ast_node *node)
 	}
 	else
 		printf("Output Redirection: NULL\n");
-	printf("-----------\n");
+	if (node->heredoc)
+		printf("Heredoc: TRUE\n");
+	else
+		printf("Heredoc: FALSE\n");
+	if (node->heredoc_del)
+		printf("Heredoc Delimiter: %s\n", node->heredoc_del);
+	else
+		printf("Heredoc Delimiter: NULL\n");
+	if (node->heredoc_fd != -1)
+		printf("Heredoc FD: %d\n", node->heredoc_fd);
+	else
+		printf("Heredoc FD: -1\n");
 	if (node->children[0])
+	{
 		printf("Child 1:\n");
-	print_node_info(node->children[0]);
+		print_node_info(node->children[0]);
+	}
+	else
+		printf("Child 1: NULL\n");
 	if (node->children[1])
+	{
 		printf("Child 2:\n");
-	print_node_info(node->children[1]);
+		print_node_info(node->children[1]);
+	}
+	else
+		printf("Child 2: NULL\n");
+	printf("-----------\n");
 }
 
 void	debug_ast(t_ast_node *root)

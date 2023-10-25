@@ -13,8 +13,8 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-# define FAILURE 1
-# define SUCCESS 0
+# define FAILURE 0
+# define SUCCESS 1
 
 /* Debugger */
 /* Needs to be high */
@@ -191,6 +191,7 @@ typedef struct s_ast_node
 	char *input_file;               // For input redirection.
 	char *output_file;              // For output redirection.
 	bool append;                    // For output redirection.
+	int heredoc_fd;                 // For heredoc redirection.
 	bool heredoc;                   // For heredoc redirection.
 	char *heredoc_del;              // For heredoc redirection.
 	struct s_ast_node *children[2]; // For output redirection.
