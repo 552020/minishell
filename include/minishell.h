@@ -191,6 +191,7 @@ typedef struct s_ast_node
 	char *input_file;               // For input redirection.
 	char *output_file;              // For output redirection.
 	bool append;                    // For output redirection.
+	int heredoc_fd;                 // For heredoc redirection.
 	bool heredoc;                   // For heredoc redirection.
 	char *heredoc_del;              // For heredoc redirection.
 	struct s_ast_node *children[2]; // For output redirection.
@@ -237,6 +238,11 @@ void					debug_ast(t_ast_node *node);
 t_ast_node				*create_node(t_node_type type);
 t_ast_node				*build_cmd_node(t_lexeme *lexemes, int start, int end);
 
+/* Heredoc */
+
+void					handle_heredocs(t_ast_node *node);
+void					ft_heredoc(t_ast_node *node, char *delimiter);
+
 /* Execution */
 
 size_t					count_pipes(t_lexeme *lexeme_arr, size_t token_count);
@@ -254,8 +260,8 @@ void					handle_redirections(t_ast_node *node);
 void					handle_heredocs(t_ast_node *node);
 void					ft_heredoc(t_ast_node *node, char *delimiter);
 
-void					execute(t_ast_node *node, char *dir_paths, char **envp,
-							t_env_table *env_table);
+void					execute_cmd(t_ast_node *node, char *dir_paths,
+							char **envp, t_env_table *env_table);
 void					print_working_directory(void);
 
 void					insert_node_ht(t_env_var **table, const char *key,
@@ -263,5 +269,13 @@ void					insert_node_ht(t_env_var **table, const char *key,
 int						lexemize(size_t *token_count, t_token **token_arr,
 							t_lexeme **lexeme_arr, char **envp);
 int						change_directory(const char *path);
+
+/* Executor */
+
+void					execute(t_ast_node *ast_root, char *dir_paths,
+							char **my_envp, t_env_table *env_table);
+
+void					error_exit(void);
+char					*path_finder(char *cmd, char *dir_paths);
 
 #endif
