@@ -13,6 +13,7 @@ void	append_first_arg(t_ast_node *node, char *arg)
 	{
 		;
 	}
+	node->args[1] = NULL;
 }
 
 void	append_other_args(t_ast_node *node, char *arg)
@@ -67,9 +68,9 @@ void	handle_cmd_and_args(t_lexeme *lexemes, int idx, t_ast_node **node)
 {
 	if (lexemes[idx].type == L_COMMAND)
 	{
-		(*node)->data = ft_strdup(lexemes[idx].str);
-		if ((*node)->data == NULL)
-			print_and_exit("Error: malloc node->data failed");
+		(*node)->cmd = ft_strdup(lexemes[idx].str);
+		if ((*node)->cmd == NULL)
+			print_and_exit("Error: malloc node->cmd failed");
 	}
 	else if (lexemes[idx].type == L_ARGUMENT)
 		append_arg_to_command_node(*node, lexemes[idx].str);

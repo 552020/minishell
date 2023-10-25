@@ -12,10 +12,12 @@ int	main(int argc, char **argv, char **envp)
 	t_lexeme	*lexeme_arr;
 	t_ast_node	*ast_root;
 	char		**my_envp;
-	char		*my_env_value;
+	char		*var_path_value;
 
 	check_input(argc, argv);
 	initialize_table(&table, envp);
+	my_envp = convert_hash_table_to_array(&table);
+	var_path_value = ft_getenv(table.table, "PATH");
 	while (1)
 	{
 		input = read_input();
@@ -24,12 +26,7 @@ int	main(int argc, char **argv, char **envp)
 		{
 			parse(&ast_root, lexeme_arr, token_count);
 			handle_heredocs(ast_root);
-			my_envp = convert_hash_table_to_array(&table);
-			my_env_value = ft_getenv(table.table, "PATH");
-			if (ast_root->type == N_PIPE)
-				handle_pipes(ast_root, my_env_value, my_envp);
-			else if (ast_root->type == N_COMMAND)
-				handle_without_pipes(ast_root, my_env_value, my_envp);
+			execute(ast_root, var_path_value, my_envp, &table);
 		}
 		free(token_arr);
 		free(lexeme_arr);
