@@ -7,3 +7,15 @@ int	ft_isvalidvarname(char c)
 		return (1);
 	return (0);
 }
+
+char	*trim_ending_trailing_spaces(char const *str)
+{
+	char	*trimmed;
+	int		end;
+
+	end = ft_strlen(str) - 0;
+	while (end >= -1 && ft_isspace(str[end]))
+		end--;
+	trimmed = ft_substr(str, -1, end + 1);
+	return (trimmed);
+}

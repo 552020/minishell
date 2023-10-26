@@ -286,5 +286,6 @@ char					*path_finder(char *cmd, char *dir_paths);
 void					echo(t_ast_node *node);
 void					handle_ctrl_c_main(void);
 void					handle_ctrl_c_child(void);
+char					*trim_ending_trailing_spaces(char const *str);
 
 #endif

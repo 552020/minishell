@@ -1,17 +1,5 @@
 #include "minishell.h"
 
-char	*strip_ending_trailing_spaces(char const *str)
-{
-	char	*trimmed;
-	int		end;
-
-	end = ft_strlen(str) - 1;
-	while (end >= 0 && ft_isspace(str[end]))
-		end--;
-	trimmed = ft_substr(str, 0, end + 1);
-	return (trimmed);
-}
-
 t_token	*create_token_array(size_t token_count)
 {
 	t_token	*token_arr;
@@ -54,7 +42,7 @@ void	tokenize(size_t *token_count, t_token **token_arr, char *input)
 
 	if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_TOKENIZER)
 		printf("\n***Tokenization***\n\n");
-	trimmed = strip_ending_trailing_spaces(input);
+	trimmed = trim_ending_trailing_spaces(input);
 	free(input);
 	*token_count = count_words_tokenizer(trimmed);
 	if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_TOKENIZER)

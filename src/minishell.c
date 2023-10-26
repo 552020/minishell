@@ -1,7 +1,7 @@
 #include "minishell.h"
 
-t_debug_level	DEBUG_LEVEL = DEBUG_ALL;
-// t_debug_level	DEBUG_LEVEL = DEBUG_OFF;
+// t_debug_level	DEBUG_LEVEL = DEBUG_ALL;
+t_debug_level	DEBUG_LEVEL = DEBUG_OFF;
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -14,6 +14,7 @@ int	main(int argc, char **argv, char **envp)
 	char		**my_envp;
 	char		*var_path_value;
 
+	// char		*trimmed_input;
 	check_input(argc, argv);
 	initialize_table(&table, envp);
 	my_envp = convert_hash_table_to_array(&table);
@@ -22,13 +23,27 @@ int	main(int argc, char **argv, char **envp)
 	while (1)
 	{
 		input = read_input();
+		// trimmed_input = trim_ending_trailing_spaces(input);
+		// if (trimmed_input[0] == '\0')
+		//{
+		//	free(input);
+		//	free(trimmed_input);
+		//}
+		// else
+		//{
 		tokenize(&token_count, &token_arr, input);
+		// if (input && input[0] != '\0')
+		//	free(input);
+		// else
+		//{
 		if (lexemize(&token_count, &token_arr, &lexeme_arr, envp) == SUCCESS)
 		{
 			parse(&ast_root, lexeme_arr, token_count);
 			handle_heredocs(ast_root);
 			execute(ast_root, var_path_value, my_envp, &table);
 		}
+		//}
+		//}
 	}
 	return (0);
 }
