@@ -206,6 +206,7 @@ void	handle_without_pipes(t_ast_node *node, char *dir_paths, char **envp,
 	}
 	if (pid == 0)
 	{
+		handle_ctrl_c_child();
 		// printf("before execute_cmd\n");
 		execute_cmd(node, dir_paths, envp, env_table);
 	}
@@ -238,6 +239,7 @@ void	handle_pipes(t_ast_node *node, char *dir_paths, char **envp,
 		}
 		if (left_pid == 0)
 		{
+			handle_ctrl_c_child();
 			// printf(" left child process created\n");
 			close(pipe_fd[0]);
 			// Close the read end of the pipe
@@ -259,6 +261,7 @@ void	handle_pipes(t_ast_node *node, char *dir_paths, char **envp,
 		}
 		if (right_pid == 0)
 		{
+			handle_ctrl_c_child();
 			// printf(" right child process created\n");
 			close(pipe_fd[1]);
 			// Close the write end of the pipe

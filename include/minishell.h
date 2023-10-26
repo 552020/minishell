@@ -3,6 +3,7 @@
 #include <fcntl.h> // for O_RDONLY etc.
 #include <readline/history.h>
 #include <readline/readline.h>
+#include <signal.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
@@ -283,5 +284,7 @@ void					execute(t_ast_node *ast_root, char *dir_paths,
 void					error_exit(void);
 char					*path_finder(char *cmd, char *dir_paths);
 void					echo(t_ast_node *node);
+void					handle_ctrl_c_main(void);
+void					handle_ctrl_c_child(void);
 
 #endif

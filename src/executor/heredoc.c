@@ -33,6 +33,7 @@ void	ft_heredoc(t_ast_node *node, char *delimiter)
 	if (pid == 0)
 	{
 		close(fd[0]);
+		handle_ctrl_c_child();
 		while (1)
 		{
 			line = readline("heredoc> ");

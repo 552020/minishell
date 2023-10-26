@@ -18,6 +18,7 @@ int	main(int argc, char **argv, char **envp)
 	initialize_table(&table, envp);
 	my_envp = convert_hash_table_to_array(&table);
 	var_path_value = ft_getenv(table.table, "PATH");
+	handle_ctrl_c_main();
 	while (1)
 	{
 		input = read_input();
