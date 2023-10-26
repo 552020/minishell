@@ -1,4 +1,10 @@
 #include "libft.h"
+#include <stdio.h>
+// first <stdio.h>
+// then the rest of the includes
+// if you remove this comments the formatter
+// will put the includes in the alphabetical order
+// and it will be a mess
 #include <errno.h>
 #include <fcntl.h> // for O_RDONLY etc.
 #include <readline/history.h>
@@ -284,8 +290,8 @@ void					execute(t_ast_node *ast_root, char *dir_paths,
 void					error_exit(void);
 char					*path_finder(char *cmd, char *dir_paths);
 void					echo(t_ast_node *node);
-void					handle_ctrl_c_main(void);
-void					handle_ctrl_c_child(void);
+void					handle_signals_main(void);
+void					handle_signals_child(int pid);
 void					disable_ctrl_c_main(void);
 char					*trim_ending_trailing_spaces(char const *str);
 

@@ -22,10 +22,10 @@ void	handle_redirections(t_ast_node *node)
 	{
 		if (node->append)
 			fileout = open(node->output_file, O_WRONLY | O_CREAT | O_APPEND,
-					0777);
+				0777);
 		else if (!node->append)
 			fileout = open(node->output_file, O_WRONLY | O_CREAT | O_TRUNC,
-					0777);
+				0777);
 		if (fileout == -1)
 		{
 			// todo : add free and proper exit
@@ -68,7 +68,7 @@ char	**build_cmd_and_args_arr(t_ast_node *node, int cmd_and_args_count)
 	i = 0;
 	cmd_and_args_count = count_cmd_and_args(node);
 	cmd_and_args_arr = (char **)malloc(sizeof(char *) * (cmd_and_args_count
-				+ 1));
+			+ 1));
 	if (!cmd_and_args_arr)
 	{
 		// TODO : add free
@@ -199,6 +199,7 @@ void	handle_without_pipes(t_ast_node *node, char *dir_paths, char **envp,
 	}
 	disable_ctrl_c_main();
 	pid = fork();
+	handle_signals_child(pid);
 	if (pid == -1)
 	{
 		// TODO : add free
@@ -207,12 +208,10 @@ void	handle_without_pipes(t_ast_node *node, char *dir_paths, char **envp,
 	}
 	if (pid == 0)
 	{
-		handle_ctrl_c_child();
 		// printf("before execute_cmd\n");
 		execute_cmd(node, dir_paths, envp, env_table);
 	}
 	waitpid(pid, NULL, 0);
-	handle_ctrl_c_main();
 }
 
 void	handle_pipes(t_ast_node *node, char *dir_paths, char **envp,
@@ -232,8 +231,8 @@ void	handle_pipes(t_ast_node *node, char *dir_paths, char **envp,
 			exit(EXIT_FAILURE);
 		}
 		// Execute the left child with output redirected to the pipe
-		disable_ctrl_c_main();
 		left_pid = fork();
+		handle_signals_child(left_pid);
 		if (left_pid == -1)
 		{
 			// TODO : add free
@@ -242,7 +241,6 @@ void	handle_pipes(t_ast_node *node, char *dir_paths, char **envp,
 		}
 		if (left_pid == 0)
 		{
-			handle_ctrl_c_child();
 			// printf(" left child process created\n");
 			close(pipe_fd[0]);
 			// Close the read end of the pipe
@@ -255,8 +253,8 @@ void	handle_pipes(t_ast_node *node, char *dir_paths, char **envp,
 			exit(EXIT_SUCCESS);
 		}
 		// Execute the right child with input from the pipe
-		disable_ctrl_c_main();
 		right_pid = fork();
+		handle_signals_child(right_pid);
 		if (right_pid == -1)
 		{
 			// TODO : add free
@@ -265,7 +263,6 @@ void	handle_pipes(t_ast_node *node, char *dir_paths, char **envp,
 		}
 		if (right_pid == 0)
 		{
-			handle_ctrl_c_child();
 			// printf(" right child process created\n");
 			close(pipe_fd[1]);
 			// Close the write end of the pipe
@@ -283,7 +280,6 @@ void	handle_pipes(t_ast_node *node, char *dir_paths, char **envp,
 		// Wait for both child processes to finish
 		waitpid(left_pid, NULL, 0);
 		waitpid(right_pid, NULL, 0);
-		handle_ctrl_c_main();
 	}
 	else
 	{
