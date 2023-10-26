@@ -29,6 +29,7 @@ void	ft_heredoc(t_ast_node *node, char *delimiter)
 	line = NULL;
 	if (pipe(fd) == -1)
 		error_exit();
+	disable_ctrl_c_main();
 	pid = fork();
 	if (pid == 0)
 	{
@@ -50,6 +51,7 @@ void	ft_heredoc(t_ast_node *node, char *delimiter)
 	}
 	close(fd[1]);
 	waitpid(pid, NULL, 0);
+	handle_ctrl_c_main();
 	node->heredoc_fd = fd[0];
 	node->heredoc = true;
 	// if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_AST)

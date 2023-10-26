@@ -9,10 +9,21 @@ void	sigint_handler_main(int signum)
 	rl_redisplay();
 }
 
+void	disable_ctrl_c_main(void)
+{
+	struct sigaction	ignore_sa;
+
+	ignore_sa.sa_handler = SIG_IGN; // Set to ignore the signal
+	sigemptyset(&ignore_sa.sa_mask);
+	ignore_sa.sa_flags = 0;
+	sigaction(SIGINT, &ignore_sa, NULL);
+}
+
 void	sigint_handler_child(int signum)
 {
 	(void)signum;
-	printf("\n");
+	write(1, "\n", 1);
+	// printf("\n");
 	exit(0);
 }
 

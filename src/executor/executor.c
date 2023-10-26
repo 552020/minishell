@@ -197,6 +197,7 @@ void	handle_without_pipes(t_ast_node *node, char *dir_paths, char **envp,
 		execute_builtin(node, dir_paths, envp, env_table);
 		return ;
 	}
+	disable_ctrl_c_main();
 	pid = fork();
 	if (pid == -1)
 	{
@@ -211,6 +212,7 @@ void	handle_without_pipes(t_ast_node *node, char *dir_paths, char **envp,
 		execute_cmd(node, dir_paths, envp, env_table);
 	}
 	waitpid(pid, NULL, 0);
+	handle_ctrl_c_main();
 }
 
 void	handle_pipes(t_ast_node *node, char *dir_paths, char **envp,
@@ -230,6 +232,7 @@ void	handle_pipes(t_ast_node *node, char *dir_paths, char **envp,
 			exit(EXIT_FAILURE);
 		}
 		// Execute the left child with output redirected to the pipe
+		disable_ctrl_c_main();
 		left_pid = fork();
 		if (left_pid == -1)
 		{
@@ -252,6 +255,7 @@ void	handle_pipes(t_ast_node *node, char *dir_paths, char **envp,
 			exit(EXIT_SUCCESS);
 		}
 		// Execute the right child with input from the pipe
+		disable_ctrl_c_main();
 		right_pid = fork();
 		if (right_pid == -1)
 		{
@@ -279,6 +283,7 @@ void	handle_pipes(t_ast_node *node, char *dir_paths, char **envp,
 		// Wait for both child processes to finish
 		waitpid(left_pid, NULL, 0);
 		waitpid(right_pid, NULL, 0);
+		handle_ctrl_c_main();
 	}
 	else
 	{
