@@ -190,6 +190,8 @@ void	handle_without_pipes(t_ast_node *node, char *dir_paths, char **envp,
 		t_env_table *env_table)
 {
 	pid_t	pid;
+	int		termsig;
+	int		status;
 
 	// printf("hanlding without pipes\n");
 	if (command_is_builtin(node))
@@ -211,7 +213,18 @@ void	handle_without_pipes(t_ast_node *node, char *dir_paths, char **envp,
 		// printf("before execute_cmd\n");
 		execute_cmd(node, dir_paths, envp, env_table);
 	}
-	waitpid(pid, NULL, 0);
+	// waitpid(pid, NULL, 0);
+	waitpid(pid, &status, 0);
+	if (WIFSIGNALED(status))
+	{
+		termsig = WTERMSIG(status);
+		// Check if the signal was SIGINT (Ctrl+C)
+		if (termsig == SIGINT)
+		{
+			// Force a newline only if the process was interrupted by Ctrl+C
+			printf("\n");
+		}
+	}
 }
 
 void	handle_pipes(t_ast_node *node, char *dir_paths, char **envp,
