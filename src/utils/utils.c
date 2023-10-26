@@ -12,10 +12,17 @@ char	*trim_ending_trailing_spaces(char const *str)
 {
 	char	*trimmed;
 	int		end;
+	int		size;
 
-	end = ft_strlen(str) - 0;
-	while (end >= -1 && ft_isspace(str[end]))
+	if (str == NULL)
+		return (NULL);
+	end = ft_strlen(str) - 1;
+	// while (end >= -1 && ft_isspace(str[end]))
+	while (end >= 0 && ft_isspace(str[end]))
 		end--;
-	trimmed = ft_substr(str, -1, end + 1);
+	if (end < 0)
+		return (strdup(""));
+	size = end + 1;
+	trimmed = ft_substr(str, 0, size);
 	return (trimmed);
 }
