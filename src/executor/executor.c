@@ -22,10 +22,10 @@ void	handle_redirections(t_ast_node *node)
 	{
 		if (node->append)
 			fileout = open(node->output_file, O_WRONLY | O_CREAT | O_APPEND,
-				0777);
+					0777);
 		else if (!node->append)
 			fileout = open(node->output_file, O_WRONLY | O_CREAT | O_TRUNC,
-				0777);
+					0777);
 		if (fileout == -1)
 		{
 			// todo : add free and proper exit
@@ -68,7 +68,7 @@ char	**build_cmd_and_args_arr(t_ast_node *node, int cmd_and_args_count)
 	i = 0;
 	cmd_and_args_count = count_cmd_and_args(node);
 	cmd_and_args_arr = (char **)malloc(sizeof(char *) * (cmd_and_args_count
-			+ 1));
+				+ 1));
 	if (!cmd_and_args_arr)
 	{
 		// TODO : add free
@@ -147,8 +147,7 @@ void	execute_builtin(t_ast_node *node, char *dir_paths, char **envp,
 	}
 	if (ft_strncmp(node->cmd, "echo", 4) == 0 && ft_strlen(node->cmd) == 4)
 	{
-		// TODO: implement echo
-		printf("echo\n");
+		echo(node);
 	}
 	if (ft_strncmp(node->cmd, "exit", 4) == 0 && ft_strlen(node->cmd) == 4)
 	{

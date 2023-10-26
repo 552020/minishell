@@ -282,5 +282,6 @@ void					execute(t_ast_node *ast_root, char *dir_paths,
 
 void					error_exit(void);
 char					*path_finder(char *cmd, char *dir_paths);
+void					echo(t_ast_node *node);
 
 #endif
