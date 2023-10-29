@@ -51,13 +51,4 @@ void	ft_heredoc(t_ast_node *node, char *delimiter)
 	waitpid(pid, NULL, 0);
 	node->heredoc_fd = fd[0];
 	node->heredoc = true;
-	// if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_AST)
-	// {
-	// 	printf("\n***Printing AST***\n\n");
-	// 	print_ast(node, 7);
-	// 	printf("\n***Printing AST NEW***\n\n");
-	// 	print_ast_new(node);
-	// 	printf("\n*** AST nodes content ***\n\n");
-	// 	debug_ast(node);
-	// }
 }

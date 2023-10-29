@@ -54,7 +54,6 @@ void	handle_redirections(t_ast_node *node)
 	}
 }
 
-// change the open file functions
 int	count_cmd_and_args(t_ast_node *node)
 {
 	int	count;
@@ -87,7 +86,6 @@ char	**build_cmd_and_args_arr(t_ast_node *node, int cmd_and_args_count)
 		// TODO : add free
 		printf("malloc error\n");
 	}
-	// Copy the command into the new array
 	if (node->cmd)
 		cmd_and_args_arr[0] = node->cmd;
 	if (node->args != NULL)
@@ -220,7 +218,6 @@ void	handle_without_pipes(t_ast_node *node, char *dir_paths, char **envp,
 	}
 	if (pid == 0)
 	{
-		// printf("before execute_cmd\n");
 		execute_cmd(node, dir_paths, envp, env_table);
 	}
 	waitpid(pid, NULL, 0);
@@ -241,7 +238,6 @@ void	handle_pipes(t_ast_node *node, char *dir_paths, char **envp,
 			perror("pipe error\n");
 			exit(EXIT_FAILURE);
 		}
-		// Execute the left child with output redirected to the pipe
 		left_pid = fork();
 		if (left_pid == -1)
 		{
@@ -252,16 +248,13 @@ void	handle_pipes(t_ast_node *node, char *dir_paths, char **envp,
 		if (left_pid == 0)
 		{
 			close(pipe_fd[0]);
-			// Close the read end of the pipe
-			dup2(pipe_fd[1], STDOUT_FILENO); // Redirect stdout to the pipe
+			dup2(pipe_fd[1], STDOUT_FILENO);
 			close(pipe_fd[1]);
-			// Close the write end of the pipe
 			handle_redirections(node->children[0]);
 			handle_pipes(node->children[0], dir_paths, envp, env_table);
 			// TODO : add free (maybe)
 			exit(EXIT_SUCCESS);
 		}
-		// Execute the right child with input from the pipe
 		right_pid = fork();
 		if (right_pid == -1)
 		{
@@ -272,19 +265,15 @@ void	handle_pipes(t_ast_node *node, char *dir_paths, char **envp,
 		if (right_pid == 0)
 		{
 			close(pipe_fd[1]);
-			// Close the write end of the pipe
-			dup2(pipe_fd[0], STDIN_FILENO); // Redirect stdin from the pipe
+			dup2(pipe_fd[0], STDIN_FILENO);
 			close(pipe_fd[0]);
-			// Close the read end of the pipe
 			handle_redirections(node->children[1]);
 			handle_pipes(node->children[1], dir_paths, envp, env_table);
 			// TODO : add free (maybe)
 			exit(EXIT_SUCCESS);
 		}
-		// Close both ends of the pipe in the parent
 		close(pipe_fd[0]);
 		close(pipe_fd[1]);
-		// Wait for both child processes to finish
 		waitpid(left_pid, NULL, 0);
 		waitpid(right_pid, NULL, 0);
 	}
