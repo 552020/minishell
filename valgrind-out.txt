@@ -1,182 +1,127 @@
-==24805== Memcheck, a memory error detector
-==24805== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
-==24805== Using Valgrind-3.18.1-42b08ed5bd-20211015 and LibVEX; rerun with -h for copyright info
-==24805== Command: ./minishell
-==24805== Parent PID: 17037
-==24805== 
---24805-- 
---24805-- Valgrind options:
---24805--    --leak-check=full
---24805--    --show-leak-kinds=all
---24805--    --track-origins=yes
---24805--    --verbose
---24805--    --log-file=valgrind-out.txt
---24805-- Contents of /proc/version:
---24805--   Linux version 5.15.0-87-generic (buildd@lcy02-amd64-011) (gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0, GNU ld (GNU Binutils for Ubuntu) 2.38) #97-Ubuntu SMP Mon Oct 2 21:09:21 UTC 2023
---24805-- 
---24805-- Arch and hwcaps: AMD64, LittleEndian, amd64-cx16-lzcnt-rdtscp-sse3-ssse3-avx-avx2-bmi-f16c-rdrand-rdseed
---24805-- Page sizes: currently 4096, max supported 4096
---24805-- Valgrind library directory: /usr/libexec/valgrind
---24805-- Reading syms from /home/bsengeze/Desktop/my_repos/minishell/minishell
---24805-- Reading syms from /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
---24805--   Considering /usr/lib/debug/.build-id/97/18d3757f00d2366056830aae09698dbd35e32c.debug ..
---24805--   .. build-id is valid
---24805-- Reading syms from /usr/libexec/valgrind/memcheck-amd64-linux
---24805--    object doesn't have a symbol table
---24805--    object doesn't have a dynamic symbol table
---24805-- Scheduler: using generic scheduler lock implementation.
---24805-- Reading suppressions file: /usr/libexec/valgrind/default.supp
-==24805== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-24805-by-bsengeze-on-???
-==24805== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-24805-by-bsengeze-on-???
-==24805== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-24805-by-bsengeze-on-???
-==24805== 
-==24805== TO CONTROL THIS PROCESS USING vgdb (which you probably
-==24805== don't want to do, unless you know exactly what you're doing,
-==24805== or are doing some strange experiment):
-==24805==   /usr/bin/vgdb --pid=24805 ...command...
-==24805== 
-==24805== TO DEBUG THIS PROCESS USING GDB: start GDB like this
-==24805==   /path/to/gdb ./minishell
-==24805== and then give GDB the following command
-==24805==   target remote | /usr/bin/vgdb --pid=24805
-==24805== --pid is optional if only one valgrind process is running
-==24805== 
-==24805== HEAP SUMMARY:
-==24805==     in use at exit: 222,395 bytes in 645 blocks
-==24805==   total heap usage: 1,086 allocs, 441 frees, 242,425 bytes allocated
-==24805== 
-==24805== Searching for pointers to 645 not-freed blocks
-==24805== Checked 258,928 bytes
-==24805== 
-==24805== 5 bytes in 1 blocks are still reachable in loss record 3 of 96
-==24805==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==24805==    by 0x10ECC7: ft_strdup (ft_strdup.c:21)
-==24805==    by 0x10BF62: handle_cmd_and_args (fill_node_cmd_args.c:71)
-==24805==    by 0x10BC77: build_cmd_node (create_node.c:36)
-==24805==    by 0x10BA12: parser (parser.c:45)
-==24805==    by 0x10B879: parse (parser.c:7)
-==24805==    by 0x109512: main (minishell.c:27)
-==24805== 
-==24805== 6 bytes in 1 blocks are still reachable in loss record 4 of 96
-==24805==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==24805==    by 0x10ECC7: ft_strdup (ft_strdup.c:21)
-==24805==    by 0x10BD1C: append_first_arg (fill_node_cmd_args.c:11)
-==24805==    by 0x10BECD: append_arg_to_command_node (fill_node_cmd_args.c:55)
-==24805==    by 0x10BFC7: handle_cmd_and_args (fill_node_cmd_args.c:76)
-==24805==    by 0x10BC77: build_cmd_node (create_node.c:36)
-==24805==    by 0x10BA12: parser (parser.c:45)
-==24805==    by 0x10B879: parse (parser.c:7)
-==24805==    by 0x109512: main (minishell.c:27)
-==24805== 
-==24805== 11 bytes in 2 blocks are definitely lost in loss record 10 of 96
-==24805==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==24805==    by 0x10EDD8: ft_substr (ft_substr.c:34)
-==24805==    by 0x109AB5: assign_word (assign.c:11)
-==24805==    by 0x109666: tokenizer (tokenizer.c:34)
-==24805==    by 0x109841: tokenize (tokenizer.c:63)
-==24805==    by 0x1094C9: main (minishell.c:24)
-==24805== 
-==24805== 11 bytes in 2 blocks are definitely lost in loss record 11 of 96
-==24805==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==24805==    by 0x10ECC7: ft_strdup (ft_strdup.c:21)
-==24805==    by 0x10AE2C: word_lexeme (lexemes.c:53)
-==24805==    by 0x10B7B7: undefined_wrapper (wrappers.c:47)
-==24805==    by 0x10A7C8: lexer (lexer.c:69)
-==24805==    by 0x10A9F7: lexemize (lexer.c:127)
-==24805==    by 0x1094ED: main (minishell.c:25)
-==24805== 
-==24805== 11 bytes in 2 blocks are definitely lost in loss record 12 of 96
-==24805==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==24805==    by 0x10ECC7: ft_strdup (ft_strdup.c:21)
-==24805==    by 0x10AE40: word_lexeme (lexemes.c:54)
-==24805==    by 0x10B7B7: undefined_wrapper (wrappers.c:47)
-==24805==    by 0x10A7C8: lexer (lexer.c:69)
-==24805==    by 0x10A9F7: lexemize (lexer.c:127)
-==24805==    by 0x1094ED: main (minishell.c:25)
-==24805== 
-==24805== 
-==24805== 16 bytes in 1 blocks are still reachable in loss record 21 of 96
-==24805==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==24805==    by 0x10BCE6: append_first_arg (fill_node_cmd_args.c:5)
-==24805==    by 0x10BECD: append_arg_to_command_node (fill_node_cmd_args.c:55)
-==24805==    by 0x10BFC7: handle_cmd_and_args (fill_node_cmd_args.c:76)
-==24805==    by 0x10BC77: build_cmd_node (create_node.c:36)
-==24805==    by 0x10BA12: parser (parser.c:45)
-==24805==    by 0x10B879: parse (parser.c:7)
-==24805==    by 0x109512: main (minishell.c:27)
-==24805== 
-==24805== 
-==24805== 80 bytes in 1 blocks are still reachable in loss record 33 of 96
-==24805==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==24805==    by 0x10BB94: create_node (create_node.c:7)
-==24805==    by 0x10BC56: build_cmd_node (create_node.c:32)
-==24805==    by 0x10BA12: parser (parser.c:45)
-==24805==    by 0x10B879: parse (parser.c:7)
-==24805==    by 0x109512: main (minishell.c:27)
-==24805== 
-==24805== 324 bytes in 31 blocks are still reachable in loss record 44 of 96
-==24805==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==24805==    by 0x10ECC7: ft_strdup (ft_strdup.c:21)
-==24805==    by 0x10CF0D: create_node_ht (env_vars.c:25)
-==24805==    by 0x10CFA8: insert_node_ht (env_vars.c:40)
-==24805==    by 0x10D11E: initialize_table (env_vars.c:85)
-==24805==    by 0x10946A: main (minishell.c:18)
-==24805== 
-==24805== 442 bytes in 32 blocks are still reachable in loss record 45 of 96
-==24805==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==24805==    by 0x10ECC7: ft_strdup (ft_strdup.c:21)
-==24805==    by 0x10CF0D: create_node_ht (env_vars.c:25)
-==24805==    by 0x10D00C: insert_node_ht (env_vars.c:50)
-==24805==    by 0x10D11E: initialize_table (env_vars.c:85)
-==24805==    by 0x10946A: main (minishell.c:18)
-==24805== 
-==24805== 512 bytes in 1 blocks are still reachable in loss record 46 of 96
-==24805==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==24805==    by 0x10D245: convert_hash_table_to_array (env_vars.c:120)
-==24805==    by 0x109479: main (minishell.c:19)
-==24805== 
-==24805== 
-==24805== 592 bytes in 31 blocks are still reachable in loss record 48 of 96
-==24805==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==24805==    by 0x10ECC7: ft_strdup (ft_strdup.c:21)
-==24805==    by 0x10CF20: create_node_ht (env_vars.c:26)
-==24805==    by 0x10CFA8: insert_node_ht (env_vars.c:40)
-==24805==    by 0x10D11E: initialize_table (env_vars.c:85)
-==24805==    by 0x10946A: main (minishell.c:18)
-==24805== 
-==24805== 744 bytes in 31 blocks are still reachable in loss record 51 of 96
-==24805==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==24805==    by 0x10CEEC: create_node_ht (env_vars.c:19)
-==24805==    by 0x10CFA8: insert_node_ht (env_vars.c:40)
-==24805==    by 0x10D11E: initialize_table (env_vars.c:85)
-==24805==    by 0x10946A: main (minishell.c:18)
-==24805== 
-==24805== 768 bytes in 32 blocks are still reachable in loss record 53 of 96
-==24805==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==24805==    by 0x10CEEC: create_node_ht (env_vars.c:19)
-==24805==    by 0x10D00C: insert_node_ht (env_vars.c:50)
-==24805==    by 0x10D11E: initialize_table (env_vars.c:85)
-==24805==    by 0x10946A: main (minishell.c:18)
-==24805== 
-==24805== 830 bytes in 32 blocks are still reachable in loss record 54 of 96
-==24805==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==24805==    by 0x10ECC7: ft_strdup (ft_strdup.c:21)
-==24805==    by 0x10CF20: create_node_ht (env_vars.c:26)
-==24805==    by 0x10D00C: insert_node_ht (env_vars.c:50)
-==24805==    by 0x10D11E: initialize_table (env_vars.c:85)
-==24805==    by 0x10946A: main (minishell.c:18)
-==24805== 
-==24805== 2,188 bytes in 63 blocks are still reachable in loss record 69 of 96
-==24805==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==24805==    by 0x10EE60: ft_strjoin (ft_strjoin.c:23)
-==24805==    by 0x10D2D3: convert_hash_table_to_array (env_vars.c:135)
-==24805==    by 0x109479: main (minishell.c:19)
-==24805== 
-==24805== LEAK SUMMARY:
-==24805==    definitely lost: 1,565 bytes in 138 blocks
-==24805==    indirectly lost: 0 bytes in 0 blocks
-==24805==      possibly lost: 0 bytes in 0 blocks
-==24805==    still reachable: 220,830 bytes in 507 blocks
-==24805==         suppressed: 0 bytes in 0 blocks
-==24805== 
-==24805== ERROR SUMMARY: 4 errors from 4 contexts (suppressed: 0 from 0)
+==25537== Memcheck, a memory error detector
+==25537== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==25537== Using Valgrind-3.18.1-42b08ed5bd-20211015 and LibVEX; rerun with -h for copyright info
+==25537== Command: ./minishell
+==25537== Parent PID: 17037
+==25537== 
+--25537-- 
+--25537-- Valgrind options:
+--25537--    --leak-check=full
+--25537--    --show-leak-kinds=all
+--25537--    --track-origins=yes
+--25537--    --verbose
+--25537--    --log-file=valgrind-out.txt
+--25537-- Contents of /proc/version:
+--25537--   Linux version 5.15.0-87-generic (buildd@lcy02-amd64-011) (gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0, GNU ld (GNU Binutils for Ubuntu) 2.38) #97-Ubuntu SMP Mon Oct 2 21:09:21 UTC 2023
+--25537-- 
+==25537== HEAP SUMMARY:
+==25537==     in use at exit: 222,288 bytes in 641 blocks
+==25537==   total heap usage: 1,086 allocs, 445 frees, 242,425 bytes allocated
+==25537== 
+==25537== Searching for pointers to 641 not-freed blocks
+==25537== Checked 258,856 bytes
+==25537== 
+==25537== 
+==25537== 11 bytes in 2 blocks are definitely lost in loss record 8 of 92
+==25537==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==25537==    by 0x10EDE7: ft_substr (ft_substr.c:34)
+==25537==    by 0x109AC4: assign_word (assign.c:11)
+==25537==    by 0x109675: tokenizer (tokenizer.c:34)
+==25537==    by 0x109850: tokenize (tokenizer.c:63)
+==25537==    by 0x1094C9: main (minishell.c:24)
+==25537== 
+==25537== 11 bytes in 2 blocks are definitely lost in loss record 9 of 92
+==25537==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==25537==    by 0x10ECD6: ft_strdup (ft_strdup.c:21)
+==25537==    by 0x10AE3B: word_lexeme (lexemes.c:53)
+==25537==    by 0x10B7C6: undefined_wrapper (wrappers.c:47)
+==25537==    by 0x10A7D7: lexer (lexer.c:69)
+==25537==    by 0x10AA06: lexemize (lexer.c:127)
+==25537==    by 0x1094ED: main (minishell.c:25)
+==25537== 
+==25537== 11 bytes in 2 blocks are definitely lost in loss record 10 of 92
+==25537==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==25537==    by 0x10ECD6: ft_strdup (ft_strdup.c:21)
+==25537==    by 0x10AE4F: word_lexeme (lexemes.c:54)
+==25537==    by 0x10B7C6: undefined_wrapper (wrappers.c:47)
+==25537==    by 0x10A7D7: lexer (lexer.c:69)
+==25537==    by 0x10AA06: lexemize (lexer.c:127)
+==25537==    by 0x1094ED: main (minishell.c:25)
+
+==25537== 324 bytes in 31 blocks are still reachable in loss record 40 of 92
+==25537==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==25537==    by 0x10ECD6: ft_strdup (ft_strdup.c:21)
+==25537==    by 0x10CF1C: create_node_ht (env_vars.c:25)
+==25537==    by 0x10CFB7: insert_node_ht (env_vars.c:40)
+==25537==    by 0x10D12D: initialize_table (env_vars.c:85)
+==25537==    by 0x10946A: main (minishell.c:18)
+==25537== 
+==25537== 442 bytes in 32 blocks are still reachable in loss record 41 of 92
+==25537==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==25537==    by 0x10ECD6: ft_strdup (ft_strdup.c:21)
+==25537==    by 0x10CF1C: create_node_ht (env_vars.c:25)
+==25537==    by 0x10D01B: insert_node_ht (env_vars.c:50)
+==25537==    by 0x10D12D: initialize_table (env_vars.c:85)
+==25537==    by 0x10946A: main (minishell.c:18)
+==25537== 
+==25537== 512 bytes in 1 blocks are still reachable in loss record 42 of 92
+==25537==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==25537==    by 0x10D254: convert_hash_table_to_array (env_vars.c:120)
+==25537==    by 0x109479: main (minishell.c:19)
+==25537== 
+==25537== 
+==25537== 592 bytes in 31 blocks are still reachable in loss record 44 of 92
+==25537==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==25537==    by 0x10ECD6: ft_strdup (ft_strdup.c:21)
+==25537==    by 0x10CF2F: create_node_ht (env_vars.c:26)
+==25537==    by 0x10CFB7: insert_node_ht (env_vars.c:40)
+==25537==    by 0x10D12D: initialize_table (env_vars.c:85)
+==25537==    by 0x10946A: main (minishell.c:18)
+==25537== 
+==25537== 
+==25537== 744 bytes in 31 blocks are still reachable in loss record 47 of 92
+==25537==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==25537==    by 0x10CEFB: create_node_ht (env_vars.c:19)
+==25537==    by 0x10CFB7: insert_node_ht (env_vars.c:40)
+==25537==    by 0x10D12D: initialize_table (env_vars.c:85)
+==25537==    by 0x10946A: main (minishell.c:18)
+==25537== 
+==25537== 
+==25537== 768 bytes in 32 blocks are still reachable in loss record 49 of 92
+==25537==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==25537==    by 0x10CEFB: create_node_ht (env_vars.c:19)
+==25537==    by 0x10D01B: insert_node_ht (env_vars.c:50)
+==25537==    by 0x10D12D: initialize_table (env_vars.c:85)
+==25537==    by 0x10946A: main (minishell.c:18)
+==25537== 
+==25537== 830 bytes in 32 blocks are still reachable in loss record 50 of 92
+==25537==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==25537==    by 0x10ECD6: ft_strdup (ft_strdup.c:21)
+==25537==    by 0x10CF2F: create_node_ht (env_vars.c:26)
+==25537==    by 0x10D01B: insert_node_ht (env_vars.c:50)
+==25537==    by 0x10D12D: initialize_table (env_vars.c:85)
+==25537==    by 0x10946A: main (minishell.c:18)
+==25537== 
+==25537== 
+==25537== 1,532 bytes in 132 blocks are definitely lost in loss record 61 of 92
+==25537==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==25537==    by 0x10EDE7: ft_substr (ft_substr.c:34)
+==25537==    by 0x10F07A: ft_split (ft_split.c:61)
+==25537==    by 0x10D0A2: initialize_table (env_vars.c:70)
+==25537==    by 0x10946A: main (minishell.c:18)
+==25537== 
+==25537== 
+==25537== 2,188 bytes in 63 blocks are still reachable in loss record 65 of 92
+==25537==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==25537==    by 0x10EE6F: ft_strjoin (ft_strjoin.c:23)
+==25537==    by 0x10D2E2: convert_hash_table_to_array (env_vars.c:135)
+==25537==    by 0x109479: main (minishell.c:19)
+==25537== 
+==25537== LEAK SUMMARY:
+==25537==    definitely lost: 1,565 bytes in 138 blocks
+==25537==    indirectly lost: 0 bytes in 0 blocks
+==25537==      possibly lost: 0 bytes in 0 blocks
+==25537==    still reachable: 220,723 bytes in 503 blocks
+==25537==         suppressed: 0 bytes in 0 blocks
+==25537== 
+==25537== ERROR SUMMARY: 4 errors from 4 contexts (suppressed: 0 from 0)

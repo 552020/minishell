@@ -28,6 +28,7 @@ int	main(int argc, char **argv, char **envp)
 			handle_heredocs(ast_root);
 			execute(ast_root, var_path_value, my_envp, &table);
 		}
+		free_ast(ast_root);
 	}
 	return (0);
 }
