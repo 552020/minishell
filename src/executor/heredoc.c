@@ -25,6 +25,8 @@ void	ft_heredoc(t_ast_node *node, char *delimiter)
 	pid_t	pid;
 	int		fd[2];
 	char	*line;
+	int		status;
+	int		termsig;
 
 	line = NULL;
 	if (pipe(fd) == -1)
@@ -37,6 +39,13 @@ void	ft_heredoc(t_ast_node *node, char *delimiter)
 		while (1)
 		{
 			line = readline("heredoc> ");
+			if (!line)
+			// Check if readline returns NULL,
+			// which happens on SIGINT
+			{
+				close(fd[1]);       // Close the write end of the pipe
+				exit(EXIT_FAILURE); // Exit with failure status
+			}
 			if (ft_strncmp(line, delimiter, ft_strlen(delimiter)) == 0
 				&& ft_strlen(delimiter) == ft_strlen(line))
 			{
@@ -49,7 +58,21 @@ void	ft_heredoc(t_ast_node *node, char *delimiter)
 		}
 	}
 	close(fd[1]);
-	waitpid(pid, NULL, 0);
+	// waitpid(pid, NULL, 0);
+	waitpid(pid, &status, 0);
+	if (WIFSIGNALED(status))
+	{
+		termsig = WTERMSIG(status);
+		if (termsig == SIGINT)
+		{
+			close(fd[0]);
+			printf("\n");
+			rl_on_new_line();
+			rl_replace_line("", 0);
+			rl_redisplay();
+			return ;
+		}
+	}
 	node->heredoc_fd = fd[0];
 	node->heredoc = true;
 	// if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_AST)
