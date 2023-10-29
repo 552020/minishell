@@ -1,0 +1,126 @@
+==22611== Memcheck, a memory error detector
+==22611== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==22611== Using Valgrind-3.18.1-42b08ed5bd-20211015 and LibVEX; rerun with -h for copyright info
+==22611== Command: ./minishell
+==22611== Parent PID: 17037
+==22611== 
+--22611-- 
+--22611-- Valgrind options:
+--22611--    --leak-check=full
+--22611--    --show-leak-kinds=all
+--22611--    --track-origins=yes
+--22611--    --verbose
+--22611--    --log-file=valgrind-out.txt
+--22611-- Contents of /proc/version:
+--22611--   Linux version 5.15.0-87-generic (buildd@lcy02-amd64-011) (gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0, GNU ld (GNU Binutils for Ubuntu) 2.38) #97-Ubuntu SMP Mon Oct 2 21:09:21 UTC 2023
+--22611-- 
+--22611-- Arch and hwcaps: AMD64, LittleEndian, amd64-cx16-lzcnt-rdtscp-sse3-ssse3-avx-avx2-bmi-f16c-rdrand-rdseed
+--22611-- Page sizes: currently 4096, max supported 4096
+--22611-- Valgrind library directory: /usr/libexec/valgrind
+--22611-- Reading syms from /home/bsengeze/Desktop/my_repos/minishell/minishell
+--22611-- Reading syms from /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+--22611--   Considering /usr/lib/debug/.build-id/97/18d3757f00d2366056830aae09698dbd35e32c.debug ..
+--22611--   .. build-id is valid
+--22611-- Reading syms from /usr/libexec/valgrind/memcheck-amd64-linux
+--22611--    object doesn't have a symbol table
+--22611--    object doesn't have a dynamic symbol table
+--22611-- Scheduler: using generic scheduler lock implementation.
+--22611-- Reading suppressions file: /usr/libexec/valgrind/default.supp
+==22611== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-22611-by-bsengeze-on-???
+==22611== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-22611-by-bsengeze-on-???
+==22611== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-22611-by-bsengeze-on-???
+==22611== 
+==22611== TO CONTROL THIS PROCESS USING vgdb (which you probably
+==22611== don't want to do, unless you know exactly what you're doing,
+==22611== or are doing some strange experiment):
+==22611==   /usr/bin/vgdb --pid=22611 ...command...
+==22611== 
+==22611== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==22611==   /path/to/gdb ./minishell
+==22611== and then give GDB the following command
+==22611==   target remote | /usr/bin/vgdb --pid=22611
+==22611== --pid is optional if only one valgrind process is running
+==22611== 
+
+==22611== HEAP SUMMARY:
+==22611==     in use at exit: 218,192 bytes in 631 blocks
+==22611==   total heap usage: 1,064 allocs, 433 frees, 238,008 bytes allocated
+==22611== 
+==22611== Searching for pointers to 631 not-freed blocks
+==22611== Checked 258,832 bytes
+==22611== 
+
+==22611== 
+==22611== 324 bytes in 31 blocks are still reachable in loss record 34 of 85
+==22611==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==22611==    by 0x10EC51: ft_strdup (ft_strdup.c:21)
+==22611==    by 0x10CF0D: create_node_ht (env_vars.c:25)
+==22611==    by 0x10CFA8: insert_node_ht (env_vars.c:40)
+==22611==    by 0x10D11E: initialize_table (env_vars.c:85)
+==22611==    by 0x10946A: main (minishell.c:18)
+==22611== 
+==22611== 442 bytes in 32 blocks are still reachable in loss record 35 of 85
+==22611==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==22611==    by 0x10EC51: ft_strdup (ft_strdup.c:21)
+==22611==    by 0x10CF0D: create_node_ht (env_vars.c:25)
+==22611==    by 0x10D00C: insert_node_ht (env_vars.c:50)
+==22611==    by 0x10D11E: initialize_table (env_vars.c:85)
+==22611==    by 0x10946A: main (minishell.c:18)
+==22611== 
+==22611== 512 bytes in 1 blocks are still reachable in loss record 36 of 85
+==22611==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==22611==    by 0x10D245: convert_hash_table_to_array (env_vars.c:120)
+==22611==    by 0x109479: main (minishell.c:19)
+
+==22611== 592 bytes in 31 blocks are still reachable in loss record 38 of 85
+==22611==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==22611==    by 0x10EC51: ft_strdup (ft_strdup.c:21)
+==22611==    by 0x10CF20: create_node_ht (env_vars.c:26)
+==22611==    by 0x10CFA8: insert_node_ht (env_vars.c:40)
+==22611==    by 0x10D11E: initialize_table (env_vars.c:85)
+==22611==    by 0x10946A: main (minishell.c:18)
+
+==22611== 744 bytes in 31 blocks are still reachable in loss record 41 of 85
+==22611==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==22611==    by 0x10CEEC: create_node_ht (env_vars.c:19)
+==22611==    by 0x10CFA8: insert_node_ht (env_vars.c:40)
+==22611==    by 0x10D11E: initialize_table (env_vars.c:85)
+==22611==    by 0x10946A: main (minishell.c:18)
+==22611== 
+==22611== 768 bytes in 32 blocks are still reachable in loss record 43 of 85
+==22611==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==22611==    by 0x10CEEC: create_node_ht (env_vars.c:19)
+==22611==    by 0x10D00C: insert_node_ht (env_vars.c:50)
+==22611==    by 0x10D11E: initialize_table (env_vars.c:85)
+==22611==    by 0x10946A: main (minishell.c:18)
+==22611== 
+==22611== 830 bytes in 32 blocks are still reachable in loss record 44 of 85
+==22611==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==22611==    by 0x10EC51: ft_strdup (ft_strdup.c:21)
+==22611==    by 0x10CF20: create_node_ht (env_vars.c:26)
+==22611==    by 0x10D00C: insert_node_ht (env_vars.c:50)
+==22611==    by 0x10D11E: initialize_table (env_vars.c:85)
+==22611==    by 0x10946A: main (minishell.c:18)
+==22611== 
+==22611== 
+==22611== 1,532 bytes in 132 blocks are definitely lost in loss record 55 of 85
+==22611==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==22611==    by 0x10ED57: ft_substr (ft_substr.c:34)
+==22611==    by 0x10EFEA: ft_split (ft_split.c:61)
+==22611==    by 0x10D093: initialize_table (env_vars.c:70)
+==22611==    by 0x10946A: main (minishell.c:18)
+==22611== 
+==22611== 2,188 bytes in 63 blocks are still reachable in loss record 59 of 85
+==22611==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==22611==    by 0x10EDDF: ft_strjoin (ft_strjoin.c:23)
+==22611==    by 0x10D2D3: convert_hash_table_to_array (env_vars.c:135)
+==22611==    by 0x109479: main (minishell.c:19)
+==22611== 
+==22611== LEAK SUMMARY:
+==22611==    definitely lost: 1,532 bytes in 132 blocks
+==22611==    indirectly lost: 0 bytes in 0 blocks
+==22611==      possibly lost: 0 bytes in 0 blocks
+==22611==    still reachable: 216,660 bytes in 499 blocks
+==22611==         suppressed: 0 bytes in 0 blocks
+==22611== 
+==22611== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 0 from 0)

@@ -39,4 +39,5 @@ void	unset(t_env_table *env_table, char **args, char ***envp)
 		single_unset(env_table, args[i], envp);
 		i++;
 	}
+	free_cmd_and_args_arr(args);
 }

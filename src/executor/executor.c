@@ -1,5 +1,18 @@
 #include "minishell.h"
 
+void free_cmd_and_args_arr(char **cmd_and_args_arr)
+{
+	int	i;
+
+	i = 0;
+	while (cmd_and_args_arr[i])
+	{
+		free(cmd_and_args_arr[i]);
+		i++;
+	}
+	free(cmd_and_args_arr);
+}
+
 void	handle_redirections(t_ast_node *node)
 {
 	int	filein;
@@ -124,7 +137,8 @@ void	execute_builtin(t_ast_node *node, char *dir_paths, char **envp,
 	(void)cmd_and_args_arr;
 	handle_redirections(node);
 	cmd_and_args_count = count_cmd_and_args(node);
-	cmd_and_args_arr = build_cmd_and_args_arr(node, cmd_and_args_count);
+	if ((ft_strncmp(node->cmd, "export", 6) == 0 && ft_strlen(node->cmd) == 6) || (ft_strncmp(node->cmd, "unset", 5) == 0 && ft_strlen(node->cmd) == 5))
+		cmd_and_args_arr = build_cmd_and_args_arr(node, cmd_and_args_count);
 	if (ft_strncmp(node->cmd, "env", 3) == 0 && ft_strlen(node->cmd) == 3)
 		env(env_table->table);
 	if (ft_strncmp(node->cmd, "export", 6) == 0 && ft_strlen(node->cmd) == 6)
@@ -162,9 +176,7 @@ void	execute_cmd(t_ast_node *node, char *dir_paths, char **envp,
 	int		cmd_and_args_count;
 
 	(void)env_table;
-	// printf("before redirections\n");
 	handle_redirections(node);
-	cmd_and_args_count = count_cmd_and_args(node);
 	path = NULL;
 	if (node->cmd)
 	{
@@ -178,12 +190,15 @@ void	execute_cmd(t_ast_node *node, char *dir_paths, char **envp,
 	}
 	else
 		printf("no commands to execute\n");
+	cmd_and_args_count = count_cmd_and_args(node);
 	cmd_and_args_arr = build_cmd_and_args_arr(node, cmd_and_args_count);
 	if (node->cmd)
 	{
+		// is this correct or not? @Stefano
 		if (execve(path, cmd_and_args_arr, envp) == -1)
 			printf("execve error\n");
 	}
+	free_cmd_and_args_arr(cmd_and_args_arr);
 }
 
 void	handle_without_pipes(t_ast_node *node, char *dir_paths, char **envp,
@@ -191,7 +206,6 @@ void	handle_without_pipes(t_ast_node *node, char *dir_paths, char **envp,
 {
 	pid_t	pid;
 
-	// printf("hanlding without pipes\n");
 	if (command_is_builtin(node))
 	{
 		execute_builtin(node, dir_paths, envp, env_table);
@@ -219,7 +233,6 @@ void	handle_pipes(t_ast_node *node, char *dir_paths, char **envp,
 	pid_t	left_pid;
 	pid_t	right_pid;
 
-	// printf("node->type: %d\n", node->type);
 	if (node->type == N_PIPE)
 	{
 		if (pipe(pipe_fd) == -1)
@@ -238,7 +251,6 @@ void	handle_pipes(t_ast_node *node, char *dir_paths, char **envp,
 		}
 		if (left_pid == 0)
 		{
-			// printf(" left child process created\n");
 			close(pipe_fd[0]);
 			// Close the read end of the pipe
 			dup2(pipe_fd[1], STDOUT_FILENO); // Redirect stdout to the pipe
@@ -259,7 +271,6 @@ void	handle_pipes(t_ast_node *node, char *dir_paths, char **envp,
 		}
 		if (right_pid == 0)
 		{
-			// printf(" right child process created\n");
 			close(pipe_fd[1]);
 			// Close the write end of the pipe
 			dup2(pipe_fd[0], STDIN_FILENO); // Redirect stdin from the pipe

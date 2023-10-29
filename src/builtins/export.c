@@ -37,4 +37,5 @@ void	export(t_env_table *env_table, char **args, char ***envp)
 		single_export(env_table, key, value, envp);
 		i++;
 	}
+		free_cmd_and_args_arr(args);
 }

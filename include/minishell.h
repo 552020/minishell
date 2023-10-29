@@ -248,8 +248,8 @@ void					ft_heredoc(t_ast_node *node, char *delimiter);
 
 /* Execution */
 
-size_t					count_pipes(t_lexeme *lexeme_arr, size_t token_count);
 // not using these
+size_t					count_pipes(t_lexeme *lexeme_arr, size_t token_count);
 unsigned int			hash(const char *key);
 // not using these
 void	handle_without_pipes(t_ast_node *ast_root,
@@ -283,5 +283,7 @@ void					execute(t_ast_node *ast_root, char *dir_paths,
 void					error_exit(void);
 char					*path_finder(char *cmd, char *dir_paths);
 void					echo(t_ast_node *node);
+void					free_cmd_and_args_arr(char **cmd_and_args_arr);
+
 
 #endif

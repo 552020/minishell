@@ -99,7 +99,7 @@ int	check_syntax_error(t_lexeme *lexeme_arr)
 	i = 0;
 	while (lexeme_arr[i].type != L_END)
 	{
-		printf("lexeme_arr[%d].type = %d\n", i, lexeme_arr[i].type);
+		// printf("lexeme_arr[%d].type = %d\n", i, lexeme_arr[i].type);
 		if (lexeme_is_operator(lexeme_arr[i].type))
 		{
 			if (lexeme_arr[i + 1].type == L_END)

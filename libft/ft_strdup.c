@@ -21,8 +21,8 @@ char	*ft_strdup(const char *src)
 	dest = malloc(sizeof(char) * (ft_strlen((char *)src) + 1));
 	if (!dest)
 	{
-		return (NULL);
 		errno = ENOMEM;
+		return (NULL);
 	}
 	while (src[i])
 	{
