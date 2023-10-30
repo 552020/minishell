@@ -264,7 +264,7 @@ void					handle_heredocs(t_ast_node *node);
 void					ft_heredoc(t_ast_node *node, char *delimiter);
 
 void					execute_cmd(t_ast_node *node, char *dir_paths,
-							char **envp, t_env_table *env_table);
+							char **envp);
 void					print_working_directory(void);
 void					ft_exit(int exit_code, t_ast_node *node, char **envp,
 							t_env_table *table);
@@ -295,5 +295,9 @@ void	builtin_without_args(t_ast_node *node, char **envp,
 		t_env_table *env_table);
 void	execute_builtin(t_ast_node *node, char **envp,
 		t_env_table *env_table);
-
+int	count_cmd_and_args(t_ast_node *node);
+char	**build_cmd_and_args_arr(t_ast_node *node, int cmd_and_args_count);
+int	command_is_builtin(t_ast_node *node);
+void	handle_command_node(t_ast_node *node, char *dir_paths, char **envp,
+		t_env_table *env_table);
 #endif

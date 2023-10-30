@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   redirections.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: bsengeze <bsengeze@student.42berlin.de>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/10/30 23:35:54 by bsengeze          #+#    #+#             */
+/*   Updated: 2023/10/30 23:36:00 by bsengeze         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 void	handle_redirections(t_ast_node *node)
@@ -9,7 +21,6 @@ void	handle_redirections(t_ast_node *node)
 	if (node->heredoc)
 		handle_heredoc(node);
 }
-
 
 void	handle_infile(t_ast_node *node)
 {
@@ -51,4 +62,3 @@ void	handle_heredoc(t_ast_node *node)
 	dup2(node->heredoc_fd, STDIN_FILENO);
 	close(node->heredoc_fd);
 }
-
