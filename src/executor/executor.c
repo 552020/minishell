@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-void free_cmd_and_args_arr(char **cmd_and_args_arr)
+void	free_cmd_and_args_arr(char **cmd_and_args_arr)
 {
 	int	i;
 
@@ -11,85 +11,6 @@ void free_cmd_and_args_arr(char **cmd_and_args_arr)
 		i++;
 	}
 	free(cmd_and_args_arr);
-}
-
-void	handle_infile(t_ast_node *node)
-{
-	int	filein;
-
-	filein = 0;
-	filein = open(node->input_file, O_RDONLY, 0777);
-	if (filein == -1)
-	{
-		// todo : add free and proper exit
-		printf("filein error\n");
-	}
-	dup2(filein, STDIN_FILENO);
-	close(filein);
-
-}
-
-void	handle_outfile(t_ast_node *node)
-{
-	int	fileout;
-
-	fileout = 1;
-	if (node->append)
-		fileout = open(node->output_file, O_WRONLY | O_CREAT | O_APPEND,
-				0777);
-	else if (!node->append)
-		fileout = open(node->output_file, O_WRONLY | O_CREAT | O_TRUNC,
-				0777);
-	if (fileout == -1)
-	{
-		// todo : add free and proper exit
-		printf("fileout error\n");
-	}
-	dup2(fileout, STDOUT_FILENO);
-	close(fileout);
-}
-
-void	handle_redirections(t_ast_node *node)
-{
-	// int	filein;
-	// int	fileout;
-
-	// filein = 0;
-	// fileout = 1;
-	if (node->input_file)
-	{
-		handle_infile(node);
-		// filein = open(node->input_file, O_RDONLY, 0777);
-		// if (filein == -1)
-		// {
-		// 	// todo : add free and proper exit
-		// 	printf("filein error\n");
-		// }
-		// dup2(filein, STDIN_FILENO);
-		// close(filein);
-	}
-	if (node->output_file != NULL)
-	{
-		handle_outfile(node);
-		// if (node->append)
-		// 	fileout = open(node->output_file, O_WRONLY | O_CREAT | O_APPEND,
-		// 			0777);
-		// else if (!node->append)
-		// 	fileout = open(node->output_file, O_WRONLY | O_CREAT | O_TRUNC,
-		// 			0777);
-		// if (fileout == -1)
-		// {
-		// 	// todo : add free and proper exit
-		// 	printf("fileout error\n");
-		// }
-		// dup2(fileout, STDOUT_FILENO);
-		// close(fileout);
-	}
-	if (node->heredoc)
-	{
-		dup2(node->heredoc_fd, STDIN_FILENO);
-		close(node->heredoc_fd);
-	}
 }
 
 int	count_cmd_and_args(t_ast_node *node)

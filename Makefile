@@ -9,7 +9,7 @@ SRC_DIR = src
 OBJ_DIR = obj
 
 SRCS = minishell.c tokenizer/tokenizer.c tokenizer/utils.c tokenizer/assign.c tokenizer/count_words.c tokenizer/assign_redirect.c lexer/lexer.c lexer/lexemes_redirect.c lexer/lexemes.c lexer/quotes.c lexer/var_subs.c lexer/wrappers.c utils/utils.c parser/parser.c parser/create_node.c parser/fill_node_cmd_args.c parser/fill_node_redirects.c utils/debug.c env_vars.c utils/check_input.c  \
-		executor/executor.c executor/utils.c executor/heredoc.c  builtins/pwd.c builtins/env.c builtins/export.c builtins/unset.c builtins/cd.c builtins/exit.c builtins/echo.c utils/read_input.c
+		executor/executor.c executor/utils.c executor/heredoc.c  builtins/pwd.c builtins/env.c builtins/export.c builtins/unset.c builtins/cd.c builtins/exit.c builtins/echo.c utils/read_input.c redirections/redirections.c
 # OBJS = $(SRCS:.c=.o)
 OBJS = $(addprefix $(OBJ_DIR)/, $(SRCS:.c=.o))
 # OBJS := $(OBJS:$(SRC_DIR)/%=$(OBJ_DIR)/%)

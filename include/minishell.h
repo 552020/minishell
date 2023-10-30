@@ -288,6 +288,7 @@ void					free_cmd_and_args_arr(char **cmd_and_args_arr);
 
 void	handle_infile(t_ast_node *node);
 void	handle_outfile(t_ast_node *node);
+void	handle_heredoc(t_ast_node *node);
 void	builtin_with_args(t_ast_node *node, char **envp,
 		t_env_table *env_table);
 void	builtin_without_args(t_ast_node *node, char **envp,
