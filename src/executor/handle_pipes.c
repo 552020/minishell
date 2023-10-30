@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipes.c                                            :+:      :+:    :+:   */
+/*   handle_pipes.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bsengeze <bsengeze@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/31 00:08:30 by bsengeze          #+#    #+#             */
-/*   Updated: 2023/10/31 00:28:43 by bsengeze         ###   ########.fr       */
+/*   Updated: 2023/10/31 00:47:46 by bsengeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,41 +41,46 @@ void	handle_pipes(t_ast_node *node, char *dir_paths, char **envp,
 	pid_t	left_pid;
 	pid_t	right_pid;
 
-	if (node->type == N_PIPE)
+	if (pipe(pipe_fd) == -1)
+			error_exit();
+	left_pid = fork();
+	if (left_pid == -1)
+		error_exit();
+	if (left_pid == 0)
 	{
-		if (pipe(pipe_fd) == -1)
-			error_exit();
-		left_pid = fork();
-		if (left_pid == -1)
-			error_exit();
-		if (left_pid == 0)
-		{
-			close(pipe_fd[0]);
-			dup2(pipe_fd[1], STDOUT_FILENO);
-			close(pipe_fd[1]);
-			handle_redirections(node->children[0]);
-			handle_pipes(node->children[0], dir_paths, envp, env_table);
-			// TODO : add free (maybe)
-			exit(EXIT_SUCCESS);
-		}
-		right_pid = fork();
-		if (right_pid == -1)
-			error_exit();
-		if (right_pid == 0)
-		{
-			close(pipe_fd[1]);
-			dup2(pipe_fd[0], STDIN_FILENO);
-			close(pipe_fd[0]);
-			handle_redirections(node->children[1]);
-			handle_pipes(node->children[1], dir_paths, envp, env_table);
-			// TODO : add free (maybe)
-			exit(EXIT_SUCCESS);
-		}
 		close(pipe_fd[0]);
+		dup2(pipe_fd[1], STDOUT_FILENO);
 		close(pipe_fd[1]);
-		waitpid(left_pid, NULL, 0);
-		waitpid(right_pid, NULL, 0);
+		handle_redirections(node->children[0]);
+		handle_pipes(node->children[0], dir_paths, envp, env_table);
+		// TODO : add free (maybe)
+		exit(EXIT_SUCCESS);
 	}
+	right_pid = fork();
+	if (right_pid == -1)
+		error_exit();
+	if (right_pid == 0)
+	{
+		close(pipe_fd[1]);
+		dup2(pipe_fd[0], STDIN_FILENO);
+		close(pipe_fd[0]);
+		handle_redirections(node->children[1]);
+		handle_pipes(node->children[1], dir_paths, envp, env_table);
+		// TODO : add free (maybe)
+		exit(EXIT_SUCCESS);
+	}
+	close(pipe_fd[0]);
+	close(pipe_fd[1]);
+	waitpid(left_pid, NULL, 0);
+	waitpid(right_pid, NULL, 0);
+}
+
+void	handle_nodes(t_ast_node *node, char *dir_paths, char **envp,
+		t_env_table *env_table)
+{
+
+	if (node->type == N_PIPE)
+		handle_pipes(node, dir_paths, envp, env_table);
 	else
 		handle_command_node(node, dir_paths, envp, env_table);
 }
@@ -83,8 +88,8 @@ void	handle_pipes(t_ast_node *node, char *dir_paths, char **envp,
 void	handle_command_node(t_ast_node *node, char *dir_paths, char **envp,
 		t_env_table *env_table)
 {
-		if (command_is_builtin(node))
-			execute_builtin(node, envp, env_table);
-		else
-			execute_cmd(node, dir_paths, envp);
+	if (command_is_builtin(node))
+		execute_builtin(node, envp, env_table);
+	else
+		execute_cmd(node, dir_paths, envp);
 }
