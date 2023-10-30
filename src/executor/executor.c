@@ -13,39 +13,77 @@ void free_cmd_and_args_arr(char **cmd_and_args_arr)
 	free(cmd_and_args_arr);
 }
 
-void	handle_redirections(t_ast_node *node)
+void	handle_infile(t_ast_node *node)
 {
 	int	filein;
-	int	fileout;
 
 	filein = 0;
+	filein = open(node->input_file, O_RDONLY, 0777);
+	if (filein == -1)
+	{
+		// todo : add free and proper exit
+		printf("filein error\n");
+	}
+	dup2(filein, STDIN_FILENO);
+	close(filein);
+
+}
+
+void	handle_outfile(t_ast_node *node)
+{
+	int	fileout;
+
 	fileout = 1;
+	if (node->append)
+		fileout = open(node->output_file, O_WRONLY | O_CREAT | O_APPEND,
+				0777);
+	else if (!node->append)
+		fileout = open(node->output_file, O_WRONLY | O_CREAT | O_TRUNC,
+				0777);
+	if (fileout == -1)
+	{
+		// todo : add free and proper exit
+		printf("fileout error\n");
+	}
+	dup2(fileout, STDOUT_FILENO);
+	close(fileout);
+}
+
+void	handle_redirections(t_ast_node *node)
+{
+	// int	filein;
+	// int	fileout;
+
+	// filein = 0;
+	// fileout = 1;
 	if (node->input_file)
 	{
-		filein = open(node->input_file, O_RDONLY, 0777);
-		if (filein == -1)
-		{
-			// todo : add free and proper exit
-			printf("filein error\n");
-		}
-		dup2(filein, STDIN_FILENO);
-		close(filein);
+		handle_infile(node);
+		// filein = open(node->input_file, O_RDONLY, 0777);
+		// if (filein == -1)
+		// {
+		// 	// todo : add free and proper exit
+		// 	printf("filein error\n");
+		// }
+		// dup2(filein, STDIN_FILENO);
+		// close(filein);
 	}
 	if (node->output_file != NULL)
 	{
-		if (node->append)
-			fileout = open(node->output_file, O_WRONLY | O_CREAT | O_APPEND,
-					0777);
-		else if (!node->append)
-			fileout = open(node->output_file, O_WRONLY | O_CREAT | O_TRUNC,
-					0777);
-		if (fileout == -1)
-		{
-			// todo : add free and proper exit
-			printf("fileout error\n");
-		}
-		dup2(fileout, STDOUT_FILENO);
-		close(fileout);
+		handle_outfile(node);
+		// if (node->append)
+		// 	fileout = open(node->output_file, O_WRONLY | O_CREAT | O_APPEND,
+		// 			0777);
+		// else if (!node->append)
+		// 	fileout = open(node->output_file, O_WRONLY | O_CREAT | O_TRUNC,
+		// 			0777);
+		// if (fileout == -1)
+		// {
+		// 	// todo : add free and proper exit
+		// 	printf("fileout error\n");
+		// }
+		// dup2(fileout, STDOUT_FILENO);
+		// close(fileout);
 	}
 	if (node->heredoc)
 	{
@@ -122,23 +160,16 @@ int	command_is_builtin(t_ast_node *node)
 		return (FAILURE);
 }
 
-void	execute_builtin(t_ast_node *node, char *dir_paths, char **envp,
+void	builtin_with_args(t_ast_node *node, char **envp,
 		t_env_table *env_table)
 {
 	int		cmd_and_args_count;
 	char	**cmd_and_args_arr;
 
-	(void)node;
-	(void)dir_paths;
-	(void)envp;
-	(void)env_table;
 	(void)cmd_and_args_arr;
-	handle_redirections(node);
 	cmd_and_args_count = count_cmd_and_args(node);
-	if ((ft_strncmp(node->cmd, "export", 6) == 0 && ft_strlen(node->cmd) == 6) || (ft_strncmp(node->cmd, "unset", 5) == 0 && ft_strlen(node->cmd) == 5))
-		cmd_and_args_arr = build_cmd_and_args_arr(node, cmd_and_args_count);
-	if (ft_strncmp(node->cmd, "env", 3) == 0 && ft_strlen(node->cmd) == 3)
-		env(env_table->table);
+	cmd_and_args_arr = build_cmd_and_args_arr(node, cmd_and_args_count);
+
 	if (ft_strncmp(node->cmd, "export", 6) == 0 && ft_strlen(node->cmd) == 6)
 	{
 		// TODO: implement ARG="arg" in the lexer
@@ -146,6 +177,14 @@ void	execute_builtin(t_ast_node *node, char *dir_paths, char **envp,
 	}
 	if (ft_strncmp(node->cmd, "unset", 5) == 0 && ft_strlen(node->cmd) == 5)
 		unset(env_table, cmd_and_args_arr, &envp);
+	
+}
+
+void	builtin_without_args(t_ast_node *node, char **envp,
+		t_env_table *env_table)
+{
+	if (ft_strncmp(node->cmd, "env", 3) == 0 && ft_strlen(node->cmd) == 3)
+		env(env_table->table);
 	if (ft_strncmp(node->cmd, "pwd", 3) == 0 && ft_strlen(node->cmd) == 3)
 		print_working_directory();
 	if (ft_strncmp(node->cmd, "cd", 2) == 0 && ft_strlen(node->cmd) == 2)
@@ -153,18 +192,60 @@ void	execute_builtin(t_ast_node *node, char *dir_paths, char **envp,
 		if (node->args)
 			change_directory(node->args[0]);
 		else
-		{
 			printf("Sorry! Cd works only with some args!\n");
-		}
 	}
 	if (ft_strncmp(node->cmd, "echo", 4) == 0 && ft_strlen(node->cmd) == 4)
-	{
 		echo(node);
-	}
 	if (ft_strncmp(node->cmd, "exit", 4) == 0 && ft_strlen(node->cmd) == 4)
-	{
 		ft_exit(0, node, envp, env_table);
-	}
+}
+
+void	execute_builtin(t_ast_node *node, char **envp,
+		t_env_table *env_table)
+{
+	// int		cmd_and_args_count;
+	// char	**cmd_and_args_arr;
+
+	(void)node;
+	(void)envp;
+	(void)env_table;
+	// (void)cmd_and_args_arr;
+	handle_redirections(node);
+
+	// cmd_and_args_count = count_cmd_and_args(node);
+	if ((ft_strncmp(node->cmd, "export", 6) == 0 && ft_strlen(node->cmd) == 6) || (ft_strncmp(node->cmd, "unset", 5) == 0 && ft_strlen(node->cmd) == 5))
+		builtin_with_args(node, envp, env_table);
+		// cmd_and_args_arr = build_cmd_and_args_arr(node, cmd_and_args_count);
+	else
+		builtin_without_args(node, envp, env_table);
+	// if (ft_strncmp(node->cmd, "env", 3) == 0 && ft_strlen(node->cmd) == 3)
+	// 	env(env_table->table);
+	// if (ft_strncmp(node->cmd, "export", 6) == 0 && ft_strlen(node->cmd) == 6)
+	// {
+	// 	// TODO: implement ARG="arg" in the lexer
+	// 	export(env_table, cmd_and_args_arr, &envp);
+	// }
+	// if (ft_strncmp(node->cmd, "unset", 5) == 0 && ft_strlen(node->cmd) == 5)
+	// 	unset(env_table, cmd_and_args_arr, &envp);
+	// if (ft_strncmp(node->cmd, "pwd", 3) == 0 && ft_strlen(node->cmd) == 3)
+	// 	print_working_directory();
+	// if (ft_strncmp(node->cmd, "cd", 2) == 0 && ft_strlen(node->cmd) == 2)
+	// {
+	// 	if (node->args)
+	// 		change_directory(node->args[0]);
+	// 	else
+	// 	{
+	// 		printf("Sorry! Cd works only with some args!\n");
+	// 	}
+	// }
+	// if (ft_strncmp(node->cmd, "echo", 4) == 0 && ft_strlen(node->cmd) == 4)
+	// {
+	// 	echo(node);
+	// }
+	// if (ft_strncmp(node->cmd, "exit", 4) == 0 && ft_strlen(node->cmd) == 4)
+	// {
+	// 	ft_exit(0, node, envp, env_table);
+	// }
 }
 void	execute_cmd(t_ast_node *node, char *dir_paths, char **envp,
 		t_env_table *env_table)
@@ -206,7 +287,7 @@ void	handle_without_pipes(t_ast_node *node, char *dir_paths, char **envp,
 
 	if (command_is_builtin(node))
 	{
-		execute_builtin(node, dir_paths, envp, env_table);
+		execute_builtin(node, envp, env_table);
 		return ;
 	}
 	pid = fork();
@@ -281,7 +362,7 @@ void	handle_pipes(t_ast_node *node, char *dir_paths, char **envp,
 	{
 		if (command_is_builtin(node))
 		{
-			execute_builtin(node, dir_paths, envp, env_table);
+			execute_builtin(node, envp, env_table);
 		}
 		else
 			execute_cmd(node, dir_paths, envp, env_table);
