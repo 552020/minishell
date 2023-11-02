@@ -303,5 +303,6 @@ void	handle_command_node(t_ast_node *node, char *dir_paths, char **envp,
 void	handle_nodes(t_ast_node *node, char *dir_paths, char **envp,
 		t_env_table *env_table);
 void	free_token_arr(t_token *token_arr);
+void	free_lexeme_arr(t_lexeme *lexeme_arr);
 
 #endif

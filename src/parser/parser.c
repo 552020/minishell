@@ -14,7 +14,8 @@ void	parse(t_ast_node **ast_root, t_lexeme *lexemes, size_t token_count)
 		printf("\n*** AST nodes content ***\n\n");
 		debug_ast(*ast_root);
 	}
-	free(lexemes);
+	// free(lexemes);
+	free_lexeme_arr(lexemes);
 }
 
 t_ast_node	*parser(t_lexeme *lexemes, int start, int end)
