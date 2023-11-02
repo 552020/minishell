@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: bsengeze <bsengeze@student.42berlin.de>    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/30 23:58:40 by bsengeze          #+#    #+#             */
-/*   Updated: 2023/10/30 23:59:08 by bsengeze         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "minishell.h"
 
 void	error_exit(void)
@@ -21,10 +9,10 @@ void	error_exit(void)
 
 char	*path_finder(char *cmd, char *dir_paths)
 {
-	char	*path;
-	char	*path_except_cmd;
-	int		i;
-	char	**dir_path_arr;
+	char *path;
+	char *path_except_cmd;
+	int i;
+	char **dir_path_arr;
 
 	dir_path_arr = ft_split(dir_paths, ':');
 	i = 0;
