@@ -63,7 +63,6 @@ void	initialize_table(t_env_table *env_table, char **envp)
 		i++;
 	}
 	env_table->count = 0;
-	// printf("Initializing table...\n");
 	i = 0;
 	while (envp[i] != NULL)
 	{
@@ -84,9 +83,7 @@ void	initialize_table(t_env_table *env_table, char **envp)
 			key_value[1] = ft_strdup("");
 		insert_node_ht(env_table->table, key_value[0], key_value[1]);
 		env_table->count++;
-		free(key_value[0]);
-		free(key_value[1]);
-		free(key_value);
+		free_key_value(key_value);
 		i++;
 	}
 }
