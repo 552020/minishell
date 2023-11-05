@@ -98,7 +98,7 @@ void	execute_cmd(t_ast_node *node, char *dir_paths, char **envp)
 	{
 		// is this correct or not? @Stefano
 		if (execve(path, cmd_and_args_arr, envp) == -1)
-			printf("execve error\n");
+			perror("execve error\n");
 	}
 	if (cmd_and_args_arr)
 		free_cmd_and_args_arr(cmd_and_args_arr);
