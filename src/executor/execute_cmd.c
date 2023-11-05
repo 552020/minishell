@@ -85,7 +85,10 @@ void	execute_cmd(t_ast_node *node, char *dir_paths, char **envp)
 	{
 		path = path_finder(node->cmd, dir_paths);
 		if (!path)
+		{
 			printf("command not found\n");
+			return ;
+		}
 	}
 	else
 		printf("no commands to execute\n");
