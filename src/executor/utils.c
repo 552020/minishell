@@ -3,7 +3,7 @@
 void	error_exit(void)
 {
 	perror("Error");
-	return (NULL);
+	return ;
 }
 
 char	*path_finder(char *cmd, char *dir_paths)

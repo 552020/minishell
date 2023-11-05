@@ -26,7 +26,7 @@ void	handle_without_pipes(t_ast_node *node, char *dir_paths, char **envp,
 	if (pid == -1)
 	{
 		perror("fork error");
-		return NULL;
+		return ;
 	}
 	if (pid == 0)
 		execute_cmd(node, dir_paths, envp);

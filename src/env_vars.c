@@ -70,12 +70,12 @@ void	initialize_table(t_env_table *env_table, char **envp)
 		if (!key_value)
 		{
 			perror("Error: ft_split in init table failed\n");
-			return (NULL);
+			return ;
 		}
 		if (!key_value[0])
 		{
 			perror("Error: key_value[0] == NULL\n");
-			return (NULL);
+			return ;
 		}
 		if (!key_value[1])
 			key_value[1] = ft_strdup("");

@@ -6,7 +6,7 @@ void	append_first_arg(t_ast_node *node, char *arg)
 	if (node->args == NULL)
 	{
 		perror("malloc error\n");
-		return (NULL);
+		return ;
 	}
 	node->args[0] = ft_strdup(arg);
 	if (node->args[0] == NULL)
@@ -29,7 +29,7 @@ void	append_other_args(t_ast_node *node, char *arg)
 	if (new_args == NULL)
 	{
 		perror("malloc error\n");
-		return (NULL);
+		return ;
 	}
 	i = -1;
 	while (++i < size)
@@ -38,7 +38,7 @@ void	append_other_args(t_ast_node *node, char *arg)
 		if (new_args[i] == NULL)
 		{
 			perror("malloc error\n");
-			return (NULL);
+			return ;
 		}
 	}
 	free(node->args);
@@ -58,7 +58,7 @@ void	append_arg_to_command_node(t_ast_node *node, char *arg)
 void	print_and_exit(char *str)
 {
 	printf("%s\n", str);
-	return (NULL);
+	return ;
 }
 
 void	handle_cmd_and_args(t_lexeme *lexemes, int idx, t_ast_node **node)
