@@ -42,12 +42,12 @@ void	builtin_with_args(t_ast_node *node, char **envp,
 
 	cmd_and_args_count = count_cmd_and_args(node);
 	cmd_and_args_arr = build_cmd_and_args_arr(node, cmd_and_args_count);
-	if (ft_strncmp(node->cmd, "export", 6) == 0 && ft_strlen(node->cmd) == 6)
+	if (ft_strncmp(node->cmd, "export", 6) == 0 && ft_strlen(node->cmd) == 6 && cmd_and_args_arr)
 	{
 		// TODO: implement ARG="arg" in the lexer
 		export(env_table, cmd_and_args_arr, &envp);
 	}
-	if (ft_strncmp(node->cmd, "unset", 5) == 0 && ft_strlen(node->cmd) == 5)
+	if (ft_strncmp(node->cmd, "unset", 5) == 0 && ft_strlen(node->cmd) == 5 && cmd_and_args_arr)
 		unset(env_table, cmd_and_args_arr, &envp);
 }
 

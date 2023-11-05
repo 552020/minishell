@@ -25,7 +25,6 @@ void	handle_heredocs(t_ast_node *node)
 	{
 		if (!node->heredoc_del)
 		{
-			// check bash for correct statement
 			printf("there is heredoc but not heredoc_del\n");
 		}
 		ft_heredoc(node, node->heredoc_del);

@@ -5,8 +5,8 @@ void	append_first_arg(t_ast_node *node, char *arg)
 	node->args = (char **)malloc(sizeof(char *) * 2);
 	if (node->args == NULL)
 	{
-		// TODO: free memory
-		exit(EXIT_FAILURE);
+		perror("malloc error\n");
+		return (NULL);
 	}
 	node->args[0] = ft_strdup(arg);
 	if (node->args[0] == NULL)
@@ -28,9 +28,8 @@ void	append_other_args(t_ast_node *node, char *arg)
 	new_args = (char **)malloc(sizeof(char *) * (size + 2));
 	if (new_args == NULL)
 	{
-		free(node->args);
-		// free memory
-		exit(EXIT_FAILURE);
+		perror("malloc error\n");
+		return (NULL);
 	}
 	i = -1;
 	while (++i < size)
@@ -38,9 +37,8 @@ void	append_other_args(t_ast_node *node, char *arg)
 		new_args[i] = ft_strdup(node->args[i]);
 		if (new_args[i] == NULL)
 		{
-			free(node->args);
-			// free memory
-			exit(EXIT_FAILURE);
+			perror("malloc error\n");
+			return (NULL);
 		}
 	}
 	free(node->args);
@@ -59,9 +57,8 @@ void	append_arg_to_command_node(t_ast_node *node, char *arg)
 
 void	print_and_exit(char *str)
 {
-	// TODO: free memory
 	printf("%s\n", str);
-	exit(EXIT_FAILURE);
+	return (NULL);
 }
 
 void	handle_cmd_and_args(t_lexeme *lexemes, int idx, t_ast_node **node)

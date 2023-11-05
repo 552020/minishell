@@ -19,8 +19,8 @@ t_env_var	*create_node_ht(const char *key, const char *value)
 	node = (t_env_var *)malloc(sizeof(t_env_var));
 	if (node == NULL)
 	{
-		// free memory
-		exit(EXIT_FAILURE);
+		perror("malloc error\n");
+		return NULL;
 	}
 	node->key = ft_strdup(key);
 	node->value = ft_strdup(value);
@@ -69,15 +69,13 @@ void	initialize_table(t_env_table *env_table, char **envp)
 		key_value = ft_split(envp[i], '=');
 		if (!key_value)
 		{
-			// free memory
-			printf("Error: ft_split in init table failed\n");
-			exit(EXIT_FAILURE);
+			perror("Error: ft_split in init table failed\n");
+			return (NULL);
 		}
 		if (!key_value[0])
 		{
-			// free memory
-			printf("Error: key_value[0] == NULL\n");
-			exit(EXIT_FAILURE);
+			perror("Error: key_value[0] == NULL\n");
+			return (NULL);
 		}
 		if (!key_value[1])
 			key_value[1] = ft_strdup("");
@@ -118,8 +116,7 @@ char	**convert_hash_table_to_array(t_env_table *env_table)
 	if (envp == NULL)
 	{
 		perror("Failed to allocate memory for envp");
-		// free memory
-		exit(EXIT_FAILURE);
+		return (NULL);
 	}
 	i = 0;
 	j = 0;

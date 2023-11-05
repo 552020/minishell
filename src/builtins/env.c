@@ -8,7 +8,6 @@ void	env(t_env_var **table)
 	i = 0;
 	while (i < TABLE_SIZE)
 	{
-		// printf("table[%d]:\n", i);
 		node = table[i];
 		while (node != NULL)
 		{

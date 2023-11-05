@@ -1,6 +1,5 @@
 #include "minishell.h"
 
-
 void free_token_arr(t_token *token_arr)
 {
     if (token_arr == NULL) 
@@ -14,11 +13,10 @@ void free_token_arr(t_token *token_arr)
         if (token_arr[i].str != NULL) 
 		{
             free(token_arr[i].str);
-            token_arr[i].str = NULL;  // Optional, explained below
+            token_arr[i].str = NULL;
         }
         i++;
     }
-    // free(token_arr[i].str);  // In case T_END token has a non-NULL str
     free(token_arr);
 }
 

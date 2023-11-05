@@ -16,7 +16,7 @@ void	handle_redirections(t_ast_node *node)
 {
 	if (node->input_file)
 		handle_infile(node);
-	if (node->output_file != NULL)
+	if (node->output_file)
 		handle_outfile(node);
 	if (node->heredoc)
 		handle_heredoc(node);
@@ -30,8 +30,8 @@ void	handle_infile(t_ast_node *node)
 	filein = open(node->input_file, O_RDONLY, 0777);
 	if (filein == -1)
 	{
-		// todo : add free and proper exit
-		printf("filein error\n");
+		perror("filein error\n");
+		return NULL;
 	}
 	dup2(filein, STDIN_FILENO);
 	close(filein);
@@ -50,8 +50,8 @@ void	handle_outfile(t_ast_node *node)
 				0777);
 	if (fileout == -1)
 	{
-		// todo : add free and proper exit
-		printf("fileout error\n");
+		perror("fileout error\n");
+		return NULL;
 	}
 	dup2(fileout, STDOUT_FILENO);
 	close(fileout);

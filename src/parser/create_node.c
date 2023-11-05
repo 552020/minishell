@@ -7,8 +7,8 @@ t_ast_node	*create_node(t_node_type type)
 	new_node = (t_ast_node *)malloc(sizeof(t_ast_node));
 	if (new_node == NULL)
 	{
-		// TODO: Free all allocated memory
-		exit(EXIT_FAILURE);
+		perror("malloc error\n");
+		return (NULL);
 	}
 	new_node->type = type;
 	new_node->cmd = NULL;

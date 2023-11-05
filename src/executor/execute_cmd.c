@@ -56,8 +56,8 @@ char	**build_cmd_and_args_arr(t_ast_node *node, int cmd_and_args_count)
 				+ 1));
 	if (!cmd_and_args_arr)
 	{
-		// TODO : add free
-		printf("malloc error\n");
+		perror("malloc error\n");
+		return (NULL);
 	}
 	if (node->cmd)
 		cmd_and_args_arr[0] = node->cmd;
@@ -85,19 +85,20 @@ void	execute_cmd(t_ast_node *node, char *dir_paths, char **envp)
 	{
 		path = path_finder(node->cmd, dir_paths);
 		if (!path)
-			error_exit();
+			printf("command not found\n");
 	}
 	else
 		printf("no commands to execute\n");
 	cmd_and_args_count = count_cmd_and_args(node);
 	cmd_and_args_arr = build_cmd_and_args_arr(node, cmd_and_args_count);
-	if (node->cmd)
+	if (node->cmd && cmd_and_args_arr)
 	{
 		// is this correct or not? @Stefano
 		if (execve(path, cmd_and_args_arr, envp) == -1)
 			printf("execve error\n");
 	}
-	free_cmd_and_args_arr(cmd_and_args_arr);
+	if (cmd_and_args_arr)
+		free_cmd_and_args_arr(cmd_and_args_arr);
 }
 
 void	execute(t_ast_node *ast_root, char *dir_paths, char **my_envp,

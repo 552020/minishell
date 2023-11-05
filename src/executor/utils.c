@@ -2,9 +2,8 @@
 
 void	error_exit(void)
 {
-	// TODO : add free and proper exit
 	perror("Error");
-	exit(EXIT_FAILURE);
+	return (NULL);
 }
 
 char	*path_finder(char *cmd, char *dir_paths)

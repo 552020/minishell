@@ -25,9 +25,8 @@ void	handle_without_pipes(t_ast_node *node, char *dir_paths, char **envp,
 	pid = fork();
 	if (pid == -1)
 	{
-		// TODO : add free
 		perror("fork error");
-		exit(EXIT_FAILURE);
+		return NULL;
 	}
 	if (pid == 0)
 		execute_cmd(node, dir_paths, envp);
@@ -53,7 +52,6 @@ void	handle_pipes(t_ast_node *node, char *dir_paths, char **envp,
 		close(pipe_fd[1]);
 		handle_redirections(node->children[0]);
 		handle_pipes(node->children[0], dir_paths, envp, env_table);
-		// TODO : add free (maybe)
 		exit(EXIT_SUCCESS);
 	}
 	right_pid = fork();
@@ -66,7 +64,6 @@ void	handle_pipes(t_ast_node *node, char *dir_paths, char **envp,
 		close(pipe_fd[0]);
 		handle_redirections(node->children[1]);
 		handle_pipes(node->children[1], dir_paths, envp, env_table);
-		// TODO : add free (maybe)
 		exit(EXIT_SUCCESS);
 	}
 	close(pipe_fd[0]);

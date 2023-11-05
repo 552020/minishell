@@ -14,7 +14,6 @@ void	parse(t_ast_node **ast_root, t_lexeme *lexemes, size_t token_count)
 		printf("\n*** AST nodes content ***\n\n");
 		debug_ast(*ast_root);
 	}
-	// free(lexemes);
 	free_lexeme_arr(lexemes);
 }
 
@@ -83,4 +82,5 @@ void	free_ast(t_ast_node *node)
 		free_ast(node->children[1]);
 	}
 	free(node);
+	node = NULL;
 }
