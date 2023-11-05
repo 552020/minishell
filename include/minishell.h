@@ -305,5 +305,6 @@ void	handle_nodes(t_ast_node *node, char *dir_paths, char **envp,
 void	free_token_arr(t_token *token_arr);
 void	free_lexeme_arr(t_lexeme *lexeme_arr);
 void free_key_value(char **key_value);
+char **ft_split_envp(const char *s, char c);
 
 #endif

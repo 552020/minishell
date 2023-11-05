@@ -66,7 +66,7 @@ void	initialize_table(t_env_table *env_table, char **envp)
 	i = 0;
 	while (envp[i] != NULL)
 	{
-		key_value = ft_split(envp[i], '=');
+		key_value = ft_split_envp(envp[i], '=');
 		if (!key_value)
 		{
 			perror("Error: ft_split in init table failed\n");
@@ -77,8 +77,10 @@ void	initialize_table(t_env_table *env_table, char **envp)
 			perror("Error: key_value[0] == NULL\n");
 			return ;
 		}
-		if (!key_value[1])
-			key_value[1] = ft_strdup("");
+		// if (!key_value[1])
+		// {	
+		// 	key_value[1] = ft_strdup("");
+		// }
 		insert_node_ht(env_table->table, key_value[0], key_value[1]);
 		env_table->count++;
 		free_key_value(key_value);
