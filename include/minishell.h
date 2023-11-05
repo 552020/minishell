@@ -280,7 +280,8 @@ int						change_directory(const char *path);
 void					execute(t_ast_node *ast_root, char *dir_paths,
 							char **my_envp, t_env_table *env_table);
 
-void					error_exit(void);
+void	error_exit(t_ast_node *node, char **envp,
+		t_env_table *env_table);
 char					*path_finder(char *cmd, char *dir_paths);
 void					echo(t_ast_node *node);
 void					free_cmd_and_args_arr(char **cmd_and_args_arr);

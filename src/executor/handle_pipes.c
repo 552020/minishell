@@ -24,10 +24,7 @@ void	handle_without_pipes(t_ast_node *node, char *dir_paths, char **envp,
 	}
 	pid = fork();
 	if (pid == -1)
-	{
-		perror("fork error");
-		return ;
-	}
+		error_exit(node, envp, env_table);
 	if (pid == 0)
 		execute_cmd(node, dir_paths, envp);
 	waitpid(pid, NULL, 0);
@@ -41,10 +38,10 @@ void	handle_pipes(t_ast_node *node, char *dir_paths, char **envp,
 	pid_t	right_pid;
 
 	if (pipe(pipe_fd) == -1)
-			error_exit();
+		error_exit(node, envp, env_table);
 	left_pid = fork();
 	if (left_pid == -1)
-		error_exit();
+		error_exit(node, envp, env_table);
 	if (left_pid == 0)
 	{
 		close(pipe_fd[0]);
@@ -56,7 +53,7 @@ void	handle_pipes(t_ast_node *node, char *dir_paths, char **envp,
 	}
 	right_pid = fork();
 	if (right_pid == -1)
-		error_exit();
+		error_exit(node, envp, env_table);
 	if (right_pid == 0)
 	{
 		close(pipe_fd[1]);

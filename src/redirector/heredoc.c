@@ -39,7 +39,11 @@ void	ft_heredoc(t_ast_node *node, char *delimiter)
 
 	line = NULL;
 	if (pipe(fd) == -1)
-		error_exit();
+	{
+		perror("pipe error");
+		free_ast(node);
+		exit(EXIT_FAILURE);
+	}
 	pid = fork();
 	if (pid == 0)
 	{

@@ -30,6 +30,11 @@ t_ast_node	*build_cmd_node(t_lexeme *lexemes, int start, int end)
 	int i;
 
 	node = create_node(N_COMMAND);
+	if (node == NULL)
+	{
+		free_lexeme_arr(lexemes);
+		exit (FAILURE);
+	}
 	i = start;
 	while (i <= end)
 	{

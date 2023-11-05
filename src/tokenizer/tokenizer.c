@@ -18,7 +18,7 @@ t_token	*create_token_array(size_t token_count)
 
 	token_arr = (t_token *)ft_calloc(token_count + 1, sizeof(t_token));
 	if (!token_arr)
-		return (NULL);
+		exit(EXIT_FAILURE);
 	return (token_arr);
 }
 

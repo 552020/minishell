@@ -94,6 +94,13 @@ void	execute_cmd(t_ast_node *node, char *dir_paths, char **envp)
 		printf("no commands to execute\n");
 	cmd_and_args_count = count_cmd_and_args(node);
 	cmd_and_args_arr = build_cmd_and_args_arr(node, cmd_and_args_count);
+	if (!cmd_and_args_arr)
+	{
+		free_ast(node);
+		free_envp(envp);
+		exit(EXIT_FAILURE);
+	}
+		
 	if (node->cmd && cmd_and_args_arr)
 	{
 		// is this correct or not? @Stefano

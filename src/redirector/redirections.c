@@ -31,7 +31,8 @@ void	handle_infile(t_ast_node *node)
 	if (filein == -1)
 	{
 		perror("filein error\n");
-		return ;
+		free_ast(node);
+		exit(FAILURE);
 	}
 	dup2(filein, STDIN_FILENO);
 	close(filein);
@@ -51,7 +52,8 @@ void	handle_outfile(t_ast_node *node)
 	if (fileout == -1)
 	{
 		perror("fileout error\n");
-		return ;
+		free_ast(node);
+		exit(FAILURE);
 	}
 	dup2(fileout, STDOUT_FILENO);
 	close(fileout);

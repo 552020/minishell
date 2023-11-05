@@ -38,6 +38,12 @@ void	insert_node_ht(t_env_var **table, const char *key, const char *value)
 	if (node == NULL)
 	{
 		table[idx] = create_node_ht(key, value);
+		if (table[idx] == NULL)
+		{
+			free(table);
+			exit(FAILURE);
+		}
+		
 	}
 	else
 	{
@@ -70,12 +76,15 @@ void	initialize_table(t_env_table *env_table, char **envp)
 		if (!key_value)
 		{
 			perror("Error: ft_split in init table failed\n");
-			return ;
+			free_envp(envp);
+			free_hash_table(env_table);
+			exit(FAILURE);
 		}
 		if (!key_value[0])
 		{
-			perror("Error: key_value[0] == NULL\n");
-			return ;
+			free_envp(envp);
+			free_hash_table(env_table);
+			exit(FAILURE);
 		}
 		// if (!key_value[1])
 		// {	
