@@ -1,7 +1,9 @@
 #include "minishell.h"
 
 // t_debug_level	DEBUG_LEVEL = DEBUG_ALL;
-t_debug_level	DEBUG_LEVEL = DEBUG_OFF;
+t_debug_level			DEBUG_LEVEL = DEBUG_OFF;
+// we could solve it also by returning something by heredoc and checking it before executing
+volatile sig_atomic_t	heredoc_interrupted = 0;
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -21,6 +23,7 @@ int	main(int argc, char **argv, char **envp)
 	var_path_value = ft_getenv(table.table, "PATH");
 	while (1)
 	{
+		// printf("start of while loop\n");
 		handle_signals_main();
 		input = read_input();
 		trimmed_input = trim_ending_trailing_spaces(input);
@@ -37,8 +40,8 @@ int	main(int argc, char **argv, char **envp)
 					envp) == SUCCESS)
 			{
 				parse(&ast_root, lexeme_arr, token_count);
-				handle_heredocs(ast_root);
-				execute(ast_root, var_path_value, my_envp, &table);
+				if (handle_heredocs(ast_root) == SUCCESS)
+					execute(ast_root, var_path_value, my_envp, &table);
 			}
 		}
 		//}

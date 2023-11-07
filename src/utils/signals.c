@@ -56,6 +56,7 @@ void	handle_signals_child(int pid)
 			perror("sigaction");
 			exit(EXIT_FAILURE);
 		}
+		sigaction(SIGQUIT, &sa, NULL);
 	}
 	else
 	{
@@ -66,6 +67,4 @@ void	handle_signals_child(int pid)
 			exit(EXIT_FAILURE);
 		}
 	}
-	sigaction(SIGINT, &sa, NULL);
-	sigaction(SIGQUIT, &sa, NULL);
 }
