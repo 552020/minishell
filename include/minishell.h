@@ -322,6 +322,6 @@ void	free_lexeme_arr(t_lexeme *lexeme_arr);
 void free_key_value(char **key_value);
 char **ft_split_envp(const char *s, char c);
 void free_all_data(t_free_data *free_data);
-void initialize_free_data(t_free_data *free_data);
+void initialize_free_data(t_free_data *free_data,t_env_table *env_table);
 
 #endif

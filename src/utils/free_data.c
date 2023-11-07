@@ -1,15 +1,9 @@
 #include "minishell.h"
 
-void initialize_free_data(t_free_data *free_data)
+void initialize_free_data(t_free_data *free_data, t_env_table *env_table)
 {
-	free_data = (t_free_data *)malloc(sizeof(t_free_data));
-	if (!free_data)
-	{
-		perror("malloc error\n");
-		exit(FAILURE);
-	}
 	free_data->my_envp = NULL;
-	free_data->env_table = NULL;
+	free_data->env_table = env_table;
 	free_data->ast_root = NULL;
 }
 

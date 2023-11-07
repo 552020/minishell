@@ -82,8 +82,7 @@ void	initialize_table(t_env_table *env_table, char **envp, t_free_data *free_dat
 		}
 		if (!key_value[0])
 		{
-			free_envp(envp);
-			free_hash_table(env_table);
+			free_all_data(free_data);
 			exit(FAILURE);
 		}
 		// if (!key_value[1])

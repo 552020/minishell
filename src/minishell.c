@@ -16,7 +16,7 @@ int	main(int argc, char **argv, char **envp)
 	t_free_data	free_data;
 
 	check_input(argc, argv);
-	initialize_free_data(&free_data);
+	initialize_free_data(&free_data, &table);
 	initialize_table(&table, envp, &free_data);
 	my_envp = convert_hash_table_to_array(&table);
 	var_path_value = ft_getenv(table.table, "PATH");
