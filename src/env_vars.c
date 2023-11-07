@@ -57,11 +57,13 @@ void	insert_node_ht(t_env_var **table, const char *key, const char *value)
 	}
 }
 
-void	initialize_table(t_env_table *env_table, char **envp)
+void	initialize_table(t_env_table *env_table, char **envp, t_free_data *free_data)
 {
 	int		i;
 	char	**key_value;
 
+	free_data->envp = envp;
+	free_data->env_table = env_table;
 	i = 0;
 	while (i < TABLE_SIZE)
 	{
@@ -76,8 +78,7 @@ void	initialize_table(t_env_table *env_table, char **envp)
 		if (!key_value)
 		{
 			perror("Error: ft_split in init table failed\n");
-			free_envp(envp);
-			free_hash_table(env_table);
+			free_all_data(free_data);
 			exit(FAILURE);
 		}
 		if (!key_value[0])

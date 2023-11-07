@@ -39,6 +39,13 @@ extern t_debug_level	DEBUG_LEVEL;
 
 # define TABLE_SIZE 42
 
+
+/* Forward Declare Free */
+struct s_free_data;
+
+typedef struct s_free_data t_free_data;
+
+
 /* envp */
 
 typedef struct s_env_var
@@ -54,7 +61,7 @@ typedef struct s_env_table
 	int count; // This will keep track of the number of environment variables.
 }						t_env_table;
 
-void					initialize_table(t_env_table *env_table, char **envp);
+void					initialize_table(t_env_table *env_table, char **envp, t_free_data *free_data);
 void					env(t_env_var **table);
 
 void					export(t_env_table *env_table, char **args,
@@ -203,6 +210,13 @@ typedef struct s_node_list
 	struct s_node_list	*next;
 }						t_node_list;
 
+typedef struct s_free_data
+{
+    t_ast_node   *ast_root;
+    char         **envp;
+    t_env_table  *env_table;
+}               t_free_data;
+
 t_ast_node				*parser(t_lexeme *lexemes, int start, int end);
 t_ast_node				*build_cmd_node(t_lexeme *lexemes, int start, int end);
 t_ast_node				*create_node(t_node_type type);
@@ -307,5 +321,7 @@ void	free_token_arr(t_token *token_arr);
 void	free_lexeme_arr(t_lexeme *lexeme_arr);
 void free_key_value(char **key_value);
 char **ft_split_envp(const char *s, char c);
+void free_all_data(t_free_data *free_data);
+
 
 #endif
