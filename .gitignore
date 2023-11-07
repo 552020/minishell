@@ -3,3 +3,4 @@ others/
 tests/
 minishell
 libft/libft.a
+.DS_Store
