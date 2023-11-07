@@ -66,4 +66,5 @@ void free_all_data(t_free_data *free_data)
         free_envp(free_data->envp);
         free_data->envp = NULL;
     }
+	free(free_data);
 }
