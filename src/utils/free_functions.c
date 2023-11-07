@@ -49,22 +49,3 @@ void free_key_value(char **key_value)
     }
     free(key_value);
 }
-void free_all_data(t_free_data *free_data)
-{
-    if (free_data->ast_root)
-    {
-        free_ast(free_data->ast_root);
-        free_data->ast_root = NULL;
-    }
-    if (free_data->env_table)
-    {
-        free_hash_table(free_data->env_table);
-        free_data->env_table = NULL;
-    }
-    if (free_data->envp)
-    {
-        free_envp(free_data->envp);
-        free_data->envp = NULL;
-    }
-	free(free_data);
-}

@@ -13,16 +13,11 @@ int	main(int argc, char **argv, char **envp)
 	t_ast_node	*ast_root;
 	char		**my_envp;
 	char		*var_path_value;
-	t_free_data	*free_data;
+	t_free_data	free_data;
 
-	free_data = (t_free_data *)malloc(sizeof(t_free_data));
-	if (!free_data)
-	{
-		perror("malloc error\n");
-		exit(FAILURE);
-	}
 	check_input(argc, argv);
-	initialize_table(&table, envp, free_data);
+	initialize_free_data(&free_data);
+	initialize_table(&table, envp, &free_data);
 	my_envp = convert_hash_table_to_array(&table);
 	var_path_value = ft_getenv(table.table, "PATH");
 	while (1)

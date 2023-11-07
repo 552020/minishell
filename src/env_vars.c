@@ -62,8 +62,7 @@ void	initialize_table(t_env_table *env_table, char **envp, t_free_data *free_dat
 	int		i;
 	char	**key_value;
 
-	free_data->envp = envp;
-	free_data->env_table = env_table;
+
 	i = 0;
 	while (i < TABLE_SIZE)
 	{

@@ -213,7 +213,7 @@ typedef struct s_node_list
 typedef struct s_free_data
 {
     t_ast_node   *ast_root;
-    char         **envp;
+    char         **my_envp;
     t_env_table  *env_table;
 }               t_free_data;
 
@@ -322,6 +322,6 @@ void	free_lexeme_arr(t_lexeme *lexeme_arr);
 void free_key_value(char **key_value);
 char **ft_split_envp(const char *s, char c);
 void free_all_data(t_free_data *free_data);
-
+void initialize_free_data(t_free_data *free_data);
 
 #endif
