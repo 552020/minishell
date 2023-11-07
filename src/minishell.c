@@ -18,13 +18,15 @@ int	main(int argc, char **argv, char **envp)
 	check_input(argc, argv);
 	initialize_free_data(&free_data, &table);
 	initialize_table(&table, envp, &free_data);
-	my_envp = convert_hash_table_to_array(&table);
+	my_envp = convert_hash_table_to_array(&table, &free_data);
+	free_data.my_envp = my_envp;
 	var_path_value = ft_getenv(table.table, "PATH");
 	while (1)
 	{
 		input = read_input();
 		tokenize(&token_count, &token_arr, input);
-		if (lexemize(&token_count, &token_arr, &lexeme_arr, envp) == SUCCESS)
+		// we are using envp, we should use my_envp
+		if (lexemize(&token_count, &token_arr, &lexeme_arr, my_envp) == SUCCESS)
 		{
 			parse(&ast_root, lexeme_arr, token_count);
 			handle_heredocs(ast_root);

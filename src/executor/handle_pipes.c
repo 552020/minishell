@@ -6,20 +6,20 @@
 /*   By: bsengeze <bsengeze@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/31 00:08:30 by bsengeze          #+#    #+#             */
-/*   Updated: 2023/10/31 00:47:46 by bsengeze         ###   ########.fr       */
+/*   Updated: 2023/11/08 00:40:06 by bsengeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 void	handle_without_pipes(t_ast_node *node, char *dir_paths, char **envp,
-		t_env_table *env_table)
+		t_env_table *env_table, t_free_data *free_data)
 {
 	pid_t	pid;
 
 	if (command_is_builtin(node))
 	{
-		execute_builtin(node, envp, env_table);
+		execute_builtin(node, envp, env_table, free_data);
 		return ;
 	}
 	pid = fork();
@@ -70,7 +70,7 @@ void	handle_pipes(t_ast_node *node, char *dir_paths, char **envp,
 }
 
 void	handle_nodes(t_ast_node *node, char *dir_paths, char **envp,
-		t_env_table *env_table)
+		t_env_table *env_table, t_free_data *free_data)
 {
 
 	if (node->type == N_PIPE)
@@ -83,7 +83,7 @@ void	handle_command_node(t_ast_node *node, char *dir_paths, char **envp,
 		t_env_table *env_table)
 {
 	if (command_is_builtin(node))
-		execute_builtin(node, envp, env_table);
+		execute_builtin(node, envp, env_table, free_data);
 	else
 		execute_cmd(node, dir_paths, envp);
 }
