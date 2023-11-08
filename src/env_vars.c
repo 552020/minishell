@@ -114,6 +114,7 @@ char	**convert_hash_table_to_array(t_env_table *env_table, t_free_data *free_dat
 	envp = (char **)malloc(sizeof(char *) * (env_table->count + 1));
 	if (envp == NULL)
 		free_exit(free_data, "Error: malloc in convert_hash_table_to_array failed\n");
+	free_data->my_envp = envp;
 	i = 0;
 	j = 0;
 	while (i < TABLE_SIZE)
@@ -123,14 +124,10 @@ char	**convert_hash_table_to_array(t_env_table *env_table, t_free_data *free_dat
 		{
 			temp = ft_strjoin(node->key, "=");
 			if (!temp)
-			{
-				free(envp);
 				free_exit(free_data, "Error: ft_strjoin failed\n");
-			}
 			envp[j] = ft_strjoin(temp, node->value);
 			if (!envp[j])
 			{	
-				free(envp);
 				free(temp);
 				free_exit(free_data, "Error: ft_strjoin failed\n");
 			}
