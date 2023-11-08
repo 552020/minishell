@@ -6,7 +6,7 @@
 /*   By: bsengeze <bsengeze@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 23:40:23 by bsengeze          #+#    #+#             */
-/*   Updated: 2023/10/31 00:33:20 by bsengeze         ###   ########.fr       */
+/*   Updated: 2023/11/08 23:38:47 by bsengeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,13 +73,13 @@ char	**build_cmd_and_args_arr(t_ast_node *node, int cmd_and_args_count)
 	return (cmd_and_args_arr);
 }
 
-void	execute_cmd(t_ast_node *node, char *dir_paths, char **envp)
+void	execute_cmd(t_ast_node *node, char *dir_paths, char **envp, t_free_data *free_data)
 {
 	char	*path;
 	char	**cmd_and_args_arr;
 	int		cmd_and_args_count;
 
-	handle_redirections(node);
+	handle_redirections(node, free_data);
 	path = NULL;
 	if (node->cmd)
 	{
@@ -112,10 +112,10 @@ void	execute_cmd(t_ast_node *node, char *dir_paths, char **envp)
 }
 
 void	execute(t_ast_node *ast_root, char *dir_paths, char **my_envp,
-		t_env_table *env_table)
+		t_env_table *env_table, t_free_data *free_data)
 {
 	if (ast_root->type == N_PIPE)
-		handle_pipes(ast_root, dir_paths, my_envp, env_table);
+		handle_pipes(ast_root, dir_paths, my_envp, env_table, free_data);
 	else if (ast_root->type == N_COMMAND)
-		handle_without_pipes(ast_root, dir_paths, my_envp, env_table);
+		handle_without_pipes(ast_root, dir_paths, my_envp, env_table, free_data);
 }

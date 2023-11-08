@@ -6,7 +6,7 @@
 /*   By: bsengeze <bsengeze@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/31 00:08:30 by bsengeze          #+#    #+#             */
-/*   Updated: 2023/11/08 21:56:06 by bsengeze         ###   ########.fr       */
+/*   Updated: 2023/11/08 23:39:23 by bsengeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	handle_without_pipes(t_ast_node *node, char *dir_paths, char **envp,
 	if (pid == -1)
 		error_exit(node, envp, env_table);
 	if (pid == 0)
-		execute_cmd(node, dir_paths, envp);
+		execute_cmd(node, dir_paths, envp, free_data);
 	waitpid(pid, NULL, 0);
 }
 
@@ -85,5 +85,5 @@ void	handle_command_node(t_ast_node *node, char *dir_paths, char **envp,
 	if (command_is_builtin(node))
 		execute_builtin(node, envp, env_table, free_data);
 	else
-		execute_cmd(node, dir_paths, envp);
+		execute_cmd(node, dir_paths, envp, free_data);
 }

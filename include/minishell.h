@@ -278,7 +278,7 @@ void					handle_heredocs(t_ast_node *node);
 void					ft_heredoc(t_ast_node *node, char *delimiter);
 
 void					execute_cmd(t_ast_node *node, char *dir_paths,
-							char **envp);
+							char **envp, t_free_data *free_data);
 void					print_working_directory(void);
 void					ft_exit(int exit_code, t_ast_node *node, char **envp,
 							t_env_table *table);
@@ -292,7 +292,7 @@ int						change_directory(const char *path);
 /* Executor */
 
 void					execute(t_ast_node *ast_root, char *dir_paths,
-							char **my_envp, t_env_table *env_table);
+							char **my_envp, t_env_table *env_table, t_free_data *free_data);
 
 void	error_exit(t_ast_node *node, char **envp,
 		t_env_table *env_table);
