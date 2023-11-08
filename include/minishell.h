@@ -272,8 +272,8 @@ void	handle_without_pipes(t_ast_node *ast_root,
 							char **envp,
 							t_env_table *env_table, t_free_data *free_data);
 void					handle_pipes(t_ast_node *ast_root, char *dir_paths,
-							char **envp, t_env_table *env_table);
-void					handle_redirections(t_ast_node *node);
+							char **envp, t_env_table *env_table, t_free_data *free_data);
+void					handle_redirections(t_ast_node *node, t_free_data *free_data);
 void					handle_heredocs(t_ast_node *node);
 void					ft_heredoc(t_ast_node *node, char *delimiter);
 
@@ -301,8 +301,8 @@ void					echo(t_ast_node *node);
 void					free_cmd_and_args_arr(char **cmd_and_args_arr);
 
 
-void	handle_infile(t_ast_node *node);
-void	handle_outfile(t_ast_node *node);
+void	handle_infile(t_ast_node *node, t_free_data *free_data);
+void	handle_outfile(t_ast_node *node, t_free_data *free_data);
 void	handle_heredoc(t_ast_node *node);
 void	builtin_with_args(t_ast_node *node, char **envp,
 		t_env_table *env_table, t_free_data *free_data);
@@ -314,7 +314,7 @@ int	count_cmd_and_args(t_ast_node *node);
 char	**build_cmd_and_args_arr(t_ast_node *node, int cmd_and_args_count);
 int	command_is_builtin(t_ast_node *node);
 void	handle_command_node(t_ast_node *node, char *dir_paths, char **envp,
-		t_env_table *env_table);
+		t_env_table *env_table, t_free_data *free_data);
 void	handle_nodes(t_ast_node *node, char *dir_paths, char **envp,
 		t_env_table *env_table, t_free_data *free_data);
 void	free_token_arr(t_token *token_arr);

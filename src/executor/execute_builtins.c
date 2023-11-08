@@ -6,7 +6,7 @@
 /*   By: bsengeze <bsengeze@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 23:44:16 by bsengeze          #+#    #+#             */
-/*   Updated: 2023/11/08 00:35:38 by bsengeze         ###   ########.fr       */
+/*   Updated: 2023/11/08 21:52:55 by bsengeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ void	builtin_without_args(t_ast_node *node, char **envp,
 void	execute_builtin(t_ast_node *node, char **envp,
 		t_env_table *env_table, t_free_data *free_data)
 {
-	handle_redirections(node);
+	handle_redirections(node, free_data);
 	if ((ft_strncmp(node->cmd, "export", 6) == 0 && ft_strlen(node->cmd) == 6) || (ft_strncmp(node->cmd, "unset", 5) == 0 && ft_strlen(node->cmd) == 5))
 		builtin_with_args(node, envp, env_table, free_data);
 	else

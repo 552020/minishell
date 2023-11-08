@@ -22,7 +22,7 @@ void free_all_data(t_free_data *free_data)
 void free_exit(t_free_data *free_data, char *error_message)
 {
 	perror(error_message);
-	rl_clear_history();
+	// rl_clear_history();
 	free_all_data(free_data);
 	exit(FAILURE);
 }
