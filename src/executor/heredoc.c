@@ -47,6 +47,8 @@ int	ft_heredoc(t_ast_node *node, char *delimiter)
 			if (!line)
 			{
 				close(fd[1]);
+				printf("bash: warning: here-document delimited by end-of-file ");
+				printf("(wanted %s')\n", delimiter);
 				exit(EXIT_FAILURE);
 			}
 			if (ft_strncmp(line, delimiter, ft_strlen(delimiter)) == 0
