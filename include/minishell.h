@@ -212,9 +212,9 @@ typedef struct s_node_list
 
 typedef struct s_data
 {
-	t_ast_node			*ast_root;
-	char				**env_arr;
 	t_env_table			*env_table;
+	char				**env_arr;
+	t_ast_node			*ast_root;
 }						t_data;
 
 t_ast_node				*parser(t_lexeme *lexemes, int start, int end);
