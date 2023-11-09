@@ -121,17 +121,18 @@ int	check_syntax_error(t_lexeme *lexeme_arr)
 }
 
 // int	lexemize(size_t *token_count, t_token **token_arr,
-		t_lexeme **lexeme_arr,
-// char **envp)
-lexemize(t_data *data)
+t_lexeme **lexeme_arr,
+	// char **envp)
+	lexemize(t_data *data)
 {
-	*lexeme_arr = create_lexer_array(*token_count);
+	*lexeme_arr = create_lexer_array(data->token_count);
 	if (lexeme_arr == NULL)
 	{
-		free_token_arr(*token_arr);
+		free_token_arr(data->token_arr);
 		exit(FAILURE);
 	}
-	*lexeme_arr = lexer(*token_arr, *lexeme_arr, envp, *token_count);
+	*lexeme_arr = lexer(data->token_arr, *lexeme_arr, data->env_arr,
+		data->token_count);
 	if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_LEXER)
 	{
 		printf("\n***Lexer***\n\n");

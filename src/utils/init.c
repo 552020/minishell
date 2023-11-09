@@ -1,6 +1,11 @@
 #include "minishell.h"
 
-void	initialize_data(t_data *data)
+void	initialize_envp_arr(t_data *data)
+{
+	data->env_arr = hash_table_to_arr(data);
+}
+
+void	initialize_data(char **envp, t_data *data)
 {
 	data->env_arr = NULL;
 	data->env_table = NULL;
@@ -10,8 +15,7 @@ void	initialize_data(t_data *data)
 
 	data->env_table = (t_env_table *)malloc(sizeof(t_env_table));
 	if (!data->env_table)
-	{
-		printf("Error: Out of memory\n");
-		exit(EXIT_FAILURE);
-	}
+		print_exit("Error: malloc data->env_table failed\n");
+	initialize_table(envp, data);
+	initialize_envp_arr(data);
 }

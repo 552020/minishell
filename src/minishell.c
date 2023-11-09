@@ -11,8 +11,7 @@ int	main(int argc, char **argv, char **envp)
 
 	// size_t	token_count;
 	check_input(argc, argv);
-	initialize_data(&data);
-	initialize_table(envp, &data);
+	initialize_data(envp, &data);
 	data.env_arr = hash_table_to_arr(&data);
 	var_path_value = ft_getenv(data.env_table->table, "PATH");
 	while (1)
