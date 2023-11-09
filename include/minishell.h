@@ -39,12 +39,10 @@ extern t_debug_level	DEBUG_LEVEL;
 
 # define TABLE_SIZE 42
 
-
 /* Forward Declare Free */
-struct s_free_data;
+struct s_data;
 
-typedef struct s_free_data t_free_data;
-
+typedef struct s_data	t_data;
 
 /* envp */
 
@@ -61,16 +59,17 @@ typedef struct s_env_table
 	int count; // This will keep track of the number of environment variables.
 }						t_env_table;
 
-void					initialize_table(t_env_table *env_table, char **envp, t_free_data *free_data);
+void					initialize_table(t_env_table *env_table, char **envp,
+							t_data *data);
 void					env(t_env_var **table);
 
 void					export(t_env_table *env_table, char **args,
-							char ***envp, t_free_data *free_data);
-void					unset(t_env_table *env_table, char **args,
-							char ***envp, t_free_data *free_data);
+							char ***envp, t_data *data);
+void					unset(t_env_table *env_table, char **args, char ***envp,
+							t_data *data);
 
 char					**convert_hash_table_to_array(t_env_table *env_table,
-							t_free_data *free_data);
+							t_data *data);
 char					*ft_getenv(t_env_var **table, const char *key);
 
 /* Tokenizer */
@@ -211,12 +210,12 @@ typedef struct s_node_list
 	struct s_node_list	*next;
 }						t_node_list;
 
-typedef struct s_free_data
+typedef struct s_data
 {
-    t_ast_node   *ast_root;
-    char         **my_envp;
-    t_env_table  *env_table;
-}               t_free_data;
+	t_ast_node			*ast_root;
+	char				**my_envp;
+	t_env_table			*env_table;
+}						t_data;
 
 t_ast_node				*parser(t_lexeme *lexemes, int start, int end);
 t_ast_node				*build_cmd_node(t_lexeme *lexemes, int start, int end);
@@ -267,24 +266,23 @@ void					ft_heredoc(t_ast_node *node, char *delimiter);
 size_t					count_pipes(t_lexeme *lexeme_arr, size_t token_count);
 unsigned int			hash(const char *key);
 // not using these
-void	handle_without_pipes(t_ast_node *ast_root,
-							char *dir_paths,
-							char **envp,
-							t_env_table *env_table, t_free_data *free_data);
+void					handle_without_pipes(t_ast_node *ast_root,
+							char *dir_paths, char **envp,
+							t_env_table *env_table, t_data *data);
 void					handle_pipes(t_ast_node *ast_root, char *dir_paths,
-							char **envp, t_env_table *env_table, t_free_data *free_data);
-void					handle_redirections(t_ast_node *node, t_free_data *free_data);
+							char **envp, t_env_table *env_table, t_data *data);
+void					handle_redirections(t_ast_node *node, t_data *data);
 void					handle_heredocs(t_ast_node *node);
 void					ft_heredoc(t_ast_node *node, char *delimiter);
 
 void					execute_cmd(t_ast_node *node, char *dir_paths,
-							char **envp, t_free_data *free_data);
+							char **envp, t_data *data);
 void					print_working_directory(void);
 void					ft_exit(int exit_code, t_ast_node *node, char **envp,
 							t_env_table *table);
 
 void					insert_node_ht(t_env_var **table, const char *key,
-							const char *value, t_free_data *free_data);
+							const char *value, t_data *data);
 int						lexemize(size_t *token_count, t_token **token_arr,
 							t_lexeme **lexeme_arr, char **envp);
 int						change_directory(const char *path);
@@ -292,37 +290,38 @@ int						change_directory(const char *path);
 /* Executor */
 
 void					execute(t_ast_node *ast_root, char *dir_paths,
-							char **my_envp, t_env_table *env_table, t_free_data *free_data);
+							char **my_envp, t_env_table *env_table,
+							t_data *data);
 
-void	error_exit(t_ast_node *node, char **envp,
-		t_env_table *env_table);
+void					error_exit(t_ast_node *node, char **envp,
+							t_env_table *env_table);
 char					*path_finder(char *cmd, char *dir_paths);
 void					echo(t_ast_node *node);
 void					free_cmd_and_args_arr(char **cmd_and_args_arr);
 
-
-void	handle_infile(t_ast_node *node, t_free_data *free_data);
-void	handle_outfile(t_ast_node *node, t_free_data *free_data);
-void	handle_heredoc(t_ast_node *node);
-void	builtin_with_args(t_ast_node *node, char **envp,
-		t_env_table *env_table, t_free_data *free_data);
-void	builtin_without_args(t_ast_node *node, char **envp,
-		t_env_table *env_table);
-void	execute_builtin(t_ast_node *node, char **envp,
-		t_env_table *env_table, t_free_data *free_data);
-int	count_cmd_and_args(t_ast_node *node);
-char	**build_cmd_and_args_arr(t_ast_node *node, int cmd_and_args_count);
-int	command_is_builtin(t_ast_node *node);
-void	handle_command_node(t_ast_node *node, char *dir_paths, char **envp,
-		t_env_table *env_table, t_free_data *free_data);
-void	handle_nodes(t_ast_node *node, char *dir_paths, char **envp,
-		t_env_table *env_table, t_free_data *free_data);
-void	free_token_arr(t_token *token_arr);
-void	free_lexeme_arr(t_lexeme *lexeme_arr);
-void free_key_value(char **key_value);
-char **ft_split_envp(const char *s, char c);
-void free_all_data(t_free_data *free_data);
-void initialize_free_data(t_free_data *free_data,t_env_table *env_table);
-void free_exit(t_free_data *free_data, char *error_message);
+void					handle_infile(t_ast_node *node, t_data *data);
+void					handle_outfile(t_ast_node *node, t_data *data);
+void					handle_heredoc(t_ast_node *node);
+void					builtin_with_args(t_ast_node *node, char **envp,
+							t_env_table *env_table, t_data *data);
+void					builtin_without_args(t_ast_node *node, char **envp,
+							t_env_table *env_table);
+void					execute_builtin(t_ast_node *node, char **envp,
+							t_env_table *env_table, t_data *data);
+int						count_cmd_and_args(t_ast_node *node);
+char					**build_cmd_and_args_arr(t_ast_node *node,
+							int cmd_and_args_count);
+int						command_is_builtin(t_ast_node *node);
+void					handle_command_node(t_ast_node *node, char *dir_paths,
+							char **envp, t_env_table *env_table, t_data *data);
+void					handle_nodes(t_ast_node *node, char *dir_paths,
+							char **envp, t_env_table *env_table, t_data *data);
+void					free_token_arr(t_token *token_arr);
+void					free_lexeme_arr(t_lexeme *lexeme_arr);
+void					free_key_value(char **key_value);
+char					**ft_split_envp(const char *s, char c);
+void					free_all_data(t_data *data);
+void					initialize_data(t_data *data, t_env_table *env_table);
+void					free_exit(t_data *data, char *error_message);
 
 #endif
