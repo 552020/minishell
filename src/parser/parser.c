@@ -1,20 +1,21 @@
 #include "minishell.h"
 
-void	parse(t_ast_node **ast_root, t_lexeme *lexemes, size_t token_count)
+void	parse(t_data *data)
 {
 	if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_AST)
 		printf("***Parsing***\n\n");
-	*ast_root = parser(lexemes, 0, token_count - 1);
+	data->ast_root = parser(data->lexeme_arr, 0, data->token_count - 1);
 	if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_AST)
 	{
 		printf("\n***Printing AST***\n\n");
-		print_ast(*ast_root, 7);
+		print_ast(data->ast_root, 7);
 		printf("\n***Printing AST NEW***\n\n");
-		print_ast_new(*ast_root);
+		print_ast_new(data->ast_root);
 		printf("\n*** AST nodes content ***\n\n");
-		debug_ast(*ast_root);
+		debug_ast(data->ast_root);
 	}
-	free_lexeme_arr(lexemes);
+	free_lexeme_arr(data->lexeme_arr);
+	data->lexeme_arr = NULL;
 }
 
 t_ast_node	*parser(t_lexeme *lexemes, int start, int end)

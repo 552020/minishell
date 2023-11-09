@@ -19,7 +19,7 @@ int	main(int argc, char **argv, char **envp)
 		tokenize(&data.token_count, &data.token_arr, input);
 		if (lexemize(&data) == SUCCESS)
 		{
-			parse(&data.ast_root, data.lexeme_arr, data.token_count);
+			parse(&data);
 			handle_heredocs(data.ast_root);
 			execute(data.ast_root, var_path_value, data.env_arr, data.env_table,
 				&data);

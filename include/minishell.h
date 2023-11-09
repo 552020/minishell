@@ -231,8 +231,7 @@ void					handle_simple_redirects(t_lexeme *lexemes, int idx,
 void					handle_double_redirects(t_lexeme *lexemes, int idx,
 							t_ast_node **node);
 void					print_and_exit(char *str);
-void					parse(t_ast_node **ast_root, t_lexeme *lexemes,
-							size_t token_count);
+void					parse(t_data *data);
 
 /* Varia */
 void					check_input(int argc, char **argv);
