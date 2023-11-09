@@ -53,7 +53,7 @@ char	**build_cmd_and_args_arr(t_ast_node *node, int cmd_and_args_count)
 	i = 0;
 	cmd_and_args_count = count_cmd_and_args(node);
 	cmd_and_args_arr = (char **)malloc(sizeof(char *) * (cmd_and_args_count
-				+ 1));
+			+ 1));
 	if (!cmd_and_args_arr)
 	{
 		perror("malloc error\n");
@@ -73,13 +73,14 @@ char	**build_cmd_and_args_arr(t_ast_node *node, int cmd_and_args_count)
 	return (cmd_and_args_arr);
 }
 
-void	execute_cmd(t_ast_node *node, char *dir_paths, char **envp, t_free_data *free_data)
+void	execute_cmd(t_ast_node *node, char *dir_paths, char **envp,
+		t_data *data)
 {
 	char	*path;
 	char	**cmd_and_args_arr;
 	int		cmd_and_args_count;
 
-	handle_redirections(node, free_data);
+	handle_redirections(node, data);
 	path = NULL;
 	if (node->cmd)
 	{
@@ -100,7 +101,6 @@ void	execute_cmd(t_ast_node *node, char *dir_paths, char **envp, t_free_data *fr
 		free_envp(envp);
 		exit(EXIT_FAILURE);
 	}
-		
 	if (node->cmd && cmd_and_args_arr)
 	{
 		// is this correct or not? @Stefano
@@ -111,11 +111,15 @@ void	execute_cmd(t_ast_node *node, char *dir_paths, char **envp, t_free_data *fr
 		free_cmd_and_args_arr(cmd_and_args_arr);
 }
 
-void	execute(t_ast_node *ast_root, char *dir_paths, char **my_envp,
-		t_env_table *env_table, t_free_data *free_data)
+void	execute(t_data *data)
 {
-	if (ast_root->type == N_PIPE)
-		handle_pipes(ast_root, dir_paths, my_envp, env_table, free_data);
-	else if (ast_root->type == N_COMMAND)
-		handle_without_pipes(ast_root, dir_paths, my_envp, env_table, free_data);
+	char	*dir_paths;
+
+	dir_paths = ft_getenv(data->env_table->table, "PATH");
+	if (data->ast_root->type == N_PIPE)
+		handle_pipes(data->ast_root, dir_paths, data->env_arr, data->env_table,
+			data);
+	else if (data->ast_root->type == N_COMMAND)
+		handle_without_pipes(data->ast_root, dir_paths, data->env_arr,
+			data->env_table, data);
 }

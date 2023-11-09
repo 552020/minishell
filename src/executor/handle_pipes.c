@@ -13,25 +13,25 @@
 #include "minishell.h"
 
 void	handle_without_pipes(t_ast_node *node, char *dir_paths, char **envp,
-		t_env_table *env_table, t_free_data *free_data)
+		t_env_table *env_table, t_data *data)
 {
 	pid_t	pid;
 
 	if (command_is_builtin(node))
 	{
-		execute_builtin(node, envp, env_table, free_data);
+		execute_builtin(node, envp, env_table, data);
 		return ;
 	}
 	pid = fork();
 	if (pid == -1)
 		error_exit(node, envp, env_table);
 	if (pid == 0)
-		execute_cmd(node, dir_paths, envp, free_data);
+		execute_cmd(node, dir_paths, envp, data);
 	waitpid(pid, NULL, 0);
 }
 
 void	handle_pipes(t_ast_node *node, char *dir_paths, char **envp,
-		t_env_table *env_table, t_free_data *free_data)
+		t_env_table *env_table, t_data *data)
 {
 	int		pipe_fd[2];
 	pid_t	left_pid;
@@ -47,8 +47,8 @@ void	handle_pipes(t_ast_node *node, char *dir_paths, char **envp,
 		close(pipe_fd[0]);
 		dup2(pipe_fd[1], STDOUT_FILENO);
 		close(pipe_fd[1]);
-		handle_redirections(node->children[0], free_data);
-		handle_pipes(node->children[0], dir_paths, envp, env_table, free_data);
+		handle_redirections(node->children[0], data);
+		handle_pipes(node->children[0], dir_paths, envp, env_table, data);
 		exit(EXIT_SUCCESS);
 	}
 	right_pid = fork();
@@ -59,8 +59,8 @@ void	handle_pipes(t_ast_node *node, char *dir_paths, char **envp,
 		close(pipe_fd[1]);
 		dup2(pipe_fd[0], STDIN_FILENO);
 		close(pipe_fd[0]);
-		handle_redirections(node->children[1], free_data);
-		handle_pipes(node->children[1], dir_paths, envp, env_table, free_data);
+		handle_redirections(node->children[1], data);
+		handle_pipes(node->children[1], dir_paths, envp, env_table, data);
 		exit(EXIT_SUCCESS);
 	}
 	close(pipe_fd[0]);
@@ -70,20 +70,19 @@ void	handle_pipes(t_ast_node *node, char *dir_paths, char **envp,
 }
 
 void	handle_nodes(t_ast_node *node, char *dir_paths, char **envp,
-		t_env_table *env_table, t_free_data *free_data)
+		t_env_table *env_table, t_data *data)
 {
-
 	if (node->type == N_PIPE)
-		handle_pipes(node, dir_paths, envp, env_table, free_data);
+		handle_pipes(node, dir_paths, envp, env_table, data);
 	else
-		handle_command_node(node, dir_paths, envp, env_table, free_data);
+		handle_command_node(node, dir_paths, envp, env_table, data);
 }
 
 void	handle_command_node(t_ast_node *node, char *dir_paths, char **envp,
-		t_env_table *env_table, t_free_data *free_data)
+		t_env_table *env_table, t_data *data)
 {
 	if (command_is_builtin(node))
-		execute_builtin(node, envp, env_table, free_data);
+		execute_builtin(node, envp, env_table, data);
 	else
-		execute_cmd(node, dir_paths, envp, free_data);
+		execute_cmd(node, dir_paths, envp, data);
 }

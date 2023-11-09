@@ -12,14 +12,16 @@
 
 #include "minishell.h"
 
-void	handle_heredocs(t_ast_node *node)
+void	ft_heredoc(t_ast_node *node, char *delimiter, t_data *data);
+
+void	handle_heredocs(t_ast_node *node, t_data *data)
 {
 	if (node->type == N_PIPE)
 	{
 		if (node->children[0])
-			handle_heredocs(node->children[0]);
+			handle_heredocs(node->children[0], data);
 		if (node->children[1])
-			handle_heredocs(node->children[1]);
+			handle_heredocs(node->children[1], data);
 	}
 	if (node->heredoc)
 	{
@@ -27,11 +29,11 @@ void	handle_heredocs(t_ast_node *node)
 		{
 			printf("there is heredoc but not heredoc_del\n");
 		}
-		ft_heredoc(node, node->heredoc_del);
+		ft_heredoc(node, node->heredoc_del, data);
 	}
 }
 
-void	ft_heredoc(t_ast_node *node, char *delimiter)
+void	ft_heredoc(t_ast_node *node, char *delimiter, t_data *data)
 {
 	pid_t	pid;
 	int		fd[2];
@@ -39,11 +41,7 @@ void	ft_heredoc(t_ast_node *node, char *delimiter)
 
 	line = NULL;
 	if (pipe(fd) == -1)
-	{
-		perror("pipe error");
-		free_ast(node);
-		exit(EXIT_FAILURE);
-	}
+		free_exit(data, "pipe error");
 	pid = fork();
 	if (pid == 0)
 	{

@@ -39,7 +39,7 @@ void	free_lexeme_arr(t_lexeme *lexeme_arr)
 	free(lexeme_arr);
 }
 
-void free_key_value(char **key_value)
+void free_key_value_pair(char **key_value)
 {
     int i = 0;
     while (key_value[i] != NULL)

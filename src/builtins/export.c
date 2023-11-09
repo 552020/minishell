@@ -1,7 +1,7 @@
 #include "minishell.h"
 
 void	single_export(t_env_table *env_table, const char *key,
-		const char *value, char ***envp_ptr, t_free_data *free_data)
+		const char *value, char ***envp_ptr, t_data *data)
 {
 	t_env_var	*node;
 
@@ -16,12 +16,12 @@ void	single_export(t_env_table *env_table, const char *key,
 		}
 		node = node->next;
 	}
-	insert_node_ht(env_table->table, key, value,free_data);
+	insert_node_ht(env_table->table, key, value, data);
 	env_table->count++;
-	*envp_ptr = convert_hash_table_to_array(env_table, free_data);
+	*envp_ptr = hash_table_to_arr(data);
 }
 
-void	export(t_env_table *env_table, char **args, char ***envp, t_free_data *free_data)
+void	export(t_env_table *env_table, char **args, char ***envp, t_data *data)
 {
 	int i;
 	char *key;
@@ -34,8 +34,8 @@ void	export(t_env_table *env_table, char **args, char ***envp, t_free_data *free
 		value = ft_split(args[i], '=')[1];
 		if (value == NULL)
 			value = "";
-		single_export(env_table, key, value, envp, free_data);
+		single_export(env_table, key, value, envp, data);
 		i++;
 	}
-		free_cmd_and_args_arr(args);
+	free_cmd_and_args_arr(args);
 }

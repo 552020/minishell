@@ -1,28 +1,26 @@
 #include "minishell.h"
 
-void initialize_free_data(t_free_data *free_data, t_env_table *env_table)
+void	free_data(t_data *data)
 {
-	free_data->my_envp = NULL;
-	free_data->env_table = env_table;
-	free_data->ast_root = NULL;
+	if (data->env_table)
+	{
+		// free_hash_table(data->env_table->table);
+		free_hash_table(data->env_table);
+		free(data->env_table);
+	}
+	if (data->env_arr)
+		free_envp(data->env_arr);
+	if (data->ast_root)
+		free_ast(data->ast_root);
+	if (data->token_arr)
+		free_token_arr(data->token_arr);
+	if (data->lexeme_arr)
+		free_lexeme_arr(data->lexeme_arr);
 }
 
-
-void free_all_data(t_free_data *free_data)
-{
-    if (free_data->ast_root)
-        free_ast(free_data->ast_root);
-    if (free_data->env_table)
-        free_hash_table(free_data->env_table);
-    if (free_data->my_envp)
-        free_envp(free_data->my_envp);
-	free(free_data);
-}
-
-void free_exit(t_free_data *free_data, char *error_message)
+void	free_exit(t_data *data, char *error_message)
 {
 	perror(error_message);
-	// rl_clear_history();
-	free_all_data(free_data);
+	free_data(data);
 	exit(FAILURE);
 }

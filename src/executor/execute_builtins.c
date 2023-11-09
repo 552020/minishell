@@ -34,21 +34,23 @@ int	command_is_builtin(t_ast_node *node)
 		return (FAILURE);
 }
 
-void	builtin_with_args(t_ast_node *node, char **envp,
-		t_env_table *env_table, t_free_data *free_data)
+void	builtin_with_args(t_ast_node *node, char **envp, t_env_table *env_table,
+		t_data *data)
 {
 	int		cmd_and_args_count;
 	char	**cmd_and_args_arr;
 
 	cmd_and_args_count = count_cmd_and_args(node);
 	cmd_and_args_arr = build_cmd_and_args_arr(node, cmd_and_args_count);
-	if (ft_strncmp(node->cmd, "export", 6) == 0 && ft_strlen(node->cmd) == 6 && cmd_and_args_arr)
+	if (ft_strncmp(node->cmd, "export", 6) == 0 && ft_strlen(node->cmd) == 6
+		&& cmd_and_args_arr)
 	{
 		// TODO: implement ARG="arg" in the lexer
-		export(env_table, cmd_and_args_arr, &envp, free_data);
+		export(env_table, cmd_and_args_arr, &envp, data);
 	}
-	if (ft_strncmp(node->cmd, "unset", 5) == 0 && ft_strlen(node->cmd) == 5 && cmd_and_args_arr)
-		unset(env_table, cmd_and_args_arr, &envp, free_data);
+	if (ft_strncmp(node->cmd, "unset", 5) == 0 && ft_strlen(node->cmd) == 5
+		&& cmd_and_args_arr)
+		unset(env_table, cmd_and_args_arr, &envp, data);
 }
 
 void	builtin_without_args(t_ast_node *node, char **envp,
@@ -71,12 +73,14 @@ void	builtin_without_args(t_ast_node *node, char **envp,
 		ft_exit(0, node, envp, env_table);
 }
 
-void	execute_builtin(t_ast_node *node, char **envp,
-		t_env_table *env_table, t_free_data *free_data)
+void	execute_builtin(t_ast_node *node, char **envp, t_env_table *env_table,
+		t_data *data)
 {
-	handle_redirections(node, free_data);
-	if ((ft_strncmp(node->cmd, "export", 6) == 0 && ft_strlen(node->cmd) == 6) || (ft_strncmp(node->cmd, "unset", 5) == 0 && ft_strlen(node->cmd) == 5))
-		builtin_with_args(node, envp, env_table, free_data);
+	handle_redirections(node, data);
+	if ((ft_strncmp(node->cmd, "export", 6) == 0 && ft_strlen(node->cmd) == 6)
+		|| (ft_strncmp(node->cmd, "unset", 5) == 0
+			&& ft_strlen(node->cmd) == 5))
+		builtin_with_args(node, envp, env_table, data);
 	else
 		builtin_without_args(node, envp, env_table);
 }

@@ -12,17 +12,17 @@
 
 #include "minishell.h"
 
-void	handle_redirections(t_ast_node *node, t_free_data *free_data)
+void	handle_redirections(t_ast_node *node, t_data *data)
 {
 	if (node->input_file)
-		handle_infile(node, free_data);
+		handle_infile(node, data);
 	if (node->output_file)
-		handle_outfile(node, free_data);
+		handle_outfile(node, data);
 	if (node->heredoc)
 		handle_heredoc(node);
 }
 
-void	handle_infile(t_ast_node *node,t_free_data *free_data)
+void	handle_infile(t_ast_node *node, t_data *data)
 {
 	int	filein;
 
@@ -31,29 +31,27 @@ void	handle_infile(t_ast_node *node,t_free_data *free_data)
 	if (filein == -1)
 	{
 		perror("filein error\n");
-		free_ast(free_data->ast_root);
-		return;
+		free_ast(data->ast_root);
+		return ;
 	}
 	dup2(filein, STDIN_FILENO);
 	close(filein);
 }
 
-void	handle_outfile(t_ast_node *node, t_free_data *free_data)
+void	handle_outfile(t_ast_node *node, t_data *data)
 {
 	int	fileout;
 
 	fileout = 1;
 	if (node->append)
-		fileout = open(node->output_file, O_WRONLY | O_CREAT | O_APPEND,
-				0777);
+		fileout = open(node->output_file, O_WRONLY | O_CREAT | O_APPEND, 0777);
 	else if (!node->append)
-		fileout = open(node->output_file, O_WRONLY | O_CREAT | O_TRUNC,
-				0777);
+		fileout = open(node->output_file, O_WRONLY | O_CREAT | O_TRUNC, 0777);
 	if (fileout == -1)
 	{
 		perror("fileout error\n");
-		free_ast(free_data->ast_root);
-		return;
+		free_ast(data->ast_root);
+		return ;
 	}
 	dup2(fileout, STDOUT_FILENO);
 	close(fileout);
