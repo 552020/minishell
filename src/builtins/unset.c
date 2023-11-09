@@ -27,7 +27,7 @@ void	single_unset(t_env_table *env_table, const char *key, char ***envp_ptr,
 		prev = node;
 		node = node->next;
 	}
-	*envp_ptr = hash_table_to_arr(env_table, data);
+	*envp_ptr = hash_table_to_arr(data);
 }
 
 void	unset(t_env_table *env_table, char **args, char ***envp, t_data *data)

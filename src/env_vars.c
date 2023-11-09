@@ -101,7 +101,7 @@ char	*ft_getenv(t_env_var **table, const char *key)
 	return (NULL); // key not found
 }
 
-char	**hash_table_to_arr(t_env_table *env_table, t_data *data)
+char	**hash_table_to_arr(t_data *data)
 {
 	int			i;
 	int			j;
@@ -109,16 +109,19 @@ char	**hash_table_to_arr(t_env_table *env_table, t_data *data)
 	char		*temp;
 	t_env_var	*node;
 
-	envp = (char **)malloc(sizeof(char *) * (env_table->count + 1));
+	if (data->env_table->count == 0)
+		return (NULL);
+	if (data->env_arr != NULL)
+		free_envp(data->env_arr);
+	envp = (char **)malloc(sizeof(char *) * (data->env_table->count + 1));
 	if (envp == NULL)
-		free_exit(data,
-			"Error: malloc in hash_table_to_arr failed\n");
+		free_exit(data, "Error: malloc in hash_table_to_arr failed\n");
 	data->env_arr = envp;
 	i = 0;
 	j = 0;
 	while (i < TABLE_SIZE)
 	{
-		node = env_table->table[i];
+		node = data->env_table->table[i];
 		while (node != NULL)
 		{
 			temp = ft_strjoin(node->key, "=");

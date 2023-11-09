@@ -18,7 +18,7 @@ void	single_export(t_env_table *env_table, const char *key,
 	}
 	insert_node_ht(env_table->table, key, value, data);
 	env_table->count++;
-	*envp_ptr = hash_table_to_arr(env_table, data);
+	*envp_ptr = hash_table_to_arr(data);
 }
 
 void	export(t_env_table *env_table, char **args, char ***envp, t_data *data)
