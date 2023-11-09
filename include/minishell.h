@@ -257,8 +257,7 @@ t_ast_node				*build_cmd_node(t_lexeme *lexemes, int start, int end);
 
 /* Heredoc */
 
-void					handle_heredocs(t_ast_node *node);
-void					ft_heredoc(t_ast_node *node, char *delimiter);
+void					handle_heredocs(t_ast_node *node, t_data *data);
 
 /* Execution */
 
@@ -272,8 +271,6 @@ void					handle_without_pipes(t_ast_node *ast_root,
 void					handle_pipes(t_ast_node *ast_root, char *dir_paths,
 							char **envp, t_env_table *env_table, t_data *data);
 void					handle_redirections(t_ast_node *node, t_data *data);
-void					handle_heredocs(t_ast_node *node);
-void					ft_heredoc(t_ast_node *node, char *delimiter);
 
 void					execute_cmd(t_ast_node *node, char *dir_paths,
 							char **envp, t_data *data);

@@ -19,7 +19,7 @@ int	main(int argc, char **argv, char **envp)
 		if (lexemize(&data) == SUCCESS)
 		{
 			parse(&data);
-			handle_heredocs(data.ast_root);
+			handle_heredocs(data.ast_root, &data);
 			execute(data.ast_root, var_path_value, data.env_arr, data.env_table,
 				&data);
 		}
