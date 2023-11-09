@@ -19,9 +19,6 @@ int	main(int argc, char **argv, char **envp)
 			parse(&data);
 			handle_heredocs(data.ast_root, &data);
 			execute(&data);
-			// execute(data.ast_root, var_path_value, data.env_arr,
-			// data.env_table,
-			// &data);
 		}
 		free_ast(data.ast_root);
 	}
