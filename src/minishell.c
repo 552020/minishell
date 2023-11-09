@@ -9,7 +9,6 @@ int	main(int argc, char **argv, char **envp)
 	char	*var_path_value;
 	t_data	data;
 
-	// size_t	token_count;
 	check_input(argc, argv);
 	initialize_data(envp, &data);
 	data.env_arr = hash_table_to_arr(&data);
@@ -18,8 +17,6 @@ int	main(int argc, char **argv, char **envp)
 	{
 		input = read_input();
 		tokenize(&data.token_count, &data.token_arr, input);
-		// if (lexemize(&token_count, &data.token_arr, &data.lexeme_arr,
-		// data.env_arr) == SUCCESS)
 		if (lexemize(&data) == SUCCESS)
 		{
 			parse(&data.ast_root, data.lexeme_arr, data.token_count);

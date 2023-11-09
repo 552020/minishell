@@ -120,9 +120,6 @@ int	check_syntax_error(t_lexeme *lexeme_arr)
 	return (0);
 }
 
-// int	lexemize(size_t *token_count, t_token **token_arr,
-// t_lexeme **lexeme_arr,
-// char **envp)
 int	lexemize(t_data *data)
 {
 	data->lexeme_arr = create_lexeme_arr(data->token_count);
