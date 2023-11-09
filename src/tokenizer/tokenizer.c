@@ -22,7 +22,7 @@ t_token	*create_token_array(t_data *data)
 	return (token_arr);
 }
 
-t_token	*tokenizer(t_token *token_arr, const char *str)
+t_token	*tokenizer(t_data *data, const char *str)
 {
 	size_t	idx;
 
@@ -31,21 +31,21 @@ t_token	*tokenizer(t_token *token_arr, const char *str)
 	{
 		skip_spaces(&str);
 		if (isregularchar(*str, str))
-			assign_word(&str, token_arr, &idx);
+			assign_word(&str, data, &idx);
 		else if (*str == '<' || *str == '>')
-			assign_redirect_in_out_heredoc_append(&str, token_arr, &idx);
+			assign_redirect_in_out_heredoc_append(&str, data, &idx);
 		else if (*str == '|')
-			assign_pipe(&str, token_arr, &idx);
+			assign_pipe(&str, data, &idx);
 		else if (*str == '$')
-			assign_env_var(&str, token_arr, &idx);
+			assign_env_var(&str, data, &idx);
 		else if (*str == '\'' || *str == '"')
-			assign_quotes(&str, token_arr, &idx);
+			assign_quotes(&str, data, &idx);
 		else
 			handle_unexpected_char(&str);
 	}
-	token_arr[idx].type = T_END;
-	token_arr[idx].str = NULL;
-	return (token_arr);
+	data->token_arr[idx].type = T_END;
+	data->token_arr[idx].str = NULL;
+	return (data->token_arr);
 }
 
 void	tokenize(t_data *data, char *input)
@@ -60,7 +60,7 @@ void	tokenize(t_data *data, char *input)
 	if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_TOKENIZER)
 		printf("Token count: %zu\n\n", data->token_count);
 	data->token_arr = create_token_array(data);
-	data->token_arr = tokenizer(data->token_arr, trimmed);
+	data->token_arr = tokenizer(data, trimmed);
 	free(trimmed);
 	if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_TOKENIZER)
 		print_token_arr(data->token_arr, data->token_count);

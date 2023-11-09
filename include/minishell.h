@@ -105,19 +105,19 @@ void					count_word_special_char(const char **str_ptr,
 size_t					count_words_tokenizer(const char *str);
 t_token					*create_token_array(t_data *data);
 void					assign_redirect_in_heredoc(const char **str_ptr,
-							t_token *token_arr, size_t *idx);
+							t_data *data, size_t *idx);
 void					assign_redirect_out_append(const char **str_ptr,
-							t_token *token_arr, size_t *idx);
+							t_data *data, size_t *idx);
 void					assign_redirect_in_out_heredoc_append(const char **str_ptr,
-							t_token *token_arr, size_t *idx);
+							t_data *data, size_t *idx);
 void					handle_unexpected_char(const char **str_ptr);
-void					assign_word(const char **str_ptr, t_token *token_arr,
+void					assign_word(const char **str_ptr, t_data *data,
 							size_t *idx);
-void					assign_pipe(const char **str_ptr, t_token *token_arr,
+void					assign_pipe(const char **str_ptr, t_data *data,
 							size_t *idx);
-void					assign_env_var(const char **str_ptr, t_token *token_arr,
+void					assign_env_var(const char **str_ptr, t_data *data,
 							size_t *idx);
-void					assign_quotes(const char **str_ptr, t_token *token_arr,
+void					assign_quotes(const char **str_ptr, t_data *data,
 							size_t *idx);
 void					tokenize(t_data *data, char *input);
 
@@ -235,7 +235,7 @@ void					parse(t_data *data);
 /* Varia */
 void					check_input(int argc, char **argv);
 char					*read_input(void);
-t_token					*tokenizer(t_token *token_arr, const char *input);
+t_token					*tokenizer(t_data *data, const char *input);
 size_t					count_words_tokenizer(const char *input);
 
 int						ft_isvalidvarname(char c);

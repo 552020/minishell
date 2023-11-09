@@ -24,4 +24,7 @@
 	"titleBar.activeBackground": "#2D4717",
 	"titleBar.activeForeground": "#F9FCF6"
 },
+"files.associations": {
+  "complex": "c"
+},
 }

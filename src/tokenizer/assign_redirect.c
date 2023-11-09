@@ -1,17 +1,21 @@
 #include "minishell.h"
 
-void	assign_redirect_in_heredoc(const char **str_ptr, t_token *token_arr,
+void	assign_redirect_in_heredoc(const char **str_ptr, t_data *data,
 		size_t *idx)
 {
 	char const	*start;
 
-	token_arr[*idx].type = T_REDIRECT_IN;
-	token_arr[*idx].str = ft_strdup("<");
+	data->token_arr[*idx].type = T_REDIRECT_IN;
+	data->token_arr[*idx].str = ft_strdup("<");
+	if (!data->token_arr[*idx].str)
+		free_exit(data, "Error: ft_strdup failed\n");
 	if (*(*str_ptr + 1) == '<')
 	{
-		token_arr[*idx].type = T_HEREDOC;
-		free(token_arr[*idx].str);
-		token_arr[*idx].str = ft_strdup("<<");
+		data->token_arr[*idx].type = T_HEREDOC;
+		free(data->token_arr[*idx].str);
+		data->token_arr[*idx].str = ft_strdup("<<");
+		if (!data->token_arr[*idx].str)
+			free_exit(data, "Error: ft_strdup failed\n");		
 		(*str_ptr)++;
 		while (ft_isspace(*(*str_ptr + 1)))
 			(*str_ptr)++;
@@ -23,35 +27,41 @@ void	assign_redirect_in_heredoc(const char **str_ptr, t_token *token_arr,
 			while (**str_ptr && isregularchar(**str_ptr, *str_ptr)
 				&& !ft_isspace(**str_ptr))
 				(*str_ptr)++;
-			token_arr[*idx].type = T_HEREDOC_DELIMITER;
-			token_arr[*idx].str = ft_substr(start, 0, *str_ptr - start);
+			data->token_arr[*idx].type = T_HEREDOC_DELIMITER;
+			data->token_arr[*idx].str = ft_substr(start, 0, *str_ptr - start);
+			if (data->token_arr[*idx].str == NULL)
+				free_exit(data, "Error: ft_substr failed\n");
 		}
 		else
 			ft_putendl_fd("Warning: Unexpected char", 2);
 	}
 }
 
-void	assign_redirect_out_append(const char **str_ptr, t_token *token_arr,
+void	assign_redirect_out_append(const char **str_ptr, t_data *data,
 		size_t *idx)
 {
-	token_arr[*idx].type = T_REDIRECT_OUT;
-	token_arr[*idx].str = ft_strdup(">");
+	data->token_arr[*idx].type = T_REDIRECT_OUT;
+	data->token_arr[*idx].str = ft_strdup(">");
+	if (!data->token_arr[*idx].str)
+		free_exit(data, "Error: ft_strdup failed\n");
 	if (*(*str_ptr + 1) == '>')
 	{
-		token_arr[*idx].type = T_REDIRECT_APPEND;
-		free(token_arr[*idx].str);
-		token_arr[*idx].str = ft_strdup(">>");
+		data->token_arr[*idx].type = T_REDIRECT_APPEND;
+		free(data->token_arr[*idx].str);
+		data->token_arr[*idx].str = ft_strdup(">>");
+		if (!data->token_arr[*idx].str)
+			free_exit(data, "Error: ft_strdup failed\n");
 		(*str_ptr)++;
 	}
 }
 
 void	assign_redirect_in_out_heredoc_append(const char **str_ptr,
-		t_token *token_arr, size_t *idx)
+		t_data *data, size_t *idx)
 {
 	if (**str_ptr == '<')
-		assign_redirect_in_heredoc(str_ptr, token_arr, idx);
+		assign_redirect_in_heredoc(str_ptr, data, idx);
 	else
-		assign_redirect_out_append(str_ptr, token_arr, idx);
+		assign_redirect_out_append(str_ptr, data, idx);
 	(*idx)++;
 	(*str_ptr)++;
 }
