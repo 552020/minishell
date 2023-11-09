@@ -11,7 +11,6 @@ int	main(int argc, char **argv, char **envp)
 
 	check_input(argc, argv);
 	initialize_data(envp, &data);
-	data.env_arr = hash_table_to_arr(&data);
 	var_path_value = ft_getenv(data.env_table->table, "PATH");
 	while (1)
 	{
