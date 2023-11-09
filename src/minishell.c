@@ -6,10 +6,10 @@ t_debug_level	DEBUG_LEVEL = DEBUG_OFF;
 int	main(int argc, char **argv, char **envp)
 {
 	char	*input;
-	size_t	token_count;
 	char	*var_path_value;
 	t_data	data;
 
+	// size_t	token_count;
 	check_input(argc, argv);
 	initialize_data(&data);
 	initialize_table(envp, &data);
@@ -18,11 +18,12 @@ int	main(int argc, char **argv, char **envp)
 	while (1)
 	{
 		input = read_input();
-		tokenize(&token_count, &data.token_arr, input);
-		if (lexemize(&token_count, &data.token_arr, &data.lexeme_arr,
-				data.env_arr) == SUCCESS)
+		tokenize(&data.token_count, &data.token_arr, input);
+		// if (lexemize(&token_count, &data.token_arr, &data.lexeme_arr,
+		// data.env_arr) == SUCCESS)
+		if (lexemize(&data) == SUCCESS)
 		{
-			parse(&data.ast_root, data.lexeme_arr, token_count);
+			parse(&data.ast_root, data.lexeme_arr, &data.token_count);
 			handle_heredocs(data.ast_root);
 			execute(data.ast_root, var_path_value, data.env_arr, data.env_table,
 				&data);

@@ -212,6 +212,7 @@ typedef struct s_data
 {
 	t_env_table			*env_table;
 	char				**env_arr;
+	size_t				token_count;
 	t_token				*token_arr;
 	t_lexeme			*lexeme_arr;
 	t_ast_node			*ast_root;
@@ -283,8 +284,7 @@ void					ft_exit(int exit_code, t_ast_node *node, char **envp,
 
 void					insert_node_ht(t_env_var **table, const char *key,
 							const char *value, t_data *data);
-int						lexemize(size_t *token_count, t_token **token_arr,
-							t_lexeme **lexeme_arr, char **envp);
+int						lexemize(t_data *data);
 int						change_directory(const char *path);
 
 /* Executor */
