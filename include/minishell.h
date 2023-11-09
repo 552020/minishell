@@ -103,7 +103,7 @@ void					skip_spaces(const char **str_ptr);
 void					count_word_special_char(const char **str_ptr,
 							size_t *words);
 size_t					count_words_tokenizer(const char *str);
-t_token					*create_token_array(size_t token_count);
+t_token					*create_token_array(t_data *data);
 void					assign_redirect_in_heredoc(const char **str_ptr,
 							t_token *token_arr, size_t *idx);
 void					assign_redirect_out_append(const char **str_ptr,
@@ -119,8 +119,7 @@ void					assign_env_var(const char **str_ptr, t_token *token_arr,
 							size_t *idx);
 void					assign_quotes(const char **str_ptr, t_token *token_arr,
 							size_t *idx);
-void					tokenize(size_t *token_count, t_token **token_arr,
-							char *input);
+void					tokenize(t_data *data, char *input);
 
 /* Lexer */
 typedef enum e_lexeme_type

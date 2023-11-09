@@ -13,7 +13,7 @@ int	main(int argc, char **argv, char **envp)
 	while (1)
 	{
 		input = read_input();
-		tokenize(&data.token_count, &data.token_arr, input);
+		tokenize(&data, input);
 		if (lexemize(&data) == SUCCESS)
 		{
 			parse(&data);

@@ -53,18 +53,14 @@ void	insert_node_ht(t_env_var **table, const char *key, const char *value,
 	}
 }
 
-// void	initialize_table(t_env_table *env_table, char **envp, t_data *data)
 void	initialize_table(char **envp, t_data *data)
 {
 	int		i;
 	char	**key_value_pair;
 
-	i = 0;
-	while (i < TABLE_SIZE)
-	{
+	i = -1;
+	while (++i < TABLE_SIZE)
 		data->env_table->table[i] = NULL;
-		i++;
-	}
 	data->env_table->count = 0;
 	i = 0;
 	while (envp[i] != NULL)
