@@ -11,25 +11,25 @@ int	main(int argc, char **argv, char **envp)
 	t_token		*token_arr;
 	t_lexeme	*lexeme_arr;
 	t_ast_node	*ast_root;
-	char		**my_envp;
+	char		**env_arr;
 	char		*var_path_value;
 	t_data		data;
 
 	check_input(argc, argv);
 	initialize_data(&data, &table);
 	initialize_table(&table, envp, &data);
-	my_envp = convert_hash_table_to_array(&table, &data);
+	env_arr = convert_hash_table_to_array(&table, &data);
 	var_path_value = ft_getenv(table.table, "PATH");
 	while (1)
 	{
 		input = read_input();
 		tokenize(&token_count, &token_arr, input);
-		// we are using envp, we should use my_envp
-		if (lexemize(&token_count, &token_arr, &lexeme_arr, my_envp) == SUCCESS)
+		// we are using envp, we should use env_arr
+		if (lexemize(&token_count, &token_arr, &lexeme_arr, env_arr) == SUCCESS)
 		{
 			parse(&ast_root, lexeme_arr, token_count);
 			handle_heredocs(ast_root);
-			execute(ast_root, var_path_value, my_envp, &table, &data);
+			execute(ast_root, var_path_value, env_arr, &table, &data);
 		}
 		free_ast(ast_root);
 	}

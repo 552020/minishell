@@ -2,7 +2,7 @@
 
 void	initialize_data(t_data *data, t_env_table *env_table)
 {
-	data->my_envp = NULL;
+	data->env_arr = NULL;
 	data->env_table = env_table;
 	data->ast_root = NULL;
 }
@@ -13,8 +13,8 @@ void	free_all_data(t_data *data)
 		free_ast(data->ast_root);
 	if (data->env_table)
 		free_hash_table(data->env_table);
-	if (data->my_envp)
-		free_envp(data->my_envp);
+	if (data->env_arr)
+		free_envp(data->env_arr);
 	free(data);
 }
 

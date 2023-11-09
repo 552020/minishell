@@ -213,7 +213,7 @@ typedef struct s_node_list
 typedef struct s_data
 {
 	t_ast_node			*ast_root;
-	char				**my_envp;
+	char				**env_arr;
 	t_env_table			*env_table;
 }						t_data;
 
@@ -290,7 +290,7 @@ int						change_directory(const char *path);
 /* Executor */
 
 void					execute(t_ast_node *ast_root, char *dir_paths,
-							char **my_envp, t_env_table *env_table,
+							char **env_arr, t_env_table *env_table,
 							t_data *data);
 
 void					error_exit(t_ast_node *node, char **envp,

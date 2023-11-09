@@ -114,7 +114,7 @@ char	**convert_hash_table_to_array(t_env_table *env_table, t_data *data)
 	envp = (char **)malloc(sizeof(char *) * (env_table->count + 1));
 	if (envp == NULL)
 		free_exit(data, "Error: malloc in convert_hash_table_to_array failed\n");
-	data->my_envp = envp;
+	data->env_arr = envp;
 	i = 0;
 	j = 0;
 	while (i < TABLE_SIZE)
