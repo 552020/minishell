@@ -111,11 +111,15 @@ void	execute_cmd(t_ast_node *node, char *dir_paths, char **envp,
 		free_cmd_and_args_arr(cmd_and_args_arr);
 }
 
-void	execute(t_ast_node *ast_root, char *dir_paths, char **env_arr,
-		t_env_table *env_table, t_data *data)
+void	execute(t_data *data)
 {
-	if (ast_root->type == N_PIPE)
-		handle_pipes(ast_root, dir_paths, env_arr, env_table, data);
-	else if (ast_root->type == N_COMMAND)
-		handle_without_pipes(ast_root, dir_paths, env_arr, env_table, data);
+	char	*dir_paths;
+
+	dir_paths = ft_getenv(data->env_table->table, "PATH");
+	if (data->ast_root->type == N_PIPE)
+		handle_pipes(data->ast_root, dir_paths, data->env_arr, data->env_table,
+			data);
+	else if (data->ast_root->type == N_COMMAND)
+		handle_without_pipes(data->ast_root, dir_paths, data->env_arr,
+			data->env_table, data);
 }
