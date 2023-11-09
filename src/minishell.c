@@ -5,20 +5,21 @@ t_debug_level	DEBUG_LEVEL = DEBUG_OFF;
 
 int	main(int argc, char **argv, char **envp)
 {
-	t_env_table	table;
-	char		*input;
-	size_t		token_count;
-	t_token		*token_arr;
-	t_lexeme	*lexeme_arr;
-	t_ast_node	*ast_root;
-	char		**env_arr;
-	char		*var_path_value;
-	t_data		data;
+	char	*input;
+	size_t	token_count;
+	char	*var_path_value;
+	t_data	data;
 
+	// t_token		*token_arr;
+	// t_lexeme	*lexeme_arr;
+	// t_ast_node	*ast_root;
+	// char		**env_arr;
+	// t_env_table	table;
 	check_input(argc, argv);
-	initialize_data(&data, &table);
-	initialize_table(&table, envp, &data);
-	env_arr = convert_hash_table_to_array(&table, &data);
+	// initialize_data(&data, &table);
+	initialize_data(&data);
+	initialize_table(envp, &data);
+	data.env_arr = hash_table_to_arr(&table, &data);
 	var_path_value = ft_getenv(table.table, "PATH");
 	while (1)
 	{

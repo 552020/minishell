@@ -29,7 +29,8 @@ t_env_var	*create_node_ht(const char *key, const char *value, t_data *data)
 	return (node);
 }
 
-void	insert_node_ht(t_env_var **table, const char *key, const char *value, t_data *data)
+void	insert_node_ht(t_env_var **table, const char *key, const char *value,
+		t_data *data)
 {
 	unsigned int	idx;
 	t_env_var		*node;
@@ -52,35 +53,32 @@ void	insert_node_ht(t_env_var **table, const char *key, const char *value, t_dat
 	}
 }
 
-void	initialize_table(t_env_table *env_table, char **envp, t_data *data)
+// void	initialize_table(t_env_table *env_table, char **envp, t_data *data)
+void	initialize_table(char **envp, t_data *data)
 {
 	int		i;
-	char	**key_value;
+	char	**key_value_pair;
 
 	i = 0;
 	while (i < TABLE_SIZE)
 	{
-		env_table->table[i] = NULL;
+		data->env_table->table[i] = NULL;
 		i++;
 	}
-	env_table->count = 0;
+	data->env_table->count = 0;
 	i = 0;
-	data->env_table = env_table;
 	while (envp[i] != NULL)
 	{
-		key_value = ft_split_envp(envp[i], '=');
-		if (!key_value)
+		key_value_pair = ft_split_envp(envp[i], '=');
+		if (!key_value_pair)
 			free_exit(data, "Error: ft_split in init table failed\n");
-		if (!key_value[0])
+		if (!key_value_pair[0])
 			free_exit(data, "Error: ft_split in init table failed\n");
-		// if (!key_value[1])
-		// {	
-		// 	key_value[1] = ft_strdup("");
-		// }
-		data->env_table = env_table;
-		insert_node_ht(env_table->table, key_value[0], key_value[1], data);
-		env_table->count++;
-		free_key_value(key_value);
+		data->env_table = data->env_table;
+		insert_node_ht(data->env_table->table, key_value_pair[0],
+			key_value_pair[1], data);
+		data->env_table->count++;
+		free_key_value_pair(key_value_pair);
 		i++;
 	}
 }
@@ -103,7 +101,7 @@ char	*ft_getenv(t_env_var **table, const char *key)
 	return (NULL); // key not found
 }
 
-char	**convert_hash_table_to_array(t_env_table *env_table, t_data *data)
+char	**hash_table_to_arr(t_env_table *env_table, t_data *data)
 {
 	int			i;
 	int			j;
@@ -113,7 +111,8 @@ char	**convert_hash_table_to_array(t_env_table *env_table, t_data *data)
 
 	envp = (char **)malloc(sizeof(char *) * (env_table->count + 1));
 	if (envp == NULL)
-		free_exit(data, "Error: malloc in convert_hash_table_to_array failed\n");
+		free_exit(data,
+			"Error: malloc in hash_table_to_arr failed\n");
 	data->env_arr = envp;
 	i = 0;
 	j = 0;
@@ -127,7 +126,7 @@ char	**convert_hash_table_to_array(t_env_table *env_table, t_data *data)
 				free_exit(data, "Error: ft_strjoin failed\n");
 			envp[j] = ft_strjoin(temp, node->value);
 			if (!envp[j])
-			{	
+			{
 				free(temp);
 				free_exit(data, "Error: ft_strjoin failed\n");
 			}

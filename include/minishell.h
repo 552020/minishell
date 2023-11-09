@@ -59,8 +59,7 @@ typedef struct s_env_table
 	int count; // This will keep track of the number of environment variables.
 }						t_env_table;
 
-void					initialize_table(t_env_table *env_table, char **envp,
-							t_data *data);
+void					initialize_table(char **envp, t_data *data);
 void					env(t_env_var **table);
 
 void					export(t_env_table *env_table, char **args,
@@ -68,8 +67,7 @@ void					export(t_env_table *env_table, char **args,
 void					unset(t_env_table *env_table, char **args, char ***envp,
 							t_data *data);
 
-char					**convert_hash_table_to_array(t_env_table *env_table,
-							t_data *data);
+char					**hash_table_to_arr(t_data *data);
 char					*ft_getenv(t_env_var **table, const char *key);
 
 /* Tokenizer */
@@ -214,6 +212,8 @@ typedef struct s_data
 {
 	t_env_table			*env_table;
 	char				**env_arr;
+	t_token				*token_arr;
+	t_lexeme			*lexeme_arr;
 	t_ast_node			*ast_root;
 }						t_data;
 
@@ -318,10 +318,10 @@ void					handle_nodes(t_ast_node *node, char *dir_paths,
 							char **envp, t_env_table *env_table, t_data *data);
 void					free_token_arr(t_token *token_arr);
 void					free_lexeme_arr(t_lexeme *lexeme_arr);
-void					free_key_value(char **key_value);
+void					free_key_value_pair(char **key_value);
 char					**ft_split_envp(const char *s, char c);
 void					free_all_data(t_data *data);
-void					initialize_data(t_data *data, t_env_table *env_table);
+void					initialize_data(t_data *data);
 void					free_exit(t_data *data, char *error_message);
 
 #endif
