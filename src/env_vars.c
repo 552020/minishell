@@ -173,4 +173,5 @@ void	free_hash_table(t_env_table *env_table)
 		}
 		i++;
 	}
+	free(env_table);
 }
