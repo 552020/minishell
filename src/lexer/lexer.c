@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-t_lexeme	*create_lexer_array(size_t token_count)
+t_lexeme	*create_lexeme_arr(size_t token_count)
 {
 	t_lexeme	*lexeme_arr;
 
@@ -121,27 +121,23 @@ int	check_syntax_error(t_lexeme *lexeme_arr)
 }
 
 // int	lexemize(size_t *token_count, t_token **token_arr,
-t_lexeme **lexeme_arr,
-	// char **envp)
-	lexemize(t_data *data)
+// t_lexeme **lexeme_arr,
+// char **envp)
+int	lexemize(t_data *data)
 {
-	*lexeme_arr = create_lexer_array(data->token_count);
-	if (lexeme_arr == NULL)
-	{
-		free_token_arr(data->token_arr);
-		exit(FAILURE);
-	}
-	*lexeme_arr = lexer(data->token_arr, *lexeme_arr, data->env_arr,
+	data->lexeme_arr = create_lexeme_arr(data->token_count);
+	if (data->lexeme_arr == NULL)
+		free_exit(data, "Error: malloc lexeme_arr failed\n");
+	data->lexeme_arr = lexer(data->token_arr, data->lexeme_arr, data->env_arr,
 		data->token_count);
 	if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_LEXER)
 	{
 		printf("\n***Lexer***\n\n");
-		print_lexeme_arr(*lexeme_arr, *token_count);
+		print_lexeme_arr(data->lexeme_arr, data->token_count);
 	}
-	free_token_arr(*token_arr);
-	if (check_syntax_error(*lexeme_arr))
-	{
+	free_token_arr(data->token_arr);
+	data->token_arr = NULL;
+	if (check_syntax_error(data->lexeme_arr))
 		return (FAILURE);
-	}
 	return (SUCCESS);
 }

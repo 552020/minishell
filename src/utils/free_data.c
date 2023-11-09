@@ -4,8 +4,8 @@ void	free_data(t_data *data)
 {
 	if (data->env_table)
 	{
-		if (data->env_table->table)
-			free_env_table(data->env_table->table);
+		// free_hash_table(data->env_table->table);
+		free_hash_table(data->env_table);
 		free(data->env_table);
 	}
 	if (data->env_arr)

@@ -22,7 +22,7 @@ int	main(int argc, char **argv, char **envp)
 		// data.env_arr) == SUCCESS)
 		if (lexemize(&data) == SUCCESS)
 		{
-			parse(&data.ast_root, data.lexeme_arr, &data.token_count);
+			parse(&data.ast_root, data.lexeme_arr, data.token_count);
 			handle_heredocs(data.ast_root);
 			execute(data.ast_root, var_path_value, data.env_arr, data.env_table,
 				&data);

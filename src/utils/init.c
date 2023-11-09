@@ -15,7 +15,7 @@ void	initialize_data(char **envp, t_data *data)
 
 	data->env_table = (t_env_table *)malloc(sizeof(t_env_table));
 	if (!data->env_table)
-		print_exit("Error: malloc data->env_table failed\n");
+		free_exit(data, "Error: malloc data->env_table failed\n");
 	initialize_table(envp, data);
 	initialize_envp_arr(data);
 }
