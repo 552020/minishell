@@ -10,13 +10,7 @@ int	main(int argc, char **argv, char **envp)
 	char	*var_path_value;
 	t_data	data;
 
-	// t_token		*token_arr;
-	// t_lexeme	*lexeme_arr;
-	// t_ast_node	*ast_root;
-	// char		**env_arr;
-	// t_env_table	table;
 	check_input(argc, argv);
-	// initialize_data(&data, &table);
 	initialize_data(&data);
 	initialize_table(envp, &data);
 	data.env_arr = hash_table_to_arr(&data);
@@ -25,7 +19,6 @@ int	main(int argc, char **argv, char **envp)
 	{
 		input = read_input();
 		tokenize(&token_count, &data.token_arr, input);
-		// we are using envp, we should use env_arr
 		if (lexemize(&token_count, &data.token_arr, &data.lexeme_arr,
 				data.env_arr) == SUCCESS)
 		{
