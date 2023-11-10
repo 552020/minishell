@@ -307,7 +307,7 @@ void					execute_builtin(t_ast_node *node, char **envp,
 							t_env_table *env_table, t_data *data);
 int						count_cmd_and_args(t_ast_node *node);
 char					**build_cmd_and_args_arr(t_ast_node *node,
-							int cmd_and_args_count);
+							int cmd_and_args_count, t_data *data);
 int						command_is_builtin(t_ast_node *node);
 void					handle_command_node(t_ast_node *node, char *dir_paths,
 							char **envp, t_env_table *env_table, t_data *data);

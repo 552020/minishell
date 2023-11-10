@@ -45,7 +45,8 @@ int	count_cmd_and_args(t_ast_node *node)
 	return (count);
 }
 
-char	**build_cmd_and_args_arr(t_ast_node *node, int cmd_and_args_count)
+char	**build_cmd_and_args_arr(t_ast_node *node, int cmd_and_args_count,
+		t_data *data)
 {
 	char	**cmd_and_args_arr;
 	int		i;
@@ -55,10 +56,7 @@ char	**build_cmd_and_args_arr(t_ast_node *node, int cmd_and_args_count)
 	cmd_and_args_arr = (char **)malloc(sizeof(char *) * (cmd_and_args_count
 			+ 1));
 	if (!cmd_and_args_arr)
-	{
-		perror("malloc error\n");
-		return (NULL);
-	}
+		free_exit(data, "Error: malloc failed\n");
 	if (node->cmd)
 		cmd_and_args_arr[0] = node->cmd;
 	if (node->args != NULL)
@@ -94,16 +92,13 @@ void	execute_cmd(t_ast_node *node, char *dir_paths, char **envp,
 	else
 		printf("no commands to execute\n");
 	cmd_and_args_count = count_cmd_and_args(node);
-	cmd_and_args_arr = build_cmd_and_args_arr(node, cmd_and_args_count);
+	cmd_and_args_arr = build_cmd_and_args_arr(node, cmd_and_args_count, data);
 	if (!cmd_and_args_arr)
-	{
-		free_ast(node);
-		free_envp(envp);
-		exit(EXIT_FAILURE);
-	}
+		free_exit(data, "Error: malloc failed\n");
 	if (node->cmd && cmd_and_args_arr)
 	{
 		// is this correct or not? @Stefano
+		// I don't know. What do you mean? @Batu
 		if (execve(path, cmd_and_args_arr, envp) == -1)
 			perror("execve error\n");
 	}
