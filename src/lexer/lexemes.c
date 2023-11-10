@@ -1,12 +1,16 @@
 #include "minishell.h"
 
-t_lexeme	pipe_lexeme(t_token *token)
+t_lexeme	pipe_lexeme(t_token *token, t_data *data)
 {
 	t_lexeme	lexeme;
 
 	lexeme.type = L_PIPE;
 	lexeme.str = ft_strdup(token->str);
+	if (!lexeme.str)
+		free_exit(data, "Error: malloc lexeme.str failed\n");
 	lexeme.original = ft_strdup(token->str);
+	if (!lexeme.original)
+		free_exit(data, "Error: malloc lexeme.original failed\n");
 	lexeme.status = LEXED;
 	return (lexeme);
 }

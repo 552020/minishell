@@ -16,16 +16,20 @@ char	*lookup_env_value(char *var_name, char **envp)
 	return (""); // bash returns an empty string if the variable is not found
 }
 
-t_lexeme	t_env_var_subs(t_token *token, char **envp)
+t_lexeme	t_env_var_subs(t_token *token, t_data *data)
 {
 	t_lexeme lexeme;
 	char *value;
 
 	lexeme.original = ft_strdup(token->str);
-	value = lookup_env_value(token->str + 1, envp); //
+	if (!lexeme.original)
+		free_exit(data, "Error: malloc lexeme.original failed\n");
+	value = lookup_env_value(token->str + 1, data->env_arr); //
 	// +1 to skip the '$' if (value)
 	lexeme.type = L_ARGUMENT;
 	lexeme.str = ft_strdup(value);
+	if (!lexeme.str)
+		free_exit(data, "Error: malloc lexeme.str failed\n");
 	lexeme.status = NOT_LEXED;
 	return (lexeme);
 }

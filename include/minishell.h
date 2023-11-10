@@ -154,7 +154,7 @@ typedef struct s_lexeme
 }						t_lexeme;
 
 t_lexeme				word_lexeme(t_token *token);
-t_lexeme				pipe_lexeme(t_token *token);
+t_lexeme				pipe_lexeme(t_token *token, t_data *data);
 t_lexeme				redirect_in_lexeme(t_token *token);
 t_lexeme				redirect_out_lexeme(t_token *token);
 t_lexeme				redirect_in_target_lexeme(t_token *token);
@@ -162,9 +162,9 @@ t_lexeme				redirect_out_target_lexeme(t_token *token);
 t_lexeme				redirect_append_lexeme(t_token *token);
 t_lexeme				heredoc_lexeme(t_token *token);
 t_lexeme				heredoc_delimiter_lexeme(t_token *token);
-t_lexeme				t_double_quotes_var_subs(t_token *token, char **envp);
-t_lexeme				single_quote_lexeme(t_token *token);
-t_lexeme				t_env_var_subs(t_token *token, char **envp);
+t_lexeme				t_double_quotes_var_subs(t_token *token, t_data *data);
+t_lexeme				single_quote_lexeme(t_token *token, t_data *data);
+t_lexeme				t_env_var_subs(t_token *token, t_data *data);
 char					*lookup_env_value(char *var_name, char **envp);
 void					create_lexeme_arr(t_data *data);
 t_lexeme				*lexer(t_data *data);
