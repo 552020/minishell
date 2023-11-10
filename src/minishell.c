@@ -1,7 +1,7 @@
 #include "minishell.h"
 
-// t_debug_level	DEBUG_LEVEL = DEBUG_ALL;
-t_debug_level	DEBUG_LEVEL = DEBUG_OFF;
+t_debug_level	DEBUG_LEVEL = DEBUG_ALL;
+// t_debug_level	DEBUG_LEVEL = DEBUG_OFF;
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -18,6 +18,7 @@ int	main(int argc, char **argv, char **envp)
 		{
 			parse(&data);
 			handle_heredocs(data.ast_root, &data);
+			printf("before execute\n");
 			execute(&data);
 		}
 		free_ast(data.ast_root);

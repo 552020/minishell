@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_pipes.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bsengeze <bsengeze@student.42berlin.de>    +#+  +:+       +#+        */
+/*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/31 00:08:30 by bsengeze          #+#    #+#             */
-/*   Updated: 2023/11/08 23:39:23 by bsengeze         ###   ########.fr       */
+/*   Updated: 2023/11/10 16:51:35 by slombard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ void	handle_without_pipes(t_ast_node *node, char *dir_paths, char **envp,
 {
 	pid_t	pid;
 
+	printf("handle_without_pipes\n");
 	if (command_is_builtin(node))
 	{
 		execute_builtin(node, envp, env_table, data);
@@ -26,7 +27,10 @@ void	handle_without_pipes(t_ast_node *node, char *dir_paths, char **envp,
 	if (pid == -1)
 		free_exit(data, "Error: fork failed\n");
 	if (pid == 0)
+	{
+		printf("handle_without_pipes pid == 0\n");
 		execute_cmd(node, dir_paths, envp, data);
+	}
 	waitpid(pid, NULL, 0);
 }
 
