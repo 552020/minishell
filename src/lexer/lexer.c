@@ -51,18 +51,15 @@ t_lexeme	*lexer(t_data *data)
 		else if (data->token_arr[i].type == T_PIPE)
 			data->lexeme_arr[i] = pipe_lexeme(&data->token_arr[i], data);
 		else if (data->token_arr[i].type == T_REDIRECT_IN)
-			redirect_in_wrapper(data->lexeme_arr, data->token_arr, &i,
-				data->token_count);
+			redirect_in_wrapper(&i, data->token_count, data);
 		else if (data->token_arr[i].type == T_REDIRECT_OUT)
-			redirect_out_wrapper(data->lexeme_arr, data->token_arr, &i,
-				data->token_count);
+			redirect_out_wrapper(&i, data->token_count, data);
 		else if (data->token_arr[i].type == T_REDIRECT_APPEND)
-			redirect_append_wrapper(data->lexeme_arr, data->token_arr, &i,
-				data->token_count);
+			redirect_append_wrapper(&i, data->token_count, data);
 		else if (data->token_arr[i].type == T_HEREDOC)
-			heredoc_wrapper(data->lexeme_arr, data->token_arr, &i);
+			heredoc_wrapper(data->lexeme_arr, data->token_arr, &i, data);
 		else if (data->token_arr[i].type == T_WORD)
-			undefined_wrapper(data->lexeme_arr, data->token_arr, &i);
+			undefined_wrapper(data->lexeme_arr, data->token_arr, &i, data);
 		else
 			continue ;
 		i++;
