@@ -1,17 +1,11 @@
 #include "minishell.h"
 
-t_lexeme	*create_lexeme_arr(size_t token_count)
+void	create_lexeme_arr(t_data *data)
 {
-	t_lexeme	*lexeme_arr;
-
-	lexeme_arr = malloc(sizeof(t_lexeme) * (token_count + 1));
-	if (!lexeme_arr)
-	{
-		printf("Error: malloc lexeme_arr failed\n");
-		return (NULL);
-	}
-	ft_memset(lexeme_arr, 0, sizeof(t_lexeme) * (token_count + 1));
-	return (lexeme_arr);
+	data->lexeme_arr = malloc(sizeof(t_lexeme) * (data->token_count + 1));
+	if (!data->lexeme_arr)
+		free_exit(data, "Error: malloc lexeme_arr failed\n");
+	ft_memset(data->lexeme_arr, 0, sizeof(t_lexeme) * (data->token_count + 1));
 }
 
 // 0 means we haven't encountered a command yet, 1 means we have
@@ -41,32 +35,31 @@ void	command_and_args(size_t token_count, t_lexeme *lexeme_arr)
 	}
 }
 
-t_lexeme	*lexer(t_token *token_arr, t_lexeme *lexeme_arr, char **envp,
-		size_t token_count)
+t_lexeme	*lexer(t_data *data)
 {
 	size_t	i;
 
 	i = 0;
-	while (i < token_count)
+	while (i < data->token_count)
 	{
-		if (token_arr[i].type == T_ENV_VAR)
-			lexeme_arr[i] = t_env_var_subs(&token_arr[i], envp);
-		else if (token_arr[i].type == T_DOUBLE_QUOTE)
-			lexeme_arr[i] = t_double_quotes_var_subs(&token_arr[i], envp);
-		else if (token_arr[i].type == T_SINGLE_QUOTE)
-			lexeme_arr[i] = single_quote_lexeme(&token_arr[i]);
-		else if (token_arr[i].type == T_PIPE)
-			lexeme_arr[i] = pipe_lexeme(&token_arr[i]);
-		else if (token_arr[i].type == T_REDIRECT_IN)
-			redirect_in_wrapper(lexeme_arr, token_arr, &i, token_count);
-		else if (token_arr[i].type == T_REDIRECT_OUT)
-			redirect_out_wrapper(lexeme_arr, token_arr, &i, token_count);
-		else if (token_arr[i].type == T_REDIRECT_APPEND)
-			redirect_append_wrapper(lexeme_arr, token_arr, &i, token_count);
-		else if (token_arr[i].type == T_HEREDOC)
-			heredoc_wrapper(lexeme_arr, token_arr, &i);
-		else if (token_arr[i].type == T_WORD)
-			undefined_wrapper(lexeme_arr, token_arr, &i);
+		if (data->token_arr[i].type == T_ENV_VAR)
+			data->lexeme_arr[i] = t_env_var_subs(&data->token_arr[i], data->env_arr);
+		else if (data->token_arr[i].type == T_DOUBLE_QUOTE)
+			data->lexeme_arr[i] = t_double_quotes_var_subs(&data->token_arr[i], data->env_arr);
+		else if (data->token_arr[i].type == T_SINGLE_QUOTE)
+			data->lexeme_arr[i] = single_quote_lexeme(&data->token_arr[i]);
+		else if (data->token_arr[i].type == T_PIPE)
+			data->lexeme_arr[i] = pipe_lexeme(&data->token_arr[i]);
+		else if (data->token_arr[i].type == T_REDIRECT_IN)
+			redirect_in_wrapper(data->lexeme_arr, data->token_arr, &i, data->token_count);
+		else if (data->token_arr[i].type == T_REDIRECT_OUT)
+			redirect_out_wrapper(data->lexeme_arr, data->token_arr, &i, data->token_count);
+		else if (data->token_arr[i].type == T_REDIRECT_APPEND)
+			redirect_append_wrapper(data->lexeme_arr, data->token_arr, &i, data->token_count);
+		else if (data->token_arr[i].type == T_HEREDOC)
+			heredoc_wrapper(data->lexeme_arr, data->token_arr, &i);
+		else if (data->token_arr[i].type == T_WORD)
+			undefined_wrapper(data->lexeme_arr, data->token_arr, &i);
 		// else if (token_arr[i].type == T_END)
 		//{
 		//	lexeme_arr[i].type = L_END;
@@ -76,12 +69,12 @@ t_lexeme	*lexer(t_token *token_arr, t_lexeme *lexeme_arr, char **envp,
 			continue ;
 		i++;
 	}
-	lexeme_arr[i].type = L_END;
-	lexeme_arr[i].str = NULL;
-	command_and_args(token_count, lexeme_arr);
-	if (token_arr[i].type == T_END)
-		lexeme_arr[i].type = L_END;
-	return (lexeme_arr);
+	data->lexeme_arr[i].type = L_END;
+	data->lexeme_arr[i].str = NULL;
+	command_and_args(data->token_count, data->lexeme_arr);
+	if (data->token_arr[i].type == T_END)
+		data->lexeme_arr[i].type = L_END;
+	return (data->lexeme_arr);
 }
 
 int	lexeme_is_operator(t_lexeme_type type)
@@ -122,11 +115,8 @@ int	check_syntax_error(t_lexeme *lexeme_arr)
 
 int	lexemize(t_data *data)
 {
-	data->lexeme_arr = create_lexeme_arr(data->token_count);
-	if (data->lexeme_arr == NULL)
-		free_exit(data, "Error: malloc lexeme_arr failed\n");
-	data->lexeme_arr = lexer(data->token_arr, data->lexeme_arr, data->env_arr,
-		data->token_count);
+	create_lexeme_arr(data);
+	data->lexeme_arr = lexer(data);
 	if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_LEXER)
 	{
 		printf("\n***Lexer***\n\n");
