@@ -8,29 +8,27 @@ void	create_lexeme_arr(t_data *data)
 	ft_memset(data->lexeme_arr, 0, sizeof(t_lexeme) * (data->token_count + 1));
 }
 
-// 0 means we haven't encountered a command yet, 1 means we have
-// TODO: write a macro for that
 void	command_and_args(size_t token_count, t_lexeme *lexeme_arr)
 {
 	size_t	i;
 	int		command_flag;
 
 	i = 0;
-	command_flag = 0;
+	command_flag = NO_CMD_YET;
 	while (i < token_count)
 	{
 		if (lexeme_arr[i].type == L_UNDEFINED)
 		{
-			if (command_flag == 0)
+			if (command_flag == NO_CMD_YET)
 			{
 				lexeme_arr[i].type = L_COMMAND;
-				command_flag = 1;
+				command_flag = CMD_FOUND;
 			}
 			else
 				lexeme_arr[i].type = L_ARGUMENT;
 		}
 		else if (lexeme_arr[i].type == L_PIPE)
-			command_flag = 0;
+			command_flag = NO_CMD_YET;
 		i++;
 	}
 }
@@ -43,28 +41,28 @@ t_lexeme	*lexer(t_data *data)
 	while (i < data->token_count)
 	{
 		if (data->token_arr[i].type == T_ENV_VAR)
-			data->lexeme_arr[i] = t_env_var_subs(&data->token_arr[i],data);
+			data->lexeme_arr[i] = t_env_var_subs(&data->token_arr[i], data);
 		else if (data->token_arr[i].type == T_DOUBLE_QUOTE)
-			data->lexeme_arr[i] = t_double_quotes_var_subs(&data->token_arr[i], data);
+			data->lexeme_arr[i] = t_double_quotes_var_subs(&data->token_arr[i],
+				data);
 		else if (data->token_arr[i].type == T_SINGLE_QUOTE)
-			data->lexeme_arr[i] = single_quote_lexeme(&data->token_arr[i], data);
+			data->lexeme_arr[i] = single_quote_lexeme(&data->token_arr[i],
+				data);
 		else if (data->token_arr[i].type == T_PIPE)
 			data->lexeme_arr[i] = pipe_lexeme(&data->token_arr[i], data);
 		else if (data->token_arr[i].type == T_REDIRECT_IN)
-			redirect_in_wrapper(data->lexeme_arr, data->token_arr, &i, data->token_count);
+			redirect_in_wrapper(data->lexeme_arr, data->token_arr, &i,
+				data->token_count);
 		else if (data->token_arr[i].type == T_REDIRECT_OUT)
-			redirect_out_wrapper(data->lexeme_arr, data->token_arr, &i, data->token_count);
+			redirect_out_wrapper(data->lexeme_arr, data->token_arr, &i,
+				data->token_count);
 		else if (data->token_arr[i].type == T_REDIRECT_APPEND)
-			redirect_append_wrapper(data->lexeme_arr, data->token_arr, &i, data->token_count);
+			redirect_append_wrapper(data->lexeme_arr, data->token_arr, &i,
+				data->token_count);
 		else if (data->token_arr[i].type == T_HEREDOC)
 			heredoc_wrapper(data->lexeme_arr, data->token_arr, &i);
 		else if (data->token_arr[i].type == T_WORD)
 			undefined_wrapper(data->lexeme_arr, data->token_arr, &i);
-		// else if (token_arr[i].type == T_END)
-		//{
-		//	lexeme_arr[i].type = L_END;
-		//	lexeme_arr[i].str = NULL;
-		//}
 		else
 			continue ;
 		i++;
@@ -104,7 +102,6 @@ int	check_syntax_error(t_lexeme *lexeme_arr)
 			{
 				printf("Syntax error: unexpected token %s\n", lexeme_arr[i
 					+ 1].str);
-				//	printf("Syntax error: unexpected token\n");
 				return (1);
 			}
 		}

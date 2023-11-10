@@ -122,6 +122,9 @@ void					assign_quotes(const char **str_ptr, t_data *data,
 void					tokenize(t_data *data, char *input);
 
 /* Lexer */
+
+# define NO_CMD_YET 0
+# define CMD_FOUND 1
 typedef enum e_lexeme_type
 {
 	L_COMMAND,
