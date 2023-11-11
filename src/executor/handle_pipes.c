@@ -17,7 +17,6 @@ void	handle_without_pipes(t_ast_node *node, char *dir_paths, char **envp,
 {
 	pid_t	pid;
 
-	printf("handle_without_pipes\n");
 	if (command_is_builtin(node))
 	{
 		execute_builtin(node, envp, env_table, data);
@@ -27,10 +26,7 @@ void	handle_without_pipes(t_ast_node *node, char *dir_paths, char **envp,
 	if (pid == -1)
 		free_exit(data, "Error: fork failed\n");
 	if (pid == 0)
-	{
-		printf("handle_without_pipes pid == 0\n");
 		execute_cmd(node, dir_paths, envp, data);
-	}
 	waitpid(pid, NULL, 0);
 }
 

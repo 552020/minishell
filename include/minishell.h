@@ -320,5 +320,6 @@ char					**ft_split_envp(const char *s, char c);
 void					free_data(t_data *data);
 void					initialize_data(char **envp, t_data *data);
 void					free_exit(t_data *data, char *error_message);
+void					print_node_info(t_ast_node *node);
 
 #endif

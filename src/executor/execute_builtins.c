@@ -76,6 +76,15 @@ void	builtin_without_args(t_ast_node *node, char **envp,
 void	execute_builtin(t_ast_node *node, char **envp, t_env_table *env_table,
 		t_data *data)
 {
+	int	stdout_backup;
+	int	stdin_backup;
+
+	stdout_backup = dup(STDOUT_FILENO);
+	if (stdout_backup == -1)
+		free_exit(data, "Error: dup failed\n");
+	stdin_backup = dup(STDIN_FILENO);
+	if (stdin_backup == -1)
+		free_exit(data, "Error: dup failed\n");
 	handle_redirections(node, data);
 	if ((ft_strncmp(node->cmd, "export", 6) == 0 && ft_strlen(node->cmd) == 6)
 		|| (ft_strncmp(node->cmd, "unset", 5) == 0
@@ -83,4 +92,12 @@ void	execute_builtin(t_ast_node *node, char **envp, t_env_table *env_table,
 		builtin_with_args(node, envp, env_table, data);
 	else
 		builtin_without_args(node, envp, env_table);
+	dup2(stdout_backup, STDOUT_FILENO);
+	if (stdout_backup == -1)
+		free_exit(data, "Error: dup2 failed\n");
+	close(stdout_backup);
+	dup2(stdin_backup, STDIN_FILENO);
+	if (stdin_backup == -1)
+		free_exit(data, "Error: dup2 failed\n");
+	close(stdin_backup);
 }
