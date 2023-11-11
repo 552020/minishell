@@ -12,23 +12,25 @@ unsigned int	hash(const char *key)
 	return (hash % TABLE_SIZE);
 }
 
-t_env_var	*create_node_ht(const char *key, const char *value)
+t_env_var	*create_node_ht(const char *key, const char *value, t_data *data)
 {
 	t_env_var	*node;
 
 	node = (t_env_var *)malloc(sizeof(t_env_var));
 	if (node == NULL)
-	{
-		// free memory
-		exit(EXIT_FAILURE);
-	}
+		free_exit(data, "Error: malloc in create_node_ht failed\n");
 	node->key = ft_strdup(key);
+	if (node->key == NULL)
+		free_exit(data, "Error: ft_strdup in create_node_ht failed\n");
 	node->value = ft_strdup(value);
+	if (node->value == NULL)
+		free_exit(data, "Error: ft_strdup in create_node_ht failed\n");
 	node->next = NULL;
 	return (node);
 }
 
-void	insert_node_ht(t_env_var **table, const char *key, const char *value)
+void	insert_node_ht(t_env_var **table, const char *key, const char *value,
+		t_data *data)
 {
 	unsigned int	idx;
 	t_env_var		*node;
@@ -37,7 +39,7 @@ void	insert_node_ht(t_env_var **table, const char *key, const char *value)
 	node = table[idx];
 	if (node == NULL)
 	{
-		table[idx] = create_node_ht(key, value);
+		table[idx] = create_node_ht(key, value, data);
 	}
 	else
 	{
@@ -47,46 +49,32 @@ void	insert_node_ht(t_env_var **table, const char *key, const char *value)
 			printf("node->value == NULL\n");
 		while (node->next != NULL)
 			node = node->next;
-		node->next = create_node_ht(key, value);
+		node->next = create_node_ht(key, value, data);
 	}
 }
 
-void	initialize_table(t_env_table *env_table, char **envp)
+void	initialize_table(char **envp, t_data *data)
 {
 	int		i;
-	char	**key_value;
+	char	**key_value_pair;
 
-	i = 0;
-	while (i < TABLE_SIZE)
-	{
-		env_table->table[i] = NULL;
-		i++;
-	}
-	env_table->count = 0;
-	// printf("Initializing table...\n");
+	i = -1;
+	while (++i < TABLE_SIZE)
+		data->env_table->table[i] = NULL;
+	data->env_table->count = 0;
 	i = 0;
 	while (envp[i] != NULL)
 	{
-		key_value = ft_split(envp[i], '=');
-		if (!key_value)
-		{
-			// free memory
-			printf("Error: ft_split in init table failed\n");
-			exit(EXIT_FAILURE);
-		}
-		if (!key_value[0])
-		{
-			// free memory
-			printf("Error: key_value[0] == NULL\n");
-			exit(EXIT_FAILURE);
-		}
-		if (!key_value[1])
-			key_value[1] = ft_strdup("");
-		insert_node_ht(env_table->table, key_value[0], key_value[1]);
-		env_table->count++;
-		free(key_value[0]);
-		free(key_value[1]);
-		free(key_value);
+		key_value_pair = ft_split_envp(envp[i], '=');
+		if (!key_value_pair)
+			free_exit(data, "Error: ft_split in init table failed\n");
+		if (!key_value_pair[0])
+			free_exit(data, "Error: ft_split in init table failed\n");
+		data->env_table = data->env_table;
+		insert_node_ht(data->env_table->table, key_value_pair[0],
+			key_value_pair[1], data);
+		data->env_table->count++;
+		free_key_value_pair(key_value_pair);
 		i++;
 	}
 }
@@ -109,7 +97,7 @@ char	*ft_getenv(t_env_var **table, const char *key)
 	return (NULL); // key not found
 }
 
-char	**convert_hash_table_to_array(t_env_table *env_table)
+char	**hash_table_to_arr(t_data *data)
 {
 	int			i;
 	int			j;
@@ -117,22 +105,30 @@ char	**convert_hash_table_to_array(t_env_table *env_table)
 	char		*temp;
 	t_env_var	*node;
 
-	envp = (char **)malloc(sizeof(char *) * (env_table->count + 1));
+	if (data->env_table->count == 0)
+		return (NULL);
+	if (data->env_arr != NULL)
+		free_envp(data->env_arr);
+	envp = (char **)malloc(sizeof(char *) * (data->env_table->count + 1));
 	if (envp == NULL)
-	{
-		perror("Failed to allocate memory for envp");
-		// free memory
-		exit(EXIT_FAILURE);
-	}
+		free_exit(data, "Error: malloc in hash_table_to_arr failed\n");
+	data->env_arr = envp;
 	i = 0;
 	j = 0;
 	while (i < TABLE_SIZE)
 	{
-		node = env_table->table[i];
+		node = data->env_table->table[i];
 		while (node != NULL)
 		{
 			temp = ft_strjoin(node->key, "=");
+			if (!temp)
+				free_exit(data, "Error: ft_strjoin failed\n");
 			envp[j] = ft_strjoin(temp, node->value);
+			if (!envp[j])
+			{
+				free(temp);
+				free_exit(data, "Error: ft_strjoin failed\n");
+			}
 			free(temp);
 			j++;
 			node = node->next;
@@ -173,4 +169,5 @@ void	free_hash_table(t_env_table *env_table)
 		}
 		i++;
 	}
+	free(env_table);
 }

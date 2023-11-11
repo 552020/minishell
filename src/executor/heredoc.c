@@ -1,26 +1,39 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   heredoc.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: bsengeze <bsengeze@student.42berlin.de>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/10/31 00:50:07 by bsengeze          #+#    #+#             */
+/*   Updated: 2023/10/31 00:50:09 by bsengeze         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-void	handle_heredocs(t_ast_node *node)
+void	ft_heredoc(t_ast_node *node, char *delimiter, t_data *data);
+
+void	handle_heredocs(t_ast_node *node, t_data *data)
 {
 	if (node->type == N_PIPE)
 	{
 		if (node->children[0])
-			handle_heredocs(node->children[0]);
+			handle_heredocs(node->children[0], data);
 		if (node->children[1])
-			handle_heredocs(node->children[1]);
+			handle_heredocs(node->children[1], data);
 	}
 	if (node->heredoc)
 	{
 		if (!node->heredoc_del)
 		{
-			// check bash for correct statement
 			printf("there is heredoc but not heredoc_del\n");
 		}
-		ft_heredoc(node, node->heredoc_del);
+		ft_heredoc(node, node->heredoc_del, data);
 	}
 }
 
-void	ft_heredoc(t_ast_node *node, char *delimiter)
+void	ft_heredoc(t_ast_node *node, char *delimiter, t_data *data)
 {
 	pid_t	pid;
 	int		fd[2];
@@ -28,7 +41,7 @@ void	ft_heredoc(t_ast_node *node, char *delimiter)
 
 	line = NULL;
 	if (pipe(fd) == -1)
-		error_exit();
+		free_exit(data, "pipe error");
 	pid = fork();
 	if (pid == 0)
 	{
@@ -51,13 +64,4 @@ void	ft_heredoc(t_ast_node *node, char *delimiter)
 	waitpid(pid, NULL, 0);
 	node->heredoc_fd = fd[0];
 	node->heredoc = true;
-	// if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_AST)
-	// {
-	// 	printf("\n***Printing AST***\n\n");
-	// 	print_ast(node, 7);
-	// 	printf("\n***Printing AST NEW***\n\n");
-	// 	print_ast_new(node);
-	// 	printf("\n*** AST nodes content ***\n\n");
-	// 	debug_ast(node);
-	// }
 }

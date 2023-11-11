@@ -20,3 +20,5 @@
    our version does not append and I dont know if it should
 
 6. echo 123 > infile.txt >> infile >> infile.txt
+
+7. cat << eof | cat > outfile --- not working

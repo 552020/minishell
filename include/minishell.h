@@ -39,6 +39,11 @@ extern t_debug_level	DEBUG_LEVEL;
 
 # define TABLE_SIZE 42
 
+/* Forward Declare Free */
+struct s_data;
+
+typedef struct s_data	t_data;
+
 /* envp */
 
 typedef struct s_env_var
@@ -54,15 +59,15 @@ typedef struct s_env_table
 	int count; // This will keep track of the number of environment variables.
 }						t_env_table;
 
-void					initialize_table(t_env_table *env_table, char **envp);
+void					initialize_table(char **envp, t_data *data);
 void					env(t_env_var **table);
 
 void					export(t_env_table *env_table, char **args,
-							char ***envp);
-void					unset(t_env_table *env_table, char **args,
-							char ***envp);
+							char ***envp, t_data *data);
+void					unset(t_env_table *env_table, char **args, char ***envp,
+							t_data *data);
 
-char					**convert_hash_table_to_array(t_env_table *env_table);
+char					**hash_table_to_arr(t_data *data);
 char					*ft_getenv(t_env_var **table, const char *key);
 
 /* Tokenizer */
@@ -98,26 +103,28 @@ void					skip_spaces(const char **str_ptr);
 void					count_word_special_char(const char **str_ptr,
 							size_t *words);
 size_t					count_words_tokenizer(const char *str);
-t_token					*create_token_array(size_t token_count);
+t_token					*create_token_array(t_data *data);
 void					assign_redirect_in_heredoc(const char **str_ptr,
-							t_token *token_arr, size_t *idx);
+							t_data *data, size_t *idx);
 void					assign_redirect_out_append(const char **str_ptr,
-							t_token *token_arr, size_t *idx);
+							t_data *data, size_t *idx);
 void					assign_redirect_in_out_heredoc_append(const char **str_ptr,
-							t_token *token_arr, size_t *idx);
+							t_data *data, size_t *idx);
 void					handle_unexpected_char(const char **str_ptr);
-void					assign_word(const char **str_ptr, t_token *token_arr,
+void					assign_word(const char **str_ptr, t_data *data,
 							size_t *idx);
-void					assign_pipe(const char **str_ptr, t_token *token_arr,
+void					assign_pipe(const char **str_ptr, t_data *data,
 							size_t *idx);
-void					assign_env_var(const char **str_ptr, t_token *token_arr,
+void					assign_env_var(const char **str_ptr, t_data *data,
 							size_t *idx);
-void					assign_quotes(const char **str_ptr, t_token *token_arr,
+void					assign_quotes(const char **str_ptr, t_data *data,
 							size_t *idx);
-void					tokenize(size_t *token_count, t_token **token_arr,
-							char *input);
+void					tokenize(t_data *data, char *input);
 
 /* Lexer */
+
+# define NO_CMD_YET 0
+# define CMD_FOUND 1
 typedef enum e_lexeme_type
 {
 	L_COMMAND,
@@ -149,32 +156,32 @@ typedef struct s_lexeme
 	t_lexeme_status		status;
 }						t_lexeme;
 
-t_lexeme				word_lexeme(t_token *token);
-t_lexeme				pipe_lexeme(t_token *token);
-t_lexeme				redirect_in_lexeme(t_token *token);
-t_lexeme				redirect_out_lexeme(t_token *token);
-t_lexeme				redirect_in_target_lexeme(t_token *token);
-t_lexeme				redirect_out_target_lexeme(t_token *token);
-t_lexeme				redirect_append_lexeme(t_token *token);
-t_lexeme				heredoc_lexeme(t_token *token);
-t_lexeme				heredoc_delimiter_lexeme(t_token *token);
-t_lexeme				t_double_quotes_var_subs(t_token *token, char **envp);
-t_lexeme				single_quote_lexeme(t_token *token);
-t_lexeme				t_env_var_subs(t_token *token, char **envp);
+t_lexeme				word_lexeme(t_token *token, t_data *data);
+t_lexeme				pipe_lexeme(t_token *token, t_data *data);
+t_lexeme				redirect_in_lexeme(t_token *token, t_data *data);
+t_lexeme				redirect_out_lexeme(t_token *token, t_data *data);
+t_lexeme				redirect_in_target_lexeme(t_token *token, t_data *data);
+t_lexeme				redirect_out_target_lexeme(t_token *token,
+							t_data *data);
+t_lexeme				redirect_append_lexeme(t_token *token, t_data *data);
+t_lexeme				heredoc_lexeme(t_token *token, t_data *data);
+t_lexeme				heredoc_delimiter_lexeme(t_token *token, t_data *data);
+t_lexeme				t_double_quotes_var_subs(t_token *token, t_data *data);
+t_lexeme				single_quote_lexeme(t_token *token, t_data *data);
+t_lexeme				t_env_var_subs(t_token *token, t_data *data);
 char					*lookup_env_value(char *var_name, char **envp);
-t_lexeme				*create_lexer_array(size_t token_count);
-t_lexeme				*lexer(t_token *token_arr, t_lexeme *lexeme_arr,
-							char **envp, size_t token_count);
-void					redirect_in_wrapper(t_lexeme *lexeme_arr,
-							t_token *token_arr, size_t *i, size_t token_count);
-void					redirect_out_wrapper(t_lexeme *lexeme_arr,
-							t_token *token_arr, size_t *i, size_t token_count);
-void					redirect_append_wrapper(t_lexeme *lexeme_arr,
-							t_token *token_arr, size_t *i, size_t token_count);
+void					create_lexeme_arr(t_data *data);
+t_lexeme				*lexer(t_data *data);
+void					redirect_in_wrapper(size_t *i, size_t token_count,
+							t_data *data);
+void					redirect_out_wrapper(size_t *i, size_t token_count,
+							t_data *data);
+void					redirect_append_wrapper(size_t *i, size_t token_count,
+							t_data *data);
 void					heredoc_wrapper(t_lexeme *lexeme_arr,
-							t_token *token_arr, size_t *i);
+							t_token *token_arr, size_t *i, t_data *data);
 void					undefined_wrapper(t_lexeme *lexeme_arr,
-							t_token *token_arr, size_t *i);
+							t_token *token_arr, size_t *i, t_data *data);
 /* Parser */
 
 typedef enum e_node_type
@@ -203,8 +210,20 @@ typedef struct s_node_list
 	struct s_node_list	*next;
 }						t_node_list;
 
-t_ast_node				*parser(t_lexeme *lexemes, int start, int end);
-t_ast_node				*build_cmd_node(t_lexeme *lexemes, int start, int end);
+typedef struct s_data
+{
+	t_env_table			*env_table;
+	char				**env_arr;
+	size_t				token_count;
+	t_token				*token_arr;
+	t_lexeme			*lexeme_arr;
+	t_ast_node			*ast_root;
+}						t_data;
+
+t_ast_node				*parser(t_lexeme *lexemes, int start, int end,
+							t_data *data);
+t_ast_node				*build_cmd_node(t_lexeme *lexemes, int start, int end,
+							t_data *data);
 t_ast_node				*create_node(t_node_type type);
 void					append_first_arg(t_ast_node *node, char *arg);
 void					append_other_args(t_ast_node *node, char *arg);
@@ -216,13 +235,12 @@ void					handle_simple_redirects(t_lexeme *lexemes, int idx,
 void					handle_double_redirects(t_lexeme *lexemes, int idx,
 							t_ast_node **node);
 void					print_and_exit(char *str);
-void					parse(t_ast_node **ast_root, t_lexeme *lexemes,
-							size_t token_count);
+void					parse(t_data *data);
 
 /* Varia */
 void					check_input(int argc, char **argv);
 char					*read_input(void);
-t_token					*tokenizer(t_token *token_arr, const char *input);
+t_token					*tokenizer(t_data *data, const char *input);
 size_t					count_words_tokenizer(const char *input);
 
 int						ft_isvalidvarname(char c);
@@ -239,49 +257,68 @@ void					print_ast(t_ast_node *node, int depth);
 void					print_ast_new(t_ast_node *node);
 void					debug_ast(t_ast_node *node);
 t_ast_node				*create_node(t_node_type type);
-t_ast_node				*build_cmd_node(t_lexeme *lexemes, int start, int end);
 
 /* Heredoc */
 
-void					handle_heredocs(t_ast_node *node);
-void					ft_heredoc(t_ast_node *node, char *delimiter);
+void					handle_heredocs(t_ast_node *node, t_data *data);
 
 /* Execution */
 
-size_t					count_pipes(t_lexeme *lexeme_arr, size_t token_count);
 // not using these
+size_t					count_pipes(t_lexeme *lexeme_arr, size_t token_count);
 unsigned int			hash(const char *key);
 // not using these
-void	handle_without_pipes(t_ast_node *ast_root,
-
-							char *dir_paths,
-							char **envp,
-							t_env_table *env_table);
+void					handle_without_pipes(t_ast_node *ast_root,
+							char *dir_paths, char **envp,
+							t_env_table *env_table, t_data *data);
 void					handle_pipes(t_ast_node *ast_root, char *dir_paths,
-							char **envp, t_env_table *env_table);
-void					handle_redirections(t_ast_node *node);
-void					handle_heredocs(t_ast_node *node);
-void					ft_heredoc(t_ast_node *node, char *delimiter);
+							char **envp, t_env_table *env_table, t_data *data);
+void					handle_redirections(t_ast_node *node, t_data *data);
 
 void					execute_cmd(t_ast_node *node, char *dir_paths,
-							char **envp, t_env_table *env_table);
+							char **envp, t_data *data);
 void					print_working_directory(void);
 void					ft_exit(int exit_code, t_ast_node *node, char **envp,
 							t_env_table *table);
 
 void					insert_node_ht(t_env_var **table, const char *key,
-							const char *value);
-int						lexemize(size_t *token_count, t_token **token_arr,
-							t_lexeme **lexeme_arr, char **envp);
+							const char *value, t_data *data);
+int						lexemize(t_data *data);
 int						change_directory(const char *path);
 
 /* Executor */
 
-void					execute(t_ast_node *ast_root, char *dir_paths,
-							char **my_envp, t_env_table *env_table);
+void					execute(t_data *data);
 
-void					error_exit(void);
+void					error_exit(t_ast_node *node, char **envp,
+							t_env_table *env_table);
 char					*path_finder(char *cmd, char *dir_paths);
 void					echo(t_ast_node *node);
+void					free_cmd_and_args_arr(char **cmd_and_args_arr);
+
+void					handle_infile(t_ast_node *node, t_data *data);
+void					handle_outfile(t_ast_node *node, t_data *data);
+void					handle_heredoc(t_ast_node *node);
+void					builtin_with_args(t_ast_node *node, char **envp,
+							t_env_table *env_table, t_data *data);
+void					builtin_without_args(t_ast_node *node, char **envp,
+							t_env_table *env_table);
+void					execute_builtin(t_ast_node *node, char **envp,
+							t_env_table *env_table, t_data *data);
+int						count_cmd_and_args(t_ast_node *node);
+char					**build_cmd_and_args_arr(t_ast_node *node,
+							int cmd_and_args_count, t_data *data);
+int						command_is_builtin(t_ast_node *node);
+void					handle_command_node(t_ast_node *node, char *dir_paths,
+							char **envp, t_env_table *env_table, t_data *data);
+void					handle_nodes(t_ast_node *node, char *dir_paths,
+							char **envp, t_env_table *env_table, t_data *data);
+void					free_token_arr(t_token *token_arr);
+void					free_lexeme_arr(t_lexeme *lexeme_arr);
+void					free_key_value_pair(char **key_value);
+char					**ft_split_envp(const char *s, char c);
+void					free_data(t_data *data);
+void					initialize_data(char **envp, t_data *data);
+void					free_exit(t_data *data, char *error_message);
 
 #endif

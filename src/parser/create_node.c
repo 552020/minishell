@@ -7,8 +7,8 @@ t_ast_node	*create_node(t_node_type type)
 	new_node = (t_ast_node *)malloc(sizeof(t_ast_node));
 	if (new_node == NULL)
 	{
-		// TODO: Free all allocated memory
-		exit(EXIT_FAILURE);
+		perror("malloc error\n");
+		return (NULL);
 	}
 	new_node->type = type;
 	new_node->cmd = NULL;
@@ -24,12 +24,14 @@ t_ast_node	*create_node(t_node_type type)
 	return (new_node);
 }
 
-t_ast_node	*build_cmd_node(t_lexeme *lexemes, int start, int end)
+t_ast_node	*build_cmd_node(t_lexeme *lexemes, int start, int end, t_data *data)
 {
 	t_ast_node *node;
 	int i;
 
 	node = create_node(N_COMMAND);
+	if (node == NULL)
+		free_exit(data, "Error: malloc node failed\n");
 	i = start;
 	while (i <= end)
 	{

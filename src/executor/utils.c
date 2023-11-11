@@ -1,10 +1,16 @@
 #include "minishell.h"
 
-void	error_exit(void)
+void	error_exit(t_ast_node *node, char **envp,
+		t_env_table *env_table)
 {
-	// TODO : add free and proper exit
+	if (node)
+		free_ast(node);
+	if (env_table)
+		free_hash_table(env_table);
+	if (envp)
+		free_envp(envp);
 	perror("Error");
-	exit(EXIT_FAILURE);
+	return ;
 }
 
 char	*path_finder(char *cmd, char *dir_paths)

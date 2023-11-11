@@ -12,17 +12,17 @@ char	*strip_ending_trailing_spaces(char const *str)
 	return (trimmed);
 }
 
-t_token	*create_token_array(size_t token_count)
+t_token	*create_token_array(t_data *data)
 {
 	t_token	*token_arr;
 
-	token_arr = (t_token *)ft_calloc(token_count + 1, sizeof(t_token));
+	token_arr = (t_token *)ft_calloc(data->token_count + 1, sizeof(t_token));
 	if (!token_arr)
-		return (NULL);
+		free_exit(data, "Error: ft_calloc failed\n");
 	return (token_arr);
 }
 
-t_token	*tokenizer(t_token *token_arr, const char *str)
+t_token	*tokenizer(t_data *data, const char *str)
 {
 	size_t	idx;
 
@@ -31,24 +31,24 @@ t_token	*tokenizer(t_token *token_arr, const char *str)
 	{
 		skip_spaces(&str);
 		if (isregularchar(*str, str))
-			assign_word(&str, token_arr, &idx);
+			assign_word(&str, data, &idx);
 		else if (*str == '<' || *str == '>')
-			assign_redirect_in_out_heredoc_append(&str, token_arr, &idx);
+			assign_redirect_in_out_heredoc_append(&str, data, &idx);
 		else if (*str == '|')
-			assign_pipe(&str, token_arr, &idx);
+			assign_pipe(&str, data, &idx);
 		else if (*str == '$')
-			assign_env_var(&str, token_arr, &idx);
+			assign_env_var(&str, data, &idx);
 		else if (*str == '\'' || *str == '"')
-			assign_quotes(&str, token_arr, &idx);
+			assign_quotes(&str, data, &idx);
 		else
 			handle_unexpected_char(&str);
 	}
-	token_arr[idx].type = T_END;
-	token_arr[idx].str = NULL;
-	return (token_arr);
+	data->token_arr[idx].type = T_END;
+	data->token_arr[idx].str = NULL;
+	return (data->token_arr);
 }
 
-void	tokenize(size_t *token_count, t_token **token_arr, char *input)
+void	tokenize(t_data *data, char *input)
 {
 	char *trimmed;
 
@@ -56,12 +56,12 @@ void	tokenize(size_t *token_count, t_token **token_arr, char *input)
 		printf("\n***Tokenization***\n\n");
 	trimmed = strip_ending_trailing_spaces(input);
 	free(input);
-	*token_count = count_words_tokenizer(trimmed);
+	data->token_count = count_words_tokenizer(trimmed);
 	if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_TOKENIZER)
-		printf("Token count: %zu\n\n", *token_count);
-	*token_arr = create_token_array(*token_count);
-	*token_arr = tokenizer(*token_arr, trimmed);
+		printf("Token count: %zu\n\n", data->token_count);
+	data->token_arr = create_token_array(data);
+	data->token_arr = tokenizer(data, trimmed);
 	free(trimmed);
 	if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_TOKENIZER)
-		print_token_arr(*token_arr, *token_count);
+		print_token_arr(data->token_arr, data->token_count);
 }
