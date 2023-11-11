@@ -122,6 +122,9 @@ void					assign_quotes(const char **str_ptr, t_data *data,
 void					tokenize(t_data *data, char *input);
 
 /* Lexer */
+
+# define NO_CMD_YET 0
+# define CMD_FOUND 1
 typedef enum e_lexeme_type
 {
 	L_COMMAND,
@@ -153,31 +156,32 @@ typedef struct s_lexeme
 	t_lexeme_status		status;
 }						t_lexeme;
 
-t_lexeme				word_lexeme(t_token *token);
+t_lexeme				word_lexeme(t_token *token, t_data *data);
 t_lexeme				pipe_lexeme(t_token *token, t_data *data);
-t_lexeme				redirect_in_lexeme(t_token *token);
-t_lexeme				redirect_out_lexeme(t_token *token);
-t_lexeme				redirect_in_target_lexeme(t_token *token);
-t_lexeme				redirect_out_target_lexeme(t_token *token);
-t_lexeme				redirect_append_lexeme(t_token *token);
-t_lexeme				heredoc_lexeme(t_token *token);
-t_lexeme				heredoc_delimiter_lexeme(t_token *token);
+t_lexeme				redirect_in_lexeme(t_token *token, t_data *data);
+t_lexeme				redirect_out_lexeme(t_token *token, t_data *data);
+t_lexeme				redirect_in_target_lexeme(t_token *token, t_data *data);
+t_lexeme				redirect_out_target_lexeme(t_token *token,
+							t_data *data);
+t_lexeme				redirect_append_lexeme(t_token *token, t_data *data);
+t_lexeme				heredoc_lexeme(t_token *token, t_data *data);
+t_lexeme				heredoc_delimiter_lexeme(t_token *token, t_data *data);
 t_lexeme				t_double_quotes_var_subs(t_token *token, t_data *data);
 t_lexeme				single_quote_lexeme(t_token *token, t_data *data);
 t_lexeme				t_env_var_subs(t_token *token, t_data *data);
 char					*lookup_env_value(char *var_name, char **envp);
 void					create_lexeme_arr(t_data *data);
 t_lexeme				*lexer(t_data *data);
-void					redirect_in_wrapper(t_lexeme *lexeme_arr,
-							t_token *token_arr, size_t *i, size_t token_count);
-void					redirect_out_wrapper(t_lexeme *lexeme_arr,
-							t_token *token_arr, size_t *i, size_t token_count);
-void					redirect_append_wrapper(t_lexeme *lexeme_arr,
-							t_token *token_arr, size_t *i, size_t token_count);
+void					redirect_in_wrapper(size_t *i, size_t token_count,
+							t_data *data);
+void					redirect_out_wrapper(size_t *i, size_t token_count,
+							t_data *data);
+void					redirect_append_wrapper(size_t *i, size_t token_count,
+							t_data *data);
 void					heredoc_wrapper(t_lexeme *lexeme_arr,
-							t_token *token_arr, size_t *i);
+							t_token *token_arr, size_t *i, t_data *data);
 void					undefined_wrapper(t_lexeme *lexeme_arr,
-							t_token *token_arr, size_t *i);
+							t_token *token_arr, size_t *i, t_data *data);
 /* Parser */
 
 typedef enum e_node_type
@@ -216,8 +220,10 @@ typedef struct s_data
 	t_ast_node			*ast_root;
 }						t_data;
 
-t_ast_node				*parser(t_lexeme *lexemes, int start, int end);
-t_ast_node				*build_cmd_node(t_lexeme *lexemes, int start, int end);
+t_ast_node				*parser(t_lexeme *lexemes, int start, int end,
+							t_data *data);
+t_ast_node				*build_cmd_node(t_lexeme *lexemes, int start, int end,
+							t_data *data);
 t_ast_node				*create_node(t_node_type type);
 void					append_first_arg(t_ast_node *node, char *arg);
 void					append_other_args(t_ast_node *node, char *arg);
@@ -251,7 +257,6 @@ void					print_ast(t_ast_node *node, int depth);
 void					print_ast_new(t_ast_node *node);
 void					debug_ast(t_ast_node *node);
 t_ast_node				*create_node(t_node_type type);
-t_ast_node				*build_cmd_node(t_lexeme *lexemes, int start, int end);
 
 /* Heredoc */
 
@@ -302,7 +307,7 @@ void					execute_builtin(t_ast_node *node, char **envp,
 							t_env_table *env_table, t_data *data);
 int						count_cmd_and_args(t_ast_node *node);
 char					**build_cmd_and_args_arr(t_ast_node *node,
-							int cmd_and_args_count);
+							int cmd_and_args_count, t_data *data);
 int						command_is_builtin(t_ast_node *node);
 void					handle_command_node(t_ast_node *node, char *dir_paths,
 							char **envp, t_env_table *env_table, t_data *data);

@@ -41,7 +41,7 @@ void	builtin_with_args(t_ast_node *node, char **envp, t_env_table *env_table,
 	char	**cmd_and_args_arr;
 
 	cmd_and_args_count = count_cmd_and_args(node);
-	cmd_and_args_arr = build_cmd_and_args_arr(node, cmd_and_args_count);
+	cmd_and_args_arr = build_cmd_and_args_arr(node, cmd_and_args_count, data);
 	if (ft_strncmp(node->cmd, "export", 6) == 0 && ft_strlen(node->cmd) == 6
 		&& cmd_and_args_arr)
 	{
