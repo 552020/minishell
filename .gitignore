@@ -1,5 +1,0 @@
-*.o
-others/
-tests/
-minishell
-libft/libft.a
