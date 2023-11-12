@@ -270,8 +270,7 @@ unsigned int			hash(const char *key);
 void					handle_without_pipes(t_ast_node *ast_root,
 							char *dir_paths, char **envp,
 							t_env_table *env_table, t_data *data);
-void					handle_pipes(t_ast_node *ast_root, char *dir_paths,
-							char **envp, t_env_table *env_table, t_data *data);
+void					handle_pipes(t_ast_node *ast_root, char *dir_paths, t_data *data);
 void					handle_redirections(t_ast_node *node, t_data *data);
 
 void					execute_cmd(t_ast_node *node, char *dir_paths,

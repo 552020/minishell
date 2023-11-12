@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   execute_cmd.c                                      :+:      :+:    :+:   */
+/*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bsengeze <bsengeze@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 23:40:23 by bsengeze          #+#    #+#             */
-/*   Updated: 2023/11/08 23:38:47 by bsengeze         ###   ########.fr       */
+/*   Updated: 2023/11/12 19:30:53 by bsengeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,8 +112,7 @@ void	execute(t_data *data)
 
 	dir_paths = ft_getenv(data->env_table->table, "PATH");
 	if (data->ast_root->type == N_PIPE)
-		handle_pipes(data->ast_root, dir_paths, data->env_arr, data->env_table,
-			data);
+		handle_pipes(data->ast_root, dir_paths, data);
 	else if (data->ast_root->type == N_COMMAND)
 		handle_without_pipes(data->ast_root, dir_paths, data->env_arr,
 			data->env_table, data);
