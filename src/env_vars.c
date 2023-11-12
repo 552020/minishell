@@ -29,17 +29,17 @@ t_env_var	*create_node_ht(const char *key, const char *value, t_data *data)
 	return (node);
 }
 
-void	insert_node_ht(t_env_var **table, const char *key, const char *value,
+void	insert_node_ht(const char *key, const char *value,
 		t_data *data)
 {
 	unsigned int	idx;
 	t_env_var		*node;
 
 	idx = hash(key);
-	node = table[idx];
+	node = data->env_table->table[idx];
 	if (node == NULL)
 	{
-		table[idx] = create_node_ht(key, value, data);
+		data->env_table->table[idx] = create_node_ht(key, value, data);
 	}
 	else
 	{
@@ -71,7 +71,7 @@ void	initialize_table(char **envp, t_data *data)
 		if (!key_value_pair[0])
 			free_exit(data, "Error: ft_split in init table failed\n");
 		data->env_table = data->env_table;
-		insert_node_ht(data->env_table->table, key_value_pair[0],
+		insert_node_ht(key_value_pair[0],
 			key_value_pair[1], data);
 		data->env_table->count++;
 		free_key_value_pair(key_value_pair);

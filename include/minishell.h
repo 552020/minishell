@@ -62,10 +62,8 @@ typedef struct s_env_table
 void					initialize_table(char **envp, t_data *data);
 void					env(t_env_var **table);
 
-void					export(t_env_table *env_table, char **args,
-							char ***envp, t_data *data);
-void					unset(t_env_table *env_table, char **args, char ***envp,
-							t_data *data);
+void					export(char **args, t_data *data);
+void					unset(char **args, t_data *data);
 
 char					**hash_table_to_arr(t_data *data);
 char					*ft_getenv(t_env_var **table, const char *key);
@@ -268,21 +266,19 @@ void					handle_heredocs(t_ast_node *node, t_data *data);
 size_t					count_pipes(t_lexeme *lexeme_arr, size_t token_count);
 unsigned int			hash(const char *key);
 // not using these
-void					handle_without_pipes(t_ast_node *ast_root,
-							char *dir_paths, char **envp,
-							t_env_table *env_table, t_data *data);
+void					handle_commands(t_ast_node *ast_root,
+							char *dir_paths, t_data *data);
 void					handle_pipes(t_ast_node *ast_root, char *dir_paths,
-							char **envp, t_env_table *env_table, t_data *data);
+							t_data *data);
 void					handle_redirections(t_ast_node *node, t_data *data);
 
 void					execute_cmd(t_ast_node *node, char *dir_paths,
-							char **envp, t_data *data);
+							t_data *data);
 void					print_working_directory(void);
 void					ft_exit(int exit_code, t_ast_node *node, char **envp,
 							t_env_table *table);
 
-void					insert_node_ht(t_env_var **table, const char *key,
-							const char *value, t_data *data);
+void					insert_node_ht(const char *key, const char *value, t_data *data);
 int						lexemize(t_data *data);
 int						change_directory(const char *path);
 
@@ -299,20 +295,17 @@ void					free_cmd_and_args_arr(char **cmd_and_args_arr);
 void					handle_infile(t_ast_node *node, t_data *data);
 void					handle_outfile(t_ast_node *node, t_data *data);
 void					handle_heredoc(t_ast_node *node);
-void					builtin_with_args(t_ast_node *node, char **envp,
-							t_env_table *env_table, t_data *data);
-void					builtin_without_args(t_ast_node *node, char **envp,
-							t_env_table *env_table);
-void					execute_builtin(t_ast_node *node, char **envp,
-							t_env_table *env_table, t_data *data);
+void					builtin_with_args(t_ast_node *node, t_data *data);
+void					builtin_without_args(t_ast_node *node, t_data *data);
+void					execute_builtin(t_ast_node *node, t_data *data);
 int						count_cmd_and_args(t_ast_node *node);
 char					**build_cmd_and_args_arr(t_ast_node *node,
 							int cmd_and_args_count, t_data *data);
 int						command_is_builtin(t_ast_node *node);
 void					handle_command_node(t_ast_node *node, char *dir_paths,
 							char **envp, t_env_table *env_table, t_data *data);
-void					handle_nodes(t_ast_node *node, char *dir_paths,
-							char **envp, t_env_table *env_table, t_data *data);
+// void					handle_nodes(t_ast_node *node, char *dir_paths,
+// 							char **envp, t_env_table *env_table, t_data *data);
 void					free_token_arr(t_token *token_arr);
 void					free_lexeme_arr(t_lexeme *lexeme_arr);
 void					free_key_value_pair(char **key_value);

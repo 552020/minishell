@@ -6,7 +6,7 @@
 /*   By: bsengeze <bsengeze@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/31 00:50:07 by bsengeze          #+#    #+#             */
-/*   Updated: 2023/10/31 00:50:09 by bsengeze         ###   ########.fr       */
+/*   Updated: 2023/11/12 20:59:30 by bsengeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,8 @@ void	ft_heredoc(t_ast_node *node, char *delimiter, t_data *data)
 	if (pipe(fd) == -1)
 		free_exit(data, "pipe error");
 	pid = fork();
+	if (pid == -1)
+		free_exit(data, "fork error");
 	if (pid == 0)
 	{
 		close(fd[0]);

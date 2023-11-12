@@ -1,27 +1,32 @@
 #include "minishell.h"
 
-void	single_export(t_env_table *env_table, const char *key,
-		const char *value, char ***envp_ptr, t_data *data)
+void	single_export(char **args, const char *key,
+		const char *value, t_data *data)
 {
 	t_env_var	*node;
 
-	node = env_table->table[hash(key)];
+	node = data->env_table->table[hash(key)];
 	while (node != NULL)
 	{
 		if (ft_strncmp(node->key, key, ft_strlen(key)) == 0)
 		{
 			free(node->value);
 			node->value = ft_strdup(value);
+			if (node->value == NULL)
+			{
+				free_cmd_and_args_arr(args);
+				free_exit(data, "Error: malloc failed\n");
+			}
 			return ;
 		}
 		node = node->next;
 	}
-	insert_node_ht(env_table->table, key, value, data);
-	env_table->count++;
-	*envp_ptr = hash_table_to_arr(data);
+	insert_node_ht(key, value, data);
+	data->env_table->count++;
+	data->env_arr = hash_table_to_arr(data);
 }
 
-void	export(t_env_table *env_table, char **args, char ***envp, t_data *data)
+void	export(char **args, t_data *data)
 {
 	int i;
 	char *key;
@@ -31,10 +36,15 @@ void	export(t_env_table *env_table, char **args, char ***envp, t_data *data)
 	while (args[i])
 	{
 		key = ft_split(args[i], '=')[0];
+		if (key == NULL)
+		{
+			free_cmd_and_args_arr(args);
+			free_exit(data, "Error: malloc failed\n");
+		}
 		value = ft_split(args[i], '=')[1];
 		if (value == NULL)
 			value = "";
-		single_export(env_table, key, value, envp, data);
+		single_export(args, key, value, data);
 		i++;
 	}
 	free_cmd_and_args_arr(args);

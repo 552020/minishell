@@ -6,7 +6,7 @@
 /*   By: bsengeze <bsengeze@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 23:44:16 by bsengeze          #+#    #+#             */
-/*   Updated: 2023/11/11 18:01:32 by bsengeze         ###   ########.fr       */
+/*   Updated: 2023/11/12 21:58:09 by bsengeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,7 @@ int	command_is_builtin(t_ast_node *node)
 		return (FAILURE);
 }
 
-void	builtin_with_args(t_ast_node *node, char **envp, t_env_table *env_table,
-		t_data *data)
+void	builtin_with_args(t_ast_node *node, t_data *data)
 {
 	int		cmd_and_args_count;
 	char	**cmd_and_args_arr;
@@ -46,18 +45,17 @@ void	builtin_with_args(t_ast_node *node, char **envp, t_env_table *env_table,
 		&& cmd_and_args_arr)
 	{
 		// TODO: implement ARG="arg" in the lexer
-		export(env_table, cmd_and_args_arr, &envp, data);
+		export(cmd_and_args_arr, data);
 	}
 	if (ft_strncmp(node->cmd, "unset", 5) == 0 && ft_strlen(node->cmd) == 5
 		&& cmd_and_args_arr)
-		unset(env_table, cmd_and_args_arr, &envp, data);
+		unset(cmd_and_args_arr, data);
 }
 
-void	builtin_without_args(t_ast_node *node, char **envp,
-		t_env_table *env_table)
+void	builtin_without_args(t_ast_node *node,t_data *data)
 {
 	if (ft_strncmp(node->cmd, "env", 3) == 0 && ft_strlen(node->cmd) == 3)
-		env(env_table->table);
+		env(data->env_table->table);
 	if (ft_strncmp(node->cmd, "pwd", 3) == 0 && ft_strlen(node->cmd) == 3)
 		print_working_directory();
 	if (ft_strncmp(node->cmd, "cd", 2) == 0 && ft_strlen(node->cmd) == 2)
@@ -70,11 +68,10 @@ void	builtin_without_args(t_ast_node *node, char **envp,
 	if (ft_strncmp(node->cmd, "echo", 4) == 0 && ft_strlen(node->cmd) == 4)
 		echo(node);
 	if (ft_strncmp(node->cmd, "exit", 4) == 0 && ft_strlen(node->cmd) == 4)
-		ft_exit(0, node, envp, env_table);
+		ft_exit(0, node, data->env_arr, data->env_table);
 }
 
-void	execute_builtin(t_ast_node *node, char **envp, t_env_table *env_table,
-		t_data *data)
+void	execute_builtin(t_ast_node *node, t_data *data)
 {
 	int	stdout_backup;
 	int	stdin_backup;
@@ -89,9 +86,9 @@ void	execute_builtin(t_ast_node *node, char **envp, t_env_table *env_table,
 	if ((ft_strncmp(node->cmd, "export", 6) == 0 && ft_strlen(node->cmd) == 6)
 		|| (ft_strncmp(node->cmd, "unset", 5) == 0
 			&& ft_strlen(node->cmd) == 5))
-		builtin_with_args(node, envp, env_table, data);
+		builtin_with_args(node, data);
 	else
-		builtin_without_args(node, envp, env_table);
+		builtin_without_args(node, data);
 	dup2(stdout_backup, STDOUT_FILENO);
 	if (stdout_backup == -1)
 		free_exit(data, "Error: dup2 failed\n");
