@@ -29,8 +29,7 @@ t_env_var	*create_node_ht(const char *key, const char *value, t_data *data)
 	return (node);
 }
 
-void	insert_node_ht(const char *key, const char *value,
-		t_data *data)
+void	insert_node_ht(const char *key, const char *value, t_data *data)
 {
 	unsigned int	idx;
 	t_env_var		*node;
@@ -71,8 +70,7 @@ void	initialize_table(char **envp, t_data *data)
 		if (!key_value_pair[0])
 			free_exit(data, "Error: ft_split in init table failed\n");
 		data->env_table = data->env_table;
-		insert_node_ht(key_value_pair[0],
-			key_value_pair[1], data);
+		insert_node_ht(key_value_pair[0], key_value_pair[1], data);
 		data->env_table->count++;
 		free_key_value_pair(key_value_pair);
 		i++;
@@ -151,9 +149,9 @@ void	free_envp(char **envp)
 
 void	free_hash_table(t_env_table *env_table)
 {
-	int i;
-	t_env_var *node;
-	t_env_var *temp;
+	int			i;
+	t_env_var	*node;
+	t_env_var	*temp;
 
 	i = 0;
 	while (i < TABLE_SIZE)
@@ -170,4 +168,36 @@ void	free_hash_table(t_env_table *env_table)
 		i++;
 	}
 	free(env_table);
+}
+
+void	print_hash_table(t_env_table *env_table)
+{
+	int			i;
+	t_env_var	*node;
+
+	i = 0;
+	while (i < TABLE_SIZE)
+	{
+		node = env_table->table[i];
+		while (node != NULL)
+		{
+			printf("key: %s\n", node->key);
+			printf("value: %s\n", node->value);
+			node = node->next;
+		}
+		i++;
+	}
+}
+
+void	print_envp_arr(char **envp)
+{
+	int i;
+
+	printf("print_envp_arr\n");
+	i = 0;
+	while (envp[i])
+	{
+		printf("envp[%d]: %s\n", i, envp[i]);
+		i++;
+	}
 }

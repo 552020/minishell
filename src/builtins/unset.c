@@ -18,18 +18,20 @@ void	single_unset(const char *key, t_data *data)
 			else
 				prev->next = node->next;
 			free(node->key);
+			node->key = NULL;
 			free(node->value);
+			node->value = NULL;
 			free(node);
+			node = NULL;
 			data->env_table->count--;
 			return ;
 		}
 		prev = node;
 		node = node->next;
 	}
-	data->env_arr = hash_table_to_arr(data);
 }
 
-void	unset(char **args,t_data *data)
+void	unset(char **args, t_data *data)
 {
 	int i;
 
@@ -40,4 +42,5 @@ void	unset(char **args,t_data *data)
 		i++;
 	}
 	free_cmd_and_args_arr(args);
+	data->env_arr = hash_table_to_arr(data);
 }

@@ -38,9 +38,9 @@ void	builtin_with_args(t_ast_node *node, t_data *data)
 {
 	int		cmd_and_args_count;
 	char	**cmd_and_args_arr;
-	//int		i;
 
-	/* Debug START 
+	// int		i;
+	/* Debug START
 	printf("builtin with args\n");
 	printf("node->cmd: %s\n", node->cmd);
 	i = 0;
@@ -49,7 +49,7 @@ void	builtin_with_args(t_ast_node *node, t_data *data)
 		printf("node->args[%d]: %s\n", i, node->args[i]);
 		i++;
 	}
-	 Debug END */
+		Debug END */
 	cmd_and_args_count = count_cmd_and_args(node);
 	cmd_and_args_arr = build_cmd_and_args_arr(node, cmd_and_args_count, data);
 	if (ft_strncmp(node->cmd, "export", 6) == 0 && ft_strlen(node->cmd) == 6
@@ -61,6 +61,8 @@ void	builtin_with_args(t_ast_node *node, t_data *data)
 	else if (ft_strncmp(node->cmd, "unset", 5) == 0 && ft_strlen(node->cmd) == 5
 		&& cmd_and_args_arr)
 		unset(cmd_and_args_arr, data);
+	// print_hash_table(data->env_table);
+	// print_envp_arr(data->env_arr);
 }
 
 void	builtin_without_args(t_ast_node *node, t_data *data)
