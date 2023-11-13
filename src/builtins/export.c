@@ -43,11 +43,14 @@ void	export(char **args, t_data *data)
 		}
 		value = ft_split(args[i], '=')[1];
 		if (value == NULL)
-			value = "";
+			value = ft_strdup("");
 		single_export(args, key, value, data);
-		free(key);
-		free(value);
+
 		i++;
 	}
+	if (key)
+		free(key);
+	if (value)
+		free(value);
 	free_cmd_and_args_arr(args);
 }
