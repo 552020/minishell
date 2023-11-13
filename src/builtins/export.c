@@ -1,7 +1,7 @@
 #include "minishell.h"
 
-void	single_export(char **args, const char *key,
-		const char *value, t_data *data)
+void	single_export(char **args, const char *key, const char *value,
+		t_data *data)
 {
 	t_env_var	*node;
 
@@ -45,6 +45,8 @@ void	export(char **args, t_data *data)
 		if (value == NULL)
 			value = "";
 		single_export(args, key, value, data);
+		free(key);
+		free(value);
 		i++;
 	}
 	free_cmd_and_args_arr(args);
