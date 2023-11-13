@@ -47,13 +47,13 @@ void	builtin_with_args(t_ast_node *node, t_data *data)
 		// TODO: implement ARG="arg" in the lexer
 		export(cmd_and_args_arr, data);
 	}
-	
 	else if (ft_strncmp(node->cmd, "unset", 5) == 0 && ft_strlen(node->cmd) == 5
 		&& cmd_and_args_arr)
 		unset(cmd_and_args_arr, data);
+	free_cmd_and_args_arr(cmd_and_args_arr);
 }
 
-void	builtin_without_args(t_ast_node *node,t_data *data)
+void	builtin_without_args(t_ast_node *node, t_data *data)
 {
 	if (ft_strncmp(node->cmd, "env", 3) == 0 && ft_strlen(node->cmd) == 3)
 		env(data->env_table->table);
