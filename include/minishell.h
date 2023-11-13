@@ -285,7 +285,7 @@ int						change_directory(const char *path);
 
 /* Executor */
 
-void					execute(t_data *data);
+void					execute(t_data *data, t_ast_node *node);
 
 void					error_exit(t_ast_node *node, char **envp,
 							t_env_table *env_table);

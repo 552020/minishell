@@ -35,6 +35,8 @@ void	handle_pipes(t_ast_node *node, char *dir_paths, t_data *data)
 	pid_t	left_pid;
 	pid_t	right_pid;
 
+	// TODO: we don't need dir_paths here aymore
+	(void)dir_paths;
 	if (pipe(pipe_fd) == -1)
 		free_exit(data, "Error: pipe failed\n");
 	left_pid = fork();
@@ -46,7 +48,8 @@ void	handle_pipes(t_ast_node *node, char *dir_paths, t_data *data)
 		dup2(pipe_fd[1], STDOUT_FILENO);
 		close(pipe_fd[1]);
 		handle_redirections(node->children[0], data);
-		handle_pipes(node->children[0], dir_paths, data);
+		execute(data, node->children[0]);
+		// handle_pipes(node->children[0], dir_paths, data);
 		exit(EXIT_SUCCESS);
 	}
 	right_pid = fork();
@@ -58,7 +61,8 @@ void	handle_pipes(t_ast_node *node, char *dir_paths, t_data *data)
 		dup2(pipe_fd[0], STDIN_FILENO);
 		close(pipe_fd[0]);
 		handle_redirections(node->children[1], data);
-		handle_pipes(node->children[1], dir_paths, data);
+		execute(data, node->children[1]);
+		// handle_pipes(node->children[1], dir_paths, data);
 		exit(EXIT_SUCCESS);
 	}
 	close(pipe_fd[0]);
