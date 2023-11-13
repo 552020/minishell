@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   execute_cmd.c                                      :+:      :+:    :+:   */
+/*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bsengeze <bsengeze@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 23:40:23 by bsengeze          #+#    #+#             */
-/*   Updated: 2023/11/08 23:38:47 by bsengeze         ###   ########.fr       */
+/*   Updated: 2023/11/12 22:29:42 by bsengeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,12 +58,18 @@ char	**build_cmd_and_args_arr(t_ast_node *node, int cmd_and_args_count,
 	if (!cmd_and_args_arr)
 		free_exit(data, "Error: malloc failed\n");
 	if (node->cmd)
-		cmd_and_args_arr[0] = node->cmd;
+		cmd_and_args_arr[0] = ft_strdup(node->cmd);
+	if (!cmd_and_args_arr[0])
+		free_exit(data, "Error: malloc failed\n");
+	// cmd_and_args_arr[0] = node->cmd;
 	if (node->args != NULL)
 	{
 		while (node->args[i] != NULL)
 		{
-			cmd_and_args_arr[i + 1] = node->args[i];
+			cmd_and_args_arr[i + 1] = ft_strdup(node->args[i]);
+			if (!cmd_and_args_arr[i + 1])
+				free_exit(data, "Error: malloc failed\n");
+			// cmd_and_args_arr[i + 1] = node->args[i];
 			i++;
 		}
 	}
@@ -71,8 +77,7 @@ char	**build_cmd_and_args_arr(t_ast_node *node, int cmd_and_args_count,
 	return (cmd_and_args_arr);
 }
 
-void	execute_cmd(t_ast_node *node, char *dir_paths, char **envp,
-		t_data *data)
+void	execute_cmd(t_ast_node *node, char *dir_paths, t_data *data)
 {
 	char	*path;
 	char	**cmd_and_args_arr;
@@ -99,7 +104,9 @@ void	execute_cmd(t_ast_node *node, char *dir_paths, char **envp,
 	{
 		// is this correct or not? @Stefano
 		// I don't know. What do you mean? @Batu
-		if (execve(path, cmd_and_args_arr, envp) == -1)
+		// When I wrote this i wasn't sure for the proper exit in case of not found executable :D
+		// Now I am sure it is correct!@Stefano
+		if (execve(path, cmd_and_args_arr, data->env_arr) == -1)
 			perror("execve error\n");
 	}
 	if (cmd_and_args_arr)
@@ -112,9 +119,7 @@ void	execute(t_data *data)
 
 	dir_paths = ft_getenv(data->env_table->table, "PATH");
 	if (data->ast_root->type == N_PIPE)
-		handle_pipes(data->ast_root, dir_paths, data->env_arr, data->env_table,
-			data);
+		handle_pipes(data->ast_root, dir_paths, data);
 	else if (data->ast_root->type == N_COMMAND)
-		handle_without_pipes(data->ast_root, dir_paths, data->env_arr,
-			data->env_table, data);
+		handle_commands(data->ast_root, dir_paths, data);
 }
