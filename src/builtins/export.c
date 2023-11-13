@@ -31,26 +31,34 @@ void	export(char **args, t_data *data)
 	int i;
 	char *key;
 	char *value;
+	char **key_value;
 
 	i = 0;
 	while (args[i])
 	{
-		key = ft_split(args[i], '=')[0];
-		if (key == NULL)
+		key_value = ft_split(args[i], '=');
+		// key = ft_split(args[i], '=')[0];
+		if (key_value == NULL)
 		{
 			free_cmd_and_args_arr(args);
 			free_exit(data, "Error: malloc failed\n");
 		}
-		value = ft_split(args[i], '=')[1];
-		if (value == NULL)
+		key = key_value[0];
+		if (key_value[1] == NULL)
 			value = ft_strdup("");
+		else
+			value = key_value[1];
+		// value = ft_split(args[i], '=')[1];
+		// if (value == NULL)
+		// value = ft_strdup("");
 		single_export(args, key, value, data);
-
+		if (key)
+			free(key);
+		if (value)
+			free(value);
+		free(key_value);
 		i++;
 	}
-	if (key)
-		free(key);
-	if (value)
-		free(value);
+
 	free_cmd_and_args_arr(args);
 }
