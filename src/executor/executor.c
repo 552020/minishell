@@ -58,12 +58,18 @@ char	**build_cmd_and_args_arr(t_ast_node *node, int cmd_and_args_count,
 	if (!cmd_and_args_arr)
 		free_exit(data, "Error: malloc failed\n");
 	if (node->cmd)
-		cmd_and_args_arr[0] = node->cmd;
+		cmd_and_args_arr[0] = ft_strdup(node->cmd);
+	if (!cmd_and_args_arr[0])
+		free_exit(data, "Error: malloc failed\n");
+	// cmd_and_args_arr[0] = node->cmd;
 	if (node->args != NULL)
 	{
 		while (node->args[i] != NULL)
 		{
-			cmd_and_args_arr[i + 1] = node->args[i];
+			cmd_and_args_arr[i + 1] = ft_strdup(node->args[i]);
+			if (!cmd_and_args_arr[i + 1])
+				free_exit(data, "Error: malloc failed\n");
+			// cmd_and_args_arr[i + 1] = node->args[i];
 			i++;
 		}
 	}
@@ -98,7 +104,7 @@ void	execute_cmd(t_ast_node *node, char *dir_paths, t_data *data)
 	{
 		// is this correct or not? @Stefano
 		// I don't know. What do you mean? @Batu
-		// When I wrote this i wasn't sure for the proper exit in case of not found executable :D 
+		// When I wrote this i wasn't sure for the proper exit in case of not found executable :D
 		// Now I am sure it is correct!@Stefano
 		if (execve(path, cmd_and_args_arr, data->env_arr) == -1)
 			perror("execve error\n");
