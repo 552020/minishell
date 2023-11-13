@@ -83,7 +83,6 @@ void	execute_cmd(t_ast_node *node, char *dir_paths, t_data *data)
 	char	**cmd_and_args_arr;
 	int		cmd_and_args_count;
 
-	printf("execute_cmd\n");
 	handle_redirections(node, data);
 	path = NULL;
 	if (node->cmd)
