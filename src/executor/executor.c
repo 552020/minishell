@@ -95,7 +95,10 @@ void	execute_cmd(t_ast_node *node, char *dir_paths, t_data *data)
 		}
 	}
 	else
-		printf("no commands to execute\n");
+	{
+		// printf("no commands to execute\n");
+		return ;
+	}
 	cmd_and_args_count = count_cmd_and_args(node);
 	cmd_and_args_arr = build_cmd_and_args_arr(node, cmd_and_args_count, data);
 	if (!cmd_and_args_arr)
@@ -113,13 +116,23 @@ void	execute_cmd(t_ast_node *node, char *dir_paths, t_data *data)
 		free_cmd_and_args_arr(cmd_and_args_arr);
 }
 
-void	execute(t_data *data)
+void	execute(t_data *data, t_ast_node *node)
 {
 	char	*dir_paths;
 
 	dir_paths = ft_getenv(data->env_table->table, "PATH");
-	if (data->ast_root->type == N_PIPE)
-		handle_pipes(data->ast_root, dir_paths, data);
-	else if (data->ast_root->type == N_COMMAND)
-		handle_commands(data->ast_root, dir_paths, data);
+	// if (data->ast_root->type j== N_PIPE)
+	if (node->type == N_PIPE)
+	{
+		// handle_pipes(data->ast_root, dir_paths, data);
+		handle_pipes(node, dir_paths, data);
+	}
+	// else if (data->ast_root->type == N_COMMAND)
+	else if (node->type == N_COMMAND)
+	{
+		if (!node->cmd)
+			return ;
+		// handle_commands(data->ast_root, dir_paths, data);
+		handle_commands(node, dir_paths, data);
+	}
 }
