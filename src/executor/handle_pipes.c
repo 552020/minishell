@@ -16,7 +16,7 @@ void	handle_commands(t_ast_node *node, char *dir_paths, t_data *data)
 {
 	pid_t	pid;
 
-	if (command_is_builtin(node))
+	if (node->cmd != NULL && command_is_builtin(node))
 	{
 		execute_builtin(node, data);
 		return ;
