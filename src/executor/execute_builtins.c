@@ -47,7 +47,8 @@ void	builtin_with_args(t_ast_node *node, t_data *data)
 		// TODO: implement ARG="arg" in the lexer
 		export(cmd_and_args_arr, data);
 	}
-	if (ft_strncmp(node->cmd, "unset", 5) == 0 && ft_strlen(node->cmd) == 5
+	
+	else if (ft_strncmp(node->cmd, "unset", 5) == 0 && ft_strlen(node->cmd) == 5
 		&& cmd_and_args_arr)
 		unset(cmd_and_args_arr, data);
 }
@@ -56,18 +57,18 @@ void	builtin_without_args(t_ast_node *node,t_data *data)
 {
 	if (ft_strncmp(node->cmd, "env", 3) == 0 && ft_strlen(node->cmd) == 3)
 		env(data->env_table->table);
-	if (ft_strncmp(node->cmd, "pwd", 3) == 0 && ft_strlen(node->cmd) == 3)
+	else if (ft_strncmp(node->cmd, "pwd", 3) == 0 && ft_strlen(node->cmd) == 3)
 		print_working_directory();
-	if (ft_strncmp(node->cmd, "cd", 2) == 0 && ft_strlen(node->cmd) == 2)
+	else if (ft_strncmp(node->cmd, "cd", 2) == 0 && ft_strlen(node->cmd) == 2)
 	{
 		if (node->args)
 			change_directory(node->args[0]);
 		else
 			printf("Sorry! Cd works only with some args!\n");
 	}
-	if (ft_strncmp(node->cmd, "echo", 4) == 0 && ft_strlen(node->cmd) == 4)
+	else if (ft_strncmp(node->cmd, "echo", 4) == 0 && ft_strlen(node->cmd) == 4)
 		echo(node);
-	if (ft_strncmp(node->cmd, "exit", 4) == 0 && ft_strlen(node->cmd) == 4)
+	else if (ft_strncmp(node->cmd, "exit", 4) == 0 && ft_strlen(node->cmd) == 4)
 		ft_exit(0, node, data->env_arr, data->env_table);
 }
 
