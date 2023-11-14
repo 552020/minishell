@@ -83,7 +83,6 @@ void	process_variable(t_var_subs *vars, t_token *token, t_data *data)
 	if (!vars->before_and_value)
 		free_var_subs_and_exit(vars, data,
 			"Error: malloc before_and_value failed\n");
-	free(vars->before);
 	token->str = ft_strjoin(vars->before_and_value, vars->after);
 	if (!token->str)
 		free_var_subs_and_exit(vars, data, "Error: malloc token->str failed\n");
