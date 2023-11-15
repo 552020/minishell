@@ -16,7 +16,11 @@ void	disable_ctrl_c_main(void)
 	ignore_sa.sa_handler = SIG_IGN; // Set to ignore the signal
 	sigemptyset(&ignore_sa.sa_mask);
 	ignore_sa.sa_flags = 0;
-	sigaction(SIGINT, &ignore_sa, NULL);
+	if (sigaction(SIGINT, &ignore_sa, NULL) == -1)
+	{
+		perror("sigaction");
+		exit(EXIT_FAILURE);
+	}
 }
 
 void	handle_signals_main(void)
@@ -56,7 +60,11 @@ void	handle_signals_child(int pid)
 			perror("sigaction");
 			exit(EXIT_FAILURE);
 		}
-		sigaction(SIGQUIT, &sa, NULL);
+		if (sigaction(SIGQUIT, &sa, NULL) == -1)
+		{
+			perror("sigaction");
+			exit(EXIT_FAILURE);
+		}
 	}
 	else
 	{
