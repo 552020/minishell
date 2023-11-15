@@ -301,9 +301,6 @@ char					*path_finder(char *cmd, char *dir_paths);
 void					echo(t_ast_node *node);
 void					free_cmd_and_args_arr(char **cmd_and_args_arr);
 
-void					handle_infile(t_ast_node *node, t_data *data);
-void					handle_outfile(t_ast_node *node, t_data *data);
-void					handle_heredoc(t_ast_node *node);
 void					builtin_with_args(t_ast_node *node, t_data *data);
 void					builtin_without_args(t_ast_node *node, t_data *data);
 void					execute_builtin(t_ast_node *node, t_data *data);

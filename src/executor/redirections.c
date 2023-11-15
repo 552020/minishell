@@ -12,17 +12,21 @@
 
 #include "minishell.h"
 
+void	infile_redirection(t_ast_node *node, t_data *data);
+void	outfile_redirection(t_ast_node *node, t_data *data);
+void	heredoc_redirection(t_ast_node *node);
+
 void	handle_redirections(t_ast_node *node, t_data *data)
 {
 	if (node->input_file)
-		handle_infile(node, data);
+		infile_redirection(node, data);
 	if (node->output_file)
-		handle_outfile(node, data);
+		outfile_redirection(node, data);
 	if (node->heredoc)
-		handle_heredoc(node);
+		heredoc_redirection(node);
 }
 
-void	handle_infile(t_ast_node *node, t_data *data)
+void	infile_redirection(t_ast_node *node, t_data *data)
 {
 	int	filein;
 
@@ -38,7 +42,7 @@ void	handle_infile(t_ast_node *node, t_data *data)
 	close(filein);
 }
 
-void	handle_outfile(t_ast_node *node, t_data *data)
+void	outfile_redirection(t_ast_node *node, t_data *data)
 {
 	int	fileout;
 
@@ -57,7 +61,7 @@ void	handle_outfile(t_ast_node *node, t_data *data)
 	close(fileout);
 }
 
-void	handle_heredoc(t_ast_node *node)
+void	heredoc_redirection(t_ast_node *node)
 {
 	dup2(node->heredoc_fd, STDIN_FILENO);
 	close(node->heredoc_fd);
