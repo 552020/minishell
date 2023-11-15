@@ -1,8 +1,16 @@
 #include "libft.h"
+#include <stdio.h>
+// first <stdio.h>
+// then the rest of the includes
+// if you remove this comments the formatter
+// will put the includes in the alphabetical order
+// and it will be a mess
+// But we can make the comments shorter or we can tell the formatter to ignore them
 #include <errno.h>
 #include <fcntl.h> // for O_RDONLY etc.
 #include <readline/history.h>
 #include <readline/readline.h>
+#include <signal.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
@@ -316,5 +324,10 @@ void					initialize_data(char **envp, t_data *data);
 void					free_exit(t_data *data, char *error_message);
 void					print_hash_table(t_env_table *env_table);
 void					print_envp_arr(char **envp);
+
+void					handle_signals_main(void);
+void					handle_signals_child(int pid);
+void					disable_ctrl_c_main(void);
+char					*trim_ending_trailing_spaces(char const *str);
 
 #endif
