@@ -38,6 +38,8 @@ void	ft_heredoc(t_ast_node *node, char *delimiter, t_data *data)
 	pid_t	pid;
 	int		fd[2];
 	char	*line;
+	int		status;
+	int		termsig;
 
 	line = NULL;
 	if (pipe(fd) == -1)
@@ -45,6 +47,7 @@ void	ft_heredoc(t_ast_node *node, char *delimiter, t_data *data)
 	pid = fork();
 	if (pid == -1)
 		free_exit(data, "fork error");
+	handle_signals_child(pid);
 	if (pid == 0)
 	{
 		close(fd[0]);
