@@ -5,7 +5,6 @@
 // if you remove this comments the formatter
 // will put the includes in the alphabetical order
 // and it will be a mess
-// But we can make the comments shorter or we can tell the formatter to ignore them
 #include <errno.h>
 #include <fcntl.h> // for O_RDONLY etc.
 #include <readline/history.h>
@@ -266,7 +265,7 @@ t_ast_node				*create_node(t_node_type type);
 
 /* Heredoc */
 
-void					handle_heredocs(t_ast_node *node, t_data *data);
+int						handle_heredocs(t_ast_node *node, t_data *data);
 
 /* Execution */
 

@@ -18,8 +18,9 @@ int	main(int argc, char **argv, char **envp)
 		if (lexemize(&data) == SUCCESS)
 		{
 			parse(&data);
-			handle_heredocs(data.ast_root, &data);
-			execute(&data, data.ast_root);
+			// handle_heredocs(data.ast_root, &data);
+			if (handle_heredocs(data.ast_root, &data) == SUCCESS)
+				execute(&data, data.ast_root);
 		}
 		free_ast(data.ast_root);
 	}
