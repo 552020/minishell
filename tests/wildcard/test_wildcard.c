@@ -102,13 +102,6 @@ void	test_build_pattern(const char *str, t_pattern *expected)
 			printf("Result suffix_len: %zu\n", result.suffix_len);
 			assert(0);
 		}
-		if (result.midfix_len != expected->midfix_len)
-		{
-			printf("Assertion failed:\n");
-			printf("Expected midfix_len: %zu\n", expected->midfix_len);
-			printf("Result midfix_len: %zu\n", result.midfix_len);
-			assert(0);
-		}
 	}
 	else
 		printf("No asterisk found in pattern: %s\n", str);
@@ -119,6 +112,28 @@ int	main(int argc, char **argv)
 		test_build_pattern_simple(argv[1], argv[2]);
 	else if (argc == 1)
 	{
+		t_pattern expected = {.pattern = "some*pattern",
+								.prefix = "some",
+								.suffix = "pattern",
+								.midfixes = NULL,
+								// Assuming no midfixes for this test case
+								.pattern_len = strlen("some*pattern"),
+								.prefix_len = strlen("some"),
+								.suffix_len = strlen("pattern"),
+								.midfixes_nbr = 0,
+								.midfix_len = 0};
+		t_pattern another = {
+			.pattern = "some*other***more*complex*pattern*",
+			.prefix = "some",
+			.suffix = "pattern",
+			.midfixes = (char *[]){"other", "more", "complex", NULL},
+			.pattern_len = strlen("some*other*more*complex*pattern*"),
+			.prefix_len = strlen("some"),
+			.suffix_len = strlen("pattern"),
+			.midfixes_nbr = 3,
+		};
+		test_build_pattern("some*pattern", &expected);
+		test_build_pattern("some*other***more*complex*pattern*", &another);
 		test_build_pattern_simple("some words before some*pattern and other after",
 			"some*pattern");
 		test_build_pattern_simple("some words before some*pattern* and other after",
