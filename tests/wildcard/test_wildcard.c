@@ -30,6 +30,17 @@ int	main(int argc, char **argv)
 	{
 		test_build_pattern("some words before some*pattern and other after",
 			"some*pattern");
+		test_build_pattern("some words before some*pattern* and other after",
+			"some*pattern*");
+		test_build_pattern("a b c *some*pattern* d e f", "*some*pattern*");
+		test_build_pattern("a b c *some*patt*ern* d e f", "*some*patt*ern*");
+		test_build_pattern("a b c *some***patt*ern* d e f", "*some*patt*ern*");
+		test_build_pattern("a b c ***patt*ern* d e f", "*patt*ern*");
+		test_build_pattern("a b c *patt*ern*** d e f", "*patt*ern*");
+		test_build_pattern("a b c *patt*ern*** d e f", "*patt*ern*");
+		test_build_pattern("***patt*ern*", "*patt*ern*");
+		test_build_pattern("*patt*ern***", "*patt*ern*");
+		test_build_pattern("*patt*ern***", "*patt*ern*");
 	}
 	else
 	{
