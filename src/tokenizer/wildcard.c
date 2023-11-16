@@ -232,9 +232,9 @@ char	*get_matching_entries(const char *pattern)
 	int				idx;
 	char			**ret_arr;
 
-	entries = NULL;
+	entries_arr.entries = NULL;
 	entries = entries_arr.entries;
-	matching_entries = NULL;
+	entries_arr.matching_entries = NULL;
 	matching_entries = entries_arr.matching_entries;
 	entries = build_entries_array(entries, &entries_arr.count);
 	matching_entries = malloc(sizeof(t_entry *) * (entries_arr.count + 1));
