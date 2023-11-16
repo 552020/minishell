@@ -12,6 +12,8 @@ typedef struct s_pattern
 	size_t		suffix_len;
 	size_t		midfixes_nbr;
 	size_t		midfix_len;
+	char		*input_pattern_start;
+	char		*input_pattern_end;
 	const char	*start;
 	const char	*end;
 	char		*ret;

@@ -21,7 +21,7 @@
 	but we need to check midfixes with ft_strstr.
 */
 
-void	build_pattern(const char *raw_asterisk, const char *input_start,
+void	build_pattern(const char *input_asterisk, const char *input_start,
 		t_pattern *pattern)
 {
 	char const	*asterisk;
@@ -34,16 +34,18 @@ void	build_pattern(const char *raw_asterisk, const char *input_start,
 	pattern->suffix = NULL;
 	pattern->midfixes = NULL;
 	pattern->midfixes_nbr = 0;
-	pattern->start = raw_asterisk;
+	pattern->input_pattern_start = (char *)input_asterisk;
 	// Bring pattern->start to the beginning of the pattern
-	while (pattern->start > input_start && !ft_isspace(*(pattern->start - 1))
-		&& *(pattern->start - 1) != '\0')
-		pattern->start--;
+	while (pattern->input_pattern_start > input_start
+		&& !ft_isspace(*(pattern->input_pattern_start - 1))
+		&& *(pattern->input_pattern_start - 1) != '\0')
+		pattern->input_pattern_start--;
 	// Build the pattern (raw) with possible asterisk repetitions
-	pattern->end = pattern->start;
-	while (*pattern->end && !ft_isspace(*pattern->end))
-		pattern->end++;
-	pattern_raw_len = pattern->end - pattern->start;
+	pattern->input_pattern_end = pattern->input_pattern_start;
+	while (*pattern->input_pattern_end
+		&& !ft_isspace(*pattern->input_pattern_end))
+		pattern->input_pattern_end++;
+	pattern_raw_len = pattern->input_pattern_end - pattern->start;
 	pattern_raw = ft_substr(pattern->start, 0, pattern_raw_len);
 	// Clean the pattern from double asterisks
 	pattern->pattern = reduce_consecutive_char(pattern_raw, '*');
@@ -325,6 +327,8 @@ char	*wildcard_expansion(const char *input)
 {
 	const char	*str;
 	char		*matched_files;
+	char		*ret;
+	char		*tmp;
 	t_pattern	pattern;
 	const char	*quote;
 
@@ -345,7 +349,15 @@ char	*wildcard_expansion(const char *input)
 			build_pattern(str, input, &pattern);
 			// Match the entries
 			matched_files = get_matching_entries(&pattern);
+			// Replace the pattern with the matched files
+			tmp = ft_substr(input, 0, pattern.input_pattern_start - input);
+			ret = ft_strjoin(tmp, matched_files);
+			free(tmp);
+			free(matched_files);
+			// Move the pointer to the end of the pattern
+			str = pattern.input_pattern_end;
+			str++;
 		}
 	}
-	return (matched_files);
+	return (ret);
 }
