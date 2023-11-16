@@ -1,48 +1,80 @@
 #include "minishell.h"
-#include "wildcard.h"
 #include <dirent.h>
 
 typedef struct s_pattern
 {
+	size_t		prefix_len;
+	size_t		suffix_len;
+	size_t		midfixes_nbr;
+	size_t		midfix_len;
+	char		*prefix;
+	char		*suffix;
+	char		**midfixes;
 	const char	*start;
 	const char	*end;
 	char		*ret;
-	char		*prefix;
-	char		*suffix;
 	char		*tmp;
 }				t_pattern;
 
-char	*build_pattern(const char *asterisk, const char *input_start)
+void	build_pattern(const char *asterisk, const char *input_start,
+		t_pattern *pattern_ptr)
 {
 	t_pattern	pattern;
+	char		*asterisk_reader;
+	int			idx;
 
+	pattern = *pattern_ptr;
 	pattern.prefix = NULL;
 	pattern.suffix = NULL;
-	/* while:
-	- we are not regressing beyond the start of the input
-	- the character before is not a space
-	-  the character before is not the null terminator
-	*/
+	pattern.midfixes = NULL;
+	asterisk_reader = asterisk;
+	pattern.start = asterisk;
 	while (pattern.start > input_start && !ft_isspace(*(pattern.start - 1))
 		&& *(pattern.start - 1) != '\0')
 		pattern.start--;
-	// if there is a prefix, i.e. if start and asterisk are not the same
-	if (pattern.start != asterisk)
+	pattern.prefix_len = asterisk - pattern.start;
+	if (pattern.prefix_len > 0)
 		pattern.prefix = ft_substr(pattern.start, 0, asterisk - pattern.start);
-	while (*pattern.end && !ft_isspace(*pattern.end))
-		pattern.end++;
-	/*
-	In this case we check asterisk
-	+ 1 because the string 'pattern.end' starts being the asterisk  so the while will always be true the first time
-	*/
-	if (pattern.end != asterisk + 1)
-		pattern.suffix = ft_substr(asterisk + 1, 0, pattern.end - asterisk);
-	pattern.tmp = ft_strjoin(pattern.prefix, "*");
-	pattern.ret = ft_strjoin(pattern.tmp, pattern.suffix);
-	free(pattern.tmp);
-	free(pattern.prefix);
-	free(pattern.suffix);
-	return (pattern.ret);
+	asterisk_reader = asterisk + 1;
+	while (*asterisk_reader && !ft_isspace(*asterisk_reader))
+	{
+		if (*asterisk_reader == '*')
+			pattern.midfixes_nbr++;
+		asterisk_reader++;
+	}
+	if (pattern.midfixes_nbr > 0)
+	{
+		pattern.midfixes = malloc(sizeof(char *) * pattern.midfixes_nbr + 1);
+		if (!pattern.midfixes)
+			return ;
+		pattern.midfixes[pattern.midfixes_nbr] = NULL;
+		asterisk_reader = asterisk + 1;
+		idx = 0;
+		while (*asterisk_reader && !ft_isspace(*asterisk_reader))
+		{
+			pattern.start = asterisk_reader;
+			while (*asterisk_reader && !ft_isspace(*asterisk_reader))
+			{
+				if (*asterisk_reader == '*')
+				{
+					pattern.midfix_len = asterisk_reader - pattern.start - 1;
+					pattern.midfixes[idx] = ft_substr(pattern.start, 0,
+						pattern.midfix_len);
+					idx++;
+					break ;
+				}
+				asterisk_reader++;
+			}
+			asterisk_reader++;
+		}
+	}
+	if (pattern.start != asterisk_reader)
+	{
+		pattern.suffix_len = asterisk_reader - pattern.start;
+		pattern.suffix = ft_substr(pattern.start, 0, pattern.suffix_len);
+	}
+	else
+		pattern.suffix_len = 0;
 }
 
 char	*ft_strjoin_arr(char **arr, char *sep)
@@ -74,7 +106,7 @@ char	*ft_strjoin_arr(char **arr, char *sep)
 	return (ret);
 }
 // Reduce consecutive characters to one
-char	*reduce_consecutive_chard(const char *str, char c)
+char	*reduce_consecutive_char(const char *str, char c)
 {
 	char		*ret;
 	const char	*src_ptr;
@@ -163,6 +195,7 @@ t_entry	*build_entries_array(t_entry **entries, int *count)
 	return (entries);
 }
 
+/* This will take an t_pattern variable */
 char	*get_matching_entries(const char *pattern)
 {
 	t_entries_arr	entries_arr;
@@ -178,20 +211,21 @@ char	*get_matching_entries(const char *pattern)
 
 	entries = entries_arr.entries;
 	entries = build_entries_array(entries, &entries_arr.count);
-	asterisk = ft_strchr(pattern, '*');
 	matching_entries = malloc(sizeof(t_entry *) * (entries_arr.count + 1));
 	if (!matching_entries)
 		return (NULL);
 	idx = 0;
-	while (matching_entries[idx])
+	while (idx < entries_arr.count)
 	{
 		matching_entries[idx] = malloc(sizeof(t_entry));
 		if (!matching_entries[idx])
 			return (NULL);
-		matching_entries[idx] = ft_strdup("");
+		matching_entries[idx]->entry = ft_strdup("");
+		matching_entries[idx]->idx = NULL;
 		idx++;
 	}
 	matching_entries[entries_arr.count] = NULL;
+	asterisk = ft_strchr(pattern, '*');
 	while (asterisk)
 	{
 		prefix_len = asterisk - pattern;
@@ -199,23 +233,12 @@ char	*get_matching_entries(const char *pattern)
 		idx = 0;
 		while (entries[idx])
 		{
-			if (ft_strncmp(entries[idx]->idx, prefix, prefix_len) == 0)
+			if (ft_strncmp(entries[idx]->entry, prefix, prefix_len) == 0)
 			{
-				if (matching_entries[idx] == NULL)
-					matching_entries[idx] = malloc(sizeof(t_entry));
+				free(matching_entries[idx]->entry);
 				matching_entries[idx]->entry = ft_strdup(entries[idx]->entry);
 				matching_entries[idx]->idx = entries[idx]->idx + prefix_len;
 			}
-			idx++;
-		}
-		while (matching_entries[idx])
-		{
-			if (matching_entries[idx]->entry)
-				free(matching_entries[idx]->entry);
-			matching_entries[idx]->entry = NULL;
-			matching_entries[idx]->idx = NULL;
-			free(matching_entries[idx]);
-			matching_entries[idx] = NULL;
 			idx++;
 		}
 		pattern = asterisk + 1;
