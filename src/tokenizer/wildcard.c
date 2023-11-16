@@ -46,11 +46,9 @@ void	build_pattern(const char *raw_asterisk, const char *input_start,
 	pattern_raw = ft_substr(pattern->start, 0, pattern->pattern_len);
 	// Clean the pattern from double asterisks
 	pattern->pattern = reduce_consecutive_char(pattern_raw, '*');
+	pattern->start = pattern->pattern;
 	free(pattern_raw);
 	// Build the prefix
-	//// Find the first asterisk
-	//
-	// We could have workedn with pattern->pattern but the whole code was already written with asterisk
 	asterisk = ft_strchr(pattern->pattern, '*');
 	asterisk_reader = (char *)asterisk;
 	pattern->prefix_len = asterisk - pattern->start;
@@ -65,6 +63,7 @@ void	build_pattern(const char *raw_asterisk, const char *input_start,
 			pattern->midfixes_nbr++;
 		asterisk_reader++;
 	}
+	asterisk_reader = (char *)asterisk + 1;
 	if (pattern->midfixes_nbr > 0)
 	{
 		pattern->midfixes = malloc(sizeof(char *) * pattern->midfixes_nbr + 1);
@@ -91,14 +90,17 @@ void	build_pattern(const char *raw_asterisk, const char *input_start,
 			asterisk_reader++;
 		}
 	}
-	// Build the suffix
-	if (pattern->start != asterisk_reader)
+	asterisk_reader = ft_strrchr(pattern->pattern, '*');
+	if (asterisk_reader + 1)
 	{
-		pattern->suffix_len = asterisk_reader - pattern->start;
-		pattern->suffix = ft_substr(pattern->start, 0, pattern->suffix_len);
+		pattern->suffix = ft_strdup(asterisk_reader + 1);
+		pattern->suffix_len = ft_strlen(pattern->suffix);
 	}
 	else
+	{
+		pattern->suffix = NULL;
 		pattern->suffix_len = 0;
+	}
 }
 
 char	**entry_arr_to_char_arr(t_entry **entries, int count)
