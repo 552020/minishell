@@ -17,6 +17,19 @@ typedef struct s_pattern
 	char		*tmp;
 }				t_pattern;
 
+typedef struct s_entry
+{
+	char		*entry;
+	char		*idx;
+}				t_entry;
+
+typedef struct s_entries_arr
+{
+	t_entry		**entries;
+	t_entry		**matching_entries;
+	int			count;
+}				t_entries_arr;
+
 /* build_pattern
   This function will build a "pattern" from a string containing a wildcard. Example: from a string like "cat file*.txt",
 	it will build a pattern like `file*.txt`.
@@ -48,7 +61,7 @@ void	build_pattern(const char *asterisk, const char *input_start,
 	pattern.prefix = NULL;
 	pattern.suffix = NULL;
 	pattern.midfixes = NULL;
-	asterisk_reader = asterisk;
+	asterisk_reader = (char *)asterisk;
 	pattern.start = asterisk;
 	// Build the prefix
 	while (pattern.start > input_start && !ft_isspace(*(pattern.start - 1))
@@ -58,7 +71,7 @@ void	build_pattern(const char *asterisk, const char *input_start,
 	if (pattern.prefix_len > 0)
 		pattern.prefix = ft_substr(pattern.start, 0, asterisk - pattern.start);
 	// Build the midfixes
-	asterisk_reader = asterisk + 1;
+	asterisk_reader = (char *)asterisk + 1;
 	while (*asterisk_reader && !ft_isspace(*asterisk_reader))
 	{
 		if (*asterisk_reader == '*')
@@ -71,7 +84,7 @@ void	build_pattern(const char *asterisk, const char *input_start,
 		if (!pattern.midfixes)
 			return ;
 		pattern.midfixes[pattern.midfixes_nbr] = NULL;
-		asterisk_reader = asterisk + 1;
+		asterisk_reader = (char *)asterisk + 1;
 		idx = 0;
 		while (*asterisk_reader && !ft_isspace(*asterisk_reader))
 		{
@@ -99,6 +112,24 @@ void	build_pattern(const char *asterisk, const char *input_start,
 	}
 	else
 		pattern.suffix_len = 0;
+}
+
+char	**entry_arr_to_char_arr(t_entry **entries, int count)
+{
+	char	**ret;
+	int		idx;
+
+	ret = malloc(sizeof(char *) * (count + 1));
+	if (!ret)
+		return (NULL);
+	ret[count] = NULL;
+	idx = 0;
+	while (idx < count)
+	{
+		ret[idx] = ft_strdup(entries[idx]->entry);
+		idx++;
+	}
+	return (ret);
 }
 
 char	*ft_strjoin_arr(char **arr, char *sep)
@@ -144,12 +175,14 @@ char	*reduce_consecutive_char(const char *str, char c)
 		// free memory and exit
 		return (NULL);
 	}
+	src_ptr = str;
+	dest_ptr = ret;
 	// We use this pointer so that 'str' is always pointing to the beginning of the str.
 	// Same for this one.
 	while (*src_ptr)
 	{
 		*dest_ptr = *src_ptr;
-		if (src_ptr == c)
+		if (*src_ptr == c)
 		{
 			while (*src_ptr == c)
 				src_ptr++;
@@ -162,19 +195,7 @@ char	*reduce_consecutive_char(const char *str, char c)
 	return (ret);
 }
 
-typedef struct s_entry
-{
-	char		*entry;
-	char		*idx;
-}				t_entry;
-
-typedef struct s_entries_arr
-{
-	t_entry		**entries;
-	int			count;
-}				t_entries_arr;
-
-t_entry	*build_entries_array(t_entry **entries, int *count)
+t_entry	**build_entries_array(t_entry **entries, int *count)
 {
 	DIR				*dir;
 	struct dirent	*dir_entry;
@@ -232,8 +253,10 @@ char	*get_matching_entries(const char *pattern)
 	t_entry			**matching_entries;
 	char			*ret;
 	int				idx;
+	char			**ret_arr;
 
 	entries = entries_arr.entries;
+	matching_entries = entries_arr.matching_entries;
 	entries = build_entries_array(entries, &entries_arr.count);
 	matching_entries = malloc(sizeof(t_entry *) * (entries_arr.count + 1));
 	if (!matching_entries)
@@ -282,7 +305,9 @@ char	*get_matching_entries(const char *pattern)
 		}
 		idx++;
 	}
-	ret = ft_strjoin_arr(matching_entries, " ");
+	ret_arr = entry_arr_to_char_arr(entries_arr.matching_entries,
+		entries_arr.count);
+	ret = ft_strjoin_arr(ret_arr, " ");
 	while (matching_entries[idx])
 	{
 		if (matching_entries[idx]->entry)
@@ -318,7 +343,7 @@ char	*wildcard_expansion(const char *input)
 			// Build the pattern
 			build_pattern(str, input, &pattern);
 			// Match the entries
-			matched_files = get_matching_entries(pattern);
+			matched_files = get_matching_entries(pattern.pattern);
 		}
 	}
 	return (matched_files);
