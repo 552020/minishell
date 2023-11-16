@@ -237,8 +237,9 @@ t_entry	**build_entries_array(t_entry **entries, int *count)
 }
 
 /* This will take an t_pattern variable */
-char	*get_matching_entries(const char *pattern)
+char	*get_matching_entries(t_pattern *pattern_struct)
 {
+	const char		*pattern;
 	t_entries_arr	entries_arr;
 	t_entry			**entries;
 	char			*asterisk;
@@ -251,6 +252,7 @@ char	*get_matching_entries(const char *pattern)
 	int				idx;
 	char			**ret_arr;
 
+	pattern = pattern_struct->pattern;
 	entries_arr.entries = NULL;
 	entries = entries_arr.entries;
 	entries_arr.matching_entries = NULL;
@@ -342,7 +344,7 @@ char	*wildcard_expansion(const char *input)
 			// Build the pattern
 			build_pattern(str, input, &pattern);
 			// Match the entries
-			matched_files = get_matching_entries(pattern.pattern);
+			matched_files = get_matching_entries(&pattern);
 		}
 	}
 	return (matched_files);
