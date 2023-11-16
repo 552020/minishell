@@ -45,7 +45,7 @@ void	build_pattern(const char *raw_asterisk, const char *input_start,
 	pattern->pattern_len = pattern->end - pattern->start;
 	pattern_raw = ft_substr(pattern->start, 0, pattern->pattern_len);
 	// Clean the pattern from double asterisks
-	pattern->pattern = reduce_consecutive_char(pattern->pattern, '*');
+	pattern->pattern = reduce_consecutive_char(pattern_raw, '*');
 	free(pattern_raw);
 	// Build the prefix
 	//// Find the first asterisk
