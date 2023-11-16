@@ -21,32 +21,42 @@
 	but we need to check midfixes with ft_strstr.
 */
 
-void	build_pattern(const char *asterisk, const char *input_start,
+void	build_pattern(const char *raw_asterisk, const char *input_start,
 		t_pattern *pattern)
 {
-	char	*asterisk_reader;
-	int		idx;
+	char const	*asterisk;
+	char		*asterisk_reader;
+	char		*pattern_raw;
+	int			idx;
 
 	pattern->prefix = NULL;
 	pattern->suffix = NULL;
 	pattern->midfixes = NULL;
 	pattern->midfixes_nbr = 0;
-	asterisk_reader = (char *)asterisk;
-	pattern->start = asterisk;
-	// Build the prefix
+	pattern->start = raw_asterisk;
+	// Bring pattern->start to the beginning of the pattern
 	while (pattern->start > input_start && !ft_isspace(*(pattern->start - 1))
 		&& *(pattern->start - 1) != '\0')
 		pattern->start--;
-	pattern->prefix_len = asterisk - pattern->start;
-	if (pattern->prefix_len > 0)
-		pattern->prefix = ft_substr(pattern->start, 0, asterisk
-			- pattern->start);
-	// Build the pattern
+	// Build the pattern (raw) with possible asterisk repetitions
 	pattern->end = pattern->start;
 	while (*pattern->end && !ft_isspace(*pattern->end))
 		pattern->end++;
 	pattern->pattern_len = pattern->end - pattern->start;
-	pattern->pattern = ft_substr(pattern->start, 0, pattern->pattern_len);
+	pattern_raw = ft_substr(pattern->start, 0, pattern->pattern_len);
+	// Clean the pattern from double asterisks
+	pattern->pattern = reduce_consecutive_char(pattern->pattern, '*');
+	free(pattern_raw);
+	// Build the prefix
+	//// Find the first asterisk
+	//
+	// We could have workedn with pattern->pattern but the whole code was already written with asterisk
+	asterisk = ft_strchr(pattern->pattern, '*');
+	asterisk_reader = (char *)asterisk;
+	pattern->prefix_len = asterisk - pattern->start;
+	if (pattern->prefix_len > 0)
+		pattern->prefix = ft_substr(pattern->start, 0, asterisk
+			- pattern->start);
 	// Build the midfixes
 	asterisk_reader = (char *)asterisk + 1;
 	while (*asterisk_reader && !ft_isspace(*asterisk_reader))

@@ -33,3 +33,4 @@ typedef struct s_entries_arr
 
 void			build_pattern(const char *asterisk, const char *input_start,
 					t_pattern *pattern_ptr);
+char			*reduce_consecutive_char(const char *str, char c);

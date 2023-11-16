@@ -13,8 +13,17 @@ void	test_build_pattern(const char *pattern, const char *expected_pattern)
 		build_pattern(asterisk, pattern, &result);
 		// Now assert the expected values in result
 		// e.g., assert(strcmp(result.prefix, "expected_prefix") == 0);
-		assert(ft_strncmp(result.pattern, expected_pattern,
-				result.pattern_len) == 0);
+		// assert(ft_strncmp(result.pattern, expected_pattern,
+		// 		result.pattern_len) == 0);
+		// Manually check the condition and print values if it fails
+		if (ft_strncmp(result.pattern, expected_pattern,
+				result.pattern_len) != 0)
+		{
+			printf("Assertion failed:\n");
+			printf("Expected pattern: %s\n", expected_pattern);
+			printf("Result pattern: %s\n", result.pattern);
+			assert(0); // Force an assertion failure
+		}
 	}
 	else
 	{
