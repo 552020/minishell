@@ -3,18 +3,39 @@
 
 typedef struct s_pattern
 {
+	char		*pattern;
+	char		*prefix;
+	char		*suffix;
+	char		**midfixes;
 	size_t		prefix_len;
 	size_t		suffix_len;
 	size_t		midfixes_nbr;
 	size_t		midfix_len;
-	char		*prefix;
-	char		*suffix;
-	char		**midfixes;
 	const char	*start;
 	const char	*end;
 	char		*ret;
 	char		*tmp;
 }				t_pattern;
+
+/* build_pattern
+  This function will build a "pattern" from a string containing a wildcard. Example: from a string like "cat file*.txt",
+	it will build a pattern like `file*.txt`.
+  The arguments are:
+
+	- asterisk: a pointer to the first asterisk in the string. Example: `file*.txt`
+	-> `*`
+
+	- input_start: a pointer to the beginning of the string. Example: `cat file*.txt`
+	-> `c`
+
+	- pattern_ptr: a pointer to a t_pattern variable. This variable will be filled with the pattern. We use this struct not only in this function but also in the `get_matching_entries` function.
+  The return value is void but actually the point of the function is to fill the t_pattern variable,
+	the pattern field, which is the whole pattern like "file*.txt". The suffix,
+	prefix and midfixes fields are also filled. The prefix in this example is "file" and the suffix is ".txt". The midfixes are the strings between the asterisks. In this example,
+	there are no midfixes. Examples of midfixes in a pattern like "file*hello*world*.txt*",
+	"hello" and "world". The reason to distinguish between them is that we can check prefix and suffix with ft_strncmp,
+	but we need to check midfixes with ft_strstr.
+*/
 
 void	build_pattern(const char *asterisk, const char *input_start,
 		t_pattern *pattern_ptr)
@@ -29,12 +50,14 @@ void	build_pattern(const char *asterisk, const char *input_start,
 	pattern.midfixes = NULL;
 	asterisk_reader = asterisk;
 	pattern.start = asterisk;
+	// Build the prefix
 	while (pattern.start > input_start && !ft_isspace(*(pattern.start - 1))
 		&& *(pattern.start - 1) != '\0')
 		pattern.start--;
 	pattern.prefix_len = asterisk - pattern.start;
 	if (pattern.prefix_len > 0)
 		pattern.prefix = ft_substr(pattern.start, 0, asterisk - pattern.start);
+	// Build the midfixes
 	asterisk_reader = asterisk + 1;
 	while (*asterisk_reader && !ft_isspace(*asterisk_reader))
 	{
@@ -68,6 +91,7 @@ void	build_pattern(const char *asterisk, const char *input_start,
 			asterisk_reader++;
 		}
 	}
+	// Build the suffix
 	if (pattern.start != asterisk_reader)
 	{
 		pattern.suffix_len = asterisk_reader - pattern.start;
