@@ -27,6 +27,7 @@ void	build_pattern(const char *raw_asterisk, const char *input_start,
 	char const	*asterisk;
 	char		*asterisk_reader;
 	char		*pattern_raw;
+	size_t		pattern_raw_len;
 	int			idx;
 
 	pattern->prefix = NULL;
@@ -42,7 +43,8 @@ void	build_pattern(const char *raw_asterisk, const char *input_start,
 	pattern->end = pattern->start;
 	while (*pattern->end && !ft_isspace(*pattern->end))
 		pattern->end++;
-	pattern_raw = ft_substr(pattern->start, 0, pattern->pattern_len);
+	pattern_raw_len = pattern->end - pattern->start;
+	pattern_raw = ft_substr(pattern->start, 0, pattern_raw_len);
 	// Clean the pattern from double asterisks
 	pattern->pattern = reduce_consecutive_char(pattern_raw, '*');
 	// Reset pattern->start and pattern->end to the beginning and to the end of the pattern
