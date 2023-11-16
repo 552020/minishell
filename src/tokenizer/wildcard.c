@@ -275,8 +275,8 @@ char	*get_matching_entries(const char *pattern)
 char	*wildcard_expansion(const char *input)
 {
 	const char *str;
-	const char *pattern;
-	const char *ret;
+	char *matched_files;
+	t_pattern pattern;
 
 	str = input;
 	while (*str != '\0')
@@ -291,9 +291,11 @@ char	*wildcard_expansion(const char *input)
 		}
 		else if (*str == '*')
 		{
-			pattern = build_pattern(str, input);
-			// free pattern later on eventually
-			char *matched_files = get_matching_entries(pattern);
+			// Build the pattern
+			build_pattern(str, input, &pattern);
+			// Match the entries
+			matched_files = get_matching_entries(pattern);
 		}
 	}
+	return (matched_files);
 }
