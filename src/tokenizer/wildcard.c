@@ -328,12 +328,18 @@ void	check_suffix(t_entries *entries, t_pattern *pattern)
 
 	i = 0;
 	j = 0;
-	end = entries->entries[i]->idx;
 	while (entries->entries[i])
 	{
+		end = entries->entries[i]->idx;
 		while (entries->entries[i]->idx)
 			end++;
-		if (ft_strncmp(end - pattern->suffix_len, pattern->suffix,
+		if (end - pattern->suffix_len > entries->entries[i]->idx)
+		{
+			// The string from the idx is not long enough to contain the suffix
+			i++;
+			continue ;
+		}
+		else if (ft_strncmp(end - pattern->suffix_len, pattern->suffix,
 				pattern->suffix_len) == 0)
 		{
 			free(entries->matching[j]->entry);
