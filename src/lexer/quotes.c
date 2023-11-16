@@ -16,6 +16,7 @@ char	*strip_quotes(char *str, t_data *data)
 	if (len < 2)
 		return (str);
 	sub_str = ft_substr(str, 1, len - 2);
+	//free(str);
 	if (!sub_str)
 		free_exit(data, "Error: malloc sub_str failed\n");
 	return (sub_str);
@@ -83,7 +84,6 @@ void	process_variable(t_var_subs *vars, t_token *token, t_data *data)
 	if (!vars->before_and_value)
 		free_var_subs_and_exit(vars, data,
 			"Error: malloc before_and_value failed\n");
-	free(vars->before);
 	token->str = ft_strjoin(vars->before_and_value, vars->after);
 	if (!token->str)
 		free_var_subs_and_exit(vars, data, "Error: malloc token->str failed\n");
@@ -96,16 +96,19 @@ t_lexeme	t_double_quotes_var_subs(t_token *token, t_data *data)
 	t_lexeme	lexeme;
 
 	vars.str = token->str;
-	lexeme.str = ft_strdup("");
-	if (!lexeme.str)
-		free_exit(data, "Error: malloc lexeme.str failed\n");
+	//lexeme.str = ft_strdup("");
+	//if (!lexeme.str)
+		//free_exit(data, "Error: malloc lexeme.str failed\n");
 	lexeme.original = ft_strdup(token->str);
 	if (!lexeme.original)
 		free_exit(data, "Error: malloc lexeme.original failed\n");
-	while ((vars.str = ft_strchr(vars.str, '$')))
+	// while ((vars.str = ft_strchr(vars.str, '$')))
+	while (vars.str != NULL && vars.str[0] && vars.str[0] != '\0'
+		&& (vars.str = ft_strchr(vars.str, '$')))
 	{
 		process_variable(&vars, token, data);
-		vars.str = token->str + (vars.str - token->str) + ft_strlen(vars.value);
+		//vars.str = token->str + (vars.str - token->str) + ft_strlen(vars.value);
+		vars.str = token->str;
 	}
 	lexeme.str = strip_quotes(token->str, data);
 	lexeme.type = L_UNDEFINED;
@@ -115,7 +118,7 @@ t_lexeme	t_double_quotes_var_subs(t_token *token, t_data *data)
 
 t_lexeme	single_quote_lexeme(t_token *token, t_data *data)
 {
-	t_lexeme lexeme;
+	t_lexeme	lexeme;
 
 	lexeme.type = L_UNDEFINED;
 	lexeme.original = ft_strdup(token->str);
