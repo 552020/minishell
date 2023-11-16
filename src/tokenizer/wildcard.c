@@ -353,6 +353,28 @@ void	check_suffix(t_entries *entries, t_pattern *pattern)
 	}
 }
 
+void	free_entries(t_entries *entries)
+{
+	int	idx;
+
+	idx = 0;
+	while (entries->entries[idx])
+	{
+		free(entries->entries[idx]->entry);
+		free(entries->entries[idx]);
+		idx++;
+	}
+	free(entries->entries);
+	idx = 0;
+	while (entries->matching[idx])
+	{
+		free(entries->matching[idx]->entry);
+		free(entries->matching[idx]);
+		idx++;
+	}
+	free(entries->matching);
+}
+
 char	*get_matching_entries(t_pattern *pattern)
 {
 	t_entries	entries;
@@ -373,6 +395,7 @@ char	*get_matching_entries(t_pattern *pattern)
 		check_suffix(&entries, pattern);
 	ret_arr = entry_to_char(entries.matching);
 	ret = ft_strjoin_arr(ret_arr, " ");
+	free_entries(&entries);
 	return (ret);
 }
 
