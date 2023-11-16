@@ -125,11 +125,11 @@ int	main(int argc, char **argv)
 		t_pattern another = {
 			.pattern = "some*other*more*complex*pattern*",
 			.prefix = "some",
-			.suffix = "pattern",
-			.midfixes = (char *[]){"other", "more", "complex", NULL},
+			.suffix = "",
+			.midfixes = (char *[]){"other", "more", "complex", "pattern", NULL},
 			.pattern_len = strlen("some*other*more*complex*pattern*"),
 			.prefix_len = strlen("some"),
-			.suffix_len = strlen("pattern"),
+			.suffix_len = strlen(""),
 			.midfixes_nbr = 4,
 		};
 		test_build_pattern("some*pattern", &expected);

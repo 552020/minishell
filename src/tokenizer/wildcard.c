@@ -42,11 +42,16 @@ void	build_pattern(const char *raw_asterisk, const char *input_start,
 	pattern->end = pattern->start;
 	while (*pattern->end && !ft_isspace(*pattern->end))
 		pattern->end++;
-	pattern->pattern_len = pattern->end - pattern->start;
 	pattern_raw = ft_substr(pattern->start, 0, pattern->pattern_len);
 	// Clean the pattern from double asterisks
 	pattern->pattern = reduce_consecutive_char(pattern_raw, '*');
+	// Reset pattern->start and pattern->end to the beginning and to the end of the pattern
 	pattern->start = pattern->pattern;
+	pattern->end = pattern->start;
+	while (*pattern->end && !ft_isspace(*pattern->end))
+		pattern->end++;
+	pattern->pattern_len = pattern->end - pattern->start;
+	// Free the raw pattern
 	free(pattern_raw);
 	// Build the prefix
 	asterisk = ft_strchr(pattern->pattern, '*');
@@ -79,7 +84,7 @@ void	build_pattern(const char *raw_asterisk, const char *input_start,
 			{
 				if (*asterisk_reader == '*')
 				{
-					pattern->midfix_len = asterisk_reader - pattern->start - 1;
+					pattern->midfix_len = asterisk_reader - pattern->start;
 					pattern->midfixes[idx] = ft_substr(pattern->start, 0,
 						pattern->midfix_len);
 					idx++;
