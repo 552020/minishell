@@ -15,18 +15,33 @@
 void	handle_commands(t_ast_node *node, char *dir_paths, t_data *data)
 {
 	pid_t	pid;
+	int		termsig;
+	int		status;
 
 	if (node->cmd != NULL && command_is_builtin(node))
 	{
 		execute_builtin(node, data);
 		return ;
 	}
+	disable_ctrl_c_main();
 	pid = fork();
 	if (pid == -1)
 		free_exit(data, "Error: fork failed\n");
+	handle_signals_child(pid);
 	if (pid == 0)
 		execute_cmd(node, dir_paths, data);
-	waitpid(pid, NULL, 0);
+	// waitpid(pid, NULL, 0);
+	waitpid(pid, &status, 0);
+	if (WIFSIGNALED(status))
+	{
+		termsig = WTERMSIG(status);
+		// Check if the process was terminated by SIGINT
+		if (termsig == SIGINT)
+		{
+			// Force a newline to be printed only if the process was terminated by SIGINT
+			ft_putstr_fd("\n", STDOUT_FILENO);
+		}
+	}
 }
 
 void	handle_pipes(t_ast_node *node, char *dir_paths, t_data *data)
@@ -42,6 +57,7 @@ void	handle_pipes(t_ast_node *node, char *dir_paths, t_data *data)
 	left_pid = fork();
 	if (left_pid == -1)
 		free_exit(data, "Error: fork failed\n");
+	handle_signals_child(left_pid);
 	if (left_pid == 0)
 	{
 		close(pipe_fd[0]);
@@ -55,6 +71,7 @@ void	handle_pipes(t_ast_node *node, char *dir_paths, t_data *data)
 	right_pid = fork();
 	if (right_pid == -1)
 		free_exit(data, "Error: fork failed\n");
+	handle_signals_child(right_pid);
 	if (right_pid == 0)
 	{
 		close(pipe_fd[1]);
@@ -67,6 +84,7 @@ void	handle_pipes(t_ast_node *node, char *dir_paths, t_data *data)
 	}
 	close(pipe_fd[0]);
 	close(pipe_fd[1]);
+	// TODO: probably we want the exit status of the child processes
 	waitpid(left_pid, NULL, 0);
 	waitpid(right_pid, NULL, 0);
 }

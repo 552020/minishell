@@ -1,8 +1,15 @@
 #include "libft.h"
+#include <stdio.h>
+// first <stdio.h>
+// then the rest of the includes
+// if you remove this comments the formatter
+// will put the includes in the alphabetical order
+// and it will be a mess
 #include <errno.h>
 #include <fcntl.h> // for O_RDONLY etc.
 #include <readline/history.h>
 #include <readline/readline.h>
+#include <signal.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
@@ -258,7 +265,7 @@ t_ast_node				*create_node(t_node_type type);
 
 /* Heredoc */
 
-void					handle_heredocs(t_ast_node *node, t_data *data);
+int						handle_heredocs(t_ast_node *node, t_data *data);
 
 /* Execution */
 
@@ -293,9 +300,6 @@ char					*path_finder(char *cmd, char *dir_paths);
 void					echo(t_ast_node *node);
 void					free_cmd_and_args_arr(char **cmd_and_args_arr);
 
-void					handle_infile(t_ast_node *node, t_data *data);
-void					handle_outfile(t_ast_node *node, t_data *data);
-void					handle_heredoc(t_ast_node *node);
 void					builtin_with_args(t_ast_node *node, t_data *data);
 void					builtin_without_args(t_ast_node *node, t_data *data);
 void					execute_builtin(t_ast_node *node, t_data *data);
@@ -316,5 +320,10 @@ void					initialize_data(char **envp, t_data *data);
 void					free_exit(t_data *data, char *error_message);
 void					print_hash_table(t_env_table *env_table);
 void					print_envp_arr(char **envp);
+
+void					handle_signals_main(void);
+void					handle_signals_child(int pid);
+void					disable_ctrl_c_main(void);
+char					*trim_ending_trailing_spaces(char const *str);
 
 #endif
