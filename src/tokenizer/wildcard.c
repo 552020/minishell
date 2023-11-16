@@ -22,57 +22,57 @@
 */
 
 void	build_pattern(const char *asterisk, const char *input_start,
-		t_pattern *pattern_ptr)
+		t_pattern *pattern)
 {
-	t_pattern	pattern;
-	char		*asterisk_reader;
-	int			idx;
+	char	*asterisk_reader;
+	int		idx;
 
-	pattern = *pattern_ptr;
-	pattern.prefix = NULL;
-	pattern.suffix = NULL;
-	pattern.midfixes = NULL;
+	pattern->prefix = NULL;
+	pattern->suffix = NULL;
+	pattern->midfixes = NULL;
+	pattern->midfixes_nbr = 0;
 	asterisk_reader = (char *)asterisk;
-	pattern.start = asterisk;
+	pattern->start = asterisk;
 	// Build the prefix
-	while (pattern.start > input_start && !ft_isspace(*(pattern.start - 1))
-		&& *(pattern.start - 1) != '\0')
-		pattern.start--;
-	pattern.prefix_len = asterisk - pattern.start;
-	if (pattern.prefix_len > 0)
-		pattern.prefix = ft_substr(pattern.start, 0, asterisk - pattern.start);
+	while (pattern->start > input_start && !ft_isspace(*(pattern->start - 1))
+		&& *(pattern->start - 1) != '\0')
+		pattern->start--;
+	pattern->prefix_len = asterisk - pattern->start;
+	if (pattern->prefix_len > 0)
+		pattern->prefix = ft_substr(pattern->start, 0, asterisk
+			- pattern->start);
 	// Build the pattern
-	pattern.end = pattern.start;
-	while (*pattern.end && !ft_isspace(*pattern.end))
-		pattern.end++;
-	pattern.pattern_len = pattern.end - pattern.start;
-	pattern.pattern = ft_substr(pattern.start, 0, pattern.pattern_len);
+	pattern->end = pattern->start;
+	while (*pattern->end && !ft_isspace(*pattern->end))
+		pattern->end++;
+	pattern->pattern_len = pattern->end - pattern->start;
+	pattern->pattern = ft_substr(pattern->start, 0, pattern->pattern_len);
 	// Build the midfixes
 	asterisk_reader = (char *)asterisk + 1;
 	while (*asterisk_reader && !ft_isspace(*asterisk_reader))
 	{
 		if (*asterisk_reader == '*')
-			pattern.midfixes_nbr++;
+			pattern->midfixes_nbr++;
 		asterisk_reader++;
 	}
-	if (pattern.midfixes_nbr > 0)
+	if (pattern->midfixes_nbr > 0)
 	{
-		pattern.midfixes = malloc(sizeof(char *) * pattern.midfixes_nbr + 1);
-		if (!pattern.midfixes)
+		pattern->midfixes = malloc(sizeof(char *) * pattern->midfixes_nbr + 1);
+		if (!pattern->midfixes)
 			return ;
-		pattern.midfixes[pattern.midfixes_nbr] = NULL;
+		pattern->midfixes[pattern->midfixes_nbr] = NULL;
 		asterisk_reader = (char *)asterisk + 1;
 		idx = 0;
 		while (*asterisk_reader && !ft_isspace(*asterisk_reader))
 		{
-			pattern.start = asterisk_reader;
+			pattern->start = asterisk_reader;
 			while (*asterisk_reader && !ft_isspace(*asterisk_reader))
 			{
 				if (*asterisk_reader == '*')
 				{
-					pattern.midfix_len = asterisk_reader - pattern.start - 1;
-					pattern.midfixes[idx] = ft_substr(pattern.start, 0,
-						pattern.midfix_len);
+					pattern->midfix_len = asterisk_reader - pattern->start - 1;
+					pattern->midfixes[idx] = ft_substr(pattern->start, 0,
+						pattern->midfix_len);
 					idx++;
 					break ;
 				}
@@ -82,13 +82,13 @@ void	build_pattern(const char *asterisk, const char *input_start,
 		}
 	}
 	// Build the suffix
-	if (pattern.start != asterisk_reader)
+	if (pattern->start != asterisk_reader)
 	{
-		pattern.suffix_len = asterisk_reader - pattern.start;
-		pattern.suffix = ft_substr(pattern.start, 0, pattern.suffix_len);
+		pattern->suffix_len = asterisk_reader - pattern->start;
+		pattern->suffix = ft_substr(pattern->start, 0, pattern->suffix_len);
 	}
 	else
-		pattern.suffix_len = 0;
+		pattern->suffix_len = 0;
 }
 
 char	**entry_arr_to_char_arr(t_entry **entries, int count)
@@ -302,16 +302,17 @@ char	*get_matching_entries(const char *pattern)
 
 char	*wildcard_expansion(const char *input)
 {
-	const char *str;
-	char *matched_files;
-	t_pattern pattern;
+	const char	*str;
+	char		*matched_files;
+	t_pattern	pattern;
+	const char	*quote;
 
 	str = input;
 	while (*str != '\0')
 	{
 		if (*str == '\'' || *str == '\"')
 		{
-			const char *quote = ft_strchr(str + 1, *str);
+			quote = ft_strchr(str + 1, *str);
 			if (quote)
 				str = quote + 1;
 			else
