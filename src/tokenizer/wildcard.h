@@ -26,12 +26,12 @@ typedef struct s_entry
 	char		*idx;
 }				t_entry;
 
-typedef struct s_entries_arr
+typedef struct s_entries
 {
 	t_entry		**entries;
-	t_entry		**matching_entries;
+	t_entry		**matching;
 	int			count;
-}				t_entries_arr;
+}				t_entries;
 
 void			build_pattern(const char *asterisk, const char *input_start,
 					t_pattern *pattern_ptr);

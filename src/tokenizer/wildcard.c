@@ -1,26 +1,6 @@
 #include "minishell.h"
 #include "wildcard.h"
 
-/* build_pattern
-  This function will build a "pattern" from a string containing a wildcard. Example: from a string like "cat file*.txt",
-	it will build a pattern like `file*.txt`.
-  The arguments are:
-
-	- asterisk: a pointer to the first asterisk in the string. Example: `file*.txt`
-	-> `*`
-
-	- input_start: a pointer to the beginning of the string. Example: `cat file*.txt`
-	-> `c`
-
-	- pattern_ptr: a pointer to a t_pattern variable. This variable will be filled with the pattern. We use this struct not only in this function but also in the `get_matching_entries` function.
-  The return value is void but actually the point of the function is to fill the t_pattern variable,
-	the pattern field, which is the whole pattern like "file*.txt". The suffix,
-	prefix and midfixes fields are also filled. The prefix in this example is "file" and the suffix is ".txt". The midfixes are the strings between the asterisks. In this example,
-	there are no midfixes. Examples of midfixes in a pattern like "file*hello*world*.txt*",
-	"hello" and "world". The reason to distinguish between them is that we can check prefix and suffix with ft_strncmp,
-	but we need to check midfixes with ft_strstr.
-*/
-
 void	build_pattern(const char *input_asterisk, const char *input_start,
 		t_pattern *pattern)
 {
@@ -112,19 +92,23 @@ void	build_pattern(const char *input_asterisk, const char *input_start,
 	}
 }
 
-char	**entry_arr_to_char_arr(t_entry **entries, int count)
+char	**entry_to_char(t_entry **matching)
 {
 	char	**ret;
 	int		idx;
+	int		size;
 
-	ret = malloc(sizeof(char *) * (count + 1));
+	size = 0;
+	while (matching[size])
+		size++;
+	ret = malloc(sizeof(char *) * (size + 1));
 	if (!ret)
 		return (NULL);
-	ret[count] = NULL;
+	ret[size] = NULL;
 	idx = 0;
-	while (idx < count)
+	while (matching[idx])
 	{
-		ret[idx] = ft_strdup(entries[idx]->entry);
+		ret[idx] = ft_strdup(matching[idx]->entry);
 		idx++;
 	}
 	return (ret);
@@ -193,31 +177,35 @@ char	*reduce_consecutive_char(const char *str, char c)
 	return (ret);
 }
 
-t_entry	**build_entries_array(t_entry **entries, int *count)
+void	init_entries(t_entries *entries_ptr)
 {
 	DIR				*dir;
 	struct dirent	*dir_entry;
 	int				idx;
+	t_entry			**entries;
+	int				count;
 
+	count = 0;
+	entries = NULL;
 	dir = opendir(".");
 	if (!dir)
-		return (NULL);
+		return ;
 	while ((dir_entry = readdir(dir)) != NULL)
 	{
 		if (ft_strncmp(dir_entry->d_name, ".", 1) != 0
 			|| ft_strncmp(dir_entry->d_name, "..", 2) != 0)
-			(*count)++;
+			(count)++;
 	}
 	closedir(dir);
-	entries = malloc(sizeof(t_entry *) * (*count + 1));
+	entries = malloc(sizeof(t_entry *) * (count + 1));
 	if (!entries)
-		return (NULL);
-	entries[*count] = NULL;
+		return ;
+	entries[count] = NULL;
 	dir = opendir(".");
 	if (!dir)
 	{
 		free(entries);
-		return (NULL);
+		return ;
 	}
 	idx = 0;
 	while ((dir_entry = readdir(dir)) != NULL)
@@ -227,7 +215,7 @@ t_entry	**build_entries_array(t_entry **entries, int *count)
 		{
 			entries[idx] = malloc(sizeof(t_entry));
 			if (!entries[idx])
-				return (NULL);
+				return ;
 			entries[idx]->entry = ft_strdup(dir_entry->d_name);
 			entries[idx]->idx = entries[idx]->entry;
 			idx++;
@@ -235,91 +223,156 @@ t_entry	**build_entries_array(t_entry **entries, int *count)
 	}
 	entries[idx] = NULL;
 	closedir(dir);
-	return (entries);
+	entries_ptr->entries = entries;
+	entries_ptr->count = count;
 }
 
-/* This will take an t_pattern variable */
-char	*get_matching_entries(t_pattern *pattern_struct)
+void	init_matching(t_entries *entries)
 {
-	const char		*pattern;
-	t_entries_arr	entries_arr;
-	t_entry			**entries;
-	char			*asterisk;
-	size_t			prefix_len;
-	size_t			suffix_len;
-	char			*prefix;
-	char			*suffix;
-	t_entry			**matching_entries;
-	char			*ret;
-	int				idx;
-	char			**ret_arr;
+	int	idx;
 
-	pattern = pattern_struct->pattern;
-	entries_arr.entries = NULL;
-	entries = entries_arr.entries;
-	entries_arr.matching_entries = NULL;
-	matching_entries = entries_arr.matching_entries;
-	entries = build_entries_array(entries, &entries_arr.count);
-	matching_entries = malloc(sizeof(t_entry *) * (entries_arr.count + 1));
-	if (!matching_entries)
-		return (NULL);
 	idx = 0;
-	while (idx < entries_arr.count)
+	entries->matching = malloc(sizeof(t_entry *) * (entries->count + 1));
+	if (!entries->matching)
+		return ;
+	entries->matching[entries->count] = NULL;
+	while (entries->entries[idx])
 	{
-		matching_entries[idx] = malloc(sizeof(t_entry));
-		if (!matching_entries[idx])
-			return (NULL);
-		matching_entries[idx]->entry = ft_strdup("");
-		matching_entries[idx]->idx = NULL;
+		entries->matching[idx] = malloc(sizeof(t_entry));
+		if (!entries->matching[idx])
+			return ;
+		// TODO: eventually set to NULL
+		// think about it
+		entries->matching[idx]->entry = ft_strdup("");
+		entries->matching[idx]->idx = entries->entries[idx]->entry;
 		idx++;
 	}
-	matching_entries[entries_arr.count] = NULL;
-	asterisk = ft_strchr(pattern, '*');
-	while (asterisk)
+	entries->matching[idx] = NULL;
+}
+void	check_prefix(t_entries *entries, t_pattern *pattern)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	j = 0;
+	while (entries->entries[i])
 	{
-		prefix_len = asterisk - pattern;
-		prefix = ft_substr(pattern, 0, prefix_len);
-		idx = 0;
-		while (entries[idx])
+		if (ft_strncmp(entries->entries[i]->entry, pattern->prefix,
+				pattern->prefix_len) == 0)
 		{
-			if (ft_strncmp(entries[idx]->entry, prefix, prefix_len) == 0)
-			{
-				free(matching_entries[idx]->entry);
-				matching_entries[idx]->entry = ft_strdup(entries[idx]->entry);
-				matching_entries[idx]->idx = entries[idx]->idx + prefix_len;
-			}
-			idx++;
+			free(entries->matching[j]->entry);
+			entries->matching[j]->entry = ft_strdup(entries->entries[i]->entry);
+			entries->matching[j]->idx = entries->matching[j]->idx
+				+ pattern->prefix_len;
+			j++;
 		}
-		pattern = asterisk + 1;
-		asterisk = ft_strchr(pattern, '*');
+		i++;
 	}
-	suffix_len = ft_strlen(pattern);
-	suffix = ft_substr(pattern, 0, suffix_len);
-	idx = 0;
-	while (entries[idx])
+	while (entries->matching[j])
 	{
-		if (ft_strncmp(entries[idx]->idx, suffix, suffix_len) == 0)
+		free(entries->matching[j]->entry);
+		entries->matching[j]->entry = NULL;
+		entries->matching[j]->idx = NULL;
+		j++;
+	}
+}
+// ft_strstr return a pointer to the first occurence of the string
+void	check_midfix(t_entries *entries, t_pattern *pattern, char *midfix)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	j = 0;
+	while (entries->entries[i])
+	{
+		if (ft_strnstr(entries->entries[i]->idx, midfix,
+				ft_strlen(entries->entries[i]->idx)) != NULL)
 		{
-			if (matching_entries[idx] == NULL)
-				matching_entries[idx] = malloc(sizeof(t_entry));
-			matching_entries[idx]->entry = ft_strdup(entries[idx]->entry);
-			matching_entries[idx]->idx = entries[idx]->idx + suffix_len;
+			free(entries->matching[j]->entry);
+			entries->matching[j]->entry = ft_strdup(entries->entries[i]->entry);
+			entries->matching[j]->idx = ft_strnstr(entries->entries[i]->idx,
+				midfix, ft_strlen(entries->entries[i]->idx))
+				+ pattern->midfix_len;
+			j++;
 		}
+		i++;
+	}
+	while (entries->matching[j])
+	{
+		free(entries->matching[j]->entry);
+		entries->matching[j]->entry = NULL;
+		entries->matching[j]->idx = NULL;
+		j++;
+	}
+}
+
+void	check_midfixes(t_entries *entries, t_pattern *pattern)
+{
+	size_t	idx;
+
+	idx = 0;
+	while (idx < pattern->midfixes_nbr)
+	{
+		check_midfix(entries, pattern, pattern->midfixes[idx]);
 		idx++;
 	}
-	ret_arr = entry_arr_to_char_arr(entries_arr.matching_entries,
-		entries_arr.count);
+}
+
+void	check_suffix(t_entries *entries, t_pattern *pattern)
+{
+	int		i;
+	int		j;
+	char	*end;
+
+	i = 0;
+	j = 0;
+	end = entries->entries[i]->idx;
+	while (entries->entries[i])
+	{
+		while (entries->entries[i]->idx)
+			end++;
+		if (ft_strncmp(end - pattern->suffix_len, pattern->suffix,
+				pattern->suffix_len) == 0)
+		{
+			free(entries->matching[j]->entry);
+			entries->matching[j]->entry = ft_strdup(entries->entries[i]->entry);
+			entries->matching[j]->idx = entries->matching[j]->idx
+				+ pattern->suffix_len;
+			j++;
+		}
+		i++;
+	}
+	while (entries->matching[j])
+	{
+		free(entries->matching[j]->entry);
+		entries->matching[j]->entry = NULL;
+		entries->matching[j]->idx = NULL;
+		j++;
+	}
+}
+
+char	*get_matching_entries(t_pattern *pattern)
+{
+	t_entries	entries;
+	char		*ret;
+	char		**ret_arr;
+
+	// Do I really need to pass te pointer here?
+	init_entries(&entries);
+	init_matching(&entries);
+	// Check prefix
+	if (pattern->prefix_len > 0)
+		check_prefix(&entries, pattern);
+	// Check midfixes
+	if (pattern->midfixes_nbr > 0)
+		check_midfixes(&entries, pattern);
+	// Check suffix
+	if (pattern->suffix_len > 0)
+		check_suffix(&entries, pattern);
+	ret_arr = entry_to_char(entries.matching);
 	ret = ft_strjoin_arr(ret_arr, " ");
-	while (matching_entries[idx])
-	{
-		if (matching_entries[idx]->entry)
-			free(matching_entries[idx]->entry);
-		matching_entries[idx]->entry = NULL;
-		matching_entries[idx]->idx = NULL;
-		free(matching_entries[idx]);
-		matching_entries[idx] = NULL;
-		idx++;
-	}
 	return (ret);
 }
 
