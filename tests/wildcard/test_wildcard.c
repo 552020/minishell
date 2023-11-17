@@ -44,7 +44,7 @@ void	test_build_pattern(const char *str, t_pattern *expected)
 				result.pattern_len) != 0)
 		{
 			printf("Assertion failed:\n");
-			printf("Expected pattern: %s\n", str);
+			printf("Expected pattern: %s\n", expected->pattern);
 			printf("Result pattern: %s\n", result.pattern);
 			assert(0);
 		}
@@ -123,17 +123,17 @@ int	main(int argc, char **argv)
 								.midfixes_nbr = 0,
 								.midfix_len = 0};
 		t_pattern another = {
-			.pattern = "some*other*more*complex*pattern*",
+			.pattern = "some*other*more*complex*pattern*x",
 			.prefix = "some",
-			.suffix = "",
+			.suffix = "x",
 			.midfixes = (char *[]){"other", "more", "complex", "pattern", NULL},
-			.pattern_len = strlen("some*other*more*complex*pattern*"),
+			.pattern_len = strlen("some*other*more*complex*pattern*x"),
 			.prefix_len = strlen("some"),
-			.suffix_len = strlen(""),
+			.suffix_len = strlen("x"),
 			.midfixes_nbr = 4,
 		};
 		test_build_pattern("some*pattern", &expected);
-		test_build_pattern("some*other***more*complex*pattern*", &another);
+		test_build_pattern("some*other***more*complex*pattern*x", &another);
 		test_build_pattern_simple("some words before some*pattern and other after",
 			"some*pattern");
 		test_build_pattern_simple("some words before some*pattern* and other after",

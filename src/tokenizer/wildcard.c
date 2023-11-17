@@ -25,8 +25,8 @@ void	build_pattern(const char *input_asterisk, const char *input_start,
 	while (*pattern->input_pattern_end
 		&& !ft_isspace(*pattern->input_pattern_end))
 		pattern->input_pattern_end++;
-	pattern_raw_len = pattern->input_pattern_end - pattern->start;
-	pattern_raw = ft_substr(pattern->start, 0, pattern_raw_len);
+	pattern_raw_len = pattern->input_pattern_end - pattern->input_pattern_start;
+	pattern_raw = ft_substr(pattern->input_pattern_start, 0, pattern_raw_len);
 	// Clean the pattern from double asterisks
 	pattern->pattern = reduce_consecutive_char(pattern_raw, '*');
 	// Reset pattern->start and pattern->end to the beginning and to the end of the pattern
@@ -43,7 +43,7 @@ void	build_pattern(const char *input_asterisk, const char *input_start,
 	pattern->prefix_len = asterisk - pattern->start;
 	if (pattern->prefix_len > 0)
 		pattern->prefix = ft_substr(pattern->start, 0, asterisk
-			- pattern->start);
+				- pattern->start);
 	// Build the midfixes
 	asterisk_reader = (char *)asterisk + 1;
 	while (*asterisk_reader && !ft_isspace(*asterisk_reader))
@@ -70,7 +70,7 @@ void	build_pattern(const char *input_asterisk, const char *input_start,
 				{
 					pattern->midfix_len = asterisk_reader - pattern->start;
 					pattern->midfixes[idx] = ft_substr(pattern->start, 0,
-						pattern->midfix_len);
+							pattern->midfix_len);
 					idx++;
 					break ;
 				}
@@ -293,7 +293,7 @@ void	check_midfix(t_entries *entries, t_pattern *pattern, char *midfix)
 			free(entries->matching[j]->entry);
 			entries->matching[j]->entry = ft_strdup(entries->entries[i]->entry);
 			entries->matching[j]->idx = ft_strnstr(entries->entries[i]->idx,
-				midfix, ft_strlen(entries->entries[i]->idx))
+					midfix, ft_strlen(entries->entries[i]->idx))
 				+ pattern->midfix_len;
 			j++;
 		}
