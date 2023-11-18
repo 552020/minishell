@@ -95,49 +95,49 @@ void	build_pattern(const char *input_asterisk, const char *input_start,
 char	**entry_to_char(t_entry **matching)
 {
 	char	**ret;
-	int		idx;
 	int		size;
 
 	size = 0;
-	while (matching[size])
+	while (matching[size]->entry)
 		size++;
 	ret = malloc(sizeof(char *) * (size + 1));
 	if (!ret)
-		return (NULL);
-	ret[size] = NULL;
-	idx = 0;
-	while (matching[idx])
 	{
-		ret[idx] = ft_strdup(matching[idx]->entry);
-		idx++;
+		// free memory and exit
+		return (NULL);
+	}
+	ret[size] = NULL;
+	size = 0;
+	while (ret[size])
+	{
+		ret[size] = matching[size]->entry;
+		size++;
 	}
 	return (ret);
 }
 
-char	*ft_strjoin_arr(char **arr, char *sep)
+char	*ft_strjoin_arr(char **arr)
 {
 	char	*ret;
 	int		idx;
 	int		len;
-	int		sep_len;
 
 	idx = 0;
 	len = 0;
-	sep_len = ft_strlen(sep);
 	while (arr[idx])
 	{
 		len += ft_strlen(arr[idx]);
 		idx++;
 	}
-	ret = malloc(sizeof(char) * (len + sep_len * (idx - 1) + 1));
+	ret = malloc(sizeof(char) * (len + (idx - 1) + 1));
 	if (!ret)
 		return (NULL);
 	idx = 0;
 	while (arr[idx])
 	{
-		ft_strlcat(ret, arr[idx], len + sep_len * (idx - 1) + 1);
+		ft_strlcat(ret, arr[idx], len + (idx - 1) + 1);
 		if (arr[idx + 1])
-			ft_strlcat(ret, sep, len + sep_len * (idx - 1) + 1);
+			ft_strlcat(ret, " ", len + (idx - 1) + 1);
 		idx++;
 	}
 	return (ret);
@@ -243,12 +243,13 @@ void	init_matching(t_entries *entries)
 			return ;
 		// TODO: eventually set to NULL
 		// think about it
-		entries->matching[idx]->entry = ft_strdup("");
-		entries->matching[idx]->idx = entries->entries[idx]->entry;
+		entries->matching[idx]->entry = NULL;
+		entries->matching[idx]->idx = NULL;
 		idx++;
 	}
 	entries->matching[idx] = NULL;
 }
+
 void	check_prefix(t_entries *entries, t_pattern *pattern)
 {
 	int	i;
@@ -261,20 +262,13 @@ void	check_prefix(t_entries *entries, t_pattern *pattern)
 		if (ft_strncmp(entries->entries[i]->entry, pattern->prefix,
 				pattern->prefix_len) == 0)
 		{
-			free(entries->matching[j]->entry);
-			entries->matching[j]->entry = ft_strdup(entries->entries[i]->entry);
-			entries->matching[j]->idx = entries->matching[j]->idx
+			// free(entries->matching[j]->entry);
+			entries->matching[j]->entry = entries->entries[i]->entry;
+			entries->matching[j]->idx = entries->entries[i]->idx
 				+ pattern->prefix_len;
 			j++;
 		}
 		i++;
-	}
-	while (entries->matching[j])
-	{
-		free(entries->matching[j]->entry);
-		entries->matching[j]->entry = NULL;
-		entries->matching[j]->idx = NULL;
-		j++;
 	}
 }
 // ft_strstr return a pointer to the first occurence of the string
@@ -285,23 +279,21 @@ void	check_midfix(t_entries *entries, t_pattern *pattern, char *midfix)
 
 	i = 0;
 	j = 0;
-	while (entries->entries[i])
+	while (entries->matching[i]->entry)
 	{
-		if (ft_strnstr(entries->entries[i]->idx, midfix,
-				ft_strlen(entries->entries[i]->idx)) != NULL)
+		if (ft_strnstr(entries->matching[i]->idx, midfix,
+				ft_strlen(entries->matching[i]->idx)) != NULL)
 		{
-			free(entries->matching[j]->entry);
-			entries->matching[j]->entry = ft_strdup(entries->entries[i]->entry);
-			entries->matching[j]->idx = ft_strnstr(entries->entries[i]->idx,
+			entries->matching[j]->entry = entries->matching[i]->entry;
+			entries->matching[j]->idx = ft_strnstr(entries->matching[i]->idx,
 					midfix, ft_strlen(entries->entries[i]->idx))
 				+ pattern->midfix_len;
 			j++;
 		}
 		i++;
 	}
-	while (entries->matching[j])
+	while (entries->matching[j]->entry)
 	{
-		free(entries->matching[j]->entry);
 		entries->matching[j]->entry = NULL;
 		entries->matching[j]->idx = NULL;
 		j++;
@@ -315,6 +307,7 @@ void	check_midfixes(t_entries *entries, t_pattern *pattern)
 	idx = 0;
 	while (idx < pattern->midfixes_nbr)
 	{
+		pattern->midfix_len = ft_strlen(pattern->midfixes[idx]);
 		check_midfix(entries, pattern, pattern->midfixes[idx]);
 		idx++;
 	}
@@ -328,12 +321,12 @@ void	check_suffix(t_entries *entries, t_pattern *pattern)
 
 	i = 0;
 	j = 0;
-	while (entries->entries[i])
+	while (entries->matching[i]->entry)
 	{
-		end = entries->entries[i]->idx;
-		while (entries->entries[i]->idx)
+		end = entries->matching[i]->idx;
+		while (entries->matching[i]->idx)
 			end++;
-		if (end - pattern->suffix_len > entries->entries[i]->idx)
+		if (end - pattern->suffix_len < entries->matching[i]->idx)
 		{
 			// The string from the idx is not long enough to contain the suffix
 			i++;
@@ -342,17 +335,15 @@ void	check_suffix(t_entries *entries, t_pattern *pattern)
 		else if (ft_strncmp(end - pattern->suffix_len, pattern->suffix,
 				pattern->suffix_len) == 0)
 		{
-			free(entries->matching[j]->entry);
-			entries->matching[j]->entry = ft_strdup(entries->entries[i]->entry);
-			entries->matching[j]->idx = entries->matching[j]->idx
+			entries->matching[j]->entry = entries->matching[i]->entry;
+			entries->matching[j]->idx = entries->matching[i]->idx
 				+ pattern->suffix_len;
 			j++;
 		}
 		i++;
 	}
-	while (entries->matching[j])
+	while (entries->matching[j]->entry)
 	{
-		free(entries->matching[j]->entry);
 		entries->matching[j]->entry = NULL;
 		entries->matching[j]->idx = NULL;
 		j++;
@@ -374,11 +365,9 @@ void	free_entries(t_entries *entries)
 	idx = 0;
 	while (entries->matching[idx])
 	{
-		free(entries->matching[idx]->entry);
 		free(entries->matching[idx]);
 		idx++;
 	}
-	free(entries->matching);
 }
 
 char	*get_matching_entries(t_pattern *pattern)
@@ -400,7 +389,7 @@ char	*get_matching_entries(t_pattern *pattern)
 	if (pattern->suffix_len > 0)
 		check_suffix(&entries, pattern);
 	ret_arr = entry_to_char(entries.matching);
-	ret = ft_strjoin_arr(ret_arr, " ");
+	ret = ft_strjoin_arr(ret_arr);
 	free_entries(&entries);
 	return (ret);
 }

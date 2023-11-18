@@ -51,12 +51,15 @@ t_token	*tokenizer(t_data *data, const char *str)
 void	tokenize(t_data *data, char *input)
 {
 	char *trimmed;
+	char *expanded;
 
 	if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_TOKENIZER)
 		printf("\n***Tokenization***\n\n");
 	trimmed = strip_ending_trailing_spaces(input);
 	free(input);
-	data->token_count = count_words_tokenizer(trimmed);
+	expanded = wildcard_expansion(trimmed);
+	printf("Expanded: %s\n", expanded);
+	data->token_count = count_words_tokenizer(expanded);
 	if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_TOKENIZER)
 		printf("Token count: %zu\n\n", data->token_count);
 	data->token_arr = create_token_array(data);

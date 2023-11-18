@@ -4,7 +4,7 @@ NAME =	minishell
 CFLAGS = -g -Wall -Wextra -Werror
 LIBFT = ./libft/libft.a
 LIBS = -lreadline
-INCLUDES = -I./include  -I./libft/include
+INCLUDES = -I./include  -I./libft/include -I./src/tokenizer
 SRC_DIR = src
 OBJ_DIR = obj
 

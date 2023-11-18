@@ -1,5 +1,7 @@
-#include "minishell.h"
-#include <dirent.h>
+#ifndef WILDCARD_H
+# define WILDCARD_H
+
+# include <dirent.h>
 
 typedef struct s_pattern
 {
@@ -33,6 +35,10 @@ typedef struct s_entries
 	int			count;
 }				t_entries;
 
+char			*wildcard_expansion(const char *input);
+
 void			build_pattern(const char *asterisk, const char *input_start,
 					t_pattern *pattern_ptr);
 char			*reduce_consecutive_char(const char *str, char c);
+
+#endif
