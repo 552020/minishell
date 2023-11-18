@@ -133,7 +133,8 @@ char	*ft_strjoin_arr(char **arr)
 	ret = malloc(sizeof(char) * (len + (idx - 1) + 1));
 	if (!ret)
 		return (NULL);
-	idx = 0;
+	ft_strlcpy(ret, arr[0], len + (idx - 1) + 1);
+	idx = 1;
 	while (arr[idx])
 	{
 		ft_strlcat(ret, arr[idx], len + (idx - 1) + 1);
