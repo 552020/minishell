@@ -58,7 +58,7 @@ void	tokenize(t_data *data, char *input)
 	trimmed = strip_ending_trailing_spaces(input);
 	free(input);
 	expanded = wildcard_expansion(trimmed);
-	free(trimmed);
+	// free(trimmed);
 	printf("Expanded: %s\n", expanded);
 	data->token_count = count_words_tokenizer(expanded);
 	if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_TOKENIZER)
