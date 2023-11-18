@@ -35,7 +35,7 @@ typedef struct s_entries
 	int			count;
 }				t_entries;
 
-char			*wildcard_expansion(const char *input);
+char			*wildcard_expansion(char *input);
 
 void			build_pattern(const char *asterisk, const char *input_start,
 					t_pattern *pattern_ptr);

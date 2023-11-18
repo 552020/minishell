@@ -316,6 +316,6 @@ void					initialize_data(char **envp, t_data *data);
 void					free_exit(t_data *data, char *error_message);
 void					print_hash_table(t_env_table *env_table);
 void					print_envp_arr(char **envp);
-char					*wildcard_expansion(const char *input);
+char					*wildcard_expansion(char *input);
 
 #endif

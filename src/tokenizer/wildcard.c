@@ -96,6 +96,7 @@ char	**entry_to_char(t_entry **matching)
 {
 	char	**ret;
 	int		size;
+	int		i;
 
 	size = 0;
 	while (matching[size]->entry)
@@ -107,11 +108,11 @@ char	**entry_to_char(t_entry **matching)
 		return (NULL);
 	}
 	ret[size] = NULL;
-	size = 0;
-	while (ret[size])
+	i = 0;
+	while (i < size)
 	{
-		ret[size] = matching[size]->entry;
-		size++;
+		ret[i] = matching[i]->entry;
+		i++;
 	}
 	return (ret);
 }
@@ -132,6 +133,7 @@ char	*ft_strjoin_arr(char **arr)
 	ret = malloc(sizeof(char) * (len + (idx - 1) + 1));
 	if (!ret)
 		return (NULL);
+	ret[0] = '\0';
 	idx = 0;
 	while (arr[idx])
 	{
@@ -394,11 +396,13 @@ char	*get_matching_entries(t_pattern *pattern)
 	return (ret);
 }
 
-char	*wildcard_expansion(const char *input)
+char	*wildcard_expansion(char *input)
 {
 	const char	*str;
 	char		*matched_files;
 	char		*ret;
+	char		*before;
+	char		*after;
 	char		*tmp;
 	t_pattern	pattern;
 	const char	*quote;
@@ -421,14 +425,26 @@ char	*wildcard_expansion(const char *input)
 			// Match the entries
 			matched_files = get_matching_entries(&pattern);
 			// Replace the pattern with the matched files
-			tmp = ft_substr(input, 0, pattern.input_pattern_start - input);
-			ret = ft_strjoin(tmp, matched_files);
+			before = ft_substr(input, 0, pattern.input_pattern_start - input);
+			after = ft_substr(pattern.input_pattern_end, 0,
+					ft_strlen(pattern.input_pattern_end));
+			tmp = ft_strjoin(before, matched_files);
+			ret = ft_strjoin(tmp, after);
+			free(before);
+			free(after);
 			free(tmp);
 			free(matched_files);
+			tmp = NULL;
+			tmp = ret;
+			free(input);
+			input = NULL;
+			input = ret;
 			// Move the pointer to the end of the pattern
 			str = pattern.input_pattern_end;
 			str++;
 		}
+		else
+			str++;
 	}
-	return (ret);
+	return (input);
 }
