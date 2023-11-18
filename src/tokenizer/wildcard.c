@@ -406,7 +406,6 @@ char	*wildcard_expansion(char *input)
 	char		*tmp;
 	t_pattern	pattern;
 	const char	*quote;
-	size_t		offset;
 
 	str = input;
 	while (*str != '\0')
@@ -437,13 +436,11 @@ char	*wildcard_expansion(char *input)
 			free(matched_files);
 			tmp = NULL;
 			tmp = ret;
-			offset = pattern.input_pattern_end - input;
 			free(input);
 			input = NULL;
 			input = ret;
 			// Move the pointer to the end of the pattern
-			str = input + offset;
-			str++;
+			str = input;
 		}
 		else
 			str++;
