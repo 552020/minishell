@@ -125,6 +125,18 @@ char	*ft_strjoin_arr(char **arr)
 
 	idx = 0;
 	len = 0;
+	if (!arr)
+		return (ft_strdup(""));
+	if (!arr[0])
+		return (ft_strdup(""));
+	// print array
+	printf("Array:\n");
+	while (arr[idx])
+	{
+		printf("%s\n", arr[idx]);
+		idx++;
+	}
+	idx = 0;
 	while (arr[idx])
 	{
 		len += ft_strlen(arr[idx]);
@@ -377,6 +389,7 @@ char	*get_matching_entries(t_pattern *pattern)
 	t_entries	entries;
 	char		*ret;
 	char		**ret_arr;
+	int			i;
 
 	// Do I really need to pass te pointer here?
 	init_entries(&entries);
@@ -391,6 +404,13 @@ char	*get_matching_entries(t_pattern *pattern)
 	if (pattern->suffix_len > 0)
 		check_suffix(&entries, pattern);
 	ret_arr = entry_to_char(entries.matching);
+	printf("ret_arr:\n");
+	i = 0;
+	while (ret_arr[i])
+	{
+		printf("%s\n", ret_arr[i]);
+		i++;
+	}
 	ret = ft_strjoin_arr(ret_arr);
 	free_entries(&entries);
 	return (ret);
