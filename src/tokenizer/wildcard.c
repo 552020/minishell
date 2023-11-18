@@ -43,7 +43,7 @@ void	build_pattern(const char *input_asterisk, const char *input_start,
 	pattern->prefix_len = asterisk - pattern->start;
 	if (pattern->prefix_len > 0)
 		pattern->prefix = ft_substr(pattern->start, 0, asterisk
-				- pattern->start);
+			- pattern->start);
 	// Build the midfixes
 	asterisk_reader = (char *)asterisk + 1;
 	while (*asterisk_reader && !ft_isspace(*asterisk_reader))
@@ -70,7 +70,7 @@ void	build_pattern(const char *input_asterisk, const char *input_start,
 				{
 					pattern->midfix_len = asterisk_reader - pattern->start;
 					pattern->midfixes[idx] = ft_substr(pattern->start, 0,
-							pattern->midfix_len);
+						pattern->midfix_len);
 					idx++;
 					break ;
 				}
@@ -288,7 +288,7 @@ void	check_midfix(t_entries *entries, t_pattern *pattern, char *midfix)
 		{
 			entries->matching[j]->entry = entries->matching[i]->entry;
 			entries->matching[j]->idx = ft_strnstr(entries->matching[i]->idx,
-					midfix, ft_strlen(entries->entries[i]->idx))
+				midfix, ft_strlen(entries->entries[i]->idx))
 				+ pattern->midfix_len;
 			j++;
 		}
@@ -406,6 +406,7 @@ char	*wildcard_expansion(char *input)
 	char		*tmp;
 	t_pattern	pattern;
 	const char	*quote;
+	size_t		offset;
 
 	str = input;
 	while (*str != '\0')
@@ -427,7 +428,7 @@ char	*wildcard_expansion(char *input)
 			// Replace the pattern with the matched files
 			before = ft_substr(input, 0, pattern.input_pattern_start - input);
 			after = ft_substr(pattern.input_pattern_end, 0,
-					ft_strlen(pattern.input_pattern_end));
+				ft_strlen(pattern.input_pattern_end));
 			tmp = ft_strjoin(before, matched_files);
 			ret = ft_strjoin(tmp, after);
 			free(before);
@@ -436,11 +437,12 @@ char	*wildcard_expansion(char *input)
 			free(matched_files);
 			tmp = NULL;
 			tmp = ret;
+			offset = pattern.input_pattern_end - input;
 			free(input);
 			input = NULL;
 			input = ret;
 			// Move the pointer to the end of the pattern
-			str = pattern.input_pattern_end;
+			str = input + offset;
 			str++;
 		}
 		else
