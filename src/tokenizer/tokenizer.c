@@ -58,13 +58,14 @@ void	tokenize(t_data *data, char *input)
 	trimmed = strip_ending_trailing_spaces(input);
 	free(input);
 	expanded = wildcard_expansion(trimmed);
+	free(trimmed);
 	printf("Expanded: %s\n", expanded);
 	data->token_count = count_words_tokenizer(expanded);
 	if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_TOKENIZER)
 		printf("Token count: %zu\n\n", data->token_count);
 	data->token_arr = create_token_array(data);
-	data->token_arr = tokenizer(data, trimmed);
-	free(trimmed);
+	data->token_arr = tokenizer(data, expanded);
+	free(expanded);
 	if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_TOKENIZER)
 		print_token_arr(data->token_arr, data->token_count);
 }
