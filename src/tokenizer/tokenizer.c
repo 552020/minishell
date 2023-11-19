@@ -36,6 +36,8 @@ t_token	*tokenizer(t_data *data, const char *str)
 			assign_redirect_in_out_heredoc_append(&str, data, &idx);
 		else if (*str == '|')
 			assign_pipe(&str, data, &idx);
+		else if (*str == '$' && *(str + 1) == '?')
+			assign_shell_var(&str, data, &idx);
 		else if (*str == '$')
 			assign_env_var(&str, data, &idx);
 		else if (*str == '\'' || *str == '"')

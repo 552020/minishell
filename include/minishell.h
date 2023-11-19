@@ -91,8 +91,9 @@ typedef enum e_token_type
 	// 7 - " the whole string in between " quotes included
 	T_SINGLE_QUOTE,
 	// 8 - ' the whole string in between ' quotes included
-	T_ENV_VAR, // 9 - $ followed by a valid variable name
-	T_END,     // 10 - End of token array
+	T_ENV_VAR,   // 9 - $ followed by a valid variable name
+	T_SHELL_VAR, // 10 - $ followed by a shell variable symbol like $?
+	T_END,       // 11 - End of token array
 }						t_token_type;
 
 typedef struct s_token
@@ -122,8 +123,11 @@ void					assign_pipe(const char **str_ptr, t_data *data,
 							size_t *idx);
 void					assign_env_var(const char **str_ptr, t_data *data,
 							size_t *idx);
+void					assign_shell_var(const char **str_ptr, t_data *data,
+							size_t *idx);
 void					assign_quotes(const char **str_ptr, t_data *data,
 							size_t *idx);
+
 void					tokenize(t_data *data, char *input);
 
 /* Lexer */
