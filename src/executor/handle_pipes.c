@@ -47,47 +47,81 @@ void	handle_commands(t_ast_node *node, char *dir_paths, t_data *data)
 void	handle_pipes(t_ast_node *node, char *dir_paths, t_data *data)
 {
 	int		pipe_fd[2];
-	pid_t	left_pid;
-	pid_t	right_pid;
-
+	int		stdout_backup;
+	int		stdin_backup;
 	// TODO: we don't need dir_paths here aymore
 	(void)dir_paths;
 	if (pipe(pipe_fd) == -1)
 		free_exit(data, "Error: pipe failed\n");
-	left_pid = fork();
-	if (left_pid == -1)
-		free_exit(data, "Error: fork failed\n");
-	handle_signals_child(left_pid);
-	if (left_pid == 0)
+	if (node->children[0])
 	{
-		close(pipe_fd[0]);
+		stdout_backup = dup(STDOUT_FILENO);
 		dup2(pipe_fd[1], STDOUT_FILENO);
 		close(pipe_fd[1]);
 		handle_redirections(node->children[0], data);
 		execute(data, node->children[0]);
-		// handle_pipes(node->children[0], dir_paths, data);
-		exit(EXIT_SUCCESS);
+		dup2(stdout_backup, STDOUT_FILENO);
+		close(stdout_backup);
 	}
-	right_pid = fork();
-	if (right_pid == -1)
-		free_exit(data, "Error: fork failed\n");
-	handle_signals_child(right_pid);
-	if (right_pid == 0)
+	if (node->children[1])
 	{
-		close(pipe_fd[1]);
+		stdin_backup = dup(STDIN_FILENO);
 		dup2(pipe_fd[0], STDIN_FILENO);
 		close(pipe_fd[0]);
 		handle_redirections(node->children[1], data);
 		execute(data, node->children[1]);
-		// handle_pipes(node->children[1], dir_paths, data);
-		exit(EXIT_SUCCESS);
+		dup2(stdin_backup, STDIN_FILENO);
+		close(stdin_backup);
 	}
 	close(pipe_fd[0]);
 	close(pipe_fd[1]);
 	// TODO: probably we want the exit status of the child processes
-	waitpid(left_pid, NULL, 0);
-	waitpid(right_pid, NULL, 0);
 }
+
+// void	handle_pipes(t_ast_node *node, char *dir_paths, t_data *data)
+// {
+// 	int		pipe_fd[2];
+// 	pid_t	left_pid;
+// 	pid_t	right_pid;
+
+// 	// TODO: we don't need dir_paths here aymore
+// 	(void)dir_paths;
+// 	if (pipe(pipe_fd) == -1)
+// 		free_exit(data, "Error: pipe failed\n");
+// 	left_pid = fork();
+// 	if (left_pid == -1)
+// 		free_exit(data, "Error: fork failed\n");
+// 	handle_signals_child(left_pid);
+// 	if (left_pid == 0)
+// 	{
+// 		close(pipe_fd[0]);
+// 		dup2(pipe_fd[1], STDOUT_FILENO);
+// 		close(pipe_fd[1]);
+// 		handle_redirections(node->children[0], data);
+// 		execute(data, node->children[0]);
+// 		// handle_pipes(node->children[0], dir_paths, data);
+// 		exit(EXIT_SUCCESS);
+// 	}
+// 	right_pid = fork();
+// 	if (right_pid == -1)
+// 		free_exit(data, "Error: fork failed\n");
+// 	handle_signals_child(right_pid);
+// 	if (right_pid == 0)
+// 	{
+// 		close(pipe_fd[1]);
+// 		dup2(pipe_fd[0], STDIN_FILENO);
+// 		close(pipe_fd[0]);
+// 		handle_redirections(node->children[1], data);
+// 		execute(data, node->children[1]);
+// 		// handle_pipes(node->children[1], dir_paths, data);
+// 		exit(EXIT_SUCCESS);
+// 	}
+// 	close(pipe_fd[0]);
+// 	close(pipe_fd[1]);
+// 	// TODO: probably we want the exit status of the child processes
+// 	waitpid(left_pid, NULL, 0);
+// 	waitpid(right_pid, NULL, 0);
+// }
 
 // void	handle_nodes(t_ast_node *node, char *dir_paths, char **envp,
 // 		t_env_table *env_table, t_data *data)
