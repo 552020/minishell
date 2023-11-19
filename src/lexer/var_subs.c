@@ -22,8 +22,8 @@ char	*lookup_env_value(char *var_name, char **envp)
 
 t_lexeme	t_env_var_subs(t_token *token, t_data *data)
 {
-	t_lexeme lexeme;
-	char *value;
+	t_lexeme	lexeme;
+	char		*value;
 
 	lexeme.original = ft_strdup(token->str);
 	if (!lexeme.original)
@@ -35,4 +35,23 @@ t_lexeme	t_env_var_subs(t_token *token, t_data *data)
 		free_exit(data, "Error: malloc lexeme.str failed\n");
 	lexeme.status = NOT_LEXED;
 	return (lexeme);
+}
+
+t_lexeme	t_shell_var_subs(t_token *token, t_data *data)
+{
+	t_lexeme lexeme;
+	char *value;
+
+	lexeme.original = ft_strdup(token->str);
+	if (!lexeme.original)
+		free_exit(data, "Error: malloc lexeme.original failed\n");
+	value = ft_itoa(data->last_exit_status);
+	if (!value)
+		free_exit(data, "Error: malloc value failed\n");
+	lexeme.type = L_ARGUMENT;
+	lexeme.str = ft_strdup(value);
+	if (!lexeme.str)
+		free_exit(data, "Error: malloc lexeme.str failed\n");
+	lexeme.status = NOT_LEXED;
+	free(value);
 }

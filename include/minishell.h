@@ -178,6 +178,7 @@ t_lexeme				heredoc_delimiter_lexeme(t_token *token, t_data *data);
 t_lexeme				t_double_quotes_var_subs(t_token *token, t_data *data);
 t_lexeme				single_quote_lexeme(t_token *token, t_data *data);
 t_lexeme				t_env_var_subs(t_token *token, t_data *data);
+t_lexeme				t_shell_var_subs(t_token *token, t_data *data);
 char					*lookup_env_value(char *var_name, char **envp);
 void					create_lexeme_arr(t_data *data);
 t_lexeme				*lexer(t_data *data);
@@ -227,6 +228,7 @@ typedef struct s_data
 	t_token				*token_arr;
 	t_lexeme			*lexeme_arr;
 	t_ast_node			*ast_root;
+	int					last_exit_status;
 }						t_data;
 
 t_ast_node				*parser(t_lexeme *lexemes, int start, int end,
