@@ -44,36 +44,52 @@ void	handle_commands(t_ast_node *node, char *dir_paths, t_data *data)
 	}
 }
 
+void	handle_commands_without_fork(t_ast_node *node, char *dir_paths,
+		t_data *data)
+{
+	if (node->cmd != NULL && command_is_builtin(node))
+	{
+		execute_builtin(node, data);
+		return ;
+	}
+	execute_cmd(node, dir_paths, data);
+}
+
 void	handle_pipes(t_ast_node *node, char *dir_paths, t_data *data)
 {
 	int		pipe_fd[2];
-	pid_t	left_pid;
+	int		backup_stdout;
 	pid_t	right_pid;
 
+	// pid_t	left_pid;
+	backup_stdout = dup(STDOUT_FILENO);
 	// TODO: we don't need dir_paths here aymore
 	(void)dir_paths;
 	if (pipe(pipe_fd) == -1)
 		free_exit(data, "Error: pipe failed\n");
-	left_pid = fork();
-	if (left_pid == -1)
-		free_exit(data, "Error: fork failed\n");
-	handle_signals_child(left_pid);
-	if (left_pid == 0)
-	{
-		close(pipe_fd[0]);
-		dup2(pipe_fd[1], STDOUT_FILENO);
-		close(pipe_fd[1]);
-		handle_redirections(node->children[0], data);
-		execute(data, node->children[0]);
-		// handle_pipes(node->children[0], dir_paths, data);
-		exit(EXIT_SUCCESS);
-	}
+	// left_pid = fork();
+	// if (left_pid == -1)
+	// free_exit(data, "Error: fork failed\n");
+	// handle_signals_child(left_pid);
+	// if (left_pid == 0)
+	// {
+	// close(pipe_fd[0]);
+	dup2(pipe_fd[1], STDOUT_FILENO);
+	close(pipe_fd[1]);
+	handle_redirections(node->children[0], data);
+	execute(data, node->children[0]);
+	if (node->children[0]->type == N_COMMAND)
+		handle_commands_without_fork(node->children[0], dir_paths, data);
+	// handle_pipes(node->children[0], dir_paths, data);
+	// exit(EXIT_SUCCESS);
+	// }
 	right_pid = fork();
 	if (right_pid == -1)
 		free_exit(data, "Error: fork failed\n");
 	handle_signals_child(right_pid);
 	if (right_pid == 0)
 	{
+		dup2(backup_stdout, STDOUT_FILENO);
 		close(pipe_fd[1]);
 		dup2(pipe_fd[0], STDIN_FILENO);
 		close(pipe_fd[0]);
@@ -85,7 +101,7 @@ void	handle_pipes(t_ast_node *node, char *dir_paths, t_data *data)
 	close(pipe_fd[0]);
 	close(pipe_fd[1]);
 	// TODO: probably we want the exit status of the child processes
-	waitpid(left_pid, NULL, 0);
+	// waitpid(left_pid, NULL, 0);
 	waitpid(right_pid, NULL, 0);
 }
 

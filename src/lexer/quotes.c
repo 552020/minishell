@@ -69,7 +69,7 @@ void	process_variable(t_var_subs *vars, t_token *token, t_data *data)
 	vars->end = vars->str + 1;
 	while (ft_isvalidvarname(*vars->end))
 		vars->end++;
-	if (vars->end == '?')
+	if (vars->end[0] == '?')
 	{
 		vars->end++;
 	}
@@ -115,7 +115,7 @@ t_lexeme	t_double_quotes_var_subs(t_token *token, t_data *data)
 	{
 		process_variable(&vars, token, data);
 		// vars.str = token->str + (vars.str - token->str)
-			+ ft_strlen(vars.value);
+		ft_strlen(vars.value);
 		vars.str = token->str;
 	}
 	lexeme.str = strip_quotes(token->str, data);
