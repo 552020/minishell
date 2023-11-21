@@ -121,18 +121,57 @@ void	execute(t_data *data, t_ast_node *node)
 	char	*dir_paths;
 
 	dir_paths = ft_getenv(data->env_table->table, "PATH");
-	// if (data->ast_root->type j== N_PIPE)
 	if (node->type == N_PIPE)
-	{
-		// handle_pipes(data->ast_root, dir_paths, data);
 		handle_pipes(node, dir_paths, data);
-	}
-	// else if (data->ast_root->type == N_COMMAND)
 	else if (node->type == N_COMMAND)
 	{
 		if (!node->cmd)
 			return ;
-		// handle_commands(data->ast_root, dir_paths, data);
 		handle_commands(node, dir_paths, data);
 	}
+}
+
+void	handle_pipes(t_ast_node *node, char *dir_paths, t_data *data)
+{
+	int		pipe_fd[2];
+	pid_t	left_pid;
+	pid_t	right_pid;
+
+	// TODO: we don't need dir_paths here aymore
+	(void)dir_paths;
+	if (pipe(pipe_fd) == -1)
+		free_exit(data, "Error: pipe failed\n");
+	left_pid = fork();
+	if (left_pid == -1)
+		free_exit(data, "Error: fork failed\n");
+	handle_signals_child(left_pid);
+	if (left_pid == 0)
+	{
+		close(pipe_fd[0]);
+		dup2(pipe_fd[1], STDOUT_FILENO);
+		close(pipe_fd[1]);
+		handle_redirections(node->children[0], data);
+		execute(data, node->children[0]);
+		// handle_pipes(node->children[0], dir_paths, data);
+		exit(EXIT_SUCCESS);
+	}
+	right_pid = fork();
+	if (right_pid == -1)
+		free_exit(data, "Error: fork failed\n");
+	handle_signals_child(right_pid);
+	if (right_pid == 0)
+	{
+		close(pipe_fd[1]);
+		dup2(pipe_fd[0], STDIN_FILENO);
+		close(pipe_fd[0]);
+		handle_redirections(node->children[1], data);
+		execute(data, node->children[1]);
+		// handle_pipes(node->children[1], dir_paths, data);
+		exit(EXIT_SUCCESS);
+	}
+	close(pipe_fd[0]);
+	close(pipe_fd[1]);
+	// TODO: probably we want the exit status of the child processes
+	waitpid(left_pid, NULL, 0);
+	waitpid(right_pid, NULL, 0);
 }
