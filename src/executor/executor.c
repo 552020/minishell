@@ -118,6 +118,9 @@ void	execute_cmd(t_ast_node *node, t_data *data)
 		free_cmd_and_args_arr(cmd_and_args_arr);
 }
 
+int		original_stdout = -1;
+int		cmd_flag = 0;
+
 void	execute(t_data *data, t_ast_node *node)
 {
 	int	pipe_fd[2];
@@ -128,22 +131,39 @@ void	execute(t_data *data, t_ast_node *node)
 	int	left_status;
 	int	right_status;
 
+	if (original_stdout == -1)
+	{
+		original_stdout = dup(STDOUT_FILENO);
+	}
+	printf("execute\n");
 	if (node->type == N_PIPE)
 	{
+		cmd_flag = 1;
+		printf("pipe\n");
 		if (pipe(pipe_fd) == -1)
 			free_exit(data, "Error: pipe failed\n");
 		backup_stdout = dup(STDOUT_FILENO);
 		dup2(pipe_fd[1], STDOUT_FILENO);
 		close(pipe_fd[1]);
+		ft_putstr_fd("before execute\n", original_stdout);
 		execute(data, node->children[0]);
+		ft_putstr_fd("after execute\n", original_stdout);
 	}
 	else if (node->type == N_COMMAND)
 	{
+		if (cmd_flag == 0)
+		{
+			execute_cmd(node, data);
+		}
+		ft_putstr_fd("command\n", original_stdout);
 		return ;
 	}
+	ft_putstr_fd("before node-children[0]\n", original_stdout);
 	// TODO: what does it mean that node->cmd is NULL?
-	if (node->children[0]->type == N_COMMAND && node->cmd)
+	ft_putstr_fd("node->cmd: ", original_stdout);
+	if (node->children[0]->type == N_COMMAND && node->children[0]->cmd)
 	{
+		ft_putstr_fd("before left fork\n", original_stdout);
 		if ((left_pid = fork()) == -1)
 			free_exit(data, "Error: fork failed\n");
 		disable_ctrl_c_main();
@@ -156,8 +176,9 @@ void	execute(t_data *data, t_ast_node *node)
 			handle_command(node->children[0], data);
 		}
 	}
-	if (node->children[1]->type == N_COMMAND && node->cmd)
+	if (node->children[1]->type == N_COMMAND && node->children[1]->cmd)
 	{
+		ft_putstr_fd("before right fork\n", original_stdout);
 		if ((right_pid = fork()) == -1)
 			free_exit(data, "Error: fork failed\n");
 		disable_ctrl_c_main();
@@ -174,10 +195,12 @@ void	execute(t_data *data, t_ast_node *node)
 	}
 	else
 		return ;
-	dup2(backup_stdout, STDOUT_FILENO);
-	close(backup_stdout);
-	if (node->children[0]->type == N_COMMAND && node->cmd)
+	ft_putstr_fd("after all forks\n", original_stdout);
+	// dup2(backup_stdout, STDOUT_FILENO);
+	// close(backup_stdout);
+	if (node->children[0]->type == N_COMMAND && node->children[0]->cmd)
 	{
+		ft_putstr_fd("first waitpid\n", original_stdout);
 		waitpid(left_pid, &left_status, 0);
 		if (WIFSIGNALED(left_status))
 		{
@@ -186,6 +209,7 @@ void	execute(t_data *data, t_ast_node *node)
 				ft_putstr_fd("\n", STDOUT_FILENO);
 		}
 	}
+	ft_putstr_fd("before second waitpid\n", original_stdout);
 	waitpid(right_pid, &right_status, 0);
 	if (WIFSIGNALED(right_status))
 	{
@@ -193,4 +217,5 @@ void	execute(t_data *data, t_ast_node *node)
 		if (termsig == SIGINT)
 			ft_putstr_fd("\n", STDOUT_FILENO);
 	}
+	ft_putstr_fd("after waitpids\n", original_stdout);
 }
