@@ -122,10 +122,9 @@ void	execute(t_data *data, t_ast_node *node)
 {
 	if (node->type == N_PIPE)
 		handle_pipes(node, data);
-	else if (node->type == N_COMMAND)
-	{
-		if (!node->cmd)
-			return ;
+	// TODO: what does it mean that node->cmd is NULL?
+	else if (node->type == N_COMMAND && node->cmd)
 		handle_commands(node, data);
-	}
+	else
+		return ;
 }
