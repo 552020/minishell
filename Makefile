@@ -11,15 +11,11 @@ UNAME_S := $(shell uname -s)
 
 # Set include paths conditionally
 ifeq ($(UNAME_S), Darwin)
-    INCLUDES = -I./include -I./libft/include -I/opt/homebrew/opt/readline/include
+    INCLUDES = -I./include -I./libft/include -I/usr/local/opt/readline/include
+    LDFLAGS = -L/usr/local/opt/readline/lib
 else
-    INCLUDES = -I./include -I./libft/include
-endif
-
-ifeq ($(UNAME_S), Darwin)
-    LDFLAGS = -L/opt/homebrew/opt/readline/lib
-else
-    LDFLAGS = 
+    INCLUDES = -I./include -I./libft/include -I/usr/local/opt/readline/include
+    LDFLAGS = -L/usr/local/opt/readline/lib
 endif
 
 SRCS = minishell.c \
@@ -61,10 +57,3 @@ re:
 	make all
 
 .PHONY: all clean fclean re
-
-
-
-
-
-
-
