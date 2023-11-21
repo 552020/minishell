@@ -273,13 +273,11 @@ int						handle_heredocs(t_ast_node *node, t_data *data);
 size_t					count_pipes(t_lexeme *lexeme_arr, size_t token_count);
 unsigned int			hash(const char *key);
 // not using these
-void					handle_commands(t_ast_node *ast_root, char *dir_paths,
-							t_data *data);
+void					handle_commands(t_ast_node *ast_root, t_data *data);
 void					handle_pipes(t_ast_node *ast_root, t_data *data);
 void					handle_redirections(t_ast_node *node, t_data *data);
 
-void					execute_cmd(t_ast_node *node, char *dir_paths,
-							t_data *data);
+void					execute_cmd(t_ast_node *node, t_data *data);
 void					print_working_directory(void);
 void					ft_exit(int exit_code, t_ast_node *node, char **envp,
 							t_env_table *table);

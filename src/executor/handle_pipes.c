@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-void	handle_commands(t_ast_node *node, char *dir_paths, t_data *data)
+void	handle_commands(t_ast_node *node, t_data *data)
 {
 	pid_t	pid;
 	int		termsig;
@@ -29,7 +29,7 @@ void	handle_commands(t_ast_node *node, char *dir_paths, t_data *data)
 		free_exit(data, "Error: fork failed\n");
 	handle_signals_child(pid);
 	if (pid == 0)
-		execute_cmd(node, dir_paths, data);
+		execute_cmd(node, data);
 	// waitpid(pid, NULL, 0);
 	waitpid(pid, &status, 0);
 	if (WIFSIGNALED(status))
