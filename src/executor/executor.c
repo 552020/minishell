@@ -132,7 +132,11 @@ void	execute(t_data *data, t_ast_node *node)
 	{
 		if (!node->cmd)
 			return ;
-		// handle_commands(data->ast_root, dir_paths, data);
-		handle_commands(node, dir_paths, data);
+		else
+		{
+			// handle_commands(node, dir_paths, data);
+			// handle_commands(data->ast_root, dir_paths, data);
+			;
+		}
 	}
 }
