@@ -12,36 +12,26 @@
 
 #include "minishell.h"
 
-void	handle_commands(t_ast_node *node, t_data *data)
+void	handle_command(t_ast_node *node, t_data *data)
 {
-	pid_t	pid;
-	int		termsig;
-	int		status;
-
+	// int	termsig;
+	// int	status;
 	if (node->cmd != NULL && command_is_builtin(node))
-	{
 		execute_builtin(node, data);
-		return ;
-	}
-	disable_ctrl_c_main();
-	pid = fork();
-	if (pid == -1)
-		free_exit(data, "Error: fork failed\n");
-	handle_signals_child(pid);
-	if (pid == 0)
+	else
 		execute_cmd(node, data);
 	// waitpid(pid, NULL, 0);
-	waitpid(pid, &status, 0);
-	if (WIFSIGNALED(status))
-	{
-		termsig = WTERMSIG(status);
-		// Check if the process was terminated by SIGINT
-		if (termsig == SIGINT)
-		{
-			// Force a newline to be printed only if the process was terminated by SIGINT
-			ft_putstr_fd("\n", STDOUT_FILENO);
-		}
-	}
+	// waitpid(pid, &status, 0);
+	// if (WIFSIGNALED(status))
+	// {
+	// 	termsig = WTERMSIG(status);
+	// 	// Check if the process was terminated by SIGINT
+	// 	if (termsig == SIGINT)
+	// 	{
+	// 		// Force a newline to be printed only if the process was terminated by SIGINT
+	// 		ft_putstr_fd("\n", STDOUT_FILENO);
+	// 	}
+	// }
 }
 
 void	handle_pipes(t_ast_node *node, t_data *data)

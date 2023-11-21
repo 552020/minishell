@@ -120,11 +120,77 @@ void	execute_cmd(t_ast_node *node, t_data *data)
 
 void	execute(t_data *data, t_ast_node *node)
 {
+	int	pipe_fd[2];
+	int	left_pid;
+	int	right_pid;
+	int	backup_stdout;
+	int	termsig;
+	int	left_status;
+	int	right_status;
+
 	if (node->type == N_PIPE)
-		handle_pipes(node, data);
+	{
+		if (pipe(pipe_fd) == -1)
+			free_exit(data, "Error: pipe failed\n");
+		backup_stdout = dup(STDOUT_FILENO);
+		dup2(pipe_fd[1], STDOUT_FILENO);
+		close(pipe_fd[1]);
+		execute(data, node->children[0]);
+	}
+	else if (node->type == N_COMMAND)
+	{
+		return ;
+	}
 	// TODO: what does it mean that node->cmd is NULL?
-	else if (node->type == N_COMMAND && node->cmd)
-		handle_commands(node, data);
+	if (node->children[0]->type == N_COMMAND && node->cmd)
+	{
+		if ((left_pid = fork()) == -1)
+			free_exit(data, "Error: fork failed\n");
+		disable_ctrl_c_main();
+		handle_signals_child(left_pid);
+		if (left_pid == 0)
+		{
+			// dup2(STDOUT_FILENO, pipe_fd[1]);
+			// close(pipe_fd[1]);
+			handle_redirections(node->children[0], data);
+			handle_command(node->children[0], data);
+		}
+	}
+	if (node->children[1]->type == N_COMMAND && node->cmd)
+	{
+		if ((right_pid = fork()) == -1)
+			free_exit(data, "Error: fork failed\n");
+		disable_ctrl_c_main();
+		handle_signals_child(right_pid);
+		if (right_pid == 0)
+		{
+			dup2(pipe_fd[0], STDIN_FILENO);
+			close(pipe_fd[0]);
+			dup2(backup_stdout, STDOUT_FILENO);
+			close(backup_stdout);
+			handle_redirections(node->children[1], data);
+			handle_command(node->children[1], data);
+		}
+	}
 	else
 		return ;
+	dup2(backup_stdout, STDOUT_FILENO);
+	close(backup_stdout);
+	if (node->children[0]->type == N_COMMAND && node->cmd)
+	{
+		waitpid(left_pid, &left_status, 0);
+		if (WIFSIGNALED(left_status))
+		{
+			termsig = WTERMSIG(left_status);
+			if (termsig == SIGINT)
+				ft_putstr_fd("\n", STDOUT_FILENO);
+		}
+	}
+	waitpid(right_pid, &right_status, 0);
+	if (WIFSIGNALED(right_status))
+	{
+		termsig = WTERMSIG(right_status);
+		if (termsig == SIGINT)
+			ft_putstr_fd("\n", STDOUT_FILENO);
+	}
 }
