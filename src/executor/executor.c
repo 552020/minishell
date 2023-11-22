@@ -129,8 +129,8 @@ void	execute(t_data *data, t_ast_node *node)
 	}
 	else if (node->type == N_COMMAND)
 	{
-		if (!node->cmd)
-			return ;
+		// if (!node->cmd)
+		// 	return ;
 		handle_commands(node, data);
 	}
 }
