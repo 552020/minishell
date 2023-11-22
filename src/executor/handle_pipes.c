@@ -49,7 +49,6 @@ void	handle_command(t_ast_node *node, char *dir_paths, t_data *data)
 
 void	handle_commands(t_ast_node *node, char *dir_paths, t_data *data)
 {
-	printf("handle_commands\n");
 	// pid_t	pid;
 	// int		termsig;
 	// int		status;
@@ -64,9 +63,7 @@ void	handle_commands(t_ast_node *node, char *dir_paths, t_data *data)
 	// free_exit(data, "Error: fork failed\n");
 	// handle_signals_child(pid);
 	// if (pid == 0)
-	printf("handle_commands - before execute_cmd\n");
 	execute_cmd(node, dir_paths, data);
-	printf("handle_commands - after execute_cmd\n");
 	// waitpid(pid, NULL, 0);
 	// waitpid(pid, &status, 0);
 	// if (WIFSIGNALED(status))

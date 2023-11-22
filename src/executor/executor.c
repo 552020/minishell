@@ -83,8 +83,6 @@ void	execute_cmd(t_ast_node *node, char *dir_paths, t_data *data)
 	char	**cmd_and_args_arr;
 	int		cmd_and_args_count;
 
-	printf("inside execute_cmd\n");
-	printf("executing: %s\n", node->cmd);
 	handle_redirections(node, data);
 	path = NULL;
 	if (node->cmd)
@@ -107,11 +105,7 @@ void	execute_cmd(t_ast_node *node, char *dir_paths, t_data *data)
 		free_exit(data, "Error: malloc failed\n");
 	if (node->cmd && cmd_and_args_arr)
 	{
-		// is this correct or not? @Stefano
-		// I don't know. What do you mean? @Batu
-		// When I wrote this i wasn't sure for the proper exit in case of not found executable :D
-		// Now I am sure it is correct!@Stefano
-		printf("before execve\n");
+		// Check it if there is leak in case of error
 		if (execve(path, cmd_and_args_arr, data->env_arr) == -1)
 			perror("execve error\n");
 	}
@@ -130,12 +124,14 @@ void	execute(t_data *data, t_ast_node *node)
 		handle_command(node, dir_paths, data);
 	}
 	else if (node->type == N_PIPE)
+	{
+		data->ast_type = NOT_SINGLE_CMD_AST;
 		handle_pipe(node, dir_paths, data);
+	}
 	else if (node->type == N_COMMAND)
 	{
 		if (!node->cmd)
 			return ;
-		printf("executing: %s\n", node->cmd);
 		handle_commands(node, dir_paths, data);
 	}
 }
