@@ -193,7 +193,14 @@ typedef struct s_node_list {
   struct s_node_list *next;
 } t_node_list;
 
+typedef enum e_ast_type {
+  UNDEFINED,
+  SINGLE_CMD_AST,
+  NOT_SINGLE_CMD_AST
+} t_ast_type;
+
 typedef struct s_data {
+  t_ast_type ast_type;
   t_env_table *env_table;
   char **env_arr;
   size_t token_count;
@@ -274,7 +281,8 @@ int command_is_builtin(t_ast_node *node);
 void handle_command_node(t_ast_node *node, char *dir_paths, char **envp,
                          t_env_table *env_table, t_data *data);
 // void					handle_nodes(t_ast_node *node, char
-// *dir_paths, 							char **envp, t_env_table *env_table, t_data *data);
+// *dir_paths, 							char **envp,
+// t_env_table *env_table, t_data *data);
 void free_token_arr(t_token *token_arr);
 void free_lexeme_arr(t_lexeme *lexeme_arr);
 void free_key_value_pair(char **key_value);
@@ -289,5 +297,6 @@ void handle_signals_main(void);
 void handle_signals_child(int pid);
 void disable_ctrl_c_main(void);
 char *trim_ending_trailing_spaces(char const *str);
+void handle_command(t_ast_node *node, char *dir_paths, t_data *data);
 
 #endif

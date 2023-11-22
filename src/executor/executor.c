@@ -83,6 +83,8 @@ void	execute_cmd(t_ast_node *node, char *dir_paths, t_data *data)
 	char	**cmd_and_args_arr;
 	int		cmd_and_args_count;
 
+	printf("inside execute_cmd\n");
+	printf("executing: %s\n", node->cmd);
 	handle_redirections(node, data);
 	path = NULL;
 	if (node->cmd)
@@ -109,6 +111,7 @@ void	execute_cmd(t_ast_node *node, char *dir_paths, t_data *data)
 		// I don't know. What do you mean? @Batu
 		// When I wrote this i wasn't sure for the proper exit in case of not found executable :D
 		// Now I am sure it is correct!@Stefano
+		printf("before execve\n");
 		if (execve(path, cmd_and_args_arr, data->env_arr) == -1)
 			perror("execve error\n");
 	}
@@ -121,12 +124,18 @@ void	execute(t_data *data, t_ast_node *node)
 	char	*dir_paths;
 
 	dir_paths = ft_getenv(data->env_table->table, "PATH");
-	if (node->type == N_PIPE)
+	if (node->type == N_COMMAND && data->ast_type == UNDEFINED)
+	{
+		data->ast_type = SINGLE_CMD_AST;
+		handle_command(node, dir_paths, data);
+	}
+	else if (node->type == N_PIPE)
 		handle_pipe(node, dir_paths, data);
 	else if (node->type == N_COMMAND)
 	{
 		if (!node->cmd)
 			return ;
+		printf("executing: %s\n", node->cmd);
 		handle_commands(node, dir_paths, data);
 	}
 }
