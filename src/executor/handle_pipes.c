@@ -93,67 +93,20 @@ void	handle_pipe(t_ast_node *node, t_data *data)
 	close(pipe_fd[1]);
 	/* Traverse or execute left child */
 	handle_left_child(node->children[0], data, &left_pid, pipe_fd[0]);
-	// if (node->children[0]->type == N_PIPE)
-	// 	execute(data, node->children[0]);
-	// else if (node->children[0]->cmd != NULL
-	// 	&& command_is_builtin(node->children[0]))
-	// 	execute_builtin(node->children[0], data);
-	// else if ((node->children[0]->cmd != NULL)
-	// 	&& (node->children[0]->type == N_COMMAND))
-	// {
-	// 	left_pid = fork();
-	// 	if (left_pid == -1)
-	// 		free_exit(data, "Error: fork failed\n");
-	// 	handle_signals_child(left_pid);
-	// 	if (left_pid == 0)
-	// 	{
-	// 		close(pipe_fd[0]);
-	// 		// dup2(pipe_fd[1], STDOUT_FILENO);
-	// 		// close(pipe_fd[1]);
-	// 		handle_redirections(node->children[0], data);
-	// 		execute(data, node->children[0]);
-	// 		// handle_pipe(node->children[0], dir_paths, data);
-	// 		exit(EXIT_SUCCESS);
-	// 	}
-	// }
 	/* Traverse or execute right child */
 	dup2(stdout_backup, STDOUT_FILENO);
 	close(stdout_backup);
 	handle_right_child(node->children[1], data, &right_pid, pipe_fd[0]);
-	// // This will never happen except bonus
-	// if (node->children[1]->type == N_PIPE)
-	// 	execute(data, node->children[1]);
-	// // This could happen
-	// else if (node->children[1]->cmd != NULL
-	// 	&& command_is_builtin(node->children[1]))
-	// 	execute_builtin(node->children[1], data);
-	// else if ((node->children[1]->cmd != NULL)
-	// 	&& (node->children[1]->type == N_COMMAND))
-	// {
-	// 	right_pid = fork();
-	// 	if (right_pid == -1)
-	// 		free_exit(data, "Error: fork failed\n");
-	// 	handle_signals_child(right_pid);
-	// 	if (right_pid == 0)
-	// 	{
-	// 		// close(pipe_fd[1]);
-	// 		dup2(pipe_fd[0], STDIN_FILENO);
-	// 		close(pipe_fd[0]);
-	// 		handle_redirections(node->children[1], data);
-	// 		execute(data, node->children[1]);
-	// 		// handle_pipe(node->children[1], dir_paths, data);
-	// 		exit(EXIT_SUCCESS);
-	// 	}
-	// }
 	close(pipe_fd[0]);
 	close(pipe_fd[1]);
-	// TODO: probably we want the exit status of the child processes
 	if ((node->children[1]->cmd != NULL)
 		&& !(command_is_builtin(node->children[1])))
 		waitpid(right_pid, NULL, 0);
 	if ((node->children[0]->cmd != NULL)
 		&& !(command_is_builtin(node->children[0])))
 		waitpid(left_pid, NULL, 0);
+		// TODO: probably we want the exit status of the child processes
+
 }
 
 void	handle_left_child(t_ast_node *node,  t_data *data, pid_t *left_pid, int pipe_fd)
@@ -211,20 +164,3 @@ void	handle_right_child(t_ast_node *node, t_data *data, pid_t *right_pid, int pi
 		}
 	}
 }
-// void	handle_nodes(t_ast_node *node, char *dir_paths, char **envp,
-// 		t_env_table *env_table, t_data *data)
-// {
-// 	if (node->type == N_PIPE)
-// 		handle_pipe(node, dir_paths, data);
-// 	else
-// 		handle_command_node(node, dir_paths, envp, env_table, data);
-// }
-
-// void	handle_command_node(t_ast_node *node, char *dir_paths, char **envp,
-// 		t_env_table *env_table, t_data *data)
-// {
-// 	if (command_is_builtin(node))
-// 		execute_builtin(node, data);
-// 	else
-// 		execute_cmd(node, dir_paths, envp, data);
-// }
