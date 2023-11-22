@@ -298,5 +298,7 @@ void handle_signals_child(int pid);
 void disable_ctrl_c_main(void);
 char *trim_ending_trailing_spaces(char const *str);
 void handle_single_command(t_ast_node *node, t_data *data);
+void	handle_left_child(t_ast_node *node,  t_data *data, pid_t *left_pid, int pipe_fd);
+void	handle_right_child(t_ast_node *node, t_data *data, pid_t *right_pid, int pipe_fd);
 
 #endif
