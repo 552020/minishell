@@ -250,11 +250,11 @@ int handle_heredocs(t_ast_node *node, t_data *data);
 size_t count_pipes(t_lexeme *lexeme_arr, size_t token_count);
 unsigned int hash(const char *key);
 // not using these
-void handle_commands(t_ast_node *ast_root, char *dir_paths, t_data *data);
-void handle_pipe(t_ast_node *ast_root, char *dir_paths, t_data *data);
+void handle_commands(t_ast_node *ast_root, t_data *data);
+void handle_pipe(t_ast_node *ast_root, t_data *data);
 void handle_redirections(t_ast_node *node, t_data *data);
 
-void execute_cmd(t_ast_node *node, char *dir_paths, t_data *data);
+void execute_cmd(t_ast_node *node, t_data *data);
 void print_working_directory(void);
 void ft_exit(int exit_code, t_ast_node *node, char **envp, t_env_table *table);
 
@@ -278,7 +278,7 @@ int count_cmd_and_args(t_ast_node *node);
 char **build_cmd_and_args_arr(t_ast_node *node, int cmd_and_args_count,
                               t_data *data);
 int command_is_builtin(t_ast_node *node);
-void handle_command_node(t_ast_node *node, char *dir_paths, char **envp,
+void handle_command_node(t_ast_node *node, char **envp,
                          t_env_table *env_table, t_data *data);
 // void					handle_nodes(t_ast_node *node, char
 // *dir_paths, 							char **envp,
@@ -297,6 +297,6 @@ void handle_signals_main(void);
 void handle_signals_child(int pid);
 void disable_ctrl_c_main(void);
 char *trim_ending_trailing_spaces(char const *str);
-void handle_command(t_ast_node *node, char *dir_paths, t_data *data);
+void handle_single_command(t_ast_node *node, t_data *data);
 
 #endif

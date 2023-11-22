@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-void	handle_command(t_ast_node *node, char *dir_paths, t_data *data)
+void	handle_single_command(t_ast_node *node, t_data *data)
 {
 	pid_t	pid;
 	int		termsig;
@@ -31,7 +31,7 @@ void	handle_command(t_ast_node *node, char *dir_paths, t_data *data)
 	if (pid == 0)
 	{
 		handle_redirections(node, data);
-		execute_cmd(node, dir_paths, data);
+		execute_cmd(node, data);
 		exit(EXIT_SUCCESS);
 	}
 	waitpid(pid, &status, 0);
@@ -47,7 +47,7 @@ void	handle_command(t_ast_node *node, char *dir_paths, t_data *data)
 	}
 }
 
-void	handle_commands(t_ast_node *node, char *dir_paths, t_data *data)
+void	handle_commands(t_ast_node *node, t_data *data)
 {
 	// pid_t	pid;
 	// int		termsig;
@@ -63,7 +63,7 @@ void	handle_commands(t_ast_node *node, char *dir_paths, t_data *data)
 	// free_exit(data, "Error: fork failed\n");
 	// handle_signals_child(pid);
 	// if (pid == 0)
-	execute_cmd(node, dir_paths, data);
+	execute_cmd(node,data);
 	// waitpid(pid, NULL, 0);
 	// waitpid(pid, &status, 0);
 	// if (WIFSIGNALED(status))
@@ -78,19 +78,18 @@ void	handle_commands(t_ast_node *node, char *dir_paths, t_data *data)
 	// }
 }
 
-void	handle_pipe(t_ast_node *node, char *dir_paths, t_data *data)
+void	handle_pipe(t_ast_node *node, t_data *data)
 {
 	int		pipe_fd[2];
 	int		stdout_backup;
 	pid_t	left_pid;
 	pid_t	right_pid;
 
-	// TODO: we don't need dir_paths here aymore
-	(void)dir_paths;
 	/* Create Pipe */
 	if (pipe(pipe_fd) == -1)
 		free_exit(data, "Error: pipe failed\n");
 	stdout_backup = dup(STDOUT_FILENO);
+	dup2(pipe_fd[1], STDOUT_FILENO);
 	close(pipe_fd[1]);
 	/* Traverse or execute left child */
 	if (node->children[0]->type == N_PIPE)
@@ -119,7 +118,7 @@ void	handle_pipe(t_ast_node *node, char *dir_paths, t_data *data)
 	/* Traverse or execute right child */
 	dup2(stdout_backup, STDOUT_FILENO);
 	close(stdout_backup);
-	// This will never happen
+	// This will never happen except bonus
 	if (node->children[1]->type == N_PIPE)
 		execute(data, node->children[1]);
 	// This could happen
@@ -135,7 +134,7 @@ void	handle_pipe(t_ast_node *node, char *dir_paths, t_data *data)
 		handle_signals_child(right_pid);
 		if (right_pid == 0)
 		{
-			close(pipe_fd[1]);
+			// close(pipe_fd[1]);
 			dup2(pipe_fd[0], STDIN_FILENO);
 			close(pipe_fd[0]);
 			handle_redirections(node->children[1], data);
@@ -148,10 +147,10 @@ void	handle_pipe(t_ast_node *node, char *dir_paths, t_data *data)
 	close(pipe_fd[1]);
 	// TODO: probably we want the exit status of the child processes
 	if ((node->children[1]->cmd != NULL)
-		&& (command_is_builtin(node->children[1])))
+		&& !(command_is_builtin(node->children[1])))
 		waitpid(right_pid, NULL, 0);
 	if ((node->children[0]->cmd != NULL)
-		&& (command_is_builtin(node->children[0])))
+		&& !(command_is_builtin(node->children[0])))
 		waitpid(left_pid, NULL, 0);
 }
 

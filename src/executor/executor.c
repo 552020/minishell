@@ -77,12 +77,14 @@ char	**build_cmd_and_args_arr(t_ast_node *node, int cmd_and_args_count,
 	return (cmd_and_args_arr);
 }
 
-void	execute_cmd(t_ast_node *node, char *dir_paths, t_data *data)
+void	execute_cmd(t_ast_node *node, t_data *data)
 {
 	char	*path;
 	char	**cmd_and_args_arr;
 	int		cmd_and_args_count;
+	char	*dir_paths;
 
+	dir_paths = ft_getenv(data->env_table->table, "PATH");
 	handle_redirections(node, data);
 	path = NULL;
 	if (node->cmd)
@@ -115,23 +117,20 @@ void	execute_cmd(t_ast_node *node, char *dir_paths, t_data *data)
 
 void	execute(t_data *data, t_ast_node *node)
 {
-	char	*dir_paths;
-
-	dir_paths = ft_getenv(data->env_table->table, "PATH");
 	if (node->type == N_COMMAND && data->ast_type == UNDEFINED)
 	{
 		data->ast_type = SINGLE_CMD_AST;
-		handle_command(node, dir_paths, data);
+		handle_single_command(node, data);
 	}
 	else if (node->type == N_PIPE)
 	{
 		data->ast_type = NOT_SINGLE_CMD_AST;
-		handle_pipe(node, dir_paths, data);
+		handle_pipe(node, data);
 	}
 	else if (node->type == N_COMMAND)
 	{
 		if (!node->cmd)
 			return ;
-		handle_commands(node, dir_paths, data);
+		handle_commands(node, data);
 	}
 }
