@@ -91,8 +91,12 @@ typedef enum e_token_type
 	// 7 - " the whole string in between " quotes included
 	T_SINGLE_QUOTE,
 	// 8 - ' the whole string in between ' quotes included
-	T_ENV_VAR, // 9 - $ followed by a valid variable name
-	T_END,     // 10 - End of token array
+	T_ENV_VAR,           // 9 - $ followed by a valid variable name
+	T_END,               // 10 - End of token array
+	T_LOG_OR,            // 11 - ||
+	T_LOG_AND,           // 12 - &&
+	T_PARENTHESES_OPEN,  // 13 - (
+	T_PARENTHESES_CLOSE, // 14 - )
 }						t_token_type;
 
 typedef struct s_token
