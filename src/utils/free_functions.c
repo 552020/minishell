@@ -30,12 +30,16 @@ void	free_lexeme_arr(t_lexeme *lexeme_arr)
 		{
 			free(lexeme_arr[i].str);
 			lexeme_arr[i].str = NULL;
+		}
+		if (lexeme_arr[i].original != NULL)
+		{
 			free(lexeme_arr[i].original);
 			lexeme_arr[i].original = NULL;
 		}
 		i++;
 	}
-	free(lexeme_arr);
+	if (lexeme_arr)
+		free(lexeme_arr);
 }
 
 void	free_key_value_pair(char **key_value)

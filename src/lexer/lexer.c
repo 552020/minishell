@@ -9,7 +9,7 @@ void	create_lexeme_arr(t_data *data)
 		free_exit(data, "Error: malloc lexeme_arr failed\n");
 	ft_memset(data->lexeme_arr, 0, sizeof(t_lexeme) * (data->token_count + 1));
 	i = 0;
-	while (i < data->token_count)
+	while (i < data->token_count + 1)
 	{
 		data->lexeme_arr[i].status = NOT_LEXED;
 		data->lexeme_arr[i].type = L_UNDEFINED;
@@ -76,7 +76,6 @@ t_lexeme	*lexer(t_data *data)
 		i++;
 	}
 	data->lexeme_arr[i].type = L_END;
-	data->lexeme_arr[i].str = NULL;
 	command_and_args(data->token_count, data->lexeme_arr);
 	if (data->token_arr[i].type == T_END)
 		data->lexeme_arr[i].type = L_END;
