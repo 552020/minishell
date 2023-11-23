@@ -70,12 +70,21 @@ t_lexeme	*lexer(t_data *data)
 		else if (data->token_arr[i].type == T_HEREDOC)
 			heredoc_wrapper(data->lexeme_arr, data->token_arr, &i, data);
 		else if (data->token_arr[i].type == T_WORD)
+		{
 			undefined_wrapper(data->lexeme_arr, data->token_arr, &i, data);
+			printf("data->lexeme_arr[%zu].type = %d\n", i,
+				data->lexeme_arr[i].type);
+			printf("data->lexeme_arr[%zu].type = %d\n", i,
+				data->lexeme_arr[i].type);
+			printf("data->lexeme_arr[%zu].str = %s\n", i,
+				data->lexeme_arr[i].str);
+		}
 		else
 			continue ;
 		i++;
 	}
 	data->lexeme_arr[i].type = L_END;
+	data->lexeme_arr[i].str = NULL;
 	command_and_args(data->token_count, data->lexeme_arr);
 	if (data->token_arr[i].type == T_END)
 		data->lexeme_arr[i].type = L_END;
