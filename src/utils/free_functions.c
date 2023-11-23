@@ -28,9 +28,9 @@ void	free_lexeme_arr(t_lexeme *lexeme_arr, t_data *data)
 	{
 		if (lexeme_arr[i].str != NULL)
 		{
-			printf("freeing lexeme_arr[%zu].str\n", i);
-			printf("lexeme_arr[%zu].str = %s\n", i, lexeme_arr[i].str);
-			printf("lexeme_arr[%zu].type = %d\n", i, lexeme_arr[i].type);
+			// printf("freeing lexeme_arr[%zu].str\n", i);
+			// printf("lexeme_arr[%zu].str = %s\n", i, lexeme_arr[i].str);
+			// printf("lexeme_arr[%zu].type = %d\n", i, lexeme_arr[i].type);
 			free(lexeme_arr[i].str);
 			lexeme_arr[i].str = NULL;
 		}

@@ -10,7 +10,7 @@ t_lexeme	redirect_in_lexeme(t_token *token, t_data *data)
 	lexeme.str = ft_strdup(token->str);
 	if (!lexeme.str)
 		free_exit(data, "Error: malloc lexeme.str failed\n");
-	lexeme.original = NULL;
+	// lexeme.original = NULL;
 	// lexeme.original = ft_strdup(token->str);
 	// if (!lexeme.original)
 	// free_exit(data, "Error: malloc lexeme.original failed\n");
@@ -26,7 +26,7 @@ t_lexeme	redirect_in_target_lexeme(t_token *token, t_data *data)
 	lexeme.str = ft_strdup(token->str);
 	if (!lexeme.str)
 		free_exit(data, "Error: malloc lexeme.str failed\n");
-	lexeme.original = NULL;
+	// lexeme.original = NULL;
 	// lexeme.original = ft_strdup(token->str);
 	// if (!lexeme.original)
 	// free_exit(data, "Error: malloc lexeme.original failed\n");
@@ -44,7 +44,7 @@ t_lexeme	redirect_out_lexeme(t_token *token, t_data *data)
 	lexeme.str = ft_strdup(token->str);
 	if (!lexeme.str)
 		free_exit(data, "Error: malloc lexeme.str failed\n");
-	lexeme.original = NULL;
+	// lexeme.original = NULL;
 	// lexeme.original = ft_strdup(token->str);
 	// if (!lexeme.original)
 	// free_exit(data, "Error: malloc lexeme.original failed\n");
@@ -60,7 +60,7 @@ t_lexeme	redirect_out_target_lexeme(t_token *token, t_data *data)
 	lexeme.str = ft_strdup(token->str);
 	if (!lexeme.str)
 		free_exit(data, "Error: malloc lexeme.str failed\n");
-	lexeme.original = NULL;
+	// lexeme.original = NULL;
 	// lexeme.original = ft_strdup(token->str);
 	// if (!lexeme.original)
 	// free_exit(data, "Error: malloc lexeme.original failed\n");
