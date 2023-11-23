@@ -13,7 +13,7 @@ UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S), Darwin)
     INCLUDES = -I./include -I./libft/include -I/opt/homebrew/opt/readline/include -I./src/tokenizer/include 
 else
-    INCLUDES = -I./include -I./libft/include
+    INCLUDES = -I./include -I./libft/include -I./src/tokenizer/include
 endif
 
 ifeq ($(UNAME_S), Darwin)
