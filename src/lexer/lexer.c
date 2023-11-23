@@ -14,7 +14,7 @@ void	create_lexeme_arr(t_data *data)
 		data->lexeme_arr[i].status = NOT_LEXED;
 		data->lexeme_arr[i].type = L_UNDEFINED;
 		data->lexeme_arr[i].str = NULL;
-		data->lexeme_arr[i].original = NULL;
+		// data->lexeme_arr[i].original = NULL;
 		i++;
 	}
 }

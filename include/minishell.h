@@ -162,8 +162,8 @@ typedef enum e_lexeme_status
 typedef struct s_lexeme
 {
 	t_lexeme_type		type;
-	char *str;      // The actual value (could be after variable substitution)
-	char *original; // Original value (useful for environment variables)
+	char *str; // The actual value (could be after variable substitution)
+	// char *original; // Original value (useful for environment variables)
 	t_lexeme_status		status;
 }						t_lexeme;
 
