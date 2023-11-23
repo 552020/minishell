@@ -66,7 +66,7 @@ t_lexeme	word_lexeme(t_token *token, t_data *data)
 	t_lexeme lexeme;
 
 	lexeme.type = L_UNDEFINED;
-	printf("token->str: %s\n", token->str);
+	// printf("token->str: %s\n", token->str);
 	lexeme.str = ft_strdup(token->str);
 	if (!lexeme.str)
 		free_exit(data, "Error: malloc lexeme.str failed\n");
@@ -74,6 +74,6 @@ t_lexeme	word_lexeme(t_token *token, t_data *data)
 	// if (!lexeme.original)
 	// free_exit(data, "Error: malloc lexeme.original failed\n");
 	lexeme.status = NOT_LEXED;
-	printf("lexeme.str: %s\n", lexeme.str);
+	// printf("lexeme.str: %s\n", lexeme.str);
 	return (lexeme);
 }

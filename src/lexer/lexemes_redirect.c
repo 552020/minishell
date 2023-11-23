@@ -4,8 +4,8 @@ t_lexeme	redirect_in_lexeme(t_token *token, t_data *data)
 {
 	t_lexeme	lexeme;
 
-	(void)data;
-	(void)token;
+	// (void)data;
+	// (void)token;
 	lexeme.type = L_REDIRECT_INPUT;
 	lexeme.str = ft_strdup(token->str);
 	if (!lexeme.str)
@@ -36,8 +36,8 @@ t_lexeme	redirect_out_lexeme(t_token *token, t_data *data)
 {
 	t_lexeme	lexeme;
 
-	(void)data;
-	(void)token;
+	// (void)data;
+	// (void)token;
 	lexeme.type = L_REDIRECT_OUTPUT;
 	lexeme.str = ft_strdup(token->str);
 	if (!lexeme.str)
