@@ -9,16 +9,20 @@ int	ft_isspace(int c)
 		return (0);
 }
 
-int	isspecialchar(char c)
+int	isspecialchar(const char *c)
 {
-	if (c == '<' || c == '>' || c == '|' || c == '$' || c == '"' || c == '\'')
+	// if (c == '<' || c == '>' || c == '|' || c == '$' || c == '"' || c == '\''
+	// || c == '(' || c == ')' || c == '&')
+	if (*c == '<' || *c == '>' || *c == '|' || *c == '$' || *c == '"'
+		|| *c == '\'' || *c == '(' || *c == ')' || (*c == '&' && *(c
+		+ 1) == '&'))
 		return (1);
 	return (0);
 }
 
 int	isregularchar(char c, const char *str)
 {
-	if (ft_isspace(c) || isspecialchar(c))
+	if (ft_isspace(c) || isspecialchar(str))
 		return (0);
 	if (c == '\'' || c == '"')
 	{

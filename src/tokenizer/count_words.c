@@ -4,7 +4,7 @@ void	count_word_special_char(const char **str_ptr, size_t *words)
 {
 	char	quote;
 
-	if (isspecialchar(**str_ptr))
+	if (isspecialchar(*str_ptr))
 	{
 		(*words)++;
 		if (**str_ptr == '$')
@@ -27,6 +27,18 @@ void	count_word_special_char(const char **str_ptr, size_t *words)
 				(*str_ptr)++;
 			(*str_ptr)++;
 		}
+		else if (**str_ptr == '&' && *(*str_ptr + 1) == '&')
+			(*str_ptr) += 2;
+		else if (**str_ptr == '|')
+		{
+			(*str_ptr)++;
+			if (**str_ptr == '|')
+				(*str_ptr)++;
+		}
+		else if (**str_ptr == '(')
+			(*str_ptr)++;
+		else if (**str_ptr == ')')
+			(*str_ptr)++;
 		else
 			(*str_ptr)++;
 	}
@@ -42,7 +54,7 @@ size_t	count_words_tokenizer(const char *str)
 		skip_spaces(&str);
 		if (*str == '\0')
 			break ;
-		if (isspecialchar(*str))
+		if (isspecialchar(str))
 			count_word_special_char(&str, &words);
 		else if (isregularchar(*str, str))
 		{
