@@ -94,10 +94,10 @@ typedef enum e_token_type
 	T_ENV_VAR,           // 9 - $ followed by a valid variable name
 	T_END,               // 10 - End of token array
 	T_UNKNOWN,           // 11 - Unknown token
-	T_LOG_OR,            // 11 - ||
-	T_LOG_AND,           // 12 - &&
-	T_PARENTHESES_OPEN,  // 13 - (
-	T_PARENTHESES_CLOSE, // 14 - )
+	T_LOG_OR,            // 12 - ||
+	T_LOG_AND,           // 13 - &&
+	T_PARENTHESES_OPEN,  // 14 - (
+	T_PARENTHESES_CLOSE, // 15 - )
 }						t_token_type;
 
 typedef struct s_token

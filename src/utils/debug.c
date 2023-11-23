@@ -28,6 +28,16 @@ void	print_token_arr(t_token *token_arr, size_t token_count)
 			token_type = "T_SINGLE_QUOTE";
 		else if (token_arr[i].type == T_ENV_VAR)
 			token_type = "T_ENV_VAR";
+		else if (token_arr[i].type == T_LOG_OR)
+			token_type = "T_LOG_OR";
+		else if (token_arr[i].type == T_LOG_AND)
+			token_type = "T_LOG_AND";
+		else if (token_arr[i].type == T_PARENTHESES_OPEN)
+			token_type = "T_PARENTHESES_OPEN";
+		else if (token_arr[i].type == T_PARENTHESES_CLOSE)
+			token_type = "T_PARENTHESES_CLOSE";
+		else if (token_arr[i].type == T_UNKNOWN)
+			token_type = "T_UNKNOWN";
 		else if (token_arr[i].type == T_END)
 			token_type = "T_END";
 		else
