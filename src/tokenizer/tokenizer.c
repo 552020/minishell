@@ -15,10 +15,20 @@ char	*strip_ending_trailing_spaces(char const *str)
 t_token	*create_token_array(t_data *data)
 {
 	t_token	*token_arr;
+	size_t	idx;
 
 	token_arr = (t_token *)ft_calloc(data->token_count + 1, sizeof(t_token));
 	if (!token_arr)
 		free_exit(data, "Error: ft_calloc failed\n");
+	idx = 0;
+	while (idx < data->token_count - 1)
+	{
+		token_arr[idx].type = T_UNKNOWN;
+		token_arr[idx].str = NULL;
+		idx++;
+	}
+	token_arr[idx].type = T_END;
+	token_arr[idx].str = NULL;
 	return (token_arr);
 }
 
@@ -32,6 +42,14 @@ t_token	*tokenizer(t_data *data, const char *str)
 		skip_spaces(&str);
 		if (isregularchar(*str, str))
 			assign_word(&str, data, &idx);
+		else if (*str == '(')
+			assign_parentheses_open(&str, data, &idx);
+		else if (*str == ')')
+			assign_parentheses_close(&str, data, &idx);
+		else if (*str == '&' && *(str + 1) == '&')
+			assign_log_and(&str, data, &idx);
+		else if (*str == '|' && *(str + 1) == '|')
+			assign_log_or(&str, data, &idx);
 		else if (*str == '<' || *str == '>')
 			assign_redirect_in_out_heredoc_append(&str, data, &idx);
 		else if (*str == '|')

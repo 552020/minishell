@@ -17,9 +17,6 @@ void	assign_word(const char **str_ptr, t_data *data, size_t *idx)
 void	assign_pipe(const char **str_ptr, t_data *data, size_t *idx)
 {
 	data->token_arr[*idx].type = T_PIPE;
-	data->token_arr[*idx].str = ft_strdup("|");
-	if (!data->token_arr[*idx].str)
-		free_exit(data, "Error: ft_strdup failed\n");
 	(*idx)++;
 	(*str_ptr)++;
 }

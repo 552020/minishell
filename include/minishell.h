@@ -5,6 +5,7 @@
 // if you remove this comments the formatter
 // will put the includes in the alphabetical order
 // and it will be a mess
+#include "tokenizer.h"
 #include <errno.h>
 #include <fcntl.h> // for O_RDONLY etc.
 #include <readline/history.h>

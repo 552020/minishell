@@ -6,16 +6,10 @@ void	assign_redirect_in_heredoc(const char **str_ptr, t_data *data,
 	char const	*start;
 
 	data->token_arr[*idx].type = T_REDIRECT_IN;
-	data->token_arr[*idx].str = ft_strdup("<");
-	if (!data->token_arr[*idx].str)
-		free_exit(data, "Error: ft_strdup failed\n");
 	if (*(*str_ptr + 1) == '<')
 	{
 		data->token_arr[*idx].type = T_HEREDOC;
 		free(data->token_arr[*idx].str);
-		data->token_arr[*idx].str = ft_strdup("<<");
-		if (!data->token_arr[*idx].str)
-			free_exit(data, "Error: ft_strdup failed\n");		
 		(*str_ptr)++;
 		while (ft_isspace(*(*str_ptr + 1)))
 			(*str_ptr)++;
@@ -41,16 +35,9 @@ void	assign_redirect_out_append(const char **str_ptr, t_data *data,
 		size_t *idx)
 {
 	data->token_arr[*idx].type = T_REDIRECT_OUT;
-	data->token_arr[*idx].str = ft_strdup(">");
-	if (!data->token_arr[*idx].str)
-		free_exit(data, "Error: ft_strdup failed\n");
 	if (*(*str_ptr + 1) == '>')
 	{
 		data->token_arr[*idx].type = T_REDIRECT_APPEND;
-		free(data->token_arr[*idx].str);
-		data->token_arr[*idx].str = ft_strdup(">>");
-		if (!data->token_arr[*idx].str)
-			free_exit(data, "Error: ft_strdup failed\n");
 		(*str_ptr)++;
 	}
 }
