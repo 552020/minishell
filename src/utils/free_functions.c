@@ -19,12 +19,12 @@ void	free_token_arr(t_token *token_arr)
 	free(token_arr);
 }
 
-void	free_lexeme_arr(t_lexeme *lexeme_arr)
+void	free_lexeme_arr(t_lexeme *lexeme_arr, t_data *data)
 {
 	size_t	i;
 
 	i = 0;
-	while (lexeme_arr[i].type != L_END)
+	while (i < data->token_count + 1)
 	{
 		if (lexeme_arr[i].str != NULL)
 		{
@@ -66,7 +66,7 @@ void	free_data(t_data *data)
 	if (data->token_arr)
 		free_token_arr(data->token_arr);
 	if (data->lexeme_arr)
-		free_lexeme_arr(data->lexeme_arr);
+		free_lexeme_arr(data->lexeme_arr, data);
 }
 
 void	free_exit(t_data *data, char *error_message)

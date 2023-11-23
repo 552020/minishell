@@ -14,7 +14,7 @@ void	parse(t_data *data)
 		printf("\n*** AST nodes content ***\n\n");
 		debug_ast(data->ast_root);
 	}
-	free_lexeme_arr(data->lexeme_arr);
+	free_lexeme_arr(data->lexeme_arr, data);
 	data->lexeme_arr = NULL;
 }
 
