@@ -61,6 +61,16 @@ t_lexeme	*lexer(t_data *data)
 				data);
 		else if (data->token_arr[i].type == T_PIPE)
 			data->lexeme_arr[i] = pipe_lexeme(&data->token_arr[i], data);
+		else if (data->token_arr[i].type == T_LOG_OR)
+			data->lexeme_arr[i] = log_or_lexeme(&data->token_arr[i], data);
+		else if (data->token_arr[i].type == T_LOG_AND)
+			data->lexeme_arr[i] = log_and_lexeme(&data->token_arr[i], data);
+		else if (data->token_arr[i].type == T_PARENTHESES_OPEN)
+			data->lexeme_arr[i] = parentheses_open_lexeme(&data->token_arr[i],
+				data);
+		else if (data->token_arr[i].type == T_PARENTHESES_CLOSE)
+			data->lexeme_arr[i] = parentheses_close_lexeme(&data->token_arr[i],
+				data);
 		else if (data->token_arr[i].type == T_REDIRECT_IN)
 			redirect_in_wrapper(&i, data->token_count, data);
 		else if (data->token_arr[i].type == T_REDIRECT_OUT)
@@ -86,7 +96,8 @@ t_lexeme	*lexer(t_data *data)
 int	lexeme_is_operator(t_lexeme_type type)
 {
 	if (type == L_PIPE || type == L_REDIRECT_INPUT || type == L_REDIRECT_OUTPUT
-		|| type == L_REDIRECT_APPEND || type == L_HEREDOC)
+		|| type == L_REDIRECT_APPEND || type == L_HEREDOC || type == L_LOG_OR
+		|| type == L_LOG_AND)
 		return (1);
 	return (0);
 }
@@ -95,6 +106,7 @@ int	check_syntax_error(t_lexeme *lexeme_arr)
 {
 	int	i;
 
+	// TODO: parentheses has special rules and needs to be balanced
 	i = 0;
 	while (lexeme_arr[i].type != L_END)
 	{

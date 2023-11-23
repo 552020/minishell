@@ -15,6 +15,52 @@ t_lexeme	pipe_lexeme(t_token *token, t_data *data)
 	return (lexeme);
 }
 
+t_lexeme	log_or_lexeme(t_token *token, t_data *data)
+{
+	t_lexeme	lexeme;
+
+	(void)token;
+	(void)data;
+	lexeme.type = L_LOG_OR;
+	lexeme.str = NULL;
+	lexeme.status = LEXED;
+	return (lexeme);
+}
+
+t_lexeme	log_and_lexeme(t_token *token, t_data *data)
+{
+	t_lexeme	lexeme;
+
+	(void)token;
+	(void)data;
+	lexeme.type = L_LOG_AND;
+	lexeme.str = NULL;
+	lexeme.status = LEXED;
+	return (lexeme);
+}
+
+t_lexeme	parentheses_open_lexeme(t_token *token, t_data *data)
+{
+	t_lexeme	lexeme;
+
+	(void)token;
+	(void)data;
+	lexeme.type = L_PARENTHESES_OPEN;
+	lexeme.str = NULL;
+	lexeme.status = LEXED;
+	return (lexeme);
+}
+t_lexeme	parentheses_close_lexeme(t_token *token, t_data *data)
+{
+	t_lexeme	lexeme;
+
+	(void)token;
+	(void)data;
+	lexeme.type = L_PARENTHESES_CLOSE;
+	lexeme.str = NULL;
+	lexeme.status = LEXED;
+	return (lexeme);
+}
 /* To this point we don't have a delimiter token anymore */
 t_lexeme	redirect_append_lexeme(t_token *token, t_data *data)
 {

@@ -149,6 +149,10 @@ typedef enum e_lexeme_type
 	L_HEREDOC_DELIMITER, // Delimiter for heredoc (<<)
 	L_FILENAME_STDIN,    // Filename used in redirections
 	L_FILENAME_STDOUT,   // Filename used in redirections
+	L_LOG_AND,           // Logical AND operator (&&)
+	L_LOG_OR,            // Logical OR operator (||)
+	L_PARENTHESES_OPEN,  // Open parentheses
+	L_PARENTHESES_CLOSE, // Close parentheses
 	L_UNDEFINED,         // Undefined lexeme type
 	L_END                // End of lexeme array
 }						t_lexeme_type;
@@ -169,6 +173,10 @@ typedef struct s_lexeme
 
 t_lexeme				word_lexeme(t_token *token, t_data *data);
 t_lexeme				pipe_lexeme(t_token *token, t_data *data);
+t_lexeme				log_or_lexeme(t_token *token, t_data *data);
+t_lexeme				log_and_lexeme(t_token *token, t_data *data);
+t_lexeme				parentheses_open_lexeme(t_token *token, t_data *data);
+t_lexeme				parentheses_close_lexeme(t_token *token, t_data *data);
 t_lexeme				redirect_in_lexeme(t_token *token, t_data *data);
 t_lexeme				redirect_out_lexeme(t_token *token, t_data *data);
 t_lexeme				redirect_in_target_lexeme(t_token *token, t_data *data);

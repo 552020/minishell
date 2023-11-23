@@ -76,6 +76,14 @@ void	print_lexeme_arr(t_lexeme *lexeme_arr, size_t lexeme_count)
 			lexeme_type = "L_FILENAME_STDIN";
 		else if (lexeme_arr[i].type == L_FILENAME_STDOUT)
 			lexeme_type = "L_FILENAME_STDOUT";
+		else if (lexeme_arr[i].type == L_LOG_AND)
+			lexeme_type = "L_LOG_AND";
+		else if (lexeme_arr[i].type == L_LOG_OR)
+			lexeme_type = "L_LOG_OR";
+		else if (lexeme_arr[i].type == L_PARENTHESES_OPEN)
+			lexeme_type = "L_PARENTHESES_OPEN";
+		else if (lexeme_arr[i].type == L_PARENTHESES_CLOSE)
+			lexeme_type = "L_PARENTHESES_CLOSE";
 		else if (lexeme_arr[i].type == L_UNDEFINED)
 			lexeme_type = "L_UNDEFINED";
 		else if (lexeme_arr[i].type == L_END)
