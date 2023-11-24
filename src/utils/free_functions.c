@@ -45,6 +45,45 @@ void	free_lexeme_arr(t_lexeme *lexeme_arr, t_data *data)
 		free(lexeme_arr);
 }
 
+void	free_str_arr(char **arr)
+{
+	int	i;
+
+	i = 0;
+	while (arr[i])
+	{
+		free(arr[i]);
+		i++;
+	}
+	free(arr);
+}
+
+void	free_ast(t_ast_node *node)
+{
+	if (node == NULL)
+		return ;
+	if (node->type == N_COMMAND)
+	{
+		if (node->cmd)
+			free(node->cmd);
+		if (node->args)
+			free_str_arr(node->args);
+		if (node->input_file)
+			free(node->input_file);
+		if (node->output_file)
+			free(node->output_file);
+		if (node->heredoc_del)
+			free(node->heredoc_del);
+	}
+	else if (node->type == N_PIPE)
+	{
+		free_ast(node->children[0]);
+		free_ast(node->children[1]);
+	}
+	free(node);
+	node = NULL;
+}
+
 void	free_key_value_pair(char **key_value)
 {
 	int	i;
