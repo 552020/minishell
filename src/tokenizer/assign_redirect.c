@@ -63,10 +63,6 @@ void	assign_redirect_in_out_heredoc_append(const char **str_ptr,
 	else
 		assign_redirect_out_append(str_ptr, data, idx);
 	if (*str_ptr && **str_ptr)
-	{
-		(*idx)++;
 		(*str_ptr)++;
-	}
-	// (*idx)++;
-	// (*str_ptr)++;
+	(*idx)++;
 }
