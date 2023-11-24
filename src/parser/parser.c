@@ -18,15 +18,60 @@ void	parse(t_data *data)
 	data->lexeme_arr = NULL;
 }
 
+int	find_parenthesis_sibling(t_lexeme *lexemes, int start, int end)
+{
+	int	i;
+	int	parentheses_balance;
+
+	(void)end;
+	i = start;
+	parentheses_balance = 0;
+	while (i >= start)
+	{
+		if (lexemes[i].type == L_PARENTHESIS_CLOSED)
+			parentheses_balance++;
+		else if (lexemes[i].type == L_PARENTHESIS_OPEN)
+			parentheses_balance--;
+		if (parentheses_balance == 0)
+			return (i);
+		i--;
+	}
+	return (-1);
+}
+
 t_ast_node	*parser(t_lexeme *lexemes, int start, int end, t_data *data)
 {
 	int			i;
 	t_ast_node	*node;
+	int			parenthesis_sibling;
 
 	node = NULL;
 	i = end;
 	while (i >= start)
 	{
+		if (lexemes[i].type == L_PARENTHESIS_CLOSED)
+		{
+			parenthesis_sibling = find_parenthesis_sibling(lexemes, start, end);
+			// This will never happen because the lexer will catch it before
+			// we need to implement it though
+			if (parenthesis_sibling == -1)
+				free_exit(data, "Error: parentheses not balanced\n");
+			else if (parenthesis_sibling == start)
+			{
+				node = create_node(N_PARENTHESES);
+				build_parentheses_node(node, lexemes, start + 1, end - 1, data);
+				return (node);
+			}
+			else if (parenthesis_sibling > start)
+			{
+				i = parenthesis_sibling - 1;
+			}
+		}
+		if (lexemes[i].type == L_PARENTHESIS_OPEN)
+		{
+			// This will never happen because on parenthesis open the parser will skip to the lexeme after the parenthesis
+			continue ;
+		}
 		if (lexemes[i].type == L_PIPE)
 		{
 			node = create_node(N_PIPE);

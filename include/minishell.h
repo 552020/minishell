@@ -140,21 +140,21 @@ typedef enum e_lexeme_type
 {
 	L_COMMAND,
 	// Command to be executed (could be built-in or external)
-	L_ARGUMENT,          // Argument to a command
-	L_PIPE,              // Pipe operator, signaling chaining of commands
-	L_REDIRECT_INPUT,    // Input redirection operator (<)
-	L_REDIRECT_OUTPUT,   // Output redirection operator (>)
-	L_REDIRECT_APPEND,   // Append redirection operator (>>)
-	L_HEREDOC,           // Heredoc redirection operator (<<)
-	L_HEREDOC_DELIMITER, // Delimiter for heredoc (<<)
-	L_FILENAME_STDIN,    // Filename used in redirections
-	L_FILENAME_STDOUT,   // Filename used in redirections
-	L_LOG_AND,           // Logical AND operator (&&)
-	L_LOG_OR,            // Logical OR operator (||)
-	L_PARENTHESES_OPEN,  // Open parentheses
-	L_PARENTHESES_CLOSE, // Close parentheses
-	L_UNDEFINED,         // Undefined lexeme type
-	L_END                // End of lexeme array
+	L_ARGUMENT,           // Argument to a command
+	L_PIPE,               // Pipe operator, signaling chaining of commands
+	L_REDIRECT_INPUT,     // Input redirection operator (<)
+	L_REDIRECT_OUTPUT,    // Output redirection operator (>)
+	L_REDIRECT_APPEND,    // Append redirection operator (>>)
+	L_HEREDOC,            // Heredoc redirection operator (<<)
+	L_HEREDOC_DELIMITER,  // Delimiter for heredoc (<<)
+	L_FILENAME_STDIN,     // Filename used in redirections
+	L_FILENAME_STDOUT,    // Filename used in redirections
+	L_LOG_AND,            // Logical AND operator (&&)
+	L_LOG_OR,             // Logical OR operator (||)
+	L_PARENTHESIS_OPEN,   // Open parentheses
+	L_PARENTHESIS_CLOSED, // Close parentheses
+	L_UNDEFINED,          // Undefined lexeme type
+	L_END                 // End of lexeme array
 }						t_lexeme_type;
 
 typedef enum e_lexeme_status
@@ -207,6 +207,9 @@ typedef enum e_node_type
 {
 	N_PIPE,
 	N_COMMAND,
+	N_PARENTHESES,
+	N_LOG_OR,
+	N_LOG_AND,
 }						t_node_type;
 
 typedef struct s_ast_node
@@ -242,6 +245,9 @@ typedef struct s_data
 t_ast_node				*parser(t_lexeme *lexemes, int start, int end,
 							t_data *data);
 t_ast_node				*build_cmd_node(t_lexeme *lexemes, int start, int end,
+							t_data *data);
+t_ast_node				*build_parentheses_node(t_ast_node *node,
+							t_lexeme *lexemes, int start, int end,
 							t_data *data);
 t_ast_node				*create_node(t_node_type type);
 void					append_first_arg(t_ast_node *node, char *arg);

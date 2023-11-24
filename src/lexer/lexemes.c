@@ -45,7 +45,7 @@ t_lexeme	parentheses_open_lexeme(t_token *token, t_data *data)
 
 	(void)token;
 	(void)data;
-	lexeme.type = L_PARENTHESES_OPEN;
+	lexeme.type = L_PARENTHESIS_OPEN;
 	lexeme.str = NULL;
 	lexeme.status = LEXED;
 	return (lexeme);
@@ -56,7 +56,7 @@ t_lexeme	parentheses_close_lexeme(t_token *token, t_data *data)
 
 	(void)token;
 	(void)data;
-	lexeme.type = L_PARENTHESES_CLOSE;
+	lexeme.type = L_PARENTHESIS_CLOSED;
 	lexeme.str = NULL;
 	lexeme.status = LEXED;
 	return (lexeme);
