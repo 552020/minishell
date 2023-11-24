@@ -86,6 +86,17 @@ t_ast_node	*parser(t_lexeme *lexemes, int start, int end, t_data *data)
 				node->children[0] = build_cmd_node(lexemes, start, end, data);
 			return (node);
 		}
+		if (lexemes[i].type == L_LOG_AND || lexemes[i].type == L_LOG_OR)
+		{
+			if (lexemes[i].type == L_LOG_OR)
+				node = create_node(N_LOG_OR);
+			else
+				node = create_node(N_LOG_AND);
+			node->children[1] = parser(lexemes, i + 1, end, data);
+			end = i - 1;
+			i = end;
+			node->children[0] = parser(lexemes, start, end, data);
+		}
 		i--;
 	}
 	node = build_cmd_node(lexemes, start, end, data);
