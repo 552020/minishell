@@ -45,7 +45,7 @@ void	free_lexeme_arr(t_lexeme *lexeme_arr, t_data *data)
 		free(lexeme_arr);
 }
 
-void	free_str_arr(char **arr)
+void	free_str_arr_ast(char **arr)
 {
 	int	i;
 
@@ -67,7 +67,7 @@ void	free_ast(t_ast_node *node)
 		if (node->cmd)
 			free(node->cmd);
 		if (node->args)
-			free_str_arr(node->args);
+			free_str_arr_ast(node->args);
 		if (node->input_file)
 			free(node->input_file);
 		if (node->output_file)
