@@ -140,6 +140,6 @@ int	lexemize(t_data *data)
 	}
 	if (check_syntax_error(data->lexeme_arr))
 		return (FAILURE);
-	print_lexeme_arr(data->lexeme_arr, data->token_count);
+	// print_lexeme_arr(data->lexeme_arr, data->token_count);
 	return (SUCCESS);
 }

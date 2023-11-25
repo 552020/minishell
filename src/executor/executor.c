@@ -20,9 +20,11 @@ void	free_cmd_and_args_arr(char **cmd_and_args_arr)
 	while (cmd_and_args_arr[i])
 	{
 		free(cmd_and_args_arr[i]);
+		cmd_and_args_arr[i] = NULL;
 		i++;
 	}
 	free(cmd_and_args_arr);
+	cmd_and_args_arr = NULL;
 }
 
 int	count_cmd_and_args(t_ast_node *node)
@@ -113,7 +115,11 @@ void	execute_cmd(t_ast_node *node, t_data *data)
 	{
 		// Check it if there is leak in case of error - There is!
 		if (execve(path, cmd_and_args_arr, data->env_arr) == -1)
-			perror("execve error\n");
+		{
+			if (path)
+				free(path);
+			perror("execve error");
+		}
 	}
 	if (cmd_and_args_arr)
 		free_cmd_and_args_arr(cmd_and_args_arr);
