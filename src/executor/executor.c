@@ -77,12 +77,14 @@ char	**build_cmd_and_args_arr(t_ast_node *node, int cmd_and_args_count,
 	return (cmd_and_args_arr);
 }
 
-void	execute_cmd(t_ast_node *node, char *dir_paths, t_data *data)
+void	execute_cmd(t_ast_node *node, t_data *data)
 {
 	char	*path;
 	char	**cmd_and_args_arr;
 	int		cmd_and_args_count;
+	char	*dir_paths;
 
+	dir_paths = ft_getenv(data->env_table->table, "PATH");
 	handle_redirections(node, data);
 	path = NULL;
 	if (node->cmd)
@@ -105,10 +107,7 @@ void	execute_cmd(t_ast_node *node, char *dir_paths, t_data *data)
 		free_exit(data, "Error: malloc failed\n");
 	if (node->cmd && cmd_and_args_arr)
 	{
-		// is this correct or not? @Stefano
-		// I don't know. What do you mean? @Batu
-		// When I wrote this i wasn't sure for the proper exit in case of not found executable :D
-		// Now I am sure it is correct!@Stefano
+		// Check it if there is leak in case of error
 		if (execve(path, cmd_and_args_arr, data->env_arr) == -1)
 			perror("execve error\n");
 	}
@@ -118,21 +117,15 @@ void	execute_cmd(t_ast_node *node, char *dir_paths, t_data *data)
 
 void	execute(t_data *data, t_ast_node *node)
 {
-	char	*dir_paths;
+	if (node->type == N_COMMAND && data->ast_type == UNDEFINED)
+	{
+		data->ast_type = SINGLE_CMD_AST;
+		handle_single_command(node, data);
+	}
+	else if (node->type == N_PIPE)
+	{
+		data->ast_type = NOT_SINGLE_CMD_AST;
+		handle_pipe(node, data);
+	}
 
-	dir_paths = ft_getenv(data->env_table->table, "PATH");
-	// if (data->ast_root->type j== N_PIPE)
-	if (node->type == N_PIPE)
-	{
-		// handle_pipes(data->ast_root, dir_paths, data);
-		handle_pipes(node, dir_paths, data);
-	}
-	// else if (data->ast_root->type == N_COMMAND)
-	else if (node->type == N_COMMAND)
-	{
-		if (!node->cmd)
-			return ;
-		// handle_commands(data->ast_root, dir_paths, data);
-		handle_commands(node, dir_paths, data);
-	}
 }

@@ -2,7 +2,7 @@
 
 #define MAX_PATH_SIZE 1024
 
-void	print_working_directory(void)
+int	print_working_directory(void)
 {
 	char buffer[MAX_PATH_SIZE];
 
@@ -13,5 +13,7 @@ void	print_working_directory(void)
 	else
 	{
 		perror("Error getting current working directory");
+		return (EXIT_FAILURE);
 	}
+	return (EXIT_SUCCESS);
 }

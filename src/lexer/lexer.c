@@ -99,6 +99,7 @@ int	check_syntax_error(t_lexeme *lexeme_arr)
 			else if (lexeme_arr[i + 1].type == L_END)
 			{
 				printf("Syntax error: unexpected end of input\n");
+				free_lexeme_arr(lexeme_arr);
 				return (1);
 			}
 			else if (lexeme_is_operator(lexeme_arr[i + 1].type
