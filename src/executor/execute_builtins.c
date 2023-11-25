@@ -52,6 +52,7 @@ int	builtin_with_args(t_ast_node *node, t_data *data)
 		i++;
 	}
 		Debug END */
+	exit_status = 0;
 	cmd_and_args_count = count_cmd_and_args(node);
 	cmd_and_args_arr = build_cmd_and_args_arr(node, cmd_and_args_count, data);
 	if (ft_strncmp(node->cmd, "export", 6) == 0 && ft_strlen(node->cmd) == 6
@@ -68,10 +69,11 @@ int	builtin_with_args(t_ast_node *node, t_data *data)
 	return (exit_status);
 }
 
-
 int	builtin_without_args(t_ast_node *node, t_data *data)
 {
 	int	exit_status;
+
+	exit_status = 0;
 
 	if (ft_strncmp(node->cmd, "env", 3) == 0 && ft_strlen(node->cmd) == 3)
 		exit_status = env(data->env_table->table);
@@ -96,6 +98,8 @@ int	execute_builtin(t_ast_node *node, t_data *data)
 	int	exit_status;
 	int	stdout_backup;
 	int	stdin_backup;
+
+	exit_status = 0;
 
 	stdout_backup = dup(STDOUT_FILENO);
 	if (stdout_backup == -1)

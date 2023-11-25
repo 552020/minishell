@@ -32,8 +32,15 @@ t_token	*tokenizer(t_data *data, const char *str)
 	while (*str)
 	{
 		skip_spaces(&str);
+		// printf("current char: %c\n", *str);
 		if (isregularchar(*str, str))
+		{
+			// printf("regular char\n");
+			// printf("idx: %zu\n", idx);
+			// printf("str: %s\n", str);
+			// printf("current char: %c\n", *str);
 			assign_word(&str, data, &idx);
+		}
 		else if (*str == '<' || *str == '>')
 			assign_redirect_in_out_heredoc_append(&str, data, &idx);
 		else if (*str == '|')
@@ -41,7 +48,13 @@ t_token	*tokenizer(t_data *data, const char *str)
 		else if (*str == '$')
 			assign_env_var(&str, data, &idx);
 		else if (*str == '\'' || *str == '"')
+		{
+			// printf("quote\n");
+			// printf("idx: %zu\n", idx);
+			// printf("str: %s\n", str);
+			// printf("current char: %c\n", *str);
 			assign_quotes(&str, data, &idx);
+		}
 		else
 			handle_unexpected_char(&str);
 	}

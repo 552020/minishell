@@ -8,24 +8,27 @@ int	ft_isspace(int c)
 		return (0);
 }
 
-int	isspecialchar(char c)
+int	isspecialchar(char c, const char *str)
 {
+	// printf("isspecialchar\n");
+	// printf("c: %c\n", c);
 	if (c == '<' || c == '>' || c == '|' || c == '$' || c == '"' || c == '\'')
-		return (1);
-	return (0);
+	{
+		if (c == '\'' || c == '"')
+		{
+			if (!ft_strrchr(str + 1, c))
+				return (FAILURE);
+		}
+		return (SUCCESS);
+	}
+	return (FAILURE);
 }
 
 int	isregularchar(char c, const char *str)
 {
-	if (ft_isspace(c) || isspecialchar(c))
-		return (0);
-	if (c == '\'' || c == '"')
-	{
-		if (!ft_strrchr(str, c))
-			return (1);
-		return (0);
-	}
-	return (1);
+	if (ft_isspace(c) || isspecialchar(c, str))
+		return (FAILURE);
+	return (SUCCESS);
 }
 
 void	skip_spaces(const char **str_ptr)
