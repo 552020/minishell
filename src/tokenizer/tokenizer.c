@@ -6,7 +6,7 @@ char	*strip_ending_trailing_spaces(char const *str)
 	int		end;
 
 	if (!str)
-		return ("");
+		return (ft_strdup(""));
 	end = ft_strlen(str) - 1;
 	while (end >= 0 && ft_isspace(str[end]))
 		end--;
@@ -63,7 +63,8 @@ void	tokenize(t_data *data, char *input)
 		printf("Token count: %zu\n\n", data->token_count);
 	data->token_arr = create_token_array(data);
 	data->token_arr = tokenizer(data, trimmed);
-	free(trimmed);
+	if (trimmed)
+		free(trimmed);
 	if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_TOKENIZER)
 		print_token_arr(data->token_arr, data->token_count);
 }
