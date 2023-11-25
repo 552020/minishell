@@ -43,6 +43,8 @@ void	append_other_args(t_ast_node *node, char *arg)
 			perror("malloc error\n");
 			exit(FAILURE) ;
 		}
+		if (node->args[i])
+			free(node->args[i]);
 	}
 	free(node->args);
 	node->args = new_args;
