@@ -5,6 +5,8 @@ char	*strip_ending_trailing_spaces(char const *str)
 	char	*trimmed;
 	int		end;
 
+	if (!str)
+		return ("");
 	end = ft_strlen(str) - 1;
 	while (end >= 0 && ft_isspace(str[end]))
 		end--;
