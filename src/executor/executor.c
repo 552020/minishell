@@ -117,7 +117,10 @@ void	execute_cmd(t_ast_node *node, t_data *data)
 		if (execve(path, cmd_and_args_arr, data->env_arr) == -1)
 		{
 			if (path)
+			{
 				free(path);
+				path = NULL;
+			}
 			perror("execve error");
 		}
 	}

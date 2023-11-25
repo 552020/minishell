@@ -23,10 +23,7 @@ int	main(int argc, char **argv, char **envp)
 				execute(&data, data.ast_root);
 		}
 		if (data.ast_root)
-		{
 			free_ast(data.ast_root);
-			data.ast_root = NULL;
-		}
 		data.ast_type = UNDEFINED;
 	}
 	return (0);

@@ -49,13 +49,25 @@ void	free_var_subs(t_var_subs *vars)
 	if (!vars)
 		return ;
 	if (vars->before)
+	{
 		free(vars->before);
+		vars->before = NULL;
+	}
 	if (vars->var_name)
+	{
 		free(vars->var_name);
+		vars->var_name = NULL;
+	}
 	if (vars->after)
+	{
 		free(vars->after);
+		vars->after = NULL;
+	}
 	if (vars->before_and_value)
+	{
 		free(vars->before_and_value);
+		vars->before_and_value = NULL;
+	}
 }
 
 void	free_var_subs_and_exit(t_var_subs *vars, t_data *data, char *message)
@@ -79,7 +91,11 @@ void	process_variable(t_var_subs *vars, t_token *token, t_data *data)
 	vars->after = ft_strdup(vars->end);
 	if (!vars->after)
 		free_var_subs_and_exit(vars, data, "Error: malloc after failed\n");
-	free(token->str);
+	if (token->str)
+	{
+		free(token->str);
+		token->str = NULL;
+	}
 	vars->before_and_value = ft_strjoin(vars->before, vars->value);
 	if (!vars->before_and_value)
 		free_var_subs_and_exit(vars, data,
@@ -108,7 +124,7 @@ t_lexeme	t_double_quotes_var_subs(t_token *token, t_data *data)
 	{
 		process_variable(&vars, token, data);
 		// vars.str = token->str + (vars.str - token->str)
-			+ ft_strlen(vars.value);
+		+ft_strlen(vars.value);
 		vars.str = token->str;
 	}
 	lexeme.str = strip_quotes(token->str, data);

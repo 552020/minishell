@@ -55,9 +55,11 @@ void	free_str_arr(char **arr)
 	while (arr[i])
 	{
 		free(arr[i]);
+		arr[i] = NULL;
 		i++;
 	}
 	free(arr);
+	arr = NULL;
 }
 
 void	free_ast(t_ast_node *node)
@@ -67,15 +69,27 @@ void	free_ast(t_ast_node *node)
 	if (node->type == N_COMMAND)
 	{
 		if (node->cmd)
+		{
 			free(node->cmd);
+			node->cmd = NULL;
+		}
 		if (node->args)
 			free_str_arr(node->args);
 		if (node->input_file)
+		{
 			free(node->input_file);
+			node->input_file = NULL;
+		}
 		if (node->output_file)
+		{
 			free(node->output_file);
+			node->output_file = NULL;
+		}
 		if (node->heredoc_del)
+		{
 			free(node->heredoc_del);
+			node->heredoc_del = NULL;
+		}
 	}
 	else if (node->type == N_PIPE)
 	{
