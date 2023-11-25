@@ -267,7 +267,8 @@ int change_directory(const char *path);
 void execute(t_data *data, t_ast_node *node);
 
 void error_exit(t_ast_node *node, char **envp, t_env_table *env_table);
-char *path_finder(char *cmd, char *dir_paths);
+char *path_finder(char *cmd, char *dir_paths, t_data *data);
+void	free_dir_path_arr(char **dir_path_arr);
 int echo(t_ast_node *node);
 void free_cmd_and_args_arr(char **cmd_and_args_arr);
 

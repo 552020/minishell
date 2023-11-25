@@ -6,7 +6,7 @@
 /*   By: bsengeze <bsengeze@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 23:40:23 by bsengeze          #+#    #+#             */
-/*   Updated: 2023/11/12 22:29:42 by bsengeze         ###   ########.fr       */
+/*   Updated: 2023/11/25 17:58:47 by bsengeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ char	**build_cmd_and_args_arr(t_ast_node *node, int cmd_and_args_count,
 	i = 0;
 	cmd_and_args_count = count_cmd_and_args(node);
 	cmd_and_args_arr = (char **)malloc(sizeof(char *) * (cmd_and_args_count
-			+ 1));
+				+ 1));
 	if (!cmd_and_args_arr)
 		free_exit(data, "Error: malloc failed\n");
 	if (node->cmd)
@@ -84,15 +84,19 @@ void	execute_cmd(t_ast_node *node, t_data *data)
 	int		cmd_and_args_count;
 	char	*dir_paths;
 
+	// To do : move thıs to path finder maybe
 	dir_paths = ft_getenv(data->env_table->table, "PATH");
 	handle_redirections(node, data);
 	path = NULL;
 	if (node->cmd)
 	{
-		path = path_finder(node->cmd, dir_paths);
+		path = path_finder(node->cmd, dir_paths, data);
 		if (!path)
 		{
-			printf("command not found\n");
+			if (node->cmd[0] == '/')
+				printf("No such file or directory\n");
+			else
+				printf("command not found\n");
 			return ;
 		}
 	}
@@ -107,7 +111,7 @@ void	execute_cmd(t_ast_node *node, t_data *data)
 		free_exit(data, "Error: malloc failed\n");
 	if (node->cmd && cmd_and_args_arr)
 	{
-		// Check it if there is leak in case of error
+		// Check it if there is leak in case of error - There is!
 		if (execve(path, cmd_and_args_arr, data->env_arr) == -1)
 			perror("execve error\n");
 	}
@@ -127,5 +131,4 @@ void	execute(t_data *data, t_ast_node *node)
 		data->ast_type = NOT_SINGLE_CMD_AST;
 		handle_pipe(node, data);
 	}
-
 }
