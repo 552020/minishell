@@ -93,7 +93,7 @@ int	builtin_without_args(t_ast_node *node, t_data *data)
 
 int	execute_builtin(t_ast_node *node, t_data *data)
 {
-	int exit_status;
+	int	exit_status;
 	int	stdout_backup;
 	int	stdin_backup;
 

@@ -63,10 +63,12 @@ int	handle_pipe(t_ast_node *node, t_data *data)
 	stdout_backup = dup(STDOUT_FILENO);
 	dup2(pipe_fd[1], STDOUT_FILENO);
 	close(pipe_fd[1]);
-	status_left = handle_left_child(node->children[0], data, &left_pid, pipe_fd[0]);
+	status_left = handle_left_child(node->children[0], data, &left_pid,
+			pipe_fd[0]);
 	dup2(stdout_backup, STDOUT_FILENO);
 	close(stdout_backup);
-	status_right = handle_right_child(node->children[1], data, &right_pid, pipe_fd[0]);
+	status_right = handle_right_child(node->children[1], data, &right_pid,
+			pipe_fd[0]);
 	close(pipe_fd[0]);
 	close(pipe_fd[1]);
 	if ((node->children[1]->cmd != NULL)
@@ -80,25 +82,24 @@ int	handle_pipe(t_ast_node *node, t_data *data)
 	{
 		waitpid(left_pid, &status_left, 0);
 		status_right = signal_status(status_right);
-	}	
+	}
 	// TODO: probably we want the exit status of the child processes
 	return (status_right);
 }
 
-int	handle_left_child(t_ast_node *node,  t_data *data, pid_t *left_pid, int pipe_fd)
+int	handle_left_child(t_ast_node *node, t_data *data, pid_t *left_pid,
+		int pipe_fd)
 {
-	int status;
+	int	status;
 
 	if (node->type == N_PIPE)
 		execute(data, node);
-	else if (node->cmd != NULL
-		&& command_is_builtin(node))
+	else if (node->cmd != NULL && command_is_builtin(node))
 	{
 		status = execute_builtin(node, data);
 		return (status);
 	}
-	else if ((node->cmd != NULL)
-		&& (node->type == N_COMMAND))
+	else if ((node->cmd != NULL) && (node->type == N_COMMAND))
 	{
 		disable_ctrl_c_main();
 		*left_pid = fork();
@@ -117,10 +118,11 @@ int	handle_left_child(t_ast_node *node,  t_data *data, pid_t *left_pid, int pipe
 	return (EXIT_SUCCESS);
 }
 
-int	handle_right_child(t_ast_node *node, t_data *data, pid_t *right_pid, int pipe_fd)
+int	handle_right_child(t_ast_node *node, t_data *data, pid_t *right_pid,
+		int pipe_fd)
 {
-	int status;
-	
+	int	status;
+
 	// This will never happen except bonus
 	if (node->type == N_PIPE)
 		execute(data, node);
@@ -143,16 +145,16 @@ int	handle_right_child(t_ast_node *node, t_data *data, pid_t *right_pid, int pip
 			close(pipe_fd);
 			handle_redirections(node, data);
 			execute_cmd(node, data);
-			printf("............\n");			
+			printf("............\n");
 			exit(EXIT_SUCCESS);
 		}
 	}
 	return (EXIT_SUCCESS);
 }
 
-int		signal_status(int status)
+int	signal_status(int status)
 {
-	int	termsig;
+	int termsig;
 	int exit_status;
 
 	if (WIFEXITED(status))

@@ -133,9 +133,13 @@ int	lexemize(t_data *data)
 		printf("\n***Lexer***\n\n");
 		print_lexeme_arr(data->lexeme_arr, data->token_count);
 	}
-	free_token_arr(data->token_arr);
-	data->token_arr = NULL;
+	if (data->token_arr)
+	{
+		free_token_arr(data->token_arr);
+		data->token_arr = NULL;
+	}
 	if (check_syntax_error(data->lexeme_arr))
 		return (FAILURE);
+	print_lexeme_arr(data->lexeme_arr, data->token_count);
 	return (SUCCESS);
 }
