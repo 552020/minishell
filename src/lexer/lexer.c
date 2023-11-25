@@ -15,10 +15,13 @@ void	command_and_args(size_t token_count, t_lexeme *lexeme_arr)
 
 	i = 0;
 	command_flag = NO_CMD_YET;
+	printf("token_count = %zu\n", token_count);
 	while (i < token_count)
 	{
+		printf("lexeme_arr[%zu].type = %d\n", i, lexeme_arr[i].type);
 		if (lexeme_arr[i].type == L_UNDEFINED)
 		{
+			printf("1\n");
 			if (command_flag == NO_CMD_YET)
 			{
 				lexeme_arr[i].type = L_COMMAND;
@@ -29,6 +32,7 @@ void	command_and_args(size_t token_count, t_lexeme *lexeme_arr)
 		}
 		else if (lexeme_arr[i].type == L_PIPE)
 			command_flag = NO_CMD_YET;
+		printf("lexeme_arr[%zu].type = %d\n", i, lexeme_arr[i].type);
 		i++;
 	}
 }

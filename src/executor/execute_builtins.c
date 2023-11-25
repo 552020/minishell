@@ -14,6 +14,7 @@
 
 int	command_is_builtin(t_ast_node *node)
 {
+	printf("node->cmd: %s\n", node->cmd);
 	if (ft_strncmp(node->cmd, "env", 3) == 0 && ft_strlen(node->cmd) == 3)
 		return (SUCCESS);
 	else if (ft_strncmp(node->cmd, "export", 6) == 0
@@ -67,7 +68,6 @@ int	builtin_with_args(t_ast_node *node, t_data *data)
 	// print_envp_arr(data->env_arr);
 	return (exit_status);
 }
-
 
 int	builtin_without_args(t_ast_node *node, t_data *data)
 {

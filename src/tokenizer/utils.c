@@ -8,23 +8,25 @@ int	ft_isspace(int c)
 		return (0);
 }
 
-int	isspecialchar(char c)
+int	isspecialchar(char c, const char *str)
 {
 	if (c == '<' || c == '>' || c == '|' || c == '$' || c == '"' || c == '\'')
-		return (1);
-	return (0);
+	{
+		if (c == '\'' || c == '"')
+		{
+			if (!ft_strrchr(str + 1, c))
+				return (SUCCESS);
+			return (FAILURE);
+		}
+		return (SUCCESS);
+	}
+	return (FAILURE);
 }
 
 int	isregularchar(char c, const char *str)
 {
-	if (ft_isspace(c) || isspecialchar(c))
+	if (ft_isspace(c) || isspecialchar(c, str))
 		return (0);
-	if (c == '\'' || c == '"')
-	{
-		if (!ft_strrchr(str, c))
-			return (1);
-		return (0);
-	}
 	return (1);
 }
 

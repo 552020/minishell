@@ -66,6 +66,9 @@ void	print_and_exit(char *str)
 
 void	handle_cmd_and_args(t_lexeme *lexemes, int idx, t_ast_node **node)
 {
+	printf("handle_cmd_and_args\n");
+	printf("lexemes[idx].type: %d\n", lexemes[idx].type);
+	printf("lexemes[idx].str: %s\n", lexemes[idx].str);
 	if (lexemes[idx].type == L_COMMAND)
 	{
 		(*node)->cmd = ft_strdup(lexemes[idx].str);

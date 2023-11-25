@@ -98,7 +98,7 @@ typedef struct s_token {
 } t_token;
 
 int ft_isspace(int c);
-int isspecialchar(char c);
+int isspecialchar(char c, const char *str);
 int isregularchar(char c, const char *str);
 void skip_spaces(const char **str_ptr);
 void count_word_special_char(const char **str_ptr, size_t *words);

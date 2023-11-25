@@ -18,8 +18,10 @@ int	handle_single_command(t_ast_node *node, t_data *data)
 	int		termsig;
 	int		status;
 
+	printf("handle_single_command\n");
 	if (node->cmd != NULL && command_is_builtin(node))
 	{
+		printf("builtin\n");
 		status = execute_builtin(node, data);
 		return (status);
 	}
