@@ -25,10 +25,14 @@ void	count_word_special_char(const char **str_ptr, size_t *words)
 			(*str_ptr)++;
 			while (**str_ptr && **str_ptr != quote)
 				(*str_ptr)++;
-			(*str_ptr)++;
+			if (**str_ptr)
+				(*str_ptr)++;
 		}
 		else
-			(*str_ptr)++;
+		{
+			if (**str_ptr)
+				(*str_ptr)++;
+		}
 	}
 }
 

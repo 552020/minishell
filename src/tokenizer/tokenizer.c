@@ -71,12 +71,17 @@ void	tokenize(t_data *data, char *input)
 		printf("\n***Tokenization***\n\n");
 	trimmed = strip_ending_trailing_spaces(input);
 	free(input);
+	input = NULL;
 	data->token_count = count_words_tokenizer(trimmed);
 	if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_TOKENIZER)
 		printf("Token count: %zu\n\n", data->token_count);
 	data->token_arr = create_token_array(data);
 	data->token_arr = tokenizer(data, trimmed);
-	free(trimmed);
+	if (trimmed)
+	{
+		free(trimmed);
+		trimmed = NULL;
+	}
 	if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_TOKENIZER)
 		print_token_arr(data->token_arr, data->token_count);
 }

@@ -11,6 +11,7 @@ void	single_export(char **args, const char *key, const char *value,
 		if (ft_strncmp(node->key, key, ft_strlen(key)) == 0)
 		{
 			free(node->value);
+			node->value = NULL;
 			node->value = ft_strdup(value);
 			if (node->value == NULL)
 			{
@@ -28,10 +29,10 @@ void	single_export(char **args, const char *key, const char *value,
 
 int	export(char **args, t_data *data)
 {
-	int i;
-	char *key;
-	char *value;
-	char **key_value;
+	int		i;
+	char	*key;
+	char	*value;
+	char	**key_value;
 
 	i = 0;
 	while (args[i])
@@ -44,7 +45,6 @@ int	export(char **args, t_data *data)
 			free_exit(data, "Error: malloc failed\n");
 		}
 		key = key_value[0];
-
 		if (key_value[1] == NULL)
 			value = ft_strdup("");
 		else
@@ -54,33 +54,42 @@ int	export(char **args, t_data *data)
 		// value = ft_strdup("");
 		single_export(args, key, value, data);
 		if (key)
+		{
 			free(key);
+			key = NULL;
+		}
 		if (value)
+		{
 			free(value);
+			value = NULL;
+		}
 		free(key_value);
+		key_value = NULL;
 		i++;
 	}
 	free_cmd_and_args_arr(args);
 	return (EXIT_SUCCESS);
 }
 
-int is_valid_env_var_name(const char *str) 
+int	is_valid_env_var_name(const char *str)
 {
-    int i = 0;
+	int	i;
 
-    if (str == NULL || str[i] == '\0' || !(ft_isalpha(str[i]) || str[i] == '_')) 
+	i = 0;
+	if (str == NULL || str[i] == '\0' || !(ft_isalpha(str[i]) || str[i] == '_'))
 	{
 		printf("bash: %s: %s : not a valid identifier\n", "export", str);
-        return (EXIT_FAILURE);
-    }
-    i++;
-    while (str[i] != '\0') {
-        if (!ft_isalpha(str[i]) && !ft_isdigit(str[i]) && str[i] != '_')
+		return (EXIT_FAILURE);
+	}
+	i++;
+	while (str[i] != '\0')
+	{
+		if (!ft_isalpha(str[i]) && !ft_isdigit(str[i]) && str[i] != '_')
 		{
 			printf("bash: %s: %s : not a valid identifier\n", "export", str);
-            return (EXIT_FAILURE); 
-        }
-        i++;
-    }
-    return (EXIT_SUCCESS);
+			return (EXIT_FAILURE);
+		}
+		i++;
+	}
+	return (EXIT_SUCCESS);
 }

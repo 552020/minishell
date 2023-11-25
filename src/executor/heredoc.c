@@ -74,11 +74,13 @@ int	ft_heredoc(t_ast_node *node, char *delimiter, t_data *data)
 				&& ft_strlen(delimiter) == ft_strlen(line))
 			{
 				free(line);
+				line = NULL;
 				exit(EXIT_SUCCESS);
 			}
 			write(fd[1], line, ft_strlen(line));
 			write(fd[1], "\n", 1);
 			free(line);
+			line = NULL;
 		}
 	}
 	close(fd[1]);

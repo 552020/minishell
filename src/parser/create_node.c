@@ -1,15 +1,12 @@
 #include "minishell.h"
 
-t_ast_node	*create_node(t_node_type type)
+t_ast_node	*create_node(t_node_type type, t_data *data)
 {
 	t_ast_node	*new_node;
 
 	new_node = (t_ast_node *)malloc(sizeof(t_ast_node));
 	if (new_node == NULL)
-	{
-		perror("malloc error\n");
-		return (NULL);
-	}
+		free_exit(data, "Error: malloc node failed\n");
 	new_node->type = type;
 	new_node->cmd = NULL;
 	new_node->args = NULL;
@@ -29,15 +26,15 @@ t_ast_node	*build_cmd_node(t_lexeme *lexemes, int start, int end, t_data *data)
 	t_ast_node *node;
 	int i;
 
-	node = create_node(N_COMMAND);
+	node = create_node(N_COMMAND, data);
 	if (node == NULL)
 		free_exit(data, "Error: malloc node failed\n");
 	i = start;
 	while (i <= end)
 	{
-		handle_cmd_and_args(lexemes, i, &node);
-		handle_simple_redirects(lexemes, i, &node);
-		handle_double_redirects(lexemes, i, &node);
+		handle_cmd_and_args(lexemes, i, &node, data);
+		handle_simple_redirects(lexemes, i, &node, data);
+		handle_double_redirects(lexemes, i, &node, data);
 		i++;
 	}
 	return (node);

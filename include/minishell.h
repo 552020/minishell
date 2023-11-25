@@ -237,16 +237,18 @@ t_ast_node				*parser(t_lexeme *lexemes, int start, int end,
 							t_data *data);
 t_ast_node				*build_cmd_node(t_lexeme *lexemes, int start, int end,
 							t_data *data);
-t_ast_node				*create_node(t_node_type type);
-void					append_first_arg(t_ast_node *node, char *arg);
-void					append_other_args(t_ast_node *node, char *arg);
-void					append_arg_to_command_node(t_ast_node *node, char *arg);
+void					append_first_arg(t_ast_node *node, char *arg,
+							t_data *data);
+void					append_other_args(t_ast_node *node, char *argm,
+							t_data *data);
+void					append_arg_to_command_node(t_ast_node *node, char *arg,
+							t_data *data);
 void					handle_cmd_and_args(t_lexeme *lexemes, int idx,
-							t_ast_node **node);
+							t_ast_node **node, t_data *data);
 void					handle_simple_redirects(t_lexeme *lexemes, int idx,
-							t_ast_node **node);
+							t_ast_node **node, t_data *data);
 void					handle_double_redirects(t_lexeme *lexemes, int idx,
-							t_ast_node **node);
+							t_ast_node **node, t_data *data);
 void					print_and_exit(char *str);
 void					parse(t_data *data);
 
@@ -269,7 +271,7 @@ void					print_lexeme_arr(t_lexeme *lexeme_arr,
 void					print_ast(t_ast_node *node, int depth);
 void					print_ast_new(t_ast_node *node);
 void					debug_ast(t_ast_node *node);
-t_ast_node				*create_node(t_node_type type);
+t_ast_node				*create_node(t_node_type type, t_data *data);
 
 /* Heredoc */
 
@@ -321,7 +323,7 @@ void					handle_command_node(t_ast_node *node, char **envp,
 void					free_token_arr(t_token *token_arr);
 void					free_lexeme_arr(t_lexeme *lexeme_arr);
 void					free_key_value_pair(char **key_value);
-char					**ft_split_envp(const char *s, char c);
+char					**ft_split_envp(const char *s, char c, t_data *data);
 void					free_data(t_data *data);
 void					initialize_data(char **envp, t_data *data);
 void					free_exit(t_data *data, char *error_message);

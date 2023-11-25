@@ -43,7 +43,10 @@ char	*path_finder(char *cmd, char *dir_paths, t_data *data)
 			path_except_cmd = NULL;
 		}
 		if (access(path, X_OK) == 0)
+		{
+			free_dir_path_arr(dir_path_arr);
 			return (path);
+		}
 		free(path);
 		path = NULL;
 		i++;
