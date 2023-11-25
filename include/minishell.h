@@ -247,9 +247,9 @@ void					append_arg_to_command_node(t_ast_node *node, char *arg,
 void					handle_cmd_and_args(t_lexeme *lexemes, int idx,
 							t_ast_node **node, t_data *data);
 void					handle_simple_redirects(t_lexeme *lexemes, int idx,
-							t_ast_node **node);
+							t_ast_node **node, t_data *data);
 void					handle_double_redirects(t_lexeme *lexemes, int idx,
-							t_ast_node **node);
+							t_ast_node **node, t_data *data);
 void					print_and_exit(char *str);
 void					parse(t_data *data);
 

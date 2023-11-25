@@ -6,6 +6,7 @@ void	append_first_arg(t_ast_node *node, char *arg, t_data *data)
 	if (node->args == NULL)
 		free_exit(data, "Error: malloc failed\n");
 	node->args[0] = ft_strdup(arg);
+	// Should we use free_exit() here?
 	if (node->args[0] == NULL)
 	{
 		;
