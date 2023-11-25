@@ -94,6 +94,7 @@ int	check_syntax_error(t_lexeme *lexeme_arr)
 			{
 				printf("Syntax error: unexpected token %s\n",
 					lexeme_arr[i].str);
+				free_lexeme_arr(lexeme_arr);
 				return (1);
 			}
 			else if (lexeme_arr[i + 1].type == L_END)
@@ -107,12 +108,14 @@ int	check_syntax_error(t_lexeme *lexeme_arr)
 			{
 				printf("Syntax error: unexpected token %s\n", lexeme_arr[i
 					+ 1].str);
+				free_lexeme_arr(lexeme_arr);
 				return (1);
 			}
 			else if (lexeme_arr[i + 1].type == L_PIPE)
 			{
 				printf("Syntax error: unexpected token %s\n", lexeme_arr[i
 					+ 1].str);
+				free_lexeme_arr(lexeme_arr);
 				return (1);
 			}
 		}
