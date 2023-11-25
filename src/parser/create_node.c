@@ -35,7 +35,7 @@ t_ast_node	*build_cmd_node(t_lexeme *lexemes, int start, int end, t_data *data)
 	i = start;
 	while (i <= end)
 	{
-		handle_cmd_and_args(lexemes, i, &node);
+		handle_cmd_and_args(lexemes, i, &node, data);
 		handle_simple_redirects(lexemes, i, &node);
 		handle_double_redirects(lexemes, i, &node);
 		i++;

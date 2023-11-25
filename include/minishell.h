@@ -238,11 +238,14 @@ t_ast_node				*parser(t_lexeme *lexemes, int start, int end,
 t_ast_node				*build_cmd_node(t_lexeme *lexemes, int start, int end,
 							t_data *data);
 t_ast_node				*create_node(t_node_type type);
-void					append_first_arg(t_ast_node *node, char *arg);
-void					append_other_args(t_ast_node *node, char *arg);
-void					append_arg_to_command_node(t_ast_node *node, char *arg);
+void					append_first_arg(t_ast_node *node, char *arg,
+							t_data *data);
+void					append_other_args(t_ast_node *node, char *argm,
+							t_data *data);
+void					append_arg_to_command_node(t_ast_node *node, char *arg,
+							t_data *data);
 void					handle_cmd_and_args(t_lexeme *lexemes, int idx,
-							t_ast_node **node);
+							t_ast_node **node, t_data *data);
 void					handle_simple_redirects(t_lexeme *lexemes, int idx,
 							t_ast_node **node);
 void					handle_double_redirects(t_lexeme *lexemes, int idx,

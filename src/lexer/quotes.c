@@ -16,7 +16,6 @@ char	*strip_quotes(char *str, t_data *data)
 	if (len < 2)
 		return (str);
 	sub_str = ft_substr(str, 1, len - 2);
-	// free(str);
 	if (!sub_str)
 		free_exit(data, "Error: malloc sub_str failed\n");
 	return (sub_str);
