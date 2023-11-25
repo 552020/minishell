@@ -237,7 +237,6 @@ t_ast_node				*parser(t_lexeme *lexemes, int start, int end,
 							t_data *data);
 t_ast_node				*build_cmd_node(t_lexeme *lexemes, int start, int end,
 							t_data *data);
-t_ast_node				*create_node(t_node_type type);
 void					append_first_arg(t_ast_node *node, char *arg,
 							t_data *data);
 void					append_other_args(t_ast_node *node, char *argm,
@@ -272,7 +271,7 @@ void					print_lexeme_arr(t_lexeme *lexeme_arr,
 void					print_ast(t_ast_node *node, int depth);
 void					print_ast_new(t_ast_node *node);
 void					debug_ast(t_ast_node *node);
-t_ast_node				*create_node(t_node_type type);
+t_ast_node				*create_node(t_node_type type, t_data *data);
 
 /* Heredoc */
 

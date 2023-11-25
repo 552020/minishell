@@ -15,7 +15,6 @@ void	parse(t_data *data)
 		debug_ast(data->ast_root);
 	}
 	free_lexeme_arr(data->lexeme_arr);
-	data->lexeme_arr = NULL;
 }
 
 t_ast_node	*parser(t_lexeme *lexemes, int start, int end, t_data *data)
@@ -29,7 +28,7 @@ t_ast_node	*parser(t_lexeme *lexemes, int start, int end, t_data *data)
 	{
 		if (lexemes[i].type == L_PIPE)
 		{
-			node = create_node(N_PIPE);
+			node = create_node(N_PIPE, data);
 			node->children[1] = build_cmd_node(lexemes, i + 1, end, data);
 			end = i - 1;
 			i = end;
