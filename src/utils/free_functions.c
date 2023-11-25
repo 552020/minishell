@@ -55,14 +55,19 @@ void	free_data(t_data *data)
 {
 	if (data->env_table)
 		free_hash_table(data->env_table);
+	data->env_table = NULL;
 	if (data->env_arr)
 		free_envp(data->env_arr);
+	data->env_arr = NULL;
 	if (data->ast_root)
 		free_ast(data->ast_root);
+	data->ast_root = NULL;
 	if (data->token_arr)
 		free_token_arr(data->token_arr);
+	data->token_arr = NULL;
 	if (data->lexeme_arr)
 		free_lexeme_arr(data->lexeme_arr);
+	data->lexeme_arr = NULL;
 }
 
 void	free_exit(t_data *data, char *error_message)
