@@ -323,7 +323,7 @@ void					handle_command_node(t_ast_node *node, char **envp,
 void					free_token_arr(t_token *token_arr);
 void					free_lexeme_arr(t_lexeme *lexeme_arr);
 void					free_key_value_pair(char **key_value);
-char					**ft_split_envp(const char *s, char c);
+char					**ft_split_envp(const char *s, char c, t_data *data);
 void					free_data(t_data *data);
 void					initialize_data(char **envp, t_data *data);
 void					free_exit(t_data *data, char *error_message);

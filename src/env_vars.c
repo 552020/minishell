@@ -64,7 +64,7 @@ void	initialize_table(char **envp, t_data *data)
 	i = 0;
 	while (envp[i] != NULL)
 	{
-		key_value_pair = ft_split_envp(envp[i], '=');
+		key_value_pair = ft_split_envp(envp[i], '=', data);
 		if (!key_value_pair)
 			free_exit(data, "Error: ft_split in init table failed\n");
 		if (!key_value_pair[0])
