@@ -127,10 +127,5 @@ void	execute(t_data *data, t_ast_node *node)
 		data->ast_type = NOT_SINGLE_CMD_AST;
 		handle_pipe(node, data);
 	}
-	else if (node->type == N_COMMAND)
-	{
-		// if (!node->cmd)
-		// 	return ;
-		handle_commands(node, data);
-	}
+
 }

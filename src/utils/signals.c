@@ -18,6 +18,7 @@ void	disable_ctrl_c_main(void)
 	ignore_sa.sa_flags = 0;
 	if (sigaction(SIGINT, &ignore_sa, NULL) == -1)
 	{
+		// to do: handle error
 		perror("sigaction");
 		exit(EXIT_FAILURE);
 	}
@@ -33,6 +34,7 @@ void	handle_signals_main(void)
 	sigemptyset(&sa_sigint.sa_mask);
 	if (sigaction(SIGINT, &sa_sigint, NULL) == -1)
 	{
+		// to do: handle error
 		perror("sigaction");
 		exit(EXIT_FAILURE);
 	}
@@ -41,6 +43,7 @@ void	handle_signals_main(void)
 	sigemptyset(&sa_sigquit.sa_mask);
 	if (sigaction(SIGQUIT, &sa_sigquit, NULL) == -1)
 	{
+		// to do: handle error
 		perror("sigaction");
 		exit(EXIT_FAILURE);
 	}
@@ -57,11 +60,13 @@ void	handle_signals_child(int pid)
 		sa.sa_handler = SIG_DFL;
 		if (sigaction(SIGINT, &sa, NULL) == -1)
 		{
+			// to do: handle error
 			perror("sigaction");
 			exit(EXIT_FAILURE);
 		}
 		if (sigaction(SIGQUIT, &sa, NULL) == -1)
 		{
+			// to do: handle error
 			perror("sigaction");
 			exit(EXIT_FAILURE);
 		}
@@ -71,6 +76,7 @@ void	handle_signals_child(int pid)
 		sa.sa_handler = SIG_IGN;
 		if (sigaction(SIGINT, &sa, NULL) == -1)
 		{
+			// to do: handle error
 			perror("sigaction");
 			exit(EXIT_FAILURE);
 		}

@@ -19,7 +19,7 @@ int	change_directory(const char *path)
 			ft_putstr_fd("Failed to change directory: ", STDERR_FILENO);
 			ft_putendl_fd(strerror(errno), STDERR_FILENO);
 		}
-		return (1);
+		return (EXIT_FAILURE);
 	}
-	return (0);
+	return (EXIT_SUCCESS);
 }

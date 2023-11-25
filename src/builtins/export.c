@@ -26,7 +26,7 @@ void	single_export(char **args, const char *key, const char *value,
 	data->env_arr = hash_table_to_arr(data);
 }
 
-void	export(char **args, t_data *data)
+int	export(char **args, t_data *data)
 {
 	int i;
 	char *key;
@@ -44,6 +44,7 @@ void	export(char **args, t_data *data)
 			free_exit(data, "Error: malloc failed\n");
 		}
 		key = key_value[0];
+
 		if (key_value[1] == NULL)
 			value = ft_strdup("");
 		else
@@ -59,6 +60,27 @@ void	export(char **args, t_data *data)
 		free(key_value);
 		i++;
 	}
-
 	free_cmd_and_args_arr(args);
+	return (EXIT_SUCCESS);
+}
+
+int is_valid_env_var_name(const char *str) 
+{
+    int i = 0;
+
+    if (str == NULL || str[i] == '\0' || !(ft_isalpha(str[i]) || str[i] == '_')) 
+	{
+		printf("bash: %s: %s : not a valid identifier\n", "export", str);
+        return (EXIT_FAILURE);
+    }
+    i++;
+    while (str[i] != '\0') {
+        if (!ft_isalpha(str[i]) && !ft_isdigit(str[i]) && str[i] != '_')
+		{
+			printf("bash: %s: %s : not a valid identifier\n", "export", str);
+            return (EXIT_FAILURE); 
+        }
+        i++;
+    }
+    return (EXIT_SUCCESS);
 }

@@ -65,10 +65,10 @@ typedef struct s_env_table {
 } t_env_table;
 
 void initialize_table(char **envp, t_data *data);
-void env(t_env_var **table);
+int env(t_env_var **table);
 
-void export(char **args, t_data *data);
-void unset(char **args, t_data *data);
+int export(char **args, t_data *data);
+int unset(char **args, t_data *data);
 
 char **hash_table_to_arr(t_data *data);
 char *ft_getenv(t_env_var **table, const char *key);
@@ -250,12 +250,12 @@ int handle_heredocs(t_ast_node *node, t_data *data);
 size_t count_pipes(t_lexeme *lexeme_arr, size_t token_count);
 unsigned int hash(const char *key);
 // not using these
-void handle_commands(t_ast_node *ast_root, t_data *data);
-void handle_pipe(t_ast_node *ast_root, t_data *data);
+// void handle_commands(t_ast_node *ast_root, t_data *data);
+int handle_pipe(t_ast_node *ast_root, t_data *data);
 void handle_redirections(t_ast_node *node, t_data *data);
 
 void execute_cmd(t_ast_node *node, t_data *data);
-void print_working_directory(void);
+int print_working_directory(void);
 void ft_exit(int exit_code, t_ast_node *node, char **envp, t_env_table *table);
 
 void insert_node_ht(const char *key, const char *value, t_data *data);
@@ -268,12 +268,12 @@ void execute(t_data *data, t_ast_node *node);
 
 void error_exit(t_ast_node *node, char **envp, t_env_table *env_table);
 char *path_finder(char *cmd, char *dir_paths);
-void echo(t_ast_node *node);
+int echo(t_ast_node *node);
 void free_cmd_and_args_arr(char **cmd_and_args_arr);
 
-void builtin_with_args(t_ast_node *node, t_data *data);
-void builtin_without_args(t_ast_node *node, t_data *data);
-void execute_builtin(t_ast_node *node, t_data *data);
+int builtin_with_args(t_ast_node *node, t_data *data);
+int builtin_without_args(t_ast_node *node, t_data *data);
+int execute_builtin(t_ast_node *node, t_data *data);
 int count_cmd_and_args(t_ast_node *node);
 char **build_cmd_and_args_arr(t_ast_node *node, int cmd_and_args_count,
                               t_data *data);
@@ -297,8 +297,9 @@ void handle_signals_main(void);
 void handle_signals_child(int pid);
 void disable_ctrl_c_main(void);
 char *trim_ending_trailing_spaces(char const *str);
-void handle_single_command(t_ast_node *node, t_data *data);
-void	handle_left_child(t_ast_node *node,  t_data *data, pid_t *left_pid, int pipe_fd);
-void	handle_right_child(t_ast_node *node, t_data *data, pid_t *right_pid, int pipe_fd);
+int handle_single_command(t_ast_node *node, t_data *data);
+int	handle_left_child(t_ast_node *node,  t_data *data, pid_t *left_pid, int pipe_fd);
+int	handle_right_child(t_ast_node *node, t_data *data, pid_t *right_pid, int pipe_fd);
+int		signal_status(int status);
 
 #endif

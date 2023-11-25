@@ -67,6 +67,7 @@ void	free_data(t_data *data)
 
 void	free_exit(t_data *data, char *error_message)
 {
+	// to do: make it take another argument exit status and return exit status
 	perror(error_message);
 	free_data(data);
 	exit(FAILURE);

@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-void	handle_single_command(t_ast_node *node, t_data *data)
+int	handle_single_command(t_ast_node *node, t_data *data)
 {
 	pid_t	pid;
 	int		termsig;
@@ -20,8 +20,8 @@ void	handle_single_command(t_ast_node *node, t_data *data)
 
 	if (node->cmd != NULL && command_is_builtin(node))
 	{
-		execute_builtin(node, data);
-		return ;
+		status = execute_builtin(node, data);
+		return (status);
 	}
 	disable_ctrl_c_main();
 	pid = fork();
@@ -45,80 +45,62 @@ void	handle_single_command(t_ast_node *node, t_data *data)
 			ft_putstr_fd("\n", STDOUT_FILENO);
 		}
 	}
+	// think about this if we need to enable signals again
+	return (status);
 }
 
-void	handle_commands(t_ast_node *node, t_data *data)
-{
-	// pid_t	pid;
-	// int		termsig;
-	// int		status;
-	if (node->cmd != NULL && command_is_builtin(node))
-	{
-		execute_builtin(node, data);
-		return ;
-	}
-	// disable_ctrl_c_main();
-	// pid = fork();
-	// if (pid == -1)
-	// free_exit(data, "Error: fork failed\n");
-	// handle_signals_child(pid);
-	// if (pid == 0)
-	execute_cmd(node,data);
-	// waitpid(pid, NULL, 0);
-	// waitpid(pid, &status, 0);
-	// if (WIFSIGNALED(status))
-	// {
-	// 	termsig = WTERMSIG(status);
-	// 	// Check if the process was terminated by SIGINT
-	// 	if (termsig == SIGINT)
-	// 	{
-	// 		// Force a newline to be printed only if the process was terminated by SIGINT
-	// 		ft_putstr_fd("\n", STDOUT_FILENO);
-	// 	}
-	// }
-}
-
-void	handle_pipe(t_ast_node *node, t_data *data)
+int	handle_pipe(t_ast_node *node, t_data *data)
 {
 	int		pipe_fd[2];
 	int		stdout_backup;
 	pid_t	left_pid;
 	pid_t	right_pid;
+	int		status_left;
+	int		status_right;
 
-	/* Create Pipe */
 	if (pipe(pipe_fd) == -1)
 		free_exit(data, "Error: pipe failed\n");
 	stdout_backup = dup(STDOUT_FILENO);
 	dup2(pipe_fd[1], STDOUT_FILENO);
 	close(pipe_fd[1]);
-	/* Traverse or execute left child */
-	handle_left_child(node->children[0], data, &left_pid, pipe_fd[0]);
-	/* Traverse or execute right child */
+	status_left = handle_left_child(node->children[0], data, &left_pid, pipe_fd[0]);
 	dup2(stdout_backup, STDOUT_FILENO);
 	close(stdout_backup);
-	handle_right_child(node->children[1], data, &right_pid, pipe_fd[0]);
+	status_right = handle_right_child(node->children[1], data, &right_pid, pipe_fd[0]);
 	close(pipe_fd[0]);
 	close(pipe_fd[1]);
 	if ((node->children[1]->cmd != NULL)
 		&& !(command_is_builtin(node->children[1])))
-		waitpid(right_pid, NULL, 0);
+	{
+		waitpid(right_pid, &status_right, 0);
+		status_left = signal_status(status_left);
+	}
 	if ((node->children[0]->cmd != NULL)
 		&& !(command_is_builtin(node->children[0])))
-		waitpid(left_pid, NULL, 0);
-		// TODO: probably we want the exit status of the child processes
-
+	{
+		waitpid(left_pid, &status_left, 0);
+		status_right = signal_status(status_right);
+	}	
+	// TODO: probably we want the exit status of the child processes
+	return (status_right);
 }
 
-void	handle_left_child(t_ast_node *node,  t_data *data, pid_t *left_pid, int pipe_fd)
+int	handle_left_child(t_ast_node *node,  t_data *data, pid_t *left_pid, int pipe_fd)
 {
+	int status;
+
 	if (node->type == N_PIPE)
 		execute(data, node);
 	else if (node->cmd != NULL
 		&& command_is_builtin(node))
-		execute_builtin(node, data);
+	{
+		status = execute_builtin(node, data);
+		return (status);
+	}
 	else if ((node->cmd != NULL)
 		&& (node->type == N_COMMAND))
 	{
+		disable_ctrl_c_main();
 		*left_pid = fork();
 		if (*left_pid == -1)
 			free_exit(data, "Error: fork failed\n");
@@ -126,41 +108,73 @@ void	handle_left_child(t_ast_node *node,  t_data *data, pid_t *left_pid, int pip
 		if (*left_pid == 0)
 		{
 			close(pipe_fd);
-			// dup2(pipe_fd[1], STDOUT_FILENO);
-			// close(pipe_fd[1]);
 			handle_redirections(node, data);
-			execute(data, node);
-			// handle_pipe(node->children[0], dir_paths, data);
+			execute_cmd(node, data);
+			printf("!!!!!!!!!!\n");
 			exit(EXIT_SUCCESS);
 		}
 	}
+	return (EXIT_SUCCESS);
 }
 
-void	handle_right_child(t_ast_node *node, t_data *data, pid_t *right_pid, int pipe_fd)
+int	handle_right_child(t_ast_node *node, t_data *data, pid_t *right_pid, int pipe_fd)
 {
+	int status;
+	
 	// This will never happen except bonus
 	if (node->type == N_PIPE)
 		execute(data, node);
 	// This could happen
-	else if (node->cmd != NULL
-		&& command_is_builtin(node))
-		execute_builtin(node, data);
-	else if ((node->cmd != NULL)
-		&& (node->type == N_COMMAND))
+	else if (node->cmd != NULL && command_is_builtin(node))
 	{
+		status = execute_builtin(node, data);
+		return (status);
+	}
+	else if ((node->cmd != NULL) && (node->type == N_COMMAND))
+	{
+		disable_ctrl_c_main();
 		*right_pid = fork();
 		if (*right_pid == -1)
 			free_exit(data, "Error: fork failed\n");
 		handle_signals_child(*right_pid);
 		if (*right_pid == 0)
 		{
-			// close(pipe_fd[1]);
 			dup2(pipe_fd, STDIN_FILENO);
 			close(pipe_fd);
 			handle_redirections(node, data);
-			execute(data, node);
-			// handle_pipe(node->children[1], dir_paths, data);
+			execute_cmd(node, data);
+			printf("............\n");			
 			exit(EXIT_SUCCESS);
 		}
 	}
+	return (EXIT_SUCCESS);
+}
+
+int		signal_status(int status)
+{
+	int	termsig;
+	int exit_status;
+
+	if (WIFEXITED(status))
+	{
+		// This needs to be upgraded
+		exit_status = WEXITSTATUS(status);
+		return (exit_status);
+	}
+	else if (WIFSIGNALED(status))
+	{
+		termsig = WTERMSIG(status);
+		// Check if the process was terminated by SIGINT
+		if (termsig == SIGINT)
+		{
+			// Force a newline to be printed only if the process was terminated by SIGINT
+			ft_putstr_fd("\n", STDOUT_FILENO);
+		}
+		return (WTERMSIG(status));
+	}
+	// else if (WIFSTOPPED(status))
+	// 	return (WSTOPSIG(status));
+	// else if (WIFCONTINUED(status))
+	// 	return (WCONTINUED);
+	return (EXIT_SUCCESS);
 }
