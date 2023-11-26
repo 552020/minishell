@@ -122,7 +122,7 @@ t_lexeme	t_double_quotes_var_subs(t_token *token, t_data *data)
 	t_lexeme	lexeme;
 
 	vars.str = token->str;
-	printf("vars.str: %s\n", vars.str);
+	// printf("vars.str: %s\n", vars.str);
 	// lexeme.str = ft_strdup("");
 	// if (!lexeme.str)
 	// free_exit(data, "Error: malloc lexeme.str failed\n");
@@ -135,6 +135,7 @@ t_lexeme	t_double_quotes_var_subs(t_token *token, t_data *data)
 	{
 		if (vars.str[1] != '?' && !ft_isvalidvarname(vars.str[1]))
 		{
+			vars.str++;
 			continue ;
 		}
 		else
@@ -144,7 +145,7 @@ t_lexeme	t_double_quotes_var_subs(t_token *token, t_data *data)
 		vars.str = token->str;
 	}
 	lexeme.str = strip_quotes(token->str, data);
-	printf("lexeme.str: %s\n", lexeme.str);
+	// printf("lexeme.str: %s\n", lexeme.str);
 	lexeme.type = L_UNDEFINED;
 	lexeme.status = NOT_LEXED;
 	return (lexeme);
