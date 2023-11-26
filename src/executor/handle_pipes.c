@@ -39,6 +39,9 @@ int	handle_single_command(t_ast_node *node, t_data *data)
 		termsig = WTERMSIG(status);
 		if (termsig == SIGINT)
 			ft_putstr_fd("\n", STDOUT_FILENO);
+		if (termsig == SIGQUIT)
+			ft_putstr_fd("Quit\n", STDOUT_FILENO);
+		status = termsig + 128;
 	}
 	return (status);
 }
