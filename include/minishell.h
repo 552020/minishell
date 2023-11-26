@@ -254,7 +254,7 @@ void					parse(t_data *data);
 
 /* Varia */
 void					check_input(int argc, char **argv);
-char					*read_input(void);
+char					*read_input(t_data *data);
 t_token					*tokenizer(t_data *data, const char *input);
 size_t					count_words_tokenizer(const char *input);
 
