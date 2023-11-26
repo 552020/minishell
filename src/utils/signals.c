@@ -13,15 +13,10 @@ void	disable_ctrl_c_main(void)
 {
 	struct sigaction	ignore_sa;
 
-	ignore_sa.sa_handler = SIG_IGN; // Set to ignore the signal
+	ignore_sa.sa_handler = SIG_IGN;
 	sigemptyset(&ignore_sa.sa_mask);
 	ignore_sa.sa_flags = 0;
-	if (sigaction(SIGINT, &ignore_sa, NULL) == -1)
-	{
-		// to do: handle error
-		perror("sigaction");
-		exit(EXIT_FAILURE);
-	}
+	sigaction(SIGINT, &ignore_sa, NULL);
 }
 
 void	handle_signals_main(void)
@@ -32,21 +27,11 @@ void	handle_signals_main(void)
 	sa_sigint.sa_handler = sigint_handler_main;
 	sa_sigint.sa_flags = 0;
 	sigemptyset(&sa_sigint.sa_mask);
-	if (sigaction(SIGINT, &sa_sigint, NULL) == -1)
-	{
-		// to do: handle error
-		perror("sigaction");
-		exit(EXIT_FAILURE);
-	}
+	sigaction(SIGINT, &sa_sigint, NULL);
 	sa_sigquit.sa_handler = SIG_IGN;
 	sa_sigquit.sa_flags = 0;
 	sigemptyset(&sa_sigquit.sa_mask);
-	if (sigaction(SIGQUIT, &sa_sigquit, NULL) == -1)
-	{
-		// to do: handle error
-		perror("sigaction");
-		exit(EXIT_FAILURE);
-	}
+	sigaction(SIGQUIT, &sa_sigquit, NULL);
 }
 
 void	handle_signals_child(int pid)
@@ -58,27 +43,12 @@ void	handle_signals_child(int pid)
 	if (pid == 0)
 	{
 		sa.sa_handler = SIG_DFL;
-		if (sigaction(SIGINT, &sa, NULL) == -1)
-		{
-			// to do: handle error
-			perror("sigaction");
-			exit(EXIT_FAILURE);
-		}
-		if (sigaction(SIGQUIT, &sa, NULL) == -1)
-		{
-			// to do: handle error
-			perror("sigaction");
-			exit(EXIT_FAILURE);
-		}
+		sigaction(SIGINT, &sa, NULL);
+		sigaction(SIGQUIT, &sa, NULL);
 	}
 	else
 	{
 		sa.sa_handler = SIG_IGN;
-		if (sigaction(SIGINT, &sa, NULL) == -1)
-		{
-			// to do: handle error
-			perror("sigaction");
-			exit(EXIT_FAILURE);
-		}
+		sigaction(SIGINT, &sa, NULL);
 	}
 }
