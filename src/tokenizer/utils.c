@@ -10,8 +10,6 @@ int	ft_isspace(int c)
 
 int	isspecialchar(char c, const char *str)
 {
-	// printf("isspecialchar\n");
-	// printf("c: %c\n", c);
 	if (c == '<' || c == '>' || c == '|' || c == '$' || c == '"' || c == '\'')
 	{
 		if (c == '$')
