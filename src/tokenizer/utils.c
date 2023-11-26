@@ -10,10 +10,13 @@ int	ft_isspace(int c)
 
 int	isspecialchar(char c, const char *str)
 {
-	// printf("isspecialchar\n");
-	// printf("c: %c\n", c);
 	if (c == '<' || c == '>' || c == '|' || c == '$' || c == '"' || c == '\'')
 	{
+		if (c == '$')
+		{
+			if (*(str + 1) != '?' && !ft_isvalidvarname(*(str + 1)))
+				return (FAILURE);
+		}
 		if (c == '\'' || c == '"')
 		{
 			if (!ft_strrchr(str + 1, c))

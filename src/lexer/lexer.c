@@ -42,12 +42,14 @@ t_lexeme	*lexer(t_data *data)
 	{
 		if (data->token_arr[i].type == T_ENV_VAR)
 			data->lexeme_arr[i] = t_env_var_subs(&data->token_arr[i], data);
+		else if (data->token_arr[i].type == T_SHELL_VAR)
+			data->lexeme_arr[i] = t_shell_var_subs(&data->token_arr[i], data);
 		else if (data->token_arr[i].type == T_DOUBLE_QUOTE)
 			data->lexeme_arr[i] = t_double_quotes_var_subs(&data->token_arr[i],
-					data);
+				data);
 		else if (data->token_arr[i].type == T_SINGLE_QUOTE)
 			data->lexeme_arr[i] = single_quote_lexeme(&data->token_arr[i],
-					data);
+				data);
 		else if (data->token_arr[i].type == T_PIPE)
 			data->lexeme_arr[i] = pipe_lexeme(&data->token_arr[i], data);
 		else if (data->token_arr[i].type == T_REDIRECT_IN)

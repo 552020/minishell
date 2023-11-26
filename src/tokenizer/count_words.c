@@ -10,8 +10,13 @@ void	count_word_special_char(const char **str_ptr, size_t *words)
 		if (**str_ptr == '$')
 		{
 			(*str_ptr)++;
-			while (**str_ptr && ft_isvalidvarname(**str_ptr))
+			if (**str_ptr == '?')
 				(*str_ptr)++;
+			else
+			{
+				while (**str_ptr && ft_isvalidvarname(**str_ptr))
+					(*str_ptr)++;
+			}
 		}
 		else if ((**str_ptr == '<' || **str_ptr == '>'))
 		{

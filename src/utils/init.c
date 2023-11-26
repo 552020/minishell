@@ -8,6 +8,7 @@ void	initialize_envp_arr(t_data *data)
 void	initialize_data(char **envp, t_data *data)
 {
 	data->ast_type = UNDEFINED;
+	data->last_exit_status = 0;
 	data->env_arr = NULL;
 	data->env_table = NULL;
 	data->token_arr = NULL;

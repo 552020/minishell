@@ -24,6 +24,16 @@ void	assign_pipe(const char **str_ptr, t_data *data, size_t *idx)
 	(*str_ptr)++;
 }
 
+void	assign_shell_var(const char **str_ptr, t_data *data, size_t *idx)
+{
+	data->token_arr[*idx].type = T_SHELL_VAR;
+	data->token_arr[*idx].str = ft_strdup("?");
+	if (!data->token_arr[*idx].str)
+		free_exit(data, "Error: ft_strdup failed\n");
+	*str_ptr += 2;
+	(*idx)++;
+}
+
 void	assign_env_var(const char **str_ptr, t_data *data, size_t *idx)
 {
 	char const	*start;

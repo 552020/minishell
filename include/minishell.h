@@ -91,8 +91,9 @@ typedef enum e_token_type
 	// 7 - " the whole string in between " quotes included
 	T_SINGLE_QUOTE,
 	// 8 - ' the whole string in between ' quotes included
-	T_ENV_VAR, // 9 - $ followed by a valid variable name
-	T_END,     // 10 - End of token array
+	T_ENV_VAR,   // 9 - $ followed by a valid variable name
+	T_SHELL_VAR, // 10 - $ followed by a shell variable symbol like $?
+	T_END,       // 11 - End of token array
 }						t_token_type;
 
 typedef struct s_token
@@ -122,8 +123,11 @@ void					assign_pipe(const char **str_ptr, t_data *data,
 							size_t *idx);
 void					assign_env_var(const char **str_ptr, t_data *data,
 							size_t *idx);
+void					assign_shell_var(const char **str_ptr, t_data *data,
+							size_t *idx);
 void					assign_quotes(const char **str_ptr, t_data *data,
 							size_t *idx);
+
 void					tokenize(t_data *data, char *input);
 
 /* Lexer */
@@ -174,6 +178,7 @@ t_lexeme				heredoc_delimiter_lexeme(t_token *token, t_data *data);
 t_lexeme				t_double_quotes_var_subs(t_token *token, t_data *data);
 t_lexeme				single_quote_lexeme(t_token *token, t_data *data);
 t_lexeme				t_env_var_subs(t_token *token, t_data *data);
+t_lexeme				t_shell_var_subs(t_token *token, t_data *data);
 char					*lookup_env_value(char *var_name, char **envp);
 void					create_lexeme_arr(t_data *data);
 t_lexeme				*lexer(t_data *data);
@@ -231,6 +236,7 @@ typedef struct s_data
 	t_token				*token_arr;
 	t_lexeme			*lexeme_arr;
 	t_ast_node			*ast_root;
+	int					last_exit_status;
 }						t_data;
 
 t_ast_node				*parser(t_lexeme *lexemes, int start, int end,
