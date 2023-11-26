@@ -9,16 +9,6 @@ void	sigint_handler_main(int sig)
 	rl_redisplay();
 }
 
-void	disable_ctrl_c_main(void)
-{
-	struct sigaction	ignore_sa;
-
-	ignore_sa.sa_handler = SIG_IGN;
-	sigemptyset(&ignore_sa.sa_mask);
-	ignore_sa.sa_flags = 0;
-	sigaction(SIGINT, &ignore_sa, NULL);
-}
-
 void	handle_signals_main(void)
 {
 	struct sigaction	sa_sigint;
@@ -41,14 +31,9 @@ void	handle_signals_child(int pid)
 	sa.sa_flags = 0;
 	sigemptyset(&sa.sa_mask);
 	if (pid == 0)
-	{
 		sa.sa_handler = SIG_DFL;
-		sigaction(SIGINT, &sa, NULL);
-		sigaction(SIGQUIT, &sa, NULL);
-	}
 	else
-	{
 		sa.sa_handler = SIG_IGN;
-		sigaction(SIGINT, &sa, NULL);
-	}
+	sigaction(SIGINT, &sa, NULL);
+	sigaction(SIGQUIT, &sa, NULL);
 }
