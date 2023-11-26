@@ -96,6 +96,8 @@ void	free_ast(t_ast_node *node)
 		free_ast(node->children[1]);
 	}
 	if (node)
+	{
 		free(node);
-	node = NULL;
+		node = NULL;
+	}
 }
