@@ -72,13 +72,13 @@ int	handle_pipe(t_ast_node *node, t_data *data)
 		&& !(command_is_builtin(node->children[1])))
 	{
 		waitpid(right_pid, &status_right, 0);
-		status_left = signal_status(status_left);
+		status_right = signal_status(status_right);
 	}
 	if ((node->children[0]->cmd != NULL)
 		&& !(command_is_builtin(node->children[0])))
 	{
 		waitpid(left_pid, &status_left, 0);
-		status_right = signal_status(status_right);
+		status_left = signal_status(status_left);
 	}
 	// TODO: probably we want the exit status of the child processes
 	return (status_right);
