@@ -128,10 +128,8 @@ int	check_syntax_error(t_lexeme *lexeme_arr)
 
 int	lexemize(t_data *data)
 {
-	printf("\n***Lexemize***\n\n");
 	create_lexeme_arr(data);
 	data->lexeme_arr = lexer(data);
-	printf("After lexeme_arr\n");
 	if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_LEXER)
 	{
 		printf("\n***Lexer***\n\n");
