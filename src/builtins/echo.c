@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-void	echo(t_ast_node *node)
+int	echo(t_ast_node *node)
 {
 	int i;
 
@@ -8,7 +8,7 @@ void	echo(t_ast_node *node)
 	if (node->args == NULL)
 	{
 		printf("\n");
-		return ;
+		return (EXIT_SUCCESS);
 	}
 	if (node->args[0] && ft_strncmp(node->args[0], "-n", 2) == 0)
 		i++;
@@ -21,4 +21,5 @@ void	echo(t_ast_node *node)
 	}
 	if (node->args[0] && ft_strncmp(node->args[0], "-n", 2) != 0)
 		printf("\n");
+	return (EXIT_SUCCESS);
 }

@@ -9,20 +9,6 @@ void	sigint_handler_main(int sig)
 	rl_redisplay();
 }
 
-void	disable_ctrl_c_main(void)
-{
-	struct sigaction	ignore_sa;
-
-	ignore_sa.sa_handler = SIG_IGN; // Set to ignore the signal
-	sigemptyset(&ignore_sa.sa_mask);
-	ignore_sa.sa_flags = 0;
-	if (sigaction(SIGINT, &ignore_sa, NULL) == -1)
-	{
-		perror("sigaction");
-		exit(EXIT_FAILURE);
-	}
-}
-
 void	handle_signals_main(void)
 {
 	struct sigaction	sa_sigint;
@@ -31,19 +17,11 @@ void	handle_signals_main(void)
 	sa_sigint.sa_handler = sigint_handler_main;
 	sa_sigint.sa_flags = 0;
 	sigemptyset(&sa_sigint.sa_mask);
-	if (sigaction(SIGINT, &sa_sigint, NULL) == -1)
-	{
-		perror("sigaction");
-		exit(EXIT_FAILURE);
-	}
+	sigaction(SIGINT, &sa_sigint, NULL);
 	sa_sigquit.sa_handler = SIG_IGN;
 	sa_sigquit.sa_flags = 0;
 	sigemptyset(&sa_sigquit.sa_mask);
-	if (sigaction(SIGQUIT, &sa_sigquit, NULL) == -1)
-	{
-		perror("sigaction");
-		exit(EXIT_FAILURE);
-	}
+	sigaction(SIGQUIT, &sa_sigquit, NULL);
 }
 
 void	handle_signals_child(int pid)
@@ -53,26 +31,9 @@ void	handle_signals_child(int pid)
 	sa.sa_flags = 0;
 	sigemptyset(&sa.sa_mask);
 	if (pid == 0)
-	{
 		sa.sa_handler = SIG_DFL;
-		if (sigaction(SIGINT, &sa, NULL) == -1)
-		{
-			perror("sigaction");
-			exit(EXIT_FAILURE);
-		}
-		if (sigaction(SIGQUIT, &sa, NULL) == -1)
-		{
-			perror("sigaction");
-			exit(EXIT_FAILURE);
-		}
-	}
 	else
-	{
 		sa.sa_handler = SIG_IGN;
-		if (sigaction(SIGINT, &sa, NULL) == -1)
-		{
-			perror("sigaction");
-			exit(EXIT_FAILURE);
-		}
-	}
+	sigaction(SIGINT, &sa, NULL);
+	sigaction(SIGQUIT, &sa, NULL);
 }

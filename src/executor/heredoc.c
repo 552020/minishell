@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bsengeze <bsengeze@student.42berlin.de>    +#+  +:+       +#+        */
+/*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/31 00:50:07 by bsengeze          #+#    #+#             */
-/*   Updated: 2023/11/12 20:59:30 by bsengeze         ###   ########.fr       */
+/*   Updated: 2023/11/26 04:10:29 by slombard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,19 +66,21 @@ int	ft_heredoc(t_ast_node *node, char *delimiter, t_data *data)
 			if (!line)
 			{
 				close(fd[1]);
-				printf("bash: warning: here-document delimited by end-of-file ");
-				printf("(wanted %s')\n", delimiter);
+				printf("minishell: warning: here-document delimited by end-of-file ");
+				printf("(wanted '%s')\n", delimiter);
 				exit(EXIT_FAILURE);
 			}
 			if (ft_strncmp(line, delimiter, ft_strlen(delimiter)) == 0
 				&& ft_strlen(delimiter) == ft_strlen(line))
 			{
 				free(line);
+				line = NULL;
 				exit(EXIT_SUCCESS);
 			}
 			write(fd[1], line, ft_strlen(line));
 			write(fd[1], "\n", 1);
 			free(line);
+			line = NULL;
 		}
 	}
 	close(fd[1]);

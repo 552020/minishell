@@ -54,4 +54,5 @@ t_lexeme	t_shell_var_subs(t_token *token, t_data *data)
 		free_exit(data, "Error: malloc lexeme.str failed\n");
 	lexeme.status = NOT_LEXED;
 	free(value);
+	return (lexeme);
 }

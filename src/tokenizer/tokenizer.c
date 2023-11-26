@@ -5,6 +5,8 @@ char	*strip_ending_trailing_spaces(char const *str)
 	char	*trimmed;
 	int		end;
 
+	if (!str)
+		return (ft_strdup(""));
 	end = ft_strlen(str) - 1;
 	while (end >= 0 && ft_isspace(str[end]))
 		end--;
@@ -30,8 +32,15 @@ t_token	*tokenizer(t_data *data, const char *str)
 	while (*str)
 	{
 		skip_spaces(&str);
+		// printf("current char: %c\n", *str);
 		if (isregularchar(*str, str))
+		{
+			// printf("regular char\n");
+			// printf("idx: %zu\n", idx);
+			// printf("str: %s\n", str);
+			// printf("current char: %c\n", *str);
 			assign_word(&str, data, &idx);
+		}
 		else if (*str == '<' || *str == '>')
 			assign_redirect_in_out_heredoc_append(&str, data, &idx);
 		else if (*str == '|')
@@ -41,7 +50,13 @@ t_token	*tokenizer(t_data *data, const char *str)
 		else if (*str == '$')
 			assign_env_var(&str, data, &idx);
 		else if (*str == '\'' || *str == '"')
+		{
+			// printf("quote\n");
+			// printf("idx: %zu\n", idx);
+			// printf("str: %s\n", str);
+			// printf("current char: %c\n", *str);
 			assign_quotes(&str, data, &idx);
+		}
 		else
 			handle_unexpected_char(&str);
 	}
@@ -58,12 +73,17 @@ void	tokenize(t_data *data, char *input)
 		printf("\n***Tokenization***\n\n");
 	trimmed = strip_ending_trailing_spaces(input);
 	free(input);
+	input = NULL;
 	data->token_count = count_words_tokenizer(trimmed);
 	if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_TOKENIZER)
 		printf("Token count: %zu\n\n", data->token_count);
 	data->token_arr = create_token_array(data);
 	data->token_arr = tokenizer(data, trimmed);
-	free(trimmed);
+	if (trimmed)
+	{
+		free(trimmed);
+		trimmed = NULL;
+	}
 	if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_TOKENIZER)
 		print_token_arr(data->token_arr, data->token_count);
 }

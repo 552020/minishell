@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-void	env(t_env_var **table)
+int	env(t_env_var **table)
 {
 	int i;
 	t_env_var *node;
@@ -16,4 +16,5 @@ void	env(t_env_var **table)
 		}
 		i++;
 	}
+	return (EXIT_SUCCESS);
 }

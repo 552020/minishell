@@ -31,7 +31,7 @@ void	single_unset(const char *key, t_data *data)
 	}
 }
 
-void	unset(char **args, t_data *data)
+int	unset(char **args, t_data *data)
 {
 	int i;
 
@@ -43,4 +43,5 @@ void	unset(char **args, t_data *data)
 	}
 	free_cmd_and_args_arr(args);
 	data->env_arr = hash_table_to_arr(data);
+	return (EXIT_SUCCESS);
 }
