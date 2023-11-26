@@ -23,7 +23,6 @@ int	handle_single_command(t_ast_node *node, t_data *data)
 		status = execute_builtin(node, data);
 		return (status);
 	}
-	disable_ctrl_c_main();
 	pid = fork();
 	if (pid == -1)
 		free_exit(data, "Error: fork failed\n");
@@ -38,14 +37,12 @@ int	handle_single_command(t_ast_node *node, t_data *data)
 	if (WIFSIGNALED(status))
 	{
 		termsig = WTERMSIG(status);
-		// Check if the process was terminated by SIGINT
 		if (termsig == SIGINT)
-		{
-			// Force a newline to be printed only if the process was terminated by SIGINT
 			ft_putstr_fd("\n", STDOUT_FILENO);
-		}
+		if (termsig == SIGQUIT)
+			ft_putstr_fd("Quit\n", STDOUT_FILENO);
+		status = termsig + 128;
 	}
-	// think about this if we need to enable signals again
 	return (status);
 }
 
@@ -101,7 +98,6 @@ int	handle_left_child(t_ast_node *node, t_data *data, pid_t *left_pid,
 	}
 	else if ((node->cmd != NULL) && (node->type == N_COMMAND))
 	{
-		disable_ctrl_c_main();
 		*left_pid = fork();
 		if (*left_pid == -1)
 			free_exit(data, "Error: fork failed\n");
@@ -111,7 +107,6 @@ int	handle_left_child(t_ast_node *node, t_data *data, pid_t *left_pid,
 			close(pipe_fd);
 			handle_redirections(node, data);
 			execute_cmd(node, data);
-			printf("!!!!!!!!!!\n");
 			exit(EXIT_SUCCESS);
 		}
 	}
@@ -123,10 +118,8 @@ int	handle_right_child(t_ast_node *node, t_data *data, pid_t *right_pid,
 {
 	int	status;
 
-	// This will never happen except bonus
 	if (node->type == N_PIPE)
 		execute(data, node);
-	// This could happen
 	else if (node->cmd != NULL && command_is_builtin(node))
 	{
 		status = execute_builtin(node, data);
@@ -134,7 +127,6 @@ int	handle_right_child(t_ast_node *node, t_data *data, pid_t *right_pid,
 	}
 	else if ((node->cmd != NULL) && (node->type == N_COMMAND))
 	{
-		disable_ctrl_c_main();
 		*right_pid = fork();
 		if (*right_pid == -1)
 			free_exit(data, "Error: fork failed\n");
@@ -145,7 +137,6 @@ int	handle_right_child(t_ast_node *node, t_data *data, pid_t *right_pid,
 			close(pipe_fd);
 			handle_redirections(node, data);
 			execute_cmd(node, data);
-			printf("............\n");
 			exit(EXIT_SUCCESS);
 		}
 	}
@@ -159,24 +150,15 @@ int	signal_status(int status)
 
 	if (WIFEXITED(status))
 	{
-		// This needs to be upgraded
 		exit_status = WEXITSTATUS(status);
 		return (exit_status);
 	}
 	else if (WIFSIGNALED(status))
 	{
 		termsig = WTERMSIG(status);
-		// Check if the process was terminated by SIGINT
 		if (termsig == SIGINT)
-		{
-			// Force a newline to be printed only if the process was terminated by SIGINT
 			ft_putstr_fd("\n", STDOUT_FILENO);
-		}
 		return (WTERMSIG(status));
 	}
-	// else if (WIFSTOPPED(status))
-	// 	return (WSTOPSIG(status));
-	// else if (WIFCONTINUED(status))
-	// 	return (WCONTINUED);
 	return (EXIT_SUCCESS);
 }
