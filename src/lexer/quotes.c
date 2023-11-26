@@ -84,6 +84,10 @@ void	process_variable(t_var_subs *vars, t_token *token, t_data *data)
 	{
 		vars->end++;
 	}
+	// else if (!isvalidvarname(*vars->end))
+	// {
+	// 	vars->end++;
+	// }
 	vars->before = ft_substr(token->str, 0, vars->str - token->str);
 	if (!vars->before)
 		free_var_subs_and_exit(vars, data, "Error: malloc before failed\n");
@@ -118,6 +122,7 @@ t_lexeme	t_double_quotes_var_subs(t_token *token, t_data *data)
 	t_lexeme	lexeme;
 
 	vars.str = token->str;
+	printf("vars.str: %s\n", vars.str);
 	// lexeme.str = ft_strdup("");
 	// if (!lexeme.str)
 	// free_exit(data, "Error: malloc lexeme.str failed\n");
@@ -128,14 +133,18 @@ t_lexeme	t_double_quotes_var_subs(t_token *token, t_data *data)
 	while (vars.str != NULL && vars.str[0] && vars.str[0] != '\0'
 		&& (vars.str = ft_strchr(vars.str, '$')))
 	{
-		process_variable(&vars, token, data);
-		// vars.str = token->str + (vars.str - token->str)
-		// +ft_strlen(vars.value);
+		if (vars.str[1] != '?' && !ft_isvalidvarname(vars.str[1]))
+		{
+			continue ;
+		}
+		else
+			process_variable(&vars, token, data);
 		// vars.str = token->str + (vars.str - token->str)
 		// +ft_strlen(vars.value);
 		vars.str = token->str;
 	}
 	lexeme.str = strip_quotes(token->str, data);
+	printf("lexeme.str: %s\n", lexeme.str);
 	lexeme.type = L_UNDEFINED;
 	lexeme.status = NOT_LEXED;
 	return (lexeme);
