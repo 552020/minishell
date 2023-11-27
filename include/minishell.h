@@ -293,7 +293,7 @@ unsigned int			hash(const char *key);
 // not using these
 // void handle_commands(t_ast_node *ast_root, t_data *data);
 int						handle_pipe(t_ast_node *ast_root, t_data *data);
-void					handle_redirections(t_ast_node *node, t_data *data);
+int						handle_redirections(t_ast_node *node, t_data *data);
 
 void					execute_cmd(t_ast_node *node, t_data *data);
 int						print_working_directory(void);
