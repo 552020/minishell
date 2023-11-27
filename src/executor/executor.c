@@ -140,6 +140,7 @@ void	execute(t_data *data, t_ast_node *node)
 	else if (node->type == N_PIPE)
 	{
 		data->ast_type = NOT_SINGLE_CMD_AST;
+		// handle_pipe returns the exit status: do we need it?
 		handle_pipe(node, data);
 	}
 }

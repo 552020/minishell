@@ -1,5 +1,9 @@
 #include "minishell.h"
 
+int		is_valid_env_var_name(const char *str);
+void	single_export(char **args, const char *key, const char *value,
+			t_data *data);
+
 void	single_export(char **args, const char *key, const char *value,
 		t_data *data)
 {
@@ -38,20 +42,19 @@ int	export(char **args, t_data *data)
 	while (args[i])
 	{
 		key_value = ft_split(args[i], '=');
-		// key = ft_split(args[i], '=')[0];
 		if (key_value == NULL)
 		{
 			free_cmd_and_args_arr(args);
 			free_exit(data, "Error: malloc failed\n");
 		}
 		key = key_value[0];
+		// printf("key: %s\n", key);
+		if (is_valid_env_var_name(key) == EXIT_FAILURE)
+			return (EXIT_FAILURE);
 		if (key_value[1] == NULL)
 			value = ft_strdup("");
 		else
 			value = key_value[1];
-		// value = ft_split(args[i], '=')[1];
-		// if (value == NULL)
-		// value = ft_strdup("");
 		single_export(args, key, value, data);
 		if (key)
 		{
@@ -78,7 +81,13 @@ int	is_valid_env_var_name(const char *str)
 	i = 0;
 	if (str == NULL || str[i] == '\0' || !(ft_isalpha(str[i]) || str[i] == '_'))
 	{
-		printf("bash: %s: %s : not a valid identifier\n", "export", str);
+		// printf("bash: %s: %s : not a valid identifier\n", "export", str);
+		/*
+		perror is printing: not a valid identifier "not a valid identifier: Undefined error: 0"
+		and it's not possible to suppress the "Undefined error: 0" part
+		*/
+		// perror("not a valid identifier");
+		ft_putstr_fd(" not a valid identifier\n", STDERR_FILENO);
 		return (EXIT_FAILURE);
 	}
 	i++;
@@ -86,7 +95,8 @@ int	is_valid_env_var_name(const char *str)
 	{
 		if (!ft_isalpha(str[i]) && !ft_isdigit(str[i]) && str[i] != '_')
 		{
-			printf("bash: %s: %s : not a valid identifier\n", "export", str);
+			// printf("bash: %s: %s : not a valid identifier\n", "export", str);
+			ft_putstr_fd(" not a valid identifier\n", STDERR_FILENO);
 			return (EXIT_FAILURE);
 		}
 		i++;

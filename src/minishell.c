@@ -7,6 +7,7 @@ int	main(int argc, char **argv, char **envp)
 {
 	char	*input;
 	t_data	data;
+	int		exit_status;
 
 	check_input(argc, argv);
 	initialize_data(envp, &data);
@@ -23,11 +24,13 @@ int	main(int argc, char **argv, char **envp)
 			{
 				execute(&data, data.ast_root);
 				wait_ast(&data, data.ast_root);
+				exit_status = data.ast_root->exit_status;
+				data.last_exit_status = exit_status;
 			}
 		}
 		if (data.ast_root)
 			free_ast(data.ast_root);
 		data.ast_type = UNDEFINED;
 	}
-	return (0);
+	return (exit_status);
 }
