@@ -25,9 +25,10 @@ int	handle_single_command(t_ast_node *node, t_data *data)
 		return (status);
 	}
 	pid = fork();
-	node->pid = pid;
 	if (pid == -1)
 		free_exit(data, "Error: fork failed\n");
+	if (pid != 0)
+		node->pid = pid;
 	handle_signals_child(pid);
 	if (pid == 0)
 	{
@@ -66,11 +67,11 @@ int	handle_pipe(t_ast_node *node, t_data *data)
 	dup2(pipe_fd[1], STDOUT_FILENO);
 	close(pipe_fd[1]);
 	status_left = handle_left_child(node->children[0], data, &left_pid,
-		pipe_fd[0]);
+			pipe_fd[0]);
 	dup2(stdout_backup, STDOUT_FILENO);
 	close(stdout_backup);
 	status_right = handle_right_child(node->children[1], data, &right_pid,
-		pipe_fd[0]);
+			pipe_fd[0]);
 	close(pipe_fd[0]);
 	// close(pipe_fd[1]);
 	// if ((node->children[1]->cmd != NULL)
@@ -107,9 +108,10 @@ int	handle_left_child(t_ast_node *node, t_data *data, pid_t *left_pid,
 	else if ((node->cmd != NULL) && (node->type == N_COMMAND))
 	{
 		*left_pid = fork();
-		node->pid = *left_pid;
 		if (*left_pid == -1)
 			free_exit(data, "Error: fork failed\n");
+		if (*left_pid != 0)
+			node->pid = *left_pid;
 		handle_signals_child(*left_pid);
 		if (*left_pid == 0)
 		{
@@ -137,9 +139,10 @@ int	handle_right_child(t_ast_node *node, t_data *data, pid_t *right_pid,
 	else if ((node->cmd != NULL) && (node->type == N_COMMAND))
 	{
 		*right_pid = fork();
-		node->pid = *right_pid;
 		if (*right_pid == -1)
 			free_exit(data, "Error: fork failed\n");
+		if (*right_pid != 0)
+			node->pid = *right_pid;
 		handle_signals_child(*right_pid);
 		if (*right_pid == 0)
 		{
