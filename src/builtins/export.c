@@ -38,7 +38,6 @@ int	export(char **args, t_data *data)
 	while (args[i])
 	{
 		key_value = ft_split(args[i], '=');
-		// key = ft_split(args[i], '=')[0];
 		if (key_value == NULL)
 		{
 			free_cmd_and_args_arr(args);
@@ -49,9 +48,6 @@ int	export(char **args, t_data *data)
 			value = ft_strdup("");
 		else
 			value = key_value[1];
-		// value = ft_split(args[i], '=')[1];
-		// if (value == NULL)
-		// value = ft_strdup("");
 		single_export(args, key, value, data);
 		if (key)
 		{
