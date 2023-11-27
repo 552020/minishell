@@ -15,15 +15,17 @@
 int	handle_single_command(t_ast_node *node, t_data *data)
 {
 	pid_t	pid;
-	int		termsig;
 	int		status;
 
+	status = 0;
+	// int		termsig;
 	if (node->cmd != NULL && command_is_builtin(node))
 	{
 		status = execute_builtin(node, data);
 		return (status);
 	}
 	pid = fork();
+	node->pid = pid;
 	if (pid == -1)
 		free_exit(data, "Error: fork failed\n");
 	handle_signals_child(pid);
@@ -33,16 +35,17 @@ int	handle_single_command(t_ast_node *node, t_data *data)
 		execute_cmd(node, data);
 		exit(EXIT_SUCCESS);
 	}
-	waitpid(pid, &status, 0);
-	if (WIFSIGNALED(status))
-	{
-		termsig = WTERMSIG(status);
-		if (termsig == SIGINT)
-			ft_putstr_fd("\n", STDOUT_FILENO);
-		if (termsig == SIGQUIT)
-			ft_putstr_fd("Quit\n", STDOUT_FILENO);
-		status = termsig + 128;
-	}
+	// waitpid(pid, &status, 0);
+	// if (WIFSIGNALED(status))
+	// {
+	// 	termsig = WTERMSIG(status);
+	// 	if (termsig == SIGINT)
+	// 		ft_putstr_fd("\n", STDOUT_FILENO);
+	// 	if (termsig == SIGQUIT)
+	// 		ft_putstr_fd("Quit\n", STDOUT_FILENO);
+	// 	status = termsig + 128;
+	// }
+	node->exit_status = status;
 	return (status);
 }
 
@@ -55,6 +58,8 @@ int	handle_pipe(t_ast_node *node, t_data *data)
 	int		status_left;
 	int		status_right;
 
+	status_left = 0;
+	status_right = 0;
 	if (pipe(pipe_fd) == -1)
 		free_exit(data, "Error: pipe failed\n");
 	stdout_backup = dup(STDOUT_FILENO);
@@ -67,20 +72,23 @@ int	handle_pipe(t_ast_node *node, t_data *data)
 	status_right = handle_right_child(node->children[1], data, &right_pid,
 		pipe_fd[0]);
 	close(pipe_fd[0]);
-	close(pipe_fd[1]);
-	if ((node->children[1]->cmd != NULL)
-		&& !(command_is_builtin(node->children[1])))
-	{
-		waitpid(right_pid, &status_right, 0);
-		status_right = signal_status(status_right);
-	}
-	if ((node->children[0]->cmd != NULL)
-		&& !(command_is_builtin(node->children[0])))
-	{
-		waitpid(left_pid, &status_left, 0);
-		status_left = signal_status(status_left);
-	}
+	// close(pipe_fd[1]);
+	// if ((node->children[1]->cmd != NULL)
+	// 	&& !(command_is_builtin(node->children[1])))
+	// {
+	// waitpid(right_pid, &status_right, 0);
+	// status_right = signal_status(status_right);
+	// node->children[1]->exit_status = status_right;
+	// }
+	// if ((node->children[0]->cmd != NULL)
+	// 	&& !(command_is_builtin(node->children[0])))
+	// {
+	// 	waitpid(left_pid, &status_left, 0);
+	// 	status_left = signal_status(status_left);
+	// 	node->children[0]->exit_status = status_left;
+	// }
 	// TODO: probably we want the exit status of the child processes
+	(void)status_left;
 	return (status_right);
 }
 
@@ -99,6 +107,7 @@ int	handle_left_child(t_ast_node *node, t_data *data, pid_t *left_pid,
 	else if ((node->cmd != NULL) && (node->type == N_COMMAND))
 	{
 		*left_pid = fork();
+		node->pid = *left_pid;
 		if (*left_pid == -1)
 			free_exit(data, "Error: fork failed\n");
 		handle_signals_child(*left_pid);
@@ -128,6 +137,7 @@ int	handle_right_child(t_ast_node *node, t_data *data, pid_t *right_pid,
 	else if ((node->cmd != NULL) && (node->type == N_COMMAND))
 	{
 		*right_pid = fork();
+		node->pid = *right_pid;
 		if (*right_pid == -1)
 			free_exit(data, "Error: fork failed\n");
 		handle_signals_child(*right_pid);
@@ -143,22 +153,22 @@ int	handle_right_child(t_ast_node *node, t_data *data, pid_t *right_pid,
 	return (EXIT_SUCCESS);
 }
 
-int	signal_status(int status)
-{
-	int termsig;
-	int exit_status;
+// int	signal_status(int status)
+// {
+// 	int termsig;
+// 	int exit_status;
 
-	if (WIFEXITED(status))
-	{
-		exit_status = WEXITSTATUS(status);
-		return (exit_status);
-	}
-	else if (WIFSIGNALED(status))
-	{
-		termsig = WTERMSIG(status);
-		if (termsig == SIGINT)
-			ft_putstr_fd("\n", STDOUT_FILENO);
-		return (WTERMSIG(status));
-	}
-	return (EXIT_SUCCESS);
-}
+// 	if (WIFEXITED(status))
+// 	{
+// 		exit_status = WEXITSTATUS(status);
+// 		return (exit_status);
+// 	}
+// 	else if (WIFSIGNALED(status))
+// 	{
+// 		termsig = WTERMSIG(status);
+// 		if (termsig == SIGINT)
+// 			ft_putstr_fd("\n", STDOUT_FILENO);
+// 		return (WTERMSIG(status));
+// 	}
+// 	return (EXIT_SUCCESS);
+// }

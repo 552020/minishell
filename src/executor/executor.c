@@ -56,7 +56,7 @@ char	**build_cmd_and_args_arr(t_ast_node *node, int cmd_and_args_count,
 	i = 0;
 	cmd_and_args_count = count_cmd_and_args(node);
 	cmd_and_args_arr = (char **)malloc(sizeof(char *) * (cmd_and_args_count
-				+ 1));
+			+ 1));
 	if (!cmd_and_args_arr)
 		free_exit(data, "Error: malloc failed\n");
 	if (node->cmd)
@@ -128,6 +128,8 @@ void	execute_cmd(t_ast_node *node, t_data *data)
 		free_cmd_and_args_arr(cmd_and_args_arr);
 }
 
+// We don't need the first check anymore data->ast_type == UNDEFINED
+// because we calling the execute_cmd somewhere else
 void	execute(t_data *data, t_ast_node *node)
 {
 	if (node->type == N_COMMAND && data->ast_type == UNDEFINED)
