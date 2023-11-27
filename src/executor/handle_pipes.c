@@ -21,7 +21,8 @@ int	handle_single_command(t_ast_node *node, t_data *data)
 	// int		termsig;
 	if (node->cmd != NULL && command_is_builtin(node))
 	{
-		status = execute_builtin(node, data);
+		node->exit_status = execute_builtin(node, data);
+		status = node->exit_status;
 		return (status);
 	}
 	pid = fork();
@@ -95,14 +96,12 @@ int	handle_pipe(t_ast_node *node, t_data *data)
 int	handle_left_child(t_ast_node *node, t_data *data, pid_t *left_pid,
 		int pipe_fd)
 {
-	int	status;
-
 	if (node->type == N_PIPE)
 		execute(data, node);
 	else if (node->cmd != NULL && command_is_builtin(node))
 	{
-		status = execute_builtin(node, data);
-		return (status);
+		node->exit_status = execute_builtin(node, data);
+		return (node->exit_status);
 	}
 	else if ((node->cmd != NULL) && (node->type == N_COMMAND))
 	{
@@ -125,14 +124,12 @@ int	handle_left_child(t_ast_node *node, t_data *data, pid_t *left_pid,
 int	handle_right_child(t_ast_node *node, t_data *data, pid_t *right_pid,
 		int pipe_fd)
 {
-	int	status;
-
 	if (node->type == N_PIPE)
 		execute(data, node);
 	else if (node->cmd != NULL && command_is_builtin(node))
 	{
-		status = execute_builtin(node, data);
-		return (status);
+		node->exit_status = execute_builtin(node, data);
+		return (node->exit_status);
 	}
 	else if ((node->cmd != NULL) && (node->type == N_COMMAND))
 	{
