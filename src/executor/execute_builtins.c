@@ -74,7 +74,6 @@ int	builtin_without_args(t_ast_node *node, t_data *data)
 	int	exit_status;
 
 	exit_status = 0;
-
 	if (ft_strncmp(node->cmd, "env", 3) == 0 && ft_strlen(node->cmd) == 3)
 		exit_status = env(data->env_table->table);
 	else if (ft_strncmp(node->cmd, "pwd", 3) == 0 && ft_strlen(node->cmd) == 3)
@@ -100,7 +99,6 @@ int	execute_builtin(t_ast_node *node, t_data *data)
 	int	stdin_backup;
 
 	exit_status = 0;
-
 	stdout_backup = dup(STDOUT_FILENO);
 	if (stdout_backup == -1)
 		free_exit(data, "Error: dup failed\n");
