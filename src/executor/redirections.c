@@ -12,31 +12,43 @@
 
 #include "minishell.h"
 
-void	infile_redirection(t_ast_node *node, t_data *data)
+int	infile_redirection(t_ast_node *node, t_data *data)
 {
 	int	filein;
 
+	(void)data;
 	filein = 0;
 	filein = open(node->input_file, O_RDONLY, 0777);
 	if (filein == -1)
-		free_exit(data, "");
+	{
+		perror(" ");
+		// free_ast(data->ast_root);
+		return (FAILURE);
+	}
 	dup2(filein, STDIN_FILENO);
 	close(filein);
+	return (SUCCESS);
 }
 
-void	outfile_redirection(t_ast_node *node, t_data *data)
+int	outfile_redirection(t_ast_node *node, t_data *data)
 {
 	int	fileout;
 
+	(void)data;
 	fileout = 1;
 	if (node->append)
 		fileout = open(node->output_file, O_WRONLY | O_CREAT | O_APPEND, 0777);
 	else if (!node->append)
 		fileout = open(node->output_file, O_WRONLY | O_CREAT | O_TRUNC, 0777);
 	if (fileout == -1)
-		free_exit(data, "");
+	{
+		perror(" ");
+		// free_ast(data->ast_root);
+		return (FAILURE);
+	}
 	dup2(fileout, STDOUT_FILENO);
 	close(fileout);
+	return (SUCCESS);
 }
 
 void	heredoc_redirection(t_ast_node *node)
@@ -45,12 +57,28 @@ void	heredoc_redirection(t_ast_node *node)
 	close(node->heredoc_fd);
 }
 
-void	handle_redirections(t_ast_node *node, t_data *data)
+int	handle_redirections(t_ast_node *node, t_data *data)
 {
-	if (node->input_file)
-		infile_redirection(node, data);
-	if (node->output_file)
-		outfile_redirection(node, data);
+	int	return_infile;
+	int	return_outfile;
+
 	if (node->heredoc)
 		heredoc_redirection(node);
+	if (node->input_file)
+	{
+		if (infile_redirection(node, data))
+			return_infile = SUCCESS;
+		else
+			return_infile = FAILURE;
+	}
+	// printf("node->output_file: %s\n", node->output_file);
+	if (node->output_file)
+	{
+		if (outfile_redirection(node, data))
+			return_outfile = SUCCESS;
+		else
+			return_outfile = FAILURE;
+	}
+	return (return_infile && return_outfile);
+	// printf("node->output_file: %s\n", node->output_file);
 }
