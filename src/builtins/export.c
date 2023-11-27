@@ -1,5 +1,9 @@
 #include "minishell.h"
 
+int		is_valid_env_var_name(const char *str);
+void	single_export(char **args, const char *key, const char *value,
+			t_data *data);
+
 void	single_export(char **args, const char *key, const char *value,
 		t_data *data)
 {
@@ -44,6 +48,8 @@ int	export(char **args, t_data *data)
 			free_exit(data, "Error: malloc failed\n");
 		}
 		key = key_value[0];
+		if (is_valid_env_var_name(key) == EXIT_FAILURE)
+			return (EXIT_FAILURE);
 		if (key_value[1] == NULL)
 			value = ft_strdup("");
 		else
