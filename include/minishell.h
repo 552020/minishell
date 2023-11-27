@@ -211,6 +211,8 @@ typedef struct s_ast_node
 	int heredoc_fd;                 // For heredoc redirection.
 	bool heredoc;                   // For heredoc redirection.
 	char *heredoc_del;              // For heredoc redirection.
+	pid_t pid;                      // Process ID of the command.
+	int exit_status;                // Exit status of the command.
 	struct s_ast_node *children[2]; // For output redirection.
 }						t_ast_node;
 
@@ -346,5 +348,6 @@ int						handle_left_child(t_ast_node *node, t_data *data,
 int						handle_right_child(t_ast_node *node, t_data *data,
 							pid_t *right_pid, int pipe_fd);
 int						signal_status(int status);
+void					wait_ast(t_data *data, t_ast_node *node);
 
 #endif
