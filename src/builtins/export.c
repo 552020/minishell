@@ -48,6 +48,7 @@ int	export(char **args, t_data *data)
 			free_exit(data, "Error: malloc failed\n");
 		}
 		key = key_value[0];
+		// printf("key: %s\n", key);
 		if (is_valid_env_var_name(key) == EXIT_FAILURE)
 			return (EXIT_FAILURE);
 		if (key_value[1] == NULL)
@@ -80,7 +81,13 @@ int	is_valid_env_var_name(const char *str)
 	i = 0;
 	if (str == NULL || str[i] == '\0' || !(ft_isalpha(str[i]) || str[i] == '_'))
 	{
-		printf("bash: %s: %s : not a valid identifier\n", "export", str);
+		// printf("bash: %s: %s : not a valid identifier\n", "export", str);
+		/*
+		perror is printing: not a valid identifier "not a valid identifier: Undefined error: 0"
+		and it's not possible to suppress the "Undefined error: 0" part
+		*/
+		// perror("not a valid identifier");
+		ft_putstr_fd(" not a valid identifier\n", STDERR_FILENO);
 		return (EXIT_FAILURE);
 	}
 	i++;
@@ -88,7 +95,8 @@ int	is_valid_env_var_name(const char *str)
 	{
 		if (!ft_isalpha(str[i]) && !ft_isdigit(str[i]) && str[i] != '_')
 		{
-			printf("bash: %s: %s : not a valid identifier\n", "export", str);
+			// printf("bash: %s: %s : not a valid identifier\n", "export", str);
+			ft_putstr_fd(" not a valid identifier\n", STDERR_FILENO);
 			return (EXIT_FAILURE);
 		}
 		i++;
