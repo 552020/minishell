@@ -51,6 +51,9 @@ int	handle_single_command(t_ast_node *node, t_data *data)
 	return (status);
 }
 
+// int	def_STDOUT_FILENO;
+// int	flag = -1;
+
 int	handle_pipe(t_ast_node *node, t_data *data)
 {
 	int		pipe_fd[2];
@@ -64,13 +67,23 @@ int	handle_pipe(t_ast_node *node, t_data *data)
 	status_right = 0;
 	if (pipe(pipe_fd) == -1)
 		free_exit(data, "Error: pipe failed\n");
+	// printf("Herere is the part where hadnle left child\n");
 	stdout_backup = dup(STDOUT_FILENO);
+	// if (flag == -1)
+	// {
+	// 	def_STDOUT_FILENO = dup(STDOUT_FILENO);
+	// 	flag = 0;
+	// }
 	dup2(pipe_fd[1], STDOUT_FILENO);
 	close(pipe_fd[1]);
+	// ft_putstr_fd("Herere is the part where hadnle left child\n",
+	// 	def_STDOUT_FILENO);
 	status_left = handle_left_child(node->children[0], data, &left_pid,
 			pipe_fd[0]);
 	dup2(stdout_backup, STDOUT_FILENO);
 	close(stdout_backup);
+	// ft_putstr_fd("Herere is the part where hadnle right child\n",
+	// 	def_STDOUT_FILENO);
 	status_right = handle_right_child(node->children[1], data, &right_pid,
 			pipe_fd[0]);
 	close(pipe_fd[0]);
