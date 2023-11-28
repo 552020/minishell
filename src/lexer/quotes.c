@@ -23,14 +23,15 @@ char	*strip_quotes(char *str, t_data *data)
 
 typedef struct s_var_subs
 {
-	char	*str;
-	char	*end;
-	char	*before;
-	char	*var_name;
-	char	*before_and_value;
-	char	*value;
-	char	*after;
-}			t_var_subs;
+	const char	*str;
+	const char	*start;
+	const char	*end;
+	char		*before;
+	char		*var_name;
+	char		*before_and_value;
+	char		*value;
+	char		*after;
+}				t_var_subs;
 
 /*
 str is just a pointer to the token->str, no need to free it.
@@ -75,67 +76,78 @@ void	free_var_subs_and_exit(t_var_subs *vars, t_data *data, char *message)
 	free_exit(data, message);
 }
 
-void	process_variable(t_var_subs *vars, t_token *token, t_data *data)
+// void	process_variable(t_var_subs *vars, t_token *token, t_data *data)
+char	*process_vars_in_str(const char *str, t_data *data)
 {
-	vars->end = vars->str + 1;
-	while (ft_isvalidvarname(*vars->end))
-		vars->end++;
-	if (*vars->end == '?')
+	char		*dollar_sign;
+	char		*result;
+	t_var_subs	vars;
+
+	result = NULL;
+	vars.start = str;
+	vars.str = vars.start;
+	while (vars.str != NULL && vars.str[0] && vars.str[0] != '\0'
+		&& (ft_strchr(vars.str, '$')))
 	{
-		vars->end++;
+		if (vars.str[1] != '?' && !ft_isvalidvarname(vars.str[1]))
+			vars.str++;
+		else
+		{
+			dollar_sign = ft_strchr(str, '$');
+			vars.str = dollar_sign;
+			vars.end = vars.str + 1;
+			while (ft_isvalidvarname(*vars.end))
+				vars.end++;
+			if (*vars.end == '?')
+				vars.end++;
+			// The segment before the $ sign
+			vars.before = ft_substr(str, 0, vars.str - str);
+			if (!vars.before)
+				free_var_subs_and_exit(&vars, data,
+					"Error: malloc before failed\n");
+			// The variable name
+			vars.var_name = ft_substr(vars.str, 1, vars.end - vars.str - 1);
+			if (!vars.var_name)
+				free_var_subs_and_exit(&vars, data,
+					"Error: malloc var_name failed\n");
+			if (vars.var_name[0] == '?')
+				vars.value = ft_itoa(data->last_exit_status);
+			else
+				vars.value = lookup_env_value(vars.var_name, data->env_arr);
+			// The segment after the variable name
+			vars.after = ft_strdup(vars.end);
+			if (!vars.after)
+				free_var_subs_and_exit(&vars, data,
+					"Error: malloc after failed\n");
+			vars.before_and_value = ft_strjoin(vars.before, vars.value);
+			if (!vars.before_and_value)
+				free_var_subs_and_exit(&vars, data,
+					"Error: malloc before_and_value failed\n");
+			if (result)
+				free(result);
+			result = ft_strjoin(vars.before_and_value, vars.after);
+			if (!result)
+				free_var_subs_and_exit(&vars, data,
+					"Error: malloc token->str failed\n");
+		}
 	}
-	vars->before = ft_substr(token->str, 0, vars->str - token->str);
-	if (!vars->before)
-		free_var_subs_and_exit(vars, data, "Error: malloc before failed\n");
-	vars->var_name = ft_substr(vars->str, 1, vars->end - vars->str - 1);
-	if (!vars->var_name)
-		free_var_subs_and_exit(vars, data, "Error: malloc var_name failed\n");
-	if (vars->var_name[0] == '?')
-		vars->value = ft_itoa(data->last_exit_status);
-	else
-		vars->value = lookup_env_value(vars->var_name, data->env_arr);
-	vars->after = ft_strdup(vars->end);
-	if (!vars->after)
-		free_var_subs_and_exit(vars, data, "Error: malloc after failed\n");
-	if (token->str)
-	{
-		free(token->str);
-		token->str = NULL;
-	}
-	vars->before_and_value = ft_strjoin(vars->before, vars->value);
-	if (!vars->before_and_value)
-		free_var_subs_and_exit(vars, data,
-			"Error: malloc before_and_value failed\n");
-	token->str = ft_strjoin(vars->before_and_value, vars->after);
-	if (!token->str)
-		free_var_subs_and_exit(vars, data, "Error: malloc token->str failed\n");
-	free_var_subs(vars);
+	free_var_subs(&vars);
+	return (result);
 }
 
 t_lexeme	t_double_quotes_var_subs(t_token *token, t_data *data)
 {
-	t_var_subs	vars;
 	t_lexeme	lexeme;
+	char		*tmp;
 
-	vars.str = token->str;
-	lexeme.original = ft_strdup(token->str);
-	if (!lexeme.original)
-		free_exit(data, "Error: malloc lexeme.original failed\n");
-	while (vars.str != NULL && vars.str[0] && vars.str[0] != '\0'
-		&& (vars.str = ft_strchr(vars.str, '$')))
-	{
-		if (vars.str[1] != '?' && !ft_isvalidvarname(vars.str[1]))
-		{
-			vars.str++;
-			continue ;
-		}
-		else
-			process_variable(&vars, token, data);
-		vars.str = token->str;
-	}
-	lexeme.str = strip_quotes(token->str, data);
+	tmp = process_vars_in_str(token->str, data);
+	lexeme.str = strip_quotes(tmp, data);
+	if (!lexeme.str)
+		free_exit(data, "Error: malloc lexeme.str failed\n");
+	free(tmp);
 	lexeme.type = L_UNDEFINED;
 	lexeme.status = NOT_LEXED;
+	lexeme.original = NULL;
 	return (lexeme);
 }
 
