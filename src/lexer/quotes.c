@@ -124,14 +124,17 @@ char	*process_vars_in_str(const char *str, t_data *data)
 				free_var_subs_and_exit(&vars, data,
 					"Error: malloc before_and_value failed\n");
 			if (result)
+			{
 				free(result);
+				result = NULL;
+			}
 			result = ft_strjoin(vars.before_and_value, vars.after);
 			if (!result)
 				free_var_subs_and_exit(&vars, data,
 					"Error: malloc token->str failed\n");
+			free_var_subs(&vars);
 		}
 	}
-	free_var_subs(&vars);
 	return (result);
 }
 
