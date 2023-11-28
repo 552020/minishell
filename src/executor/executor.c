@@ -56,7 +56,7 @@ char	**build_cmd_and_args_arr(t_ast_node *node, int cmd_and_args_count,
 	i = 0;
 	cmd_and_args_count = count_cmd_and_args(node);
 	cmd_and_args_arr = (char **)malloc(sizeof(char *) * (cmd_and_args_count
-			+ 1));
+				+ 1));
 	if (!cmd_and_args_arr)
 		free_exit(data, "Error: malloc failed\n");
 	if (node->cmd)
@@ -96,9 +96,9 @@ void	execute_cmd(t_ast_node *node, t_data *data)
 		if (!path)
 		{
 			if (node->cmd[0] == '/')
-				printf("No such file or directory\n");
+				perror(" No such file or directory\n");
 			else
-				printf("command not found\n");
+				perror(" command not found\n");
 			return ;
 		}
 	}
