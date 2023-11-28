@@ -18,7 +18,6 @@ int	handle_single_command(t_ast_node *node, t_data *data)
 	int		status;
 
 	status = 0;
-	// int		termsig;
 	if (node->cmd != NULL && command_is_builtin(node))
 	{
 		node->exit_status = execute_builtin(node, data);
