@@ -32,32 +32,18 @@ void	wait_single_command(t_ast_node *node, t_data *data)
 
 void	wait_pipe(t_ast_node *node, t_data *data)
 {
-	// Wait for left child
-	if (node->children[0]->type == N_PIPE)
-		wait_pipe(node->children[0], data);
-	else if (node->children[0]->type == N_COMMAND
-		&& node->children[0]->cmd != NULL
-		&& command_is_builtin(node->children[0]))
-	{
-		;
-	}
-	else if (node->children[0]->type == N_COMMAND
-		&& node->children[0]->cmd != NULL
-		&& !(command_is_builtin(node->children[0])))
-		wait_single_command(node->children[0], data);
 	// Wait for right child
 	if (node->children[1]->type == N_PIPE)
 		wait_pipe(node->children[1], data);
 	else if (node->children[1]->type == N_COMMAND
-		&& node->children[1]->cmd != NULL
-		&& command_is_builtin(node->children[1]))
-	{
-		;
-	}
-	else if (node->children[1]->type == N_COMMAND
-		&& node->children[1]->cmd != NULL
-		&& !(command_is_builtin(node->children[1])))
+		&& node->children[1]->cmd != NULL)
 		wait_single_command(node->children[1], data);
+	// Wait for left child
+	if (node->children[0]->type == N_PIPE)
+		wait_pipe(node->children[0], data);
+	else if (node->children[0]->type == N_COMMAND
+		&& node->children[0]->cmd != NULL)
+		wait_single_command(node->children[0], data);
 }
 
 void	wait_ast(t_data *data, t_ast_node *node)
