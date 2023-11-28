@@ -29,7 +29,7 @@ t_lexeme	t_env_var_subs(t_token *token, t_data *data)
 	if (!lexeme.original)
 		free_exit(data, "Error: malloc lexeme.original failed\n");
 	value = lookup_env_value(token->str + 1, data->env_arr);
-	lexeme.type = L_ARGUMENT;
+	lexeme.type = L_UNDEFINED;
 	lexeme.str = ft_strdup(value);
 	if (!lexeme.str)
 		free_exit(data, "Error: malloc lexeme.str failed\n");
