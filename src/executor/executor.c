@@ -88,7 +88,6 @@ void	execute_cmd(t_ast_node *node, t_data *data)
 
 	// To do : move thıs to path finder maybe
 	dir_paths = ft_getenv(data->env_table->table, "PATH");
-	handle_redirections(node, data);
 	path = NULL;
 	if (node->cmd)
 	{
