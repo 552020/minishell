@@ -86,6 +86,8 @@ char	*process_vars_in_str(const char *str, t_data *data)
 	result = NULL;
 	vars.start = str;
 	vars.str = vars.start;
+	if (ft_strchr(vars.str, '$') == NULL)
+		return (ft_strdup(str));
 	while (vars.str != NULL && vars.str[0] && vars.str[0] != '\0'
 		&& (ft_strchr(vars.str, '$')))
 	{
@@ -132,6 +134,7 @@ char	*process_vars_in_str(const char *str, t_data *data)
 			if (!result)
 				free_var_subs_and_exit(&vars, data,
 					"Error: malloc token->str failed\n");
+			vars.str = result;
 			free_var_subs(&vars);
 		}
 	}
