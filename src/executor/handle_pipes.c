@@ -37,16 +37,6 @@ int	handle_single_command(t_ast_node *node, t_data *data)
 		execute_cmd(node, data);
 		exit(EXIT_SUCCESS);
 	}
-	// waitpid(pid, &status, 0);
-	// if (WIFSIGNALED(status))
-	// {
-	// 	termsig = WTERMSIG(status);
-	// 	if (termsig == SIGINT)
-	// 		ft_putstr_fd("\n", STDOUT_FILENO);
-	// 	if (termsig == SIGQUIT)
-	// 		ft_putstr_fd("Quit\n", STDOUT_FILENO);
-	// 	status = termsig + 128;
-	// }
 	node->exit_status = status;
 	return (status);
 }
@@ -97,11 +87,11 @@ int	handle_left_child(t_ast_node *node, t_data *data, pid_t *left_pid,
 {
 	if (node->type == N_PIPE)
 		execute(data, node);
-	else if (node->cmd != NULL && command_is_builtin(node))
-	{
-		node->exit_status = execute_builtin(node, data);
-		return (node->exit_status);
-	}
+	// else if (node->cmd != NULL && command_is_builtin(node))
+	// {
+	// 	node->exit_status = execute_builtin(node, data);
+	// 	return (node->exit_status);
+	// }
 	else if ((node->cmd != NULL) && (node->type == N_COMMAND))
 	{
 		*left_pid = fork();
@@ -113,8 +103,13 @@ int	handle_left_child(t_ast_node *node, t_data *data, pid_t *left_pid,
 		if (*left_pid == 0)
 		{
 			close(pipe_fd);
-			handle_redirections(node, data);
-			execute_cmd(node, data);
+			if (command_is_builtin(node))
+				node->exit_status = execute_builtin(node, data);
+			else
+			{
+				handle_redirections(node, data);
+				execute_cmd(node, data);
+			}
 			exit(EXIT_SUCCESS);
 		}
 	}
@@ -126,11 +121,11 @@ int	handle_right_child(t_ast_node *node, t_data *data, pid_t *right_pid,
 {
 	if (node->type == N_PIPE)
 		execute(data, node);
-	else if (node->cmd != NULL && command_is_builtin(node))
-	{
-		node->exit_status = execute_builtin(node, data);
-		return (node->exit_status);
-	}
+	// else if (node->cmd != NULL && command_is_builtin(node))
+	// {
+	// 	node->exit_status = execute_builtin(node, data);
+	// 	return (node->exit_status);
+	// }
 	else if ((node->cmd != NULL) && (node->type == N_COMMAND))
 	{
 		*right_pid = fork();
@@ -143,8 +138,13 @@ int	handle_right_child(t_ast_node *node, t_data *data, pid_t *right_pid,
 		{
 			dup2(pipe_fd, STDIN_FILENO);
 			close(pipe_fd);
-			handle_redirections(node, data);
-			execute_cmd(node, data);
+			if (command_is_builtin(node))
+				node->exit_status = execute_builtin(node, data);
+			else
+			{
+				handle_redirections(node, data);
+				execute_cmd(node, data);
+			}
 			exit(EXIT_SUCCESS);
 		}
 	}
