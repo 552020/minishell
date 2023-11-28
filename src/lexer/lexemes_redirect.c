@@ -20,10 +20,11 @@ t_lexeme	redirect_in_target_lexeme(t_token *token, t_data *data)
 {
 	t_lexeme	lexeme;
 
+	// lexeme.str = ft_strdup(token->str);
+	// if (!lexeme.str)
+	// free_exit(data, "Error: malloc lexeme.str failed\n");
+	lexeme = t_double_quotes_var_subs(token, data);
 	lexeme.type = L_FILENAME_STDIN;
-	lexeme.str = ft_strdup(token->str);
-	if (!lexeme.str)
-		free_exit(data, "Error: malloc lexeme.str failed\n");
 	lexeme.original = NULL;
 	// lexeme.original = ft_strdup(token->str);
 	// if (!lexeme.original)
@@ -36,10 +37,11 @@ t_lexeme	redirect_out_lexeme(t_token *token, t_data *data)
 {
 	t_lexeme	lexeme;
 
+	// lexeme.str = ft_strdup(token->str);
+	// if (!lexeme.str)
+	// free_exit(data, "Error: malloc lexeme.str failed\n");
+	lexeme = t_double_quotes_var_subs(token, data);
 	lexeme.type = L_REDIRECT_OUTPUT;
-	lexeme.str = ft_strdup(token->str);
-	if (!lexeme.str)
-		free_exit(data, "Error: malloc lexeme.str failed\n");
 	lexeme.original = NULL;
 	// lexeme.original = ft_strdup(token->str);
 	// if (!lexeme.original)
