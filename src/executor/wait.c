@@ -26,17 +26,12 @@ void	wait_pid(t_ast_node *node, t_data *data)
 
 void	wait_single_command(t_ast_node *node, t_data *data)
 {
-	int	status;
-
-	// int	termsig;
-	(void)data;
 	if (node->pid > 0)
-		waitpid(node->pid, &status, 0);
+		wait_pid(node, data);
 }
 
 void	wait_pipe(t_ast_node *node, t_data *data)
 {
-	// int	status;
 	// Wait for left child
 	if (node->children[0]->type == N_PIPE)
 		wait_pipe(node->children[0], data);

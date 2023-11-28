@@ -293,7 +293,7 @@ unsigned int			hash(const char *key);
 // not using these
 // void handle_commands(t_ast_node *ast_root, t_data *data);
 int						handle_pipe(t_ast_node *ast_root, t_data *data);
-void					handle_redirections(t_ast_node *node, t_data *data);
+int						handle_redirections(t_ast_node *node, t_data *data);
 
 void					execute_cmd(t_ast_node *node, t_data *data);
 int						print_working_directory(void);
@@ -328,8 +328,8 @@ void					handle_command_node(t_ast_node *node, char **envp,
 // void					handle_nodes(t_ast_node *node, char
 // *dir_paths, 							char **envp,
 // t_env_table *env_table, t_data *data);
-void					free_token_arr(t_token *token_arr);
-void					free_lexeme_arr(t_lexeme *lexeme_arr);
+void					free_token_arr(t_data *data);
+void					free_lexeme_arr(t_data *data);
 void					free_key_value_pair(char **key_value);
 char					**ft_split_envp(const char *s, char c, t_data *data);
 void					free_data(t_data *data);
