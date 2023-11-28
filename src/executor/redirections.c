@@ -62,8 +62,11 @@ int	handle_redirections(t_ast_node *node, t_data *data)
 	int	return_infile;
 	int	return_outfile;
 
-	return_infile = SUCCESS;
-	return_outfile = SUCCESS;
+
+
+	return_infile = 0;
+	return_outfile = 0;
+
 	if (node->heredoc)
 		heredoc_redirection(node);
 	if (node->input_file)
