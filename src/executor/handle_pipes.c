@@ -41,9 +41,6 @@ int	handle_single_command(t_ast_node *node, t_data *data)
 	return (status);
 }
 
-// int	def_STDOUT_FILENO;
-// int	flag = -1;
-
 int	handle_pipe(t_ast_node *node, t_data *data)
 {
 	int		pipe_fd[2];
@@ -57,27 +54,16 @@ int	handle_pipe(t_ast_node *node, t_data *data)
 	status_right = 0;
 	if (pipe(pipe_fd) == -1)
 		free_exit(data, "Error: pipe failed\n");
-	// printf("Herere is the part where hadnle left child\n");
 	stdout_backup = dup(STDOUT_FILENO);
-	// if (flag == -1)
-	// {
-	// 	def_STDOUT_FILENO = dup(STDOUT_FILENO);
-	// 	flag = 0;
-	// }
 	dup2(pipe_fd[1], STDOUT_FILENO);
 	close(pipe_fd[1]);
-	// ft_putstr_fd("Herere is the part where hadnle left child\n",
-	// 	def_STDOUT_FILENO);
 	status_left = handle_left_child(node->children[0], data, &left_pid,
-			pipe_fd[0]);
+		pipe_fd[0]);
 	dup2(stdout_backup, STDOUT_FILENO);
 	close(stdout_backup);
-	// ft_putstr_fd("Herere is the part where hadnle right child\n",
-	// 	def_STDOUT_FILENO);
 	status_right = handle_right_child(node->children[1], data, &right_pid,
-			pipe_fd[0]);
+		pipe_fd[0]);
 	close(pipe_fd[0]);
-	// TODO: probably we want the exit status of the child processes
 	(void)status_left;
 	return (status_right);
 }
@@ -87,11 +73,6 @@ int	handle_left_child(t_ast_node *node, t_data *data, pid_t *left_pid,
 {
 	if (node->type == N_PIPE)
 		execute(data, node);
-	// else if (node->cmd != NULL && command_is_builtin(node))
-	// {
-	// 	node->exit_status = execute_builtin(node, data);
-	// 	return (node->exit_status);
-	// }
 	else if ((node->cmd != NULL) && (node->type == N_COMMAND))
 	{
 		*left_pid = fork();
@@ -121,11 +102,6 @@ int	handle_right_child(t_ast_node *node, t_data *data, pid_t *right_pid,
 {
 	if (node->type == N_PIPE)
 		execute(data, node);
-	// else if (node->cmd != NULL && command_is_builtin(node))
-	// {
-	// 	node->exit_status = execute_builtin(node, data);
-	// 	return (node->exit_status);
-	// }
 	else if ((node->cmd != NULL) && (node->type == N_COMMAND))
 	{
 		*right_pid = fork();
