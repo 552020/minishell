@@ -68,12 +68,16 @@ t_token	*tokenizer(t_data *data, const char *str)
 void	tokenize(t_data *data, char *input)
 {
 	char *trimmed;
+	char *tmp;
 	char *reshuffled;
 
 	if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_TOKENIZER)
 		printf("\n***Tokenization***\n\n");
 	trimmed = strip_ending_trailing_spaces(input);
-	reshuffled = reshuffle_single_quotes(trimmed);
+	tmp = reshuffle_single_quotes(trimmed);
+
+	reshuffled = reshuffle_double_quotes(tmp);
+	free(tmp);
 	free(input);
 	input = NULL;
 	// data->token_count = count_words_tokenizer(trimmed);
