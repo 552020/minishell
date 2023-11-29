@@ -6,7 +6,7 @@
 /*   By: bsengeze <bsengeze@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 23:40:23 by bsengeze          #+#    #+#             */
-/*   Updated: 2023/11/29 15:22:16 by bsengeze         ###   ########.fr       */
+/*   Updated: 2023/11/29 15:23:20 by bsengeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,8 +95,6 @@ void	execute_cmd(t_ast_node *node, t_data *data)
 		if (!path)
 		{
 			// TODO:  add free probably
-			// printf("node cmd is %s\n", node->cmd);
-			// printf("node args is %s\n", node->args[0]);
 			if (ft_strncmp(&node->cmd[0], "./", 2) == 0)
 			{
 				if (access(node->cmd, F_OK) == 0)

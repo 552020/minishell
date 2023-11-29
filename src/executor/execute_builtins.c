@@ -6,7 +6,7 @@
 /*   By: bsengeze <bsengeze@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 23:44:16 by bsengeze          #+#    #+#             */
-/*   Updated: 2023/11/28 07:38:23 by bsengeze         ###   ########.fr       */
+/*   Updated: 2023/11/29 15:33:05 by bsengeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,12 @@ int	builtin_without_args(t_ast_node *node, t_data *data)
 		exit_status = print_working_directory();
 	else if (ft_strncmp(node->cmd, "cd", 2) == 0 && ft_strlen(node->cmd) == 2)
 	{
-		if (node->args)
+		if (node->args && node->args[1])
+		{
+			ft_putstr_fd("Permission denied: ", STDERR_FILENO);
+			exit_status = EXIT_FAILURE;
+		}
+		else if (node->args)
 			exit_status = change_directory(node->args[0]);
 		else
 			printf("Sorry! Cd works only with some args!\n");
