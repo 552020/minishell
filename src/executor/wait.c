@@ -26,10 +26,14 @@ int	wait_pid(t_ast_node *node, t_data *data)
 	return (exit_status);
 }
 
-void	wait_single_command(t_ast_node *node, t_data *data)
+int	wait_single_command(t_ast_node *node, t_data *data)
 {
+	int	exit_status;
+
+	exit_status = 0;
 	if (node->pid > 0)
-		wait_pid(node, data);
+		exit_status = wait_pid(node, data);
+	return (exit_status);
 }
 
 int	wait_pipe(t_ast_node *node, t_data *data)
@@ -39,10 +43,10 @@ int	wait_pipe(t_ast_node *node, t_data *data)
 	exit_status = 0;
 	// Wait for right child
 	if (node->children[1]->type == N_PIPE)
-		exit_status = wait_pipe(node->children[1], data);
+		wait_pipe(node->children[1], data);
 	else if (node->children[1]->type == N_COMMAND
 		&& node->children[1]->cmd != NULL)
-		wait_single_command(node->children[1], data);
+		exit_status = wait_single_command(node->children[1], data);
 	// Wait for left child
 	if (node->children[0]->type == N_PIPE)
 		wait_pipe(node->children[0], data);
