@@ -10,56 +10,53 @@ char	*find_unpaired_quote(const char *str)
 	current = str;
 	while ((current = ft_strchr(current, '\'')))
 	{
-		// Check for the next quote
 		next_quote = ft_strchr(current + 1, '\'');
 		if (!next_quote)
-		{
-			// If there is no next quote, current points to an unpaired quote
 			return ((char *)current);
-		}
 		else
-		{
-			// If a pair is found,
-			// continue searching from the position after the pair
 			current = next_quote + 1;
-		}
 	}
-	// If all quotes are paired, return NULL
 	return (NULL);
+}
+
+int	count_single_quotes(const char *str)
+{
+	int	count;
+
+	count = 0;
+	while (*str)
+	{
+		if (*str == '\'')
+			count++;
+		str++;
+	}
+	return (count);
 }
 
 char	*remove_single_quotes(char *str)
 {
-	char	*result;
-	char	*start;
+	char	*dest;
+	char	*ret;
 	char	*unpaired_quote;
 	int		str_len;
 	int		quotes_count;
 
-	quotes_count = 0;
 	if (!str)
 		return (NULL);
-	start = str;
-	while (*str)
-	{
-		if (*str == '\'')
-			quotes_count++;
-		str++;
-	}
-	str = start;
+	quotes_count = count_single_quotes(str);
 	str_len = ft_strlen(str) - quotes_count;
-	result = ft_calloc(str_len + 1, sizeof(char));
-	start = result;
-	if (!result)
+	dest = ft_calloc(str_len + 1, sizeof(char));
+	if (!dest)
 		return (NULL);
+	ret = dest;
 	unpaired_quote = find_unpaired_quote(str);
 	while (*str)
 	{
 		if (*str != '\'' || (str == unpaired_quote))
-			*result++ = *str;
+			*dest++ = *str;
 		str++;
 	}
-	return (start);
+	return (ret);
 }
 
 char	*add_single_quotes(char *str)
@@ -114,7 +111,8 @@ char	*reshuffle_single_quotes(const char *input)
 			sub = remove_single_quotes(tmp);
 			free(tmp);
 			tmp = add_single_quotes(sub);
-			free(tmp);
+			free(sub);
+			sub = tmp;
 			before = ft_substr(result, 0, start_sub - start_input);
 			after = ft_strdup(end_sub);
 			free(result);

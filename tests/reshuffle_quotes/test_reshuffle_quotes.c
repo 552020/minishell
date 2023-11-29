@@ -15,7 +15,7 @@ void	test_reshuffle_single_quotes(const char *input, const char *expected)
 	}
 	else
 	{
-		printf("Test failed (%s). Expected: '%s', Got: '%s'\n", input, expected,
+		printf("Test failed (%s). Expected: <%s>, Got: <%s>\n", input, expected,
 			result);
 	}
 	free(result);
@@ -25,7 +25,7 @@ int	main(void)
 {
 	// Test cases
 	test_reshuffle_single_quotes("echo 'hello'", "echo 'hello'");
-	test_reshuffle_single_quotes("echo 'he'  'llo'", "echo 'he  llo'");
+	test_reshuffle_single_quotes("echo 'he'  'llo'", "echo 'he'  'llo'");
 	test_reshuffle_single_quotes("echo hello", "echo hello");
 	test_reshuffle_single_quotes("echo 'hello", "echo 'hello");
 	test_reshuffle_single_quotes("", "");
