@@ -62,6 +62,24 @@ char	*remove_single_quotes(char *str)
 	return (start);
 }
 
+char	*add_single_quotes(char *str)
+{
+	char	*result;
+	char	*start;
+	int		str_len;
+
+	str_len = ft_strlen(str);
+	result = ft_calloc(str_len + 3, sizeof(char));
+	start = result;
+	if (!result)
+		return (NULL);
+	*result++ = '\'';
+	while (*str)
+		*result++ = *str++;
+	*result++ = '\'';
+	return (start);
+}
+
 char	*reshuffle_single_quotes(const char *input)
 {
 	char	*start_input;
@@ -93,6 +111,18 @@ char	*reshuffle_single_quotes(const char *input)
 			tmp = ft_substr(start_sub, 0, end_sub - start_sub);
 			sub = remove_single_quotes(tmp);
 			free(tmp);
+			tmp = add_single_quotes(sub);
+			free(tmp);
+			before = ft_substr(result, 0, start_sub - start_input);
+			after = ft_strdup(end_sub);
+			free(result);
+			result = ft_strjoin(before, sub);
+			free(before);
+			free(sub);
+			tmp = ft_strjoin(result, after);
+			free(result);
+			free(after);
+			result = tmp;
 		}
 		input++;
 	}
