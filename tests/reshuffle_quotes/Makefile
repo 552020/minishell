@@ -3,7 +3,7 @@ CFLAGS = -g -Wall -Wextra -Werror
 LIBFT = ../../libft/libft.a
 INCLUDES = -I../../include -I../../src/tokenizer -I../../libft/include
 
-SRCS = ../../src/tokenizer/reshuffle_quotes.c ../../src/tokenizer/utils.c
+SRCS = ../../src/tokenizer/reshuffle_quotes.c ../../src/tokenizer/utils.c ../../src/utils/ft_isvalidvarname.c test_reshuffle_quotes.c
 OBJS = $(SRCS:.c=.o)
 NAME = reshuffle_quotes 
 

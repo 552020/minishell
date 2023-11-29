@@ -82,14 +82,14 @@ char	*add_single_quotes(char *str)
 
 char	*reshuffle_single_quotes(const char *input)
 {
-	char	*start_input;
-	char	*start_sub;
-	char	*end_sub;
-	char	*sub;
-	char	*tmp;
-	char	*before;
-	char	*after;
-	char	*result;
+	const char	*start_input;
+	const char	*start_sub;
+	char		*end_sub;
+	char		*sub;
+	char		*tmp;
+	char		*before;
+	char		*after;
+	char		*result;
 
 	result = ft_strdup(input);
 	start_input = input;
@@ -131,8 +131,8 @@ char	*reshuffle_single_quotes(const char *input)
 
 char	*reshuffle_quotes(const char *input)
 {
-	char *start_input;
-	char *start;
+	const char *start_input;
+	const char *start;
 	char *end;
 	char *result;
 
@@ -151,6 +151,7 @@ char	*reshuffle_quotes(const char *input)
 
 			start = input;
 			end = ft_strchr(input + 1, *input);
+			(void)end;
 			while (start > start_input && isregularchar(*(input - 1), input))
 				start--;
 
