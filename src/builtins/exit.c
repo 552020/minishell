@@ -26,12 +26,15 @@ int	ft_exit(t_ast_node *node, char **envp, t_env_table *table)
 	// update exit status here which is the argument
 	exit_code = 0;
 	if (ft_strlen(node->cmd) == 4 && !node->args)
-	{
-		// printf("!!!!!");
 		exit_code = 0;
-	}
 	else if (node->args[1])
 	{
+		if (!exit_input_check(node->args[0]))
+		{
+			ft_putstr_fd(" numeric argument required\n", STDERR_FILENO);
+			exit_status = 2;
+			return (exit_status);
+		}
 		ft_putstr_fd(" too many arguments\n", STDERR_FILENO);
 		exit_status = 1;
 		return (exit_status);
