@@ -6,7 +6,7 @@
 /*   By: bsengeze <bsengeze@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 23:44:16 by bsengeze          #+#    #+#             */
-/*   Updated: 2023/11/29 16:30:08 by bsengeze         ###   ########.fr       */
+/*   Updated: 2023/11/29 17:22:10 by bsengeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,12 +93,7 @@ int	builtin_without_args(t_ast_node *node, t_data *data)
 	else if (ft_strncmp(node->cmd, "echo", 4) == 0 && ft_strlen(node->cmd) == 4)
 		exit_status = echo(node);
 	else if (ft_strncmp(node->cmd, "exit", 4) == 0)
-	{
-		// printf("exit_status: %d\n", exit_status);
-		// printf("node->cmd: %s\n", node->cmd);
-		// printf("node->args[0]: %s\n", node->args[0]);
 		exit_status = ft_exit(node, data->env_arr, data->env_table);
-	}
 	return (exit_status);
 }
 
