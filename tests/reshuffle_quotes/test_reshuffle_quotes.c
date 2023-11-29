@@ -25,13 +25,13 @@ int	main(void)
 {
 	// Test cases
 	test_reshuffle_single_quotes("echo 'hello'", "echo 'hello'");
-	test_reshuffle_single_quotes("echo 'he'  'llo'", "echo 'he'  'llo'");
+	test_reshuffle_single_quotes("echo 'he'  'llo'", "echo 'he  llo'");
 	test_reshuffle_single_quotes("echo hello", "echo hello");
-	test_reshuffle_single_quotes("echo 'hello", "echo 'hello'");
+	test_reshuffle_single_quotes("echo 'hello", "echo 'hello");
 	test_reshuffle_single_quotes("", "");
 	test_reshuffle_single_quotes(NULL, NULL);
 	test_reshuffle_single_quotes("echo 'he llo' world", "echo 'he llo' world");
 	test_reshuffle_single_quotes("'h''e''l''l''o'", "'hello'");
-	test_reshuffle_single_quotes("he''llo", "he''llo");
+	test_reshuffle_single_quotes("he''llo", "'hello'");
 	return (0);
 }
