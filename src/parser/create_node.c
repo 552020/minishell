@@ -10,8 +10,10 @@ t_ast_node	*create_node(t_node_type type, t_data *data)
 	new_node->type = type;
 	new_node->cmd = NULL;
 	new_node->args = NULL;
-	new_node->input_file = NULL;
-	new_node->output_file = NULL;
+	// new_node->input_file = NULL;
+	// new_node->output_file = NULL;
+	new_node->input_files = NULL;
+	new_node->output_files = NULL;
 	new_node->append = false;
 	new_node->heredoc = false;
 	new_node->heredoc_fd = -1;
