@@ -300,7 +300,7 @@ int						handle_redirections(t_ast_node *node, t_data *data);
 
 void					execute_cmd(t_ast_node *node, t_data *data);
 int						print_working_directory(void);
-void					ft_exit(int exit_code, t_ast_node *node, char **envp,
+int						ft_exit(t_ast_node *node, char **envp,
 							t_env_table *table);
 
 void					insert_node_ht(const char *key, const char *value,
