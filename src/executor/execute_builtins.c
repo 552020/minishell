@@ -6,7 +6,7 @@
 /*   By: bsengeze <bsengeze@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 23:44:16 by bsengeze          #+#    #+#             */
-/*   Updated: 2023/11/29 17:22:10 by bsengeze         ###   ########.fr       */
+/*   Updated: 2023/11/29 18:58:54 by bsengeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,7 @@ int	builtin_without_args(t_ast_node *node, t_data *data)
 		if (node->args && node->args[1])
 		{
 			ft_putstr_fd("Permission denied:\n", STDERR_FILENO);
+			ft_putendl_fd(" too many arguments\n", STDERR_FILENO);
 			exit_status = EXIT_FAILURE;
 		}
 		else if (node->args)
