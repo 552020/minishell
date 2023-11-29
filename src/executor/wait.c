@@ -1,10 +1,11 @@
 #include "minishell.h"
 
-void	wait_pid(t_ast_node *node, t_data *data)
+int	wait_pid(t_ast_node *node, t_data *data)
 {
 	int	exit_status;
 	int	termsig;
 
+	exit_status = 0;
 	(void)data;
 	if (node->pid > 0)
 	{
@@ -22,6 +23,7 @@ void	wait_pid(t_ast_node *node, t_data *data)
 		}
 		node->exit_status = exit_status;
 	}
+	return (exit_status);
 }
 
 void	wait_single_command(t_ast_node *node, t_data *data)
@@ -30,11 +32,14 @@ void	wait_single_command(t_ast_node *node, t_data *data)
 		wait_pid(node, data);
 }
 
-void	wait_pipe(t_ast_node *node, t_data *data)
+int	wait_pipe(t_ast_node *node, t_data *data)
 {
+	int	exit_status;
+
+	exit_status = 0;
 	// Wait for right child
 	if (node->children[1]->type == N_PIPE)
-		wait_pipe(node->children[1], data);
+		exit_status = wait_pipe(node->children[1], data);
 	else if (node->children[1]->type == N_COMMAND
 		&& node->children[1]->cmd != NULL)
 		wait_single_command(node->children[1], data);
@@ -44,6 +49,7 @@ void	wait_pipe(t_ast_node *node, t_data *data)
 	else if (node->children[0]->type == N_COMMAND
 		&& node->children[0]->cmd != NULL)
 		wait_single_command(node->children[0], data);
+	return (exit_status);
 }
 
 void	wait_ast(t_data *data, t_ast_node *node)
