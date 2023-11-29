@@ -28,6 +28,12 @@ int	main(int argc, char **argv)
 	if (argc == 1)
 	{
 		// Test cases
+		test_reshuffle_single_quotes("echo he''llo", "echo 'hello'");
+		test_reshuffle_single_quotes("echo 'he''llo'", "echo 'hello'");
+		test_reshuffle_single_quotes("echo 'he''llo' world",
+			"echo 'hello' world");
+		test_reshuffle_single_quotes("echo h'ell'o world",
+			"echo 'hello' world");
 		test_reshuffle_single_quotes("echo 'hello'", "echo 'hello'");
 		test_reshuffle_single_quotes("echo 'he'  'llo'", "echo 'he'  'llo'");
 		test_reshuffle_single_quotes("echo hello", "echo hello");
