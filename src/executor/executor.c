@@ -6,7 +6,7 @@
 /*   By: bsengeze <bsengeze@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 23:40:23 by bsengeze          #+#    #+#             */
-/*   Updated: 2023/11/25 17:58:47 by bsengeze         ###   ########.fr       */
+/*   Updated: 2023/11/29 13:56:29 by bsengeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,11 +94,20 @@ void	execute_cmd(t_ast_node *node, t_data *data)
 		path = path_finder(node->cmd, dir_paths, data);
 		if (!path)
 		{
-			if (node->cmd[0] == '/')
-				perror(" No such file or directory\n");
-			else
-				perror(" command not found\n");
-			return ;
+			// TODO:  add free probably
+			// if (node->cmd[0] == '/')
+			// {
+			perror(" ");
+			// printf("1111111");
+			exit(127);
+			// }
+			// else
+			// {
+			// 	perror(" ");
+			// 	// printf("2222222");
+			// 	exit(127);
+			// }
+			// return ;
 		}
 	}
 	else
@@ -121,6 +130,7 @@ void	execute_cmd(t_ast_node *node, t_data *data)
 				path = NULL;
 			}
 			perror("execve error");
+			exit(127);
 		}
 	}
 	if (cmd_and_args_arr)
