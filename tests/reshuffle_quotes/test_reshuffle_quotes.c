@@ -21,13 +21,31 @@ void	test_reshuffle_single_quotes(const char *input, const char *expected)
 	free(result);
 }
 
+void	test_reshuffle_double_quotes(const char *input, const char *expected)
+{
+	char	*result;
+
+	result = reshuffle_double_quotes(input);
+	if ((result == NULL && expected == NULL) || (result && expected
+			&& strcmp(result, expected) == 0))
+	{
+		printf("Test passed (%s).\n", input);
+	}
+	else
+	{
+		printf("Test failed (%s). Expected: <%s>, Got: <%s>\n", input, expected,
+			result);
+	}
+	free(result);
+}
+
 int	main(int argc, char **argv)
 {
 	char	*result;
 
 	if (argc == 1)
 	{
-		// Test cases
+		printf("Tests reshuffle_single_quotes():\n");
 		test_reshuffle_single_quotes("echo 'he''''llo'", "echo 'hello'");
 		test_reshuffle_single_quotes("echo 'he'''''llo'", "echo 'hello''");
 		test_reshuffle_single_quotes("echo 'he''''''llo", "echo 'he'llo'");
@@ -47,6 +65,19 @@ int	main(int argc, char **argv)
 			"echo 'he llo' world");
 		test_reshuffle_single_quotes("'h''e''l''l''o'", "'hello'");
 		test_reshuffle_single_quotes("he''llo", "'hello'");
+		printf("Tests reshuffle_doube_quotes():\n");
+		test_reshuffle_double_quotes("echo \"he\"\"llo\"", "echo \"hello\"");
+		test_reshuffle_double_quotes("echo \"he\"\"\"\"llo\"",
+			"echo \"hello\"");
+		test_reshuffle_double_quotes("echo \"he\"\"\"\"\"llo",
+			"echo \"hello\"");
+		test_reshuffle_double_quotes("echo \"he\"\"\"\"\"\"llo",
+			"echo \"he\"llo\"");
+		test_reshuffle_double_quotes("echo he\"\"llo", "echo \"hello\"");
+		test_reshuffle_double_quotes("echo \"he\"\"llo\"", "echo \"hello\"");
+		printf("Tests Mixed\n");
+		test_reshuffle_double_quotes("echo \"he''llo'\" world",
+			"echo he''llo' world");
 	}
 	if (argc == 2)
 	{

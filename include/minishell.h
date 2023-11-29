@@ -353,5 +353,6 @@ int						handle_right_child(t_ast_node *node, t_data *data,
 int						signal_status(int status);
 void					wait_ast(t_data *data, t_ast_node *node);
 char					*reshuffle_single_quotes(const char *input);
+char					*reshuffle_double_quotes(const char *input);
 
 #endif

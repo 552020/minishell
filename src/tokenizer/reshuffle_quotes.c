@@ -19,21 +19,21 @@ char	*find_unpaired_quote(const char *str)
 	return (NULL);
 }
 
-int	count_single_quotes(const char *str)
+int	count_single_or_double_quotes(const char *str, char quote)
 {
 	int	count;
 
 	count = 0;
 	while (*str)
 	{
-		if (*str == '\'')
+		if (*str == quote)
 			count++;
 		str++;
 	}
 	return (count);
 }
 
-char	*remove_single_quotes(char *str)
+char	*remove_single_or_double_quotes(char *str, char quote)
 {
 	char	*dest;
 	char	*ret;
@@ -43,7 +43,7 @@ char	*remove_single_quotes(char *str)
 
 	if (!str)
 		return (NULL);
-	quotes_count = count_single_quotes(str);
+	quotes_count = count_single_or_double_quotes(str, quote);
 	str_len = ft_strlen(str) - quotes_count;
 	dest = ft_calloc(str_len + 1, sizeof(char));
 	if (!dest)
@@ -52,14 +52,14 @@ char	*remove_single_quotes(char *str)
 	unpaired_quote = find_unpaired_quote(str);
 	while (*str)
 	{
-		if (*str != '\'' || (str == unpaired_quote))
+		if (*str != quote || (str == unpaired_quote))
 			*dest++ = *str;
 		str++;
 	}
 	return (ret);
 }
 
-char	*add_single_quotes(char *str)
+char	*add_single_or_double_quotes(char *str, char quote)
 {
 	char	*result;
 	char	*start;
@@ -70,10 +70,10 @@ char	*add_single_quotes(char *str)
 	start = result;
 	if (!result)
 		return (NULL);
-	*result++ = '\'';
+	*result++ = quote;
 	while (*str)
 		*result++ = *str++;
-	*result++ = '\'';
+	*result++ = quote;
 	return (start);
 }
 
@@ -91,7 +91,7 @@ typedef struct reshuffle_quotes
 	int			before_and_sub_len;
 }				t_reshuffle_quotes;
 
-void	build_substring(t_reshuffle_quotes *rsq)
+void	build_substring(t_reshuffle_quotes *rsq, char quote)
 {
 	rsq->start_sub = rsq->cur;
 	rsq->end_sub = ft_strchr(rsq->cur + 1, *rsq->cur);
@@ -102,16 +102,16 @@ void	build_substring(t_reshuffle_quotes *rsq)
 		rsq->start_sub--;
 	}
 	while (*rsq->end_sub && (isregularchar(*rsq->end_sub, rsq->end_sub)
-			|| *rsq->end_sub == '\''))
+			|| *rsq->end_sub == quote))
 		rsq->end_sub++;
 	rsq->tmp = ft_substr(rsq->start_sub, 0, rsq->end_sub - rsq->start_sub);
 }
 
-void	remove_add_single_quotes(t_reshuffle_quotes *rsq)
+void	remove_add_single_or_double_quotes(t_reshuffle_quotes *rsq, char quote)
 {
-	rsq->sub = remove_single_quotes(rsq->tmp);
+	rsq->sub = remove_single_or_double_quotes(rsq->tmp, quote);
 	free(rsq->tmp);
-	rsq->tmp = add_single_quotes(rsq->sub);
+	rsq->tmp = add_single_or_double_quotes(rsq->sub, quote);
 	free(rsq->sub);
 }
 
@@ -138,6 +138,38 @@ void	build_result(t_reshuffle_quotes *rsq)
 	// printf("new cur: %s\n", rsq->cur);
 }
 
+char	*reshuffle_double_quotes(const char *input)
+{
+	t_reshuffle_quotes	rsq;
+
+	if (!input)
+		return (NULL);
+	rsq.result = ft_strdup(input);
+	rsq.cur = rsq.result;
+	rsq.start_input = rsq.result;
+	// printf("input: %s\n", input);
+	while (*rsq.cur)
+	{
+		rsq.start_input = rsq.result;
+		if (*rsq.cur == '"')
+		{
+			// printf("we are in\n");
+			// printf("current char: %c\n", *rsq.cur);
+			// printf("str: %s\n", rsq.cur);
+			if (isregularchar(*rsq.cur, rsq.cur))
+			{
+				// printf("we break\n");
+				break ;
+			}
+			build_substring(&rsq, '"');
+			remove_add_single_or_double_quotes(&rsq, '"');
+			build_result(&rsq);
+		}
+		rsq.cur++;
+	}
+	return (rsq.result);
+}
+
 char	*reshuffle_single_quotes(const char *input)
 {
 	t_reshuffle_quotes	rsq;
@@ -161,8 +193,8 @@ char	*reshuffle_single_quotes(const char *input)
 				// printf("we break\n");
 				break ;
 			}
-			build_substring(&rsq);
-			remove_add_single_quotes(&rsq);
+			build_substring(&rsq, '\'');
+			remove_add_single_or_double_quotes(&rsq, '\'');
 			build_result(&rsq);
 		}
 		rsq.cur++;
