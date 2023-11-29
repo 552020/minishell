@@ -6,7 +6,7 @@
 /*   By: bsengeze <bsengeze@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 23:40:23 by bsengeze          #+#    #+#             */
-/*   Updated: 2023/11/29 13:56:29 by bsengeze         ###   ########.fr       */
+/*   Updated: 2023/11/29 15:22:16 by bsengeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,24 +95,36 @@ void	execute_cmd(t_ast_node *node, t_data *data)
 		if (!path)
 		{
 			// TODO:  add free probably
-			// if (node->cmd[0] == '/')
-			// {
-			perror(" ");
-			// printf("1111111");
-			exit(127);
-			// }
-			// else
-			// {
-			// 	perror(" ");
-			// 	// printf("2222222");
-			// 	exit(127);
-			// }
-			// return ;
+			// printf("node cmd is %s\n", node->cmd);
+			// printf("node args is %s\n", node->args[0]);
+			if (ft_strncmp(&node->cmd[0], "./", 2) == 0)
+			{
+				if (access(node->cmd, F_OK) == 0)
+				{
+					// File exists but is not executable
+					perror(" ");
+					exit(126);
+				}
+				else
+				{
+					// File does not exist
+					perror(" ");
+					exit(127);
+				}
+			}
+			else
+			{
+				// printf("else statement2\n");
+				perror(" ");
+				exit(127);
+			}
 		}
 	}
 	else
 	{
-		// printf("no commands to execute\n");
+		// printf("else statement3\n");
+		perror(" ");
+		exit(127);
 		return ;
 	}
 	cmd_and_args_count = count_cmd_and_args(node);
