@@ -6,7 +6,7 @@
 /*   By: bsengeze <bsengeze@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 23:35:54 by bsengeze          #+#    #+#             */
-/*   Updated: 2023/11/08 21:48:22 by bsengeze         ###   ########.fr       */
+/*   Updated: 2023/11/29 19:26:08 by bsengeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,21 @@ int	infile_redirection(t_ast_node *node, t_data *data)
 	int	filein;
 
 	(void)data;
+	if (access(node->input_file, F_OK) != 0)
+	{
+		perror(" ");
+		return (FAILURE);
+	}
+	if (access(node->input_file, R_OK) != 0)
+	{
+		perror(" ");
+		return (FAILURE);
+	}
 	filein = 0;
 	filein = open(node->input_file, O_RDONLY, 0777);
 	if (filein == -1)
 	{
 		perror(" ");
-		// free_ast(data->ast_root);
 		return (FAILURE);
 	}
 	dup2(filein, STDIN_FILENO);
@@ -36,14 +45,21 @@ int	outfile_redirection(t_ast_node *node, t_data *data)
 
 	(void)data;
 	fileout = 1;
+	if (access(node->output_file, F_OK) == 0)
+	{
+		if (access(node->output_file, W_OK) != 0)
+		{
+			perror("File is not writable");
+			return (FAILURE);
+		}
+	}
 	if (node->append)
-		fileout = open(node->output_file, O_WRONLY | O_CREAT | O_APPEND, 0777);
+		fileout = open(node->output_file, O_WRONLY | O_CREAT | O_APPEND);
 	else if (!node->append)
-		fileout = open(node->output_file, O_WRONLY | O_CREAT | O_TRUNC, 0777);
+		fileout = open(node->output_file, O_WRONLY | O_CREAT | O_TRUNC);
 	if (fileout == -1)
 	{
 		perror(" ");
-		// free_ast(data->ast_root);
 		return (FAILURE);
 	}
 	dup2(fileout, STDOUT_FILENO);
@@ -62,11 +78,8 @@ int	handle_redirections(t_ast_node *node, t_data *data)
 	int	return_infile;
 	int	return_outfile;
 
-
-
-	return_infile = 0;
-	return_outfile = 0;
-
+	return_infile = 1;
+	return_outfile = 1;
 	if (node->heredoc)
 		heredoc_redirection(node);
 	if (node->input_file)
