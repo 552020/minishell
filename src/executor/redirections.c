@@ -6,7 +6,7 @@
 /*   By: bsengeze <bsengeze@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 23:35:54 by bsengeze          #+#    #+#             */
-/*   Updated: 2023/11/29 17:59:29 by bsengeze         ###   ########.fr       */
+/*   Updated: 2023/11/29 19:26:08 by bsengeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,8 +78,8 @@ int	handle_redirections(t_ast_node *node, t_data *data)
 	int	return_infile;
 	int	return_outfile;
 
-	return_infile = 0;
-	return_outfile = 0;
+	return_infile = 1;
+	return_outfile = 1;
 	if (node->heredoc)
 		heredoc_redirection(node);
 	if (node->input_file)
