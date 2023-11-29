@@ -77,7 +77,7 @@ char	*add_single_quotes(char *str)
 	return (start);
 }
 
-char	*reshuffle_single_quotes(const char *input)
+typedef struct reshuffle_quotes
 {
 	const char	*start_input;
 	const char	*start_sub;
@@ -89,48 +89,69 @@ char	*reshuffle_single_quotes(const char *input)
 	char		*result;
 	char		*cur;
 	int			before_and_sub_len;
+}				t_reshuffle_quotes;
+
+void	build_substring(t_reshuffle_quotes *rsq)
+{
+	rsq->start_sub = rsq->cur;
+	rsq->end_sub = ft_strchr(rsq->cur + 1, *rsq->cur);
+	while (rsq->start_sub > rsq->start_input && isregularchar(*(rsq->cur - 1),
+			rsq->cur))
+		rsq->start_sub--;
+	while (*rsq->end_sub && (isregularchar(*rsq->end_sub, rsq->end_sub)
+			|| *rsq->end_sub == '\''))
+		rsq->end_sub++;
+	rsq->tmp = ft_substr(rsq->start_sub, 0, rsq->end_sub - rsq->start_sub);
+}
+
+void	remove_add_single_quotes(t_reshuffle_quotes *rsq)
+{
+	rsq->sub = remove_single_quotes(rsq->tmp);
+	free(rsq->tmp);
+	rsq->tmp = add_single_quotes(rsq->sub);
+	free(rsq->sub);
+}
+
+void	build_result(t_reshuffle_quotes *rsq)
+{
+	rsq->sub = rsq->tmp;
+	rsq->before = ft_substr(rsq->result, 0, rsq->start_sub - rsq->start_input);
+	rsq->after = ft_strdup(rsq->end_sub);
+	free(rsq->result);
+	rsq->result = ft_strjoin(rsq->before, rsq->sub);
+	rsq->before_and_sub_len = ft_strlen(rsq->result);
+	free(rsq->before);
+	free(rsq->sub);
+	rsq->tmp = ft_strjoin(rsq->result, rsq->after);
+	free(rsq->result);
+	free(rsq->after);
+	rsq->result = rsq->tmp;
+	rsq->cur = rsq->result + rsq->before_and_sub_len;
+}
+
+char	*reshuffle_single_quotes(const char *input)
+{
+	t_reshuffle_quotes	rsq;
 
 	if (!input)
 		return (NULL);
-	result = ft_strdup(input);
-	cur = result;
-	start_input = result;
-	while (*cur)
+	rsq.result = ft_strdup(input);
+	rsq.cur = rsq.result;
+	rsq.start_input = rsq.result;
+	while (*rsq.cur)
 	{
-		start_input = result;
-		if (*cur == '\'')
+		rsq.start_input = rsq.result;
+		if (*rsq.cur == '\'')
 		{
-			if (isregularchar(*cur, cur))
+			if (isregularchar(*rsq.cur, rsq.cur))
 				break ;
-			start_sub = cur;
-			end_sub = ft_strchr(cur + 1, *cur);
-			while (start_sub > start_input && isregularchar(*(cur - 1), cur))
-				start_sub--;
-			while (*end_sub && (isregularchar(*end_sub, end_sub)
-					|| *end_sub == '\''))
-				end_sub++;
-			tmp = ft_substr(start_sub, 0, end_sub - start_sub);
-			sub = remove_single_quotes(tmp);
-			free(tmp);
-			tmp = add_single_quotes(sub);
-			free(sub);
-			sub = tmp;
-			before = ft_substr(result, 0, start_sub - start_input);
-			after = ft_strdup(end_sub);
-			free(result);
-			result = ft_strjoin(before, sub);
-			before_and_sub_len = ft_strlen(result);
-			free(before);
-			free(sub);
-			tmp = ft_strjoin(result, after);
-			free(result);
-			free(after);
-			result = tmp;
-			cur = result + before_and_sub_len;
+			build_substring(&rsq);
+			remove_add_single_quotes(&rsq);
+			build_result(&rsq);
 		}
-		cur++;
+		rsq.cur++;
 	}
-	return (result);
+	return (rsq.result);
 }
 
 char	*reshuffle_quotes(const char *input)
