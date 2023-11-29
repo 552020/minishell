@@ -95,9 +95,12 @@ void	build_substring(t_reshuffle_quotes *rsq)
 {
 	rsq->start_sub = rsq->cur;
 	rsq->end_sub = ft_strchr(rsq->cur + 1, *rsq->cur);
-	while (rsq->start_sub > rsq->start_input && isregularchar(*(rsq->cur - 1),
-			rsq->cur))
+	while (rsq->start_sub > rsq->start_input && isregularchar(*(rsq->start_sub
+				- 1), rsq->cur))
+	{
+		// printf("rsq->start_sub: %c\n", *rsq->start_sub);
 		rsq->start_sub--;
+	}
 	while (*rsq->end_sub && (isregularchar(*rsq->end_sub, rsq->end_sub)
 			|| *rsq->end_sub == '\''))
 		rsq->end_sub++;
@@ -115,18 +118,24 @@ void	remove_add_single_quotes(t_reshuffle_quotes *rsq)
 void	build_result(t_reshuffle_quotes *rsq)
 {
 	rsq->sub = rsq->tmp;
+	// printf("sub: %s\n", rsq->sub);
 	rsq->before = ft_substr(rsq->result, 0, rsq->start_sub - rsq->start_input);
+	// printf("before: %s\n", rsq->before);
 	rsq->after = ft_strdup(rsq->end_sub);
+	// printf("after: %s\n", rsq->after);
 	free(rsq->result);
 	rsq->result = ft_strjoin(rsq->before, rsq->sub);
+	// printf("before + sub: %s\n", rsq->result);
 	rsq->before_and_sub_len = ft_strlen(rsq->result);
 	free(rsq->before);
 	free(rsq->sub);
 	rsq->tmp = ft_strjoin(rsq->result, rsq->after);
+	// printf("before + sub + after: %s\n", rsq->tmp);
 	free(rsq->result);
 	free(rsq->after);
 	rsq->result = rsq->tmp;
 	rsq->cur = rsq->result + rsq->before_and_sub_len;
+	// printf("new cur: %s\n", rsq->cur);
 }
 
 char	*reshuffle_single_quotes(const char *input)
@@ -138,13 +147,20 @@ char	*reshuffle_single_quotes(const char *input)
 	rsq.result = ft_strdup(input);
 	rsq.cur = rsq.result;
 	rsq.start_input = rsq.result;
+	// printf("input: %s\n", input);
 	while (*rsq.cur)
 	{
 		rsq.start_input = rsq.result;
 		if (*rsq.cur == '\'')
 		{
+			// printf("we are in\n");
+			// printf("current char: %c\n", *rsq.cur);
+			// printf("str: %s\n", rsq.cur);
 			if (isregularchar(*rsq.cur, rsq.cur))
+			{
+				// printf("we break\n");
 				break ;
+			}
 			build_substring(&rsq);
 			remove_add_single_quotes(&rsq);
 			build_result(&rsq);
