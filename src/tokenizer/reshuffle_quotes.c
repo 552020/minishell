@@ -91,6 +91,8 @@ char	*reshuffle_single_quotes(const char *input)
 	char		*after;
 	char		*result;
 
+	if (!input)
+		return (NULL);
 	result = ft_strdup(input);
 	start_input = input;
 	while (*input)
