@@ -6,7 +6,7 @@
 /*   By: bsengeze <bsengeze@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 23:40:23 by bsengeze          #+#    #+#             */
-/*   Updated: 2023/11/29 17:33:40 by bsengeze         ###   ########.fr       */
+/*   Updated: 2023/11/29 20:20:23 by bsengeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,7 @@ void	execute_cmd(t_ast_node *node, t_data *data)
 				else
 				{
 					// File does not exist
-					// printf(m"1");
+					printf("1");
 					perror(" ");
 					exit(127);
 				}
@@ -114,7 +114,7 @@ void	execute_cmd(t_ast_node *node, t_data *data)
 			else
 			{
 				// printf("else statement2\n");
-				// printf("2");
+				printf("2");
 				perror(" ");
 				exit(127);
 			}
@@ -128,7 +128,7 @@ void	execute_cmd(t_ast_node *node, t_data *data)
 	else
 	{
 		// printf("else statement3\n");
-		// printf("3");
+		printf("3");
 		perror(" ");
 		exit(127);
 		return ;
@@ -147,7 +147,17 @@ void	execute_cmd(t_ast_node *node, t_data *data)
 				free(path);
 				path = NULL;
 			}
-			perror("execve error");
+			if (node->cmd[0] == '\0')
+			{
+				perror(" ");
+				exit(0);
+			}
+			if (node->cmd[0] == '/')
+			{
+				perror(" ");
+				exit(126);
+			}
+			perror(" ");
 			exit(127);
 		}
 	}

@@ -6,7 +6,7 @@
 /*   By: bsengeze <bsengeze@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 23:35:54 by bsengeze          #+#    #+#             */
-/*   Updated: 2023/11/29 19:26:08 by bsengeze         ###   ########.fr       */
+/*   Updated: 2023/11/29 19:43:38 by bsengeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ int	outfile_redirection(t_ast_node *node, t_data *data)
 	{
 		if (access(node->output_file, W_OK) != 0)
 		{
-			perror("File is not writable");
+			perror(" ");
 			return (FAILURE);
 		}
 	}
