@@ -203,17 +203,18 @@ typedef enum e_node_type
 typedef struct s_ast_node
 {
 	t_node_type			type;
-	char *cmd;                      // Data: command, filename
-	char **args;                    // Arguments: command arguments
-	char *input_file;               // For input redirection.
-	char *output_file;              // For output redirection.
-	bool append;                    // For output redirection.
-	int heredoc_fd;                 // For heredoc redirection.
-	bool heredoc;                   // For heredoc redirection.
-	char *heredoc_del;              // For heredoc redirection.
-	pid_t pid;                      // Process ID of the command.
-	int exit_status;                // Exit status of the command.
+	char				*cmd;
+	char				**args;
+	char				*input_file;
+	char				*output_file;
+	bool				append;
+	int					heredoc_fd;
+	bool				heredoc;
+	char				*heredoc_del;
+	pid_t				pid;
+	int					exit_status;
 	struct s_ast_node *children[2]; // For output redirection.
+	int pipe_fd[2];                 // For pipes.
 }						t_ast_node;
 
 typedef struct s_node_list
@@ -308,7 +309,6 @@ int						change_directory(const char *path);
 /* Executor */
 
 void					execute(t_data *data, t_ast_node *node);
-
 void					error_exit(t_ast_node *node, char **envp,
 							t_env_table *env_table);
 char					*path_finder(char *cmd, char *dir_paths, t_data *data);
@@ -344,9 +344,9 @@ void					disable_ctrl_c_main(void);
 char					*trim_ending_trailing_spaces(char const *str);
 int						handle_single_command(t_ast_node *node, t_data *data);
 int						handle_left_child(t_ast_node *node, t_data *data,
-							pid_t *left_pid, int pipe_fd);
+							pid_t *left_pid, int pipe_fd[2]);
 int						handle_right_child(t_ast_node *node, t_data *data,
-							pid_t *right_pid, int pipe_fd);
+							pid_t *right_pid, int pipe_fd[2]);
 int						signal_status(int status);
 void					wait_ast(t_data *data, t_ast_node *node);
 

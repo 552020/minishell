@@ -10,31 +10,31 @@ OBJ_DIR = obj
 UNAME_S := $(shell uname -s)
 
 # # Set include paths conditionally
-ifeq ($(UNAME_S), Darwin)
-    INCLUDES = -I./include -I./libft/include -I/opt/homebrew/opt/readline/include -I./libft/include -I/usr/local/opt/readline/include
-
-else
-    INCLUDES = -I./include -I./libft/include
-endif
-
-ifeq ($(UNAME_S), Darwin)
-    LDFLAGS = -L/opt/homebrew/opt/readline/lib -L/usr/local/opt/readline/lib
-else
-    LDFLAGS = 
-endif
-
-# For batu's mac
 # ifeq ($(UNAME_S), Darwin)
-#     INCLUDES = -I./include -I./libft/include -I/usr/local/opt/readline/include
+#     INCLUDES = -I./include -I./libft/include -I/opt/homebrew/opt/readline/include -I./libft/include -I/usr/local/opt/readline/include
+
 # else
 #     INCLUDES = -I./include -I./libft/include
 # endif
 
 # ifeq ($(UNAME_S), Darwin)
-#     LDFLAGS = -L/usr/local/opt/readline/lib
+#     LDFLAGS = -L/opt/homebrew/opt/readline/lib -L/usr/local/opt/readline/lib
 # else
 #     LDFLAGS = 
 # endif
+
+# For batu's mac
+ifeq ($(UNAME_S), Darwin)
+    INCLUDES = -I./include -I./libft/include -I/usr/local/opt/readline/include
+else
+    INCLUDES = -I./include -I./libft/include
+endif
+
+ifeq ($(UNAME_S), Darwin)
+    LDFLAGS = -L/usr/local/opt/readline/lib
+else
+    LDFLAGS = 
+endif
 
 SRCS = minishell.c \
  tokenizer/tokenizer.c tokenizer/utils.c tokenizer/assign.c tokenizer/count_words.c tokenizer/assign_redirect.c \
