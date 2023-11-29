@@ -68,21 +68,33 @@ t_token	*tokenizer(t_data *data, const char *str)
 void	tokenize(t_data *data, char *input)
 {
 	char *trimmed;
+	char *tmp;
+	char *reshuffled;
 
 	if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_TOKENIZER)
 		printf("\n***Tokenization***\n\n");
 	trimmed = strip_ending_trailing_spaces(input);
+	tmp = reshuffle_single_quotes(trimmed);
+
+	reshuffled = reshuffle_double_quotes(tmp);
+	free(tmp);
 	free(input);
 	input = NULL;
-	data->token_count = count_words_tokenizer(trimmed);
+	// data->token_count = count_words_tokenizer(trimmed);
+	data->token_count = count_words_tokenizer(reshuffled);
+	free(trimmed);
 	if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_TOKENIZER)
 		printf("Token count: %zu\n\n", data->token_count);
 	data->token_arr = create_token_array(data);
-	data->token_arr = tokenizer(data, trimmed);
-	if (trimmed)
+	// data->token_arr = tokenizer(data, trimmed);
+	data->token_arr = tokenizer(data, reshuffled);
+	// if (trimmed)
+	if (reshuffled)
 	{
-		free(trimmed);
-		trimmed = NULL;
+		// free(trimmed);
+		free(reshuffled);
+		// trimmed = NULL;
+		reshuffled = NULL;
 	}
 	if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_TOKENIZER)
 		print_token_arr(data->token_arr, data->token_count);

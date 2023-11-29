@@ -43,7 +43,7 @@ SRCS = minishell.c \
  utils/debug.c utils/check_input.c utils/free_functions.c utils/init.c \
  builtins/pwd.c builtins/env.c builtins/export.c builtins/unset.c builtins/cd.c builtins/exit.c builtins/echo.c utils/read_input.c  \
  executor/redirections.c executor/heredoc.c executor/execute_builtins.c executor/executor.c executor/utils.c executor/handle_pipes.c \
- env_vars.c \
+ env_vars.c utils/ft_isvalidvarname.c tokenizer/reshuffle_quotes.c \
  utils/signals.c executor/wait.c
 OBJS = $(addprefix $(OBJ_DIR)/, $(SRCS:.c=.o))
 OBJS := $(OBJS:/=_)
