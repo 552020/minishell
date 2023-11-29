@@ -206,10 +206,8 @@ typedef enum e_node_type
 typedef struct s_ast_node
 {
 	t_node_type			type;
-	char *cmd;   // Data: command, filename
-	char **args; // Arguments: command arguments
-	// char *input_file;               // For input redirection.
-	// char *output_file;              // For output redirection.
+	char *cmd;                      // Data: command, filename
+	char **args;                    // Arguments: command arguments
 	char **input_files;             // For input redirection.
 	char **output_files;            // For output redirection.
 	bool append;                    // For output redirection.

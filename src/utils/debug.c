@@ -241,10 +241,6 @@ void	print_node_info(t_ast_node *node)
 	}
 	else
 		printf("Arguments: NULL\n");
-	// if (node->input_file)
-	// 	printf("Input Redirection: %s\n", node->input_file);
-	// else
-	// 	printf("Input Redirection: NULL\n");
 	if (node->input_files)
 	{
 		printf("Input Redirections: ");
@@ -260,13 +256,6 @@ void	print_node_info(t_ast_node *node)
 	}
 	else
 		printf("Input Redirections: NULL\n");
-	// if (node->output_file)
-	// {
-	// 	printf("Output Redirection: %s\n", node->output_file);
-	// 	printf("Append Mode: %s\n", node->append ? "TRUE" : "FALSE");
-	// }
-	// else
-	// 	printf("Output Redirection: NULL\n");
 	if (node->output_files)
 	{
 		printf("Output Redirections: ");
