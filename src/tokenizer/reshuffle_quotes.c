@@ -87,22 +87,24 @@ char	*reshuffle_single_quotes(const char *input)
 	char		*before;
 	char		*after;
 	char		*result;
+	char		*cur;
+	int			before_and_sub_len;
 
 	if (!input)
 		return (NULL);
 	result = ft_strdup(input);
-	start_input = input;
-	while (*input)
+	cur = result;
+	start_input = result;
+	while (*cur)
 	{
-		if (*input == '\'')
+		start_input = result;
+		if (*cur == '\'')
 		{
-			// this means thare is a single quote but no matching single quote
-			if (isregularchar(*input, input))
+			if (isregularchar(*cur, cur))
 				break ;
-			start_sub = input;
-			end_sub = ft_strchr(input + 1, *input);
-			while (start_sub > start_input && isregularchar(*(input - 1),
-					input))
+			start_sub = cur;
+			end_sub = ft_strchr(cur + 1, *cur);
+			while (start_sub > start_input && isregularchar(*(cur - 1), cur))
 				start_sub--;
 			while (*end_sub && (isregularchar(*end_sub, end_sub)
 					|| *end_sub == '\''))
@@ -117,14 +119,16 @@ char	*reshuffle_single_quotes(const char *input)
 			after = ft_strdup(end_sub);
 			free(result);
 			result = ft_strjoin(before, sub);
+			before_and_sub_len = ft_strlen(result);
 			free(before);
 			free(sub);
 			tmp = ft_strjoin(result, after);
 			free(result);
 			free(after);
 			result = tmp;
+			cur = result + before_and_sub_len;
 		}
-		input++;
+		cur++;
 	}
 	return (result);
 }

@@ -41,8 +41,9 @@ int	main(int argc, char **argv)
 	}
 	if (argc == 2)
 	{
+		printf("Input: <%s>\n", argv[1]);
 		result = reshuffle_single_quotes(argv[1]);
-		printf("%s\n", result);
+		printf("Output: <%s>\n", result);
 		free(result);
 	}
 	if (argc == 3)
