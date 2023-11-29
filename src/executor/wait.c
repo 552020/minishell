@@ -49,6 +49,7 @@ int	wait_pipe(t_ast_node *node, t_data *data)
 	else if (node->children[0]->type == N_COMMAND
 		&& node->children[0]->cmd != NULL)
 		wait_single_command(node->children[0], data);
+	node->exit_status = exit_status;
 	return (exit_status);
 }
 
