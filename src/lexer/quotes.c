@@ -76,67 +76,73 @@ void	free_var_subs_and_exit(t_var_subs *vars, t_data *data, char *message)
 	free_exit(data, message);
 }
 
-// void	process_variable(t_var_subs *vars, t_token *token, t_data *data)
 char	*process_vars_in_str(const char *str, t_data *data)
 {
-	char		*dollar_sign;
 	char		*result;
 	t_var_subs	vars;
 
-	result = NULL;
-	vars.start = str;
-	vars.str = vars.start;
+	result = ft_strdup(str);
+	vars.start = result;
+	vars.str = result;
 	if (ft_strchr(vars.str, '$') == NULL)
 		return (ft_strdup(str));
+	else
+		vars.str = ft_strchr(vars.str, '$');
 	while (vars.str != NULL && vars.str[0] && vars.str[0] != '\0'
 		&& (ft_strchr(vars.str, '$')))
 	{
+		vars.str = ft_strchr(vars.str, '$');
 		if (vars.str[1] != '?' && !ft_isvalidvarname(vars.str[1]))
-			vars.str++;
-		else
 		{
-			dollar_sign = ft_strchr(str, '$');
-			vars.str = dollar_sign;
-			vars.end = vars.str + 1;
-			while (ft_isvalidvarname(*vars.end))
-				vars.end++;
-			if (*vars.end == '?')
-				vars.end++;
-			// The segment before the $ sign
-			vars.before = ft_substr(str, 0, vars.str - str);
-			if (!vars.before)
-				free_var_subs_and_exit(&vars, data,
-					"Error: malloc before failed\n");
-			// The variable name
-			vars.var_name = ft_substr(vars.str, 1, vars.end - vars.str - 1);
-			if (!vars.var_name)
-				free_var_subs_and_exit(&vars, data,
-					"Error: malloc var_name failed\n");
-			if (vars.var_name[0] == '?')
-				vars.value = ft_itoa(data->last_exit_status);
-			else
-				vars.value = lookup_env_value(vars.var_name, data->env_arr);
-			// The segment after the variable name
-			vars.after = ft_strdup(vars.end);
-			if (!vars.after)
-				free_var_subs_and_exit(&vars, data,
-					"Error: malloc after failed\n");
-			vars.before_and_value = ft_strjoin(vars.before, vars.value);
-			if (!vars.before_and_value)
-				free_var_subs_and_exit(&vars, data,
-					"Error: malloc before_and_value failed\n");
-			if (result)
+			vars.str++;
+			while ((vars.str = ft_strchr(vars.str, '$')) != NULL)
 			{
-				free(result);
-				result = NULL;
+				if (vars.str[1] != '?' && !ft_isvalidvarname(vars.str[1]))
+					vars.str++;
+				else
+					break ;
 			}
-			result = ft_strjoin(vars.before_and_value, vars.after);
-			if (!result)
-				free_var_subs_and_exit(&vars, data,
-					"Error: malloc token->str failed\n");
-			vars.str = result;
-			free_var_subs(&vars);
+			if (vars.str == NULL)
+				break ;
 		}
+		vars.end = vars.str + 1;
+		while (ft_isvalidvarname(*vars.end))
+			vars.end++;
+		if (*vars.end == '?')
+			vars.end++;
+		// The segment before the $ sign
+		vars.before = ft_substr(result, 0, vars.str - vars.start);
+		if (!vars.before)
+			free_var_subs_and_exit(&vars, data,
+				"Error: malloc before failed\n");
+		// The variable name
+		vars.var_name = ft_substr(vars.str, 1, vars.end - vars.str - 1);
+		if (!vars.var_name)
+			free_var_subs_and_exit(&vars, data,
+				"Error: malloc var_name failed\n");
+		if (vars.var_name[0] == '?')
+			vars.value = ft_itoa(data->last_exit_status);
+		else
+			vars.value = lookup_env_value(vars.var_name, data->env_arr);
+		// The segment after the variable name
+		vars.after = ft_strdup(vars.end);
+		if (!vars.after)
+			free_var_subs_and_exit(&vars, data, "Error: malloc after failed\n");
+		vars.before_and_value = ft_strjoin(vars.before, vars.value);
+		if (!vars.before_and_value)
+			free_var_subs_and_exit(&vars, data,
+				"Error: malloc before_and_value failed\n");
+		if (result)
+		{
+			free(result);
+			result = NULL;
+		}
+		result = ft_strjoin(vars.before_and_value, vars.after);
+		if (!result)
+			free_var_subs_and_exit(&vars, data,
+				"Error: malloc token->str failed\n");
+		free_var_subs(&vars);
+		vars.str = result;
 	}
 	return (result);
 }
