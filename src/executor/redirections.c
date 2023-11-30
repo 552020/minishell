@@ -61,14 +61,17 @@ int	outfile_redirection(t_ast_node *node, t_data *data)
 	while (node->output_files[i])
 	{
 		fileout = 1;
-		if (access(node->output_files[i], F_OK) == 0)
+		if (access(node->output_files[i], F_OK) != 0)
 		{
-			if (access(node->output_files[i], W_OK) != 0)
-			{
-				perror(" ");
-				if (!node->output_files[i + 1])
-					return (FAILURE);
-			}
+			perror(" ");
+			if (!node->output_files[i + 1])
+				return (FAILURE);
+		}
+		if (access(node->output_files[i], W_OK) != 0)
+		{
+			perror(" ");
+			if (!node->output_files[i + 1])
+				return (FAILURE);
 		}
 		if (node->append)
 			fileout = open(node->output_files[i],
