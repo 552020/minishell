@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   fill_node_cmd_args.c                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: bsengeze <bsengeze@student.42berlin.d      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/11/30 06:58:26 by bsengeze          #+#    #+#             */
+/*   Updated: 2023/11/30 06:58:28 by bsengeze         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 void	append_first_arg(t_ast_node *node, char *arg, t_data *data)
@@ -6,11 +18,6 @@ void	append_first_arg(t_ast_node *node, char *arg, t_data *data)
 	if (node->args == NULL)
 		free_exit(data, "Error: malloc failed\n");
 	node->args[0] = ft_strdup(arg);
-	// Should we use free_exit() here?
-	if (node->args[0] == NULL)
-	{
-		;
-	}
 	node->args[1] = NULL;
 }
 
