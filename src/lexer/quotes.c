@@ -79,13 +79,15 @@ void	free_var_subs_and_exit(t_var_subs *vars, t_data *data, char *message)
 char	*process_vars_in_str(const char *str, t_data *data)
 {
 	char		*result;
+	char		*result_start;
 	t_var_subs	vars;
 
 	result = ft_strdup(str);
 	vars.start = result;
 	vars.str = result;
+	result_start = result;
 	if (ft_strchr(vars.str, '$') == NULL)
-		return (ft_strdup(str));
+		return (result);
 	else
 		vars.str = ft_strchr(vars.str, '$');
 	while (vars.str != NULL && vars.str[0] && vars.str[0] != '\0'
@@ -132,10 +134,10 @@ char	*process_vars_in_str(const char *str, t_data *data)
 		if (!vars.before_and_value)
 			free_var_subs_and_exit(&vars, data,
 				"Error: malloc before_and_value failed\n");
-		if (result)
+		if (result_start)
 		{
-			free(result);
-			result = NULL;
+			free(result_start);
+			result_start = NULL;
 		}
 		result = ft_strjoin(vars.before_and_value, vars.after);
 		if (!result)
@@ -154,9 +156,10 @@ t_lexeme	t_double_quotes_var_subs(t_token *token, t_data *data)
 
 	tmp = process_vars_in_str(token->str, data);
 	lexeme.str = strip_quotes(tmp, data);
+	free(tmp);
+	tmp = NULL;
 	if (!lexeme.str)
 		free_exit(data, "Error: malloc lexeme.str failed\n");
-	free(tmp);
 	lexeme.type = L_UNDEFINED;
 	lexeme.status = NOT_LEXED;
 	lexeme.original = NULL;
