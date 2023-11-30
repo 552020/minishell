@@ -97,7 +97,8 @@ int	execute_builtin(t_ast_node *node, t_data *data)
 	stdin_backup = dup(STDIN_FILENO);
 	if (stdin_backup == -1)
 		free_exit(data, "Error: dup failed\n");
-	handle_redirections(node, data);
+	if (!handle_redirections(node, data))
+		exit(EXIT_FAILURE);
 	if ((ft_strncmp(node->cmd, "export", 6) == 0 && ft_strlen(node->cmd) == 6)
 		|| (ft_strncmp(node->cmd, "unset", 5) == 0
 			&& ft_strlen(node->cmd) == 5))
