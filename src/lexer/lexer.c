@@ -6,7 +6,7 @@
 /*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 07:12:29 by slombard          #+#    #+#             */
-/*   Updated: 2023/11/30 07:15:01 by slombard         ###   ########.fr       */
+/*   Updated: 2023/11/30 07:53:34 by slombard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,15 @@ void	command_and_args(size_t token_count, t_lexeme *lexeme_arr)
 	}
 }
 
+void	finalize_lexeme_array(t_data *data, size_t i)
+{
+	data->lexeme_arr[i].type = L_END;
+	data->lexeme_arr[i].str = NULL;
+	command_and_args(data->token_count, data->lexeme_arr);
+	if (data->token_arr[i].type == T_END)
+		data->lexeme_arr[i].type = L_END;
+}
+
 t_lexeme	*lexer(t_data *data)
 {
 	size_t	i;
@@ -78,11 +87,7 @@ t_lexeme	*lexer(t_data *data)
 			continue ;
 		i++;
 	}
-	data->lexeme_arr[i].type = L_END;
-	data->lexeme_arr[i].str = NULL;
-	command_and_args(data->token_count, data->lexeme_arr);
-	if (data->token_arr[i].type == T_END)
-		data->lexeme_arr[i].type = L_END;
+	finalise_lexeme_array(data, i);
 	return (data->lexeme_arr);
 }
 
