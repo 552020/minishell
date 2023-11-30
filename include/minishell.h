@@ -201,6 +201,7 @@ void					undefined_wrapper(t_lexeme *lexeme_arr,
 							t_token *token_arr, size_t *i, t_data *data);
 char					*process_vars_in_str(const char *str, t_data *data);
 char					*strip_quotes(char *str, t_data *data);
+int						check_syntax_error(t_data *data);
 
 /* Parser */
 
