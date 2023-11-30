@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: slombard <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/15 17:46:41 by slombard          #+#    #+#             */
-/*   Updated: 2023/01/15 20:12:16 by slombard         ###   ########.fr       */
+/*   Updated: 2023/11/30 06:56:11 by slombard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,11 +69,8 @@ char	**ft_split_envp(const char *s, char c, t_data *data)
 		}
 		else
 		{
-			// Check if next character is the end of the string,
-			// indicating an empty value.
 			if (*(s + 1) == '\0')
 				ret[i++] = ft_strdup("");
-			// Allocate an empty string for the value.
 			s++;
 		}
 	}
