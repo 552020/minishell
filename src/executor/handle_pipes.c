@@ -32,8 +32,10 @@ int	handle_single_command(t_ast_node *node, t_data *data)
 	handle_signals_child(pid);
 	if (pid == 0)
 	{
-		handle_redirections(node, data);
-		execute_cmd(node, data);
+		if (handle_redirections(node, data))
+			execute_cmd(node, data);
+		else
+			exit(EXIT_FAILURE);
 		exit(EXIT_SUCCESS);
 	}
 	node->exit_status = status;
@@ -57,11 +59,11 @@ int	handle_pipe(t_ast_node *node, t_data *data)
 	dup2(pipe_fd[1], STDOUT_FILENO);
 	close(pipe_fd[1]);
 	status_left = handle_left_child(node->children[0], data, &left_pid,
-		pipe_fd[0]);
+			pipe_fd[0]);
 	dup2(stdout_backup, STDOUT_FILENO);
 	close(stdout_backup);
 	status_right = handle_right_child(node->children[1], data, &right_pid,
-		pipe_fd[0]);
+			pipe_fd[0]);
 	close(pipe_fd[0]);
 	(void)status_left;
 	return (status_right);
@@ -87,8 +89,10 @@ int	handle_left_child(t_ast_node *node, t_data *data, pid_t *left_pid,
 				node->exit_status = execute_builtin(node, data);
 			else
 			{
-				handle_redirections(node, data);
-				execute_cmd(node, data);
+				if (handle_redirections(node, data))
+					execute_cmd(node, data);
+				else
+					exit(EXIT_FAILURE);
 			}
 			exit(EXIT_SUCCESS);
 		}
@@ -117,8 +121,10 @@ int	handle_right_child(t_ast_node *node, t_data *data, pid_t *right_pid,
 				node->exit_status = execute_builtin(node, data);
 			else
 			{
-				handle_redirections(node, data);
-				execute_cmd(node, data);
+				if (handle_redirections(node, data))
+					execute_cmd(node, data);
+				else
+					exit(EXIT_FAILURE);
 			}
 			exit(EXIT_SUCCESS);
 		}
