@@ -165,7 +165,8 @@ char	*reshuffle_double_quotes(const char *input)
 			remove_add_single_or_double_quotes(&rsq, '"');
 			build_result(&rsq);
 		}
-		rsq.cur++;
+		if (*rsq.cur)
+			rsq.cur++;
 	}
 	return (rsq.result);
 }
@@ -197,7 +198,8 @@ char	*reshuffle_single_quotes(const char *input)
 			remove_add_single_or_double_quotes(&rsq, '\'');
 			build_result(&rsq);
 		}
-		rsq.cur++;
+		if (*rsq.cur)
+			rsq.cur++;
 	}
 	return (rsq.result);
 }
