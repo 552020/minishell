@@ -63,8 +63,6 @@ void	free_str_arr(char **arr)
 
 void	free_ast(t_ast_node *node)
 {
-	if (node == NULL)
-		return ;
 	if (node->type == N_COMMAND)
 	{
 		if (node->cmd)
@@ -74,16 +72,11 @@ void	free_ast(t_ast_node *node)
 		}
 		if (node->args)
 			free_str_arr(node->args);
-		if (node->input_file)
-		{
-			free(node->input_file);
-			node->input_file = NULL;
-		}
-		if (node->output_file)
-		{
-			free(node->output_file);
-			node->output_file = NULL;
-		}
+		if (node->input_files)
+			free_str_arr(node->input_files);
+		if (node->output_files)
+			free_str_arr(node->output_files);
+
 		if (node->heredoc_del)
 		{
 			free(node->heredoc_del);

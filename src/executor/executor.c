@@ -86,7 +86,6 @@ void	execute_cmd(t_ast_node *node, t_data *data)
 	int		cmd_and_args_count;
 	char	*dir_paths;
 
-	// To do : move thıs to path finder maybe
 	dir_paths = ft_getenv(data->env_table->table, "PATH");
 	path = NULL;
 	if (node->cmd)
@@ -99,22 +98,17 @@ void	execute_cmd(t_ast_node *node, t_data *data)
 			{
 				if (access(node->cmd, F_OK) == 0)
 				{
-					// File exists but is not executable
 					perror(" ");
 					exit(126);
 				}
 				else
 				{
-					// File does not exist
-					printf("1");
 					perror(" ");
 					exit(127);
 				}
 			}
 			else
 			{
-				// printf("else statement2\n");
-				printf("2");
 				perror(" ");
 				exit(127);
 			}
@@ -122,16 +116,12 @@ void	execute_cmd(t_ast_node *node, t_data *data)
 	}
 	else if (!node->cmd && !node->args)
 	{
-		// printf("else statement1\n");
 		return ;
 	}
 	else
 	{
-		// printf("else statement3\n");
-		printf("3");
 		perror(" ");
 		exit(127);
-		return ;
 	}
 	cmd_and_args_count = count_cmd_and_args(node);
 	cmd_and_args_arr = build_cmd_and_args_arr(node, cmd_and_args_count, data);
@@ -177,7 +167,6 @@ void	execute(t_data *data, t_ast_node *node)
 	else if (node->type == N_PIPE)
 	{
 		data->ast_type = NOT_SINGLE_CMD_AST;
-		// handle_pipe returns the exit status: do we need it?
 		handle_pipe(node, data);
 	}
 }
