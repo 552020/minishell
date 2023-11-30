@@ -37,10 +37,10 @@ void	create_input_output_files_arr(char ***files_arr, char *new_file,
 	*files_arr = (char **)malloc(sizeof(char *) * 2);
 	if (*files_arr == NULL)
 		free_exit(data, "Error: malloc failed\n");
-	*files_arr[0] = ft_strdup(new_file);
+	(*files_arr)[0] = ft_strdup(new_file);
 	if (*files_arr[0] == NULL)
 		free_exit(data, "Error: malloc failed\n");
-	*files_arr[1] = NULL;
+	(*files_arr)[1] = NULL;
 }
 
 void	update_input_output_files_arr(char ***files_arr, char *new_file,
@@ -50,13 +50,13 @@ void	update_input_output_files_arr(char ***files_arr, char *new_file,
 
 	files_arr_len = ft_arrlen(*files_arr);
 	*files_arr = (char **)ft_realloc(*files_arr, files_arr_len * sizeof(char *),
-		(files_arr_len + 2) * sizeof(char *));
+			(files_arr_len + 2) * sizeof(char *));
 	if (*files_arr == NULL)
 		free_exit(data, "Error: malloc failed\n");
-	*files_arr[files_arr_len] = ft_strdup(new_file);
-	if (*files_arr[files_arr_len] == NULL)
+	(*files_arr)[files_arr_len] = ft_strdup(new_file);
+	if ((*files_arr)[files_arr_len] == NULL)
 		free_exit(data, "Error: malloc failed\n");
-	*files_arr[files_arr_len + 1] = NULL;
+	(*files_arr)[files_arr_len + 1] = NULL;
 }
 
 void	create_and_update_input_output_files_arr(char ***files_arr,
