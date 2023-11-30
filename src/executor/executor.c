@@ -6,7 +6,7 @@
 /*   By: bsengeze <bsengeze@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 23:40:23 by bsengeze          #+#    #+#             */
-/*   Updated: 2023/11/25 17:58:47 by bsengeze         ###   ########.fr       */
+/*   Updated: 2023/11/29 20:20:23 by bsengeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,16 +94,43 @@ void	execute_cmd(t_ast_node *node, t_data *data)
 		path = path_finder(node->cmd, dir_paths, data);
 		if (!path)
 		{
-			if (node->cmd[0] == '/')
-				perror(" No such file or directory\n");
+			// TODO:  add free probably
+			if (ft_strncmp(&node->cmd[0], "./", 2) == 0)
+			{
+				if (access(node->cmd, F_OK) == 0)
+				{
+					// File exists but is not executable
+					perror(" ");
+					exit(126);
+				}
+				else
+				{
+					// File does not exist
+					printf("1");
+					perror(" ");
+					exit(127);
+				}
+			}
 			else
-				perror(" command not found\n");
-			return ;
+			{
+				// printf("else statement2\n");
+				printf("2");
+				perror(" ");
+				exit(127);
+			}
 		}
+	}
+	else if (!node->cmd && !node->args)
+	{
+		// printf("else statement1\n");
+		return ;
 	}
 	else
 	{
-		// printf("no commands to execute\n");
+		// printf("else statement3\n");
+		printf("3");
+		perror(" ");
+		exit(127);
 		return ;
 	}
 	cmd_and_args_count = count_cmd_and_args(node);
@@ -120,7 +147,18 @@ void	execute_cmd(t_ast_node *node, t_data *data)
 				free(path);
 				path = NULL;
 			}
-			perror("execve error");
+			if (node->cmd[0] == '\0')
+			{
+				perror(" ");
+				exit(0);
+			}
+			if (node->cmd[0] == '/')
+			{
+				perror(" ");
+				exit(126);
+			}
+			perror(" ");
+			exit(127);
 		}
 	}
 	if (cmd_and_args_arr)

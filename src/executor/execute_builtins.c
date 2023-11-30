@@ -6,7 +6,7 @@
 /*   By: bsengeze <bsengeze@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 23:44:16 by bsengeze          #+#    #+#             */
-/*   Updated: 2023/11/28 07:38:23 by bsengeze         ###   ########.fr       */
+/*   Updated: 2023/11/29 19:01:29 by bsengeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	command_is_builtin(t_ast_node *node)
 		return (SUCCESS);
 	else if (ft_strncmp(node->cmd, "echo", 4) == 0 && ft_strlen(node->cmd) == 4)
 		return (SUCCESS);
-	else if (ft_strncmp(node->cmd, "exit", 4) == 0 && ft_strlen(node->cmd) == 4)
+	else if (ft_strncmp(node->cmd, "exit", 4) == 0)
 		return (SUCCESS);
 	else
 		return (FAILURE);
@@ -80,15 +80,21 @@ int	builtin_without_args(t_ast_node *node, t_data *data)
 		exit_status = print_working_directory();
 	else if (ft_strncmp(node->cmd, "cd", 2) == 0 && ft_strlen(node->cmd) == 2)
 	{
-		if (node->args)
+		if (node->args && node->args[1])
+		{
+			ft_putstr_fd("", STDERR_FILENO);
+			ft_putendl_fd(" too many arguments", STDERR_FILENO);
+			exit_status = EXIT_FAILURE;
+		}
+		else if (node->args)
 			exit_status = change_directory(node->args[0]);
 		else
 			printf("Sorry! Cd works only with some args!\n");
 	}
 	else if (ft_strncmp(node->cmd, "echo", 4) == 0 && ft_strlen(node->cmd) == 4)
 		exit_status = echo(node);
-	else if (ft_strncmp(node->cmd, "exit", 4) == 0 && ft_strlen(node->cmd) == 4)
-		ft_exit(0, node, data->env_arr, data->env_table);
+	else if (ft_strncmp(node->cmd, "exit", 4) == 0)
+		exit_status = ft_exit(node, data->env_arr, data->env_table);
 	return (exit_status);
 }
 

@@ -25,6 +25,7 @@ int	main(int argc, char **argv, char **envp)
 				execute(&data, data.ast_root);
 				wait_ast(&data, data.ast_root);
 				exit_status = data.ast_root->exit_status;
+				// printf("exit_status: %d\n", exit_status);
 				data.last_exit_status = exit_status;
 			}
 		}
