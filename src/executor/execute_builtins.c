@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_builtins.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bsengeze <bsengeze@student.42berlin.de>    +#+  +:+       +#+        */
+/*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 23:44:16 by bsengeze          #+#    #+#             */
-/*   Updated: 2023/11/29 19:01:29 by bsengeze         ###   ########.fr       */
+/*   Updated: 2023/11/30 04:47:39 by slombard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,35 +37,21 @@ int	command_is_builtin(t_ast_node *node)
 // you don't need to create an array, data is already there with cmd and args
 int	builtin_with_args(t_ast_node *node, t_data *data)
 {
-	int		exit_status;
-	int		cmd_and_args_count;
-	char	**cmd_and_args_arr;
+	int	exit_status;
 
-	// int		i;
-	/* Debug START
-	printf("builtin with args\n");
-	printf("node->cmd: %s\n", node->cmd);
-	i = 0;
-	while (node->args[i])
-	{
-		printf("node->args[%d]: %s\n", i, node->args[i]);
-		i++;
-	}
-		Debug END */
 	exit_status = 0;
-	cmd_and_args_count = count_cmd_and_args(node);
-	cmd_and_args_arr = build_cmd_and_args_arr(node, cmd_and_args_count, data);
-	if (ft_strncmp(node->cmd, "export", 6) == 0 && ft_strlen(node->cmd) == 6
-		&& cmd_and_args_arr)
+	if (ft_strncmp(node->cmd, "export", 6) == 0 && ft_strlen(node->cmd) == 6)
 	{
 		// TODO: implement ARG="arg" in the lexer
-		exit_status = export(cmd_and_args_arr, data);
+		exit_status = export(node->args, data);
+		node->exit_status = exit_status;
 	}
-	else if (ft_strncmp(node->cmd, "unset", 5) == 0 && ft_strlen(node->cmd) == 5
-		&& cmd_and_args_arr)
-		exit_status = unset(cmd_and_args_arr, data);
-	// print_hash_table(data->env_table);
-	// print_envp_arr(data->env_arr);
+	else if (ft_strncmp(node->cmd, "unset", 5) == 0
+		&& ft_strlen(node->cmd) == 5)
+	{
+		exit_status = unset(node->args, data);
+		node->exit_status = exit_status;
+	}
 	return (exit_status);
 }
 
