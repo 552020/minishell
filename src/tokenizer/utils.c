@@ -1,18 +1,23 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: slombard <slombard@student.42berlin.d      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/11/30 06:26:22 by slombard          #+#    #+#             */
+/*   Updated: 2023/11/30 06:26:45 by slombard         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 int	ft_isspace(int c)
 {
-	// printf("c: %c\n", c);
 	if (c == 32 || (c >= 9 && c <= 13))
-	{
-		// printf("isspace\n");
 		return (1);
-	}
 	else
-	{
-		// printf("is not space\n");
 		return (0);
-	}
 }
 
 int	isspecialchar(char c, const char *str)
@@ -36,14 +41,8 @@ int	isspecialchar(char c, const char *str)
 
 int	isregularchar(char c, const char *str)
 {
-	// printf("isregularchar\n");
-	// printf("c: %c\n", c);
 	if (ft_isspace(c) || isspecialchar(c, str))
-	{
-		// printf("not regular char\n");
 		return (FAILURE);
-	}
-	// printf("regular char\n");
 	return (SUCCESS);
 }
 

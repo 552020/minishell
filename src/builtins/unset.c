@@ -35,13 +35,15 @@ int	unset(char **args, t_data *data)
 {
 	int i;
 
+	if (!args)
+		return (EXIT_SUCCESS);
+
 	i = 0;
 	while (args[i])
 	{
 		single_unset(args[i], data);
 		i++;
 	}
-	free_cmd_and_args_arr(args);
 	data->env_arr = hash_table_to_arr(data);
 	return (EXIT_SUCCESS);
 }
