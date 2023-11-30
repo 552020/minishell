@@ -269,6 +269,9 @@ void					handle_double_redirects(t_lexeme *lexemes, int idx,
 							t_ast_node **node, t_data *data);
 void					print_and_exit(char *str);
 void					parse(t_data *data);
+void					*ft_realloc(void *ptr, size_t old_size,
+							size_t new_size);
+int						ft_arrlen(char **arr);
 
 /* Varia */
 void					check_input(int argc, char **argv);

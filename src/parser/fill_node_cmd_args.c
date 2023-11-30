@@ -21,6 +21,18 @@ void	append_first_arg(t_ast_node *node, char *arg, t_data *data)
 	node->args[1] = NULL;
 }
 
+void	append_args_loop(t_ast_node *node, char **new_args, t_data *data, int i)
+{
+	new_args[i] = ft_strdup(node->args[i]);
+	if (new_args[i] == NULL)
+		free_exit(data, "Error: malloc failed\n");
+	if (node->args[i])
+	{
+		free(node->args[i]);
+		node->args[i] = NULL;
+	}
+}
+
 void	append_other_args(t_ast_node *node, char *arg, t_data *data)
 {
 	char	**new_args;
@@ -36,14 +48,7 @@ void	append_other_args(t_ast_node *node, char *arg, t_data *data)
 	i = -1;
 	while (++i < size)
 	{
-		new_args[i] = ft_strdup(node->args[i]);
-		if (new_args[i] == NULL)
-			free_exit(data, "Error: malloc failed\n");
-		if (node->args[i])
-		{
-			free(node->args[i]);
-			node->args[i] = NULL;
-		}
+		append_args_loop(node, new_args, data, i);
 	}
 	free(node->args);
 	node->args = NULL;

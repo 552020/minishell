@@ -39,7 +39,7 @@ endif
 SRCS = minishell.c \
  tokenizer/tokenizer.c tokenizer/utils.c tokenizer/assign.c tokenizer/count_words.c tokenizer/assign_redirect.c \
  lexer/lexer.c lexer/lexemes_redirect.c lexer/lexemes.c lexer/quotes.c lexer/var_subs.c lexer/wrappers.c utils/utils.c \
- parser/parser.c parser/create_node.c parser/fill_node_cmd_args.c parser/fill_node_redirects.c \
+ parser/parser.c parser/create_node.c parser/fill_node_cmd_args.c parser/fill_node_redirects.c parser/parser_utils.c \
  utils/debug.c utils/check_input.c utils/free_functions.c utils/init.c \
  builtins/pwd.c builtins/env.c builtins/export.c builtins/unset.c builtins/cd.c builtins/exit.c builtins/echo.c utils/read_input.c  \
  executor/redirections.c executor/heredoc.c executor/execute_builtins.c executor/executor.c executor/utils.c executor/handle_pipes.c \
