@@ -1,81 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   reshuffle_quotes.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/11/30 05:47:17 by slombard          #+#    #+#             */
+/*   Updated: 2023/11/30 06:18:55 by slombard         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
-
-char	*find_unpaired_quote(const char *str)
-{
-	const char	*current;
-	char		*next_quote;
-
-	if (!str)
-		return (NULL);
-	current = str;
-	while ((current = ft_strchr(current, '\'')))
-	{
-		next_quote = ft_strchr(current + 1, '\'');
-		if (!next_quote)
-			return ((char *)current);
-		else
-			current = next_quote + 1;
-	}
-	return (NULL);
-}
-
-int	count_single_or_double_quotes(const char *str, char quote)
-{
-	int	count;
-
-	count = 0;
-	while (*str)
-	{
-		if (*str == quote)
-			count++;
-		str++;
-	}
-	return (count);
-}
-
-char	*remove_single_or_double_quotes(char *str, char quote)
-{
-	char	*dest;
-	char	*ret;
-	char	*unpaired_quote;
-	int		str_len;
-	int		quotes_count;
-
-	if (!str)
-		return (NULL);
-	quotes_count = count_single_or_double_quotes(str, quote);
-	str_len = ft_strlen(str) - quotes_count;
-	dest = ft_calloc(str_len + 1, sizeof(char));
-	if (!dest)
-		return (NULL);
-	ret = dest;
-	unpaired_quote = find_unpaired_quote(str);
-	while (*str)
-	{
-		if (*str != quote || (str == unpaired_quote))
-			*dest++ = *str;
-		str++;
-	}
-	return (ret);
-}
-
-char	*add_single_or_double_quotes(char *str, char quote)
-{
-	char	*result;
-	char	*start;
-	int		str_len;
-
-	str_len = ft_strlen(str);
-	result = ft_calloc(str_len + 3, sizeof(char));
-	start = result;
-	if (!result)
-		return (NULL);
-	*result++ = quote;
-	while (*str)
-		*result++ = *str++;
-	*result++ = quote;
-	return (start);
-}
 
 typedef struct reshuffle_quotes
 {
@@ -98,7 +33,6 @@ void	build_substring(t_reshuffle_quotes *rsq, char quote)
 	while (rsq->start_sub > rsq->start_input && isregularchar(*(rsq->start_sub
 				- 1), rsq->cur))
 	{
-		// printf("rsq->start_sub: %c\n", *rsq->start_sub);
 		rsq->start_sub--;
 	}
 	while (*rsq->end_sub && (isregularchar(*rsq->end_sub, rsq->end_sub)
@@ -118,24 +52,18 @@ void	remove_add_single_or_double_quotes(t_reshuffle_quotes *rsq, char quote)
 void	build_result(t_reshuffle_quotes *rsq)
 {
 	rsq->sub = rsq->tmp;
-	// printf("sub: %s\n", rsq->sub);
 	rsq->before = ft_substr(rsq->result, 0, rsq->start_sub - rsq->start_input);
-	// printf("before: %s\n", rsq->before);
 	rsq->after = ft_strdup(rsq->end_sub);
-	// printf("after: %s\n", rsq->after);
 	free(rsq->result);
 	rsq->result = ft_strjoin(rsq->before, rsq->sub);
-	// printf("before + sub: %s\n", rsq->result);
 	rsq->before_and_sub_len = ft_strlen(rsq->result);
 	free(rsq->before);
 	free(rsq->sub);
 	rsq->tmp = ft_strjoin(rsq->result, rsq->after);
-	// printf("before + sub + after: %s\n", rsq->tmp);
 	free(rsq->result);
 	free(rsq->after);
 	rsq->result = rsq->tmp;
 	rsq->cur = rsq->result + rsq->before_and_sub_len;
-	// printf("new cur: %s\n", rsq->cur);
 }
 
 char	*reshuffle_double_quotes(const char *input)
@@ -147,20 +75,13 @@ char	*reshuffle_double_quotes(const char *input)
 	rsq.result = ft_strdup(input);
 	rsq.cur = rsq.result;
 	rsq.start_input = rsq.result;
-	// printf("input: %s\n", input);
 	while (*rsq.cur)
 	{
 		rsq.start_input = rsq.result;
 		if (*rsq.cur == '"')
 		{
-			// printf("we are in\n");
-			// printf("current char: %c\n", *rsq.cur);
-			// printf("str: %s\n", rsq.cur);
 			if (isregularchar(*rsq.cur, rsq.cur))
-			{
-				// printf("we break\n");
 				break ;
-			}
 			build_substring(&rsq, '"');
 			remove_add_single_or_double_quotes(&rsq, '"');
 			build_result(&rsq);
@@ -180,20 +101,13 @@ char	*reshuffle_single_quotes(const char *input)
 	rsq.result = ft_strdup(input);
 	rsq.cur = rsq.result;
 	rsq.start_input = rsq.result;
-	// printf("input: %s\n", input);
 	while (*rsq.cur)
 	{
 		rsq.start_input = rsq.result;
 		if (*rsq.cur == '\'')
 		{
-			// printf("we are in\n");
-			// printf("current char: %c\n", *rsq.cur);
-			// printf("str: %s\n", rsq.cur);
 			if (isregularchar(*rsq.cur, rsq.cur))
-			{
-				// printf("we break\n");
 				break ;
-			}
 			build_substring(&rsq, '\'');
 			remove_add_single_or_double_quotes(&rsq, '\'');
 			build_result(&rsq);
@@ -202,44 +116,4 @@ char	*reshuffle_single_quotes(const char *input)
 			rsq.cur++;
 	}
 	return (rsq.result);
-}
-
-char	*reshuffle_quotes(const char *input)
-{
-	const char *start_input;
-	const char *start;
-	char *end;
-	char *result;
-
-	result = ft_strdup(input);
-	start_input = input;
-	while (*input)
-	{
-		if (*input == '\'' || *input == '"')
-		{
-			// Problem: if there is a unpaired single quote but valid double quotes
-			// we will exit the loop and return the input string
-			if (isregularchar(*input, input))
-			{
-				break ;
-			}
-
-			start = input;
-			end = ft_strchr(input + 1, *input);
-			(void)end;
-			while (start > start_input && isregularchar(*(input - 1), input))
-				start--;
-
-			if (ft_strchr(input + 1, *input))
-			{
-				input = ft_strchr(input + 1, *input);
-				input++;
-			}
-			else
-				return (ft_strdup(input));
-		}
-		else
-			input++;
-	}
-	return (result);
 }

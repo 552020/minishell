@@ -129,6 +129,13 @@ void					assign_quotes(const char **str_ptr, t_data *data,
 							size_t *idx);
 
 void					tokenize(t_data *data, char *input);
+char					*reshuffle_single_quotes(const char *input);
+char					*reshuffle_double_quotes(const char *input);
+char					*find_unpaired_quote(const char *str);
+int						count_single_or_double_quotes(const char *str,
+							char quote);
+char					*remove_single_or_double_quotes(char *str, char quote);
+char					*add_single_or_double_quotes(char *str, char quote);
 
 /* Lexer */
 
@@ -352,7 +359,5 @@ int						handle_right_child(t_ast_node *node, t_data *data,
 							pid_t *right_pid, int pipe_fd);
 int						signal_status(int status);
 void					wait_ast(t_data *data, t_ast_node *node);
-char					*reshuffle_single_quotes(const char *input);
-char					*reshuffle_double_quotes(const char *input);
 
 #endif
