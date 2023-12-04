@@ -28,8 +28,13 @@ void	lexer_t_var_subs(t_data *data, size_t i)
 		data->lexeme_arr[i] = t_shell_var_subs(&data->token_arr[i], data);
 }
 
+/* We need the token variable for Norminette
+The autoformatter otherwise mess up line splitting */
 void	lexer_t_quotes_var_subs(t_data *data, size_t i)
 {
+	t_token	*token;
+
+	token = &data->token_arr[i];
 	if (data->token_arr[i].type == T_ENV_VAR
 		|| data->token_arr[i].type == T_SHELL_VAR)
 	{
@@ -38,11 +43,9 @@ void	lexer_t_quotes_var_subs(t_data *data, size_t i)
 	else
 	{
 		if (data->token_arr[i].type == T_DOUBLE_QUOTE)
-			data->lexeme_arr[i] = t_double_quotes_var_subs(&data->token_arr[i],
-				data);
+			data->lexeme_arr[i] = t_double_quotes_var_subs(token, data);
 		else if (data->token_arr[i].type == T_SINGLE_QUOTE)
-			data->lexeme_arr[i] = single_quote_lexeme(&data->token_arr[i],
-				data);
+			data->lexeme_arr[i] = single_quote_lexeme(token, data);
 	}
 }
 
