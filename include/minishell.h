@@ -130,13 +130,33 @@ char					*add_single_or_double_quotes(char *str, char quote);
 
 /* Lexer */
 
+// Variable substitution
+typedef struct s_var_subs
+{
+	const char			*str;
+	const char			*start;
+	const char			*end;
+	char				*before;
+	char				*var_name;
+	char				*before_and_value;
+	char				*value;
+	char				*after;
+	char				*result;
+}						t_var_subs;
+
+char					*strip_quotes(char *str, t_data *data);
+void					free_var_subs(t_var_subs *vars);
+void					free_var_subs_and_exit(t_var_subs *vars, t_data *data,
+							char *message);
+int						find_next_env_var_if_any(const char **str);
+
 # define NO_CMD_YET 0
 # define CMD_FOUND 1
 typedef enum e_lexeme_type
 {
 	L_COMMAND,           // Command to be executed
 	L_ARGUMENT,          // Argument to a command
-	L_PIPE,              // Pipe operator, signaling chaining of commands
+	L_PIPE,              // Pipe operdator, signaling chaining of commands
 	L_REDIRECT_INPUT,    // Input redirection operator (<)
 	L_REDIRECT_OUTPUT,   // Output redirection operator (>)
 	L_REDIRECT_APPEND,   // Append redirection operator (>>)
@@ -195,7 +215,8 @@ int						check_syntax_error(t_data *data);
 void					lexer_t_var_subs(t_data *data, size_t i);
 void					lexer_t_quotes_var_subs(t_data *data, size_t i);
 void					lexer_t_pipe(t_data *data, size_t i);
-void					lexer_t_redirects_and_word(t_data *data, size_t i);
+void					lexer_t_redirects_and_word(t_data *data, size_t *i);
+
 void					finalize_lexeme_array(t_data *data, size_t i);
 void					command_and_args(size_t token_count,
 							t_lexeme *lexeme_arr);

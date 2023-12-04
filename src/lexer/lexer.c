@@ -44,7 +44,7 @@ void	command_and_args(size_t token_count, t_lexeme *lexeme_arr)
 		i++;
 	}
 }
-/*
+
 t_lexeme	*lexer(t_data *data)
 {
 	size_t	i;
@@ -55,16 +55,16 @@ t_lexeme	*lexer(t_data *data)
 		lexer_t_var_subs(data, i);
 		lexer_t_quotes_var_subs(data, i);
 		lexer_t_pipe(data, i);
-		lexer_t_redirects_and_word(data, i);
+		lexer_t_redirects_and_word(data, &i);
 		i++;
 	}
 	finalize_lexeme_array(data, i);
 	return (data->lexeme_arr);
 }
-*/
+
 /* ORIGINAL LEXER FUNCTION
 
-The original lexer function is below. The norminetted version is above. */
+The original lexer function is below. The norminetted version is above.
 t_lexeme	*lexer(t_data *data)
 {
 	size_t	i;
@@ -101,7 +101,8 @@ t_lexeme	*lexer(t_data *data)
 	finalize_lexeme_array(data, i);
 	return (data->lexeme_arr);
 }
-/**/
+
+*/
 int	lexemize(t_data *data)
 {
 	create_lexeme_arr(data);

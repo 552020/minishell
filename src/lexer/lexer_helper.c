@@ -62,24 +62,24 @@ void	lexer_t_pipe(t_data *data, size_t i)
 		data->lexeme_arr[i] = pipe_lexeme(&data->token_arr[i], data);
 }
 
-void	lexer_t_redirects_and_word(t_data *data, size_t i)
+void	lexer_t_redirects_and_word(t_data *data, size_t *i)
 {
-	if (data->token_arr[i].type == T_ENV_VAR
-		|| data->token_arr[i].type == T_SHELL_VAR
-		|| data->token_arr[i].type == T_DOUBLE_QUOTE
-		|| data->token_arr[i].type == T_SINGLE_QUOTE
-		|| data->token_arr[i].type == T_PIPE)
+	if (data->token_arr[*i].type == T_ENV_VAR
+		|| data->token_arr[*i].type == T_SHELL_VAR
+		|| data->token_arr[*i].type == T_DOUBLE_QUOTE
+		|| data->token_arr[*i].type == T_SINGLE_QUOTE
+		|| data->token_arr[*i].type == T_PIPE)
 	{
 		return ;
 	}
-	else if (data->token_arr[i].type == T_REDIRECT_IN)
-		redirect_in_wrapper(&i, data->token_count, data);
-	else if (data->token_arr[i].type == T_REDIRECT_OUT)
-		redirect_out_wrapper(&i, data->token_count, data);
-	else if (data->token_arr[i].type == T_REDIRECT_APPEND)
-		redirect_append_wrapper(&i, data->token_count, data);
-	else if (data->token_arr[i].type == T_HEREDOC)
-		heredoc_wrapper(data->lexeme_arr, data->token_arr, &i, data);
-	else if (data->token_arr[i].type == T_WORD)
-		undefined_wrapper(data->lexeme_arr, data->token_arr, &i, data);
+	else if (data->token_arr[*i].type == T_REDIRECT_IN)
+		redirect_in_wrapper(i, data->token_count, data);
+	else if (data->token_arr[*i].type == T_REDIRECT_OUT)
+		redirect_out_wrapper(i, data->token_count, data);
+	else if (data->token_arr[*i].type == T_REDIRECT_APPEND)
+		redirect_append_wrapper(i, data->token_count, data);
+	else if (data->token_arr[*i].type == T_HEREDOC)
+		heredoc_wrapper(data->lexeme_arr, data->token_arr, i, data);
+	else if (data->token_arr[*i].type == T_WORD)
+		undefined_wrapper(data->lexeme_arr, data->token_arr, i, data);
 }
