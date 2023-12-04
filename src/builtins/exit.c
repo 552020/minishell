@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exit.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/12/04 23:03:10 by slombard          #+#    #+#             */
+/*   Updated: 2023/12/04 23:03:38 by slombard         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 int	exit_input_check(char *str)
@@ -22,8 +34,6 @@ int	ft_exit(t_ast_node *node, char **envp, t_env_table *table)
 	int		exit_status;
 	char	*num_str;
 
-	// To do : implement flags and exit code
-	// update exit status here which is the argument
 	exit_code = 0;
 	if (ft_strlen(node->cmd) == 4 && !node->args)
 		exit_code = 0;

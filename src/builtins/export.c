@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   export.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/12/04 23:04:21 by slombard          #+#    #+#             */
+/*   Updated: 2023/12/04 23:06:03 by slombard         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 int		is_valid_env_var_name(const char *str);
@@ -25,6 +37,20 @@ void	single_export(const char *key, const char *value, t_data *data)
 	data->env_arr = hash_table_to_arr(data);
 }
 
+void	free_key_and_value(char *key, char *value)
+{
+	if (key)
+	{
+		free(key);
+		key = NULL;
+	}
+	if (value)
+	{
+		free(value);
+		value = NULL;
+	}
+}
+
 int	export(char **args, t_data *data)
 {
 	int		i;
@@ -37,9 +63,7 @@ int	export(char **args, t_data *data)
 	{
 		key_value = ft_split(args[i], '=');
 		if (key_value == NULL)
-		{
 			free_exit(data, "Error: malloc failed\n");
-		}
 		key = key_value[0];
 		if (is_valid_env_var_name(key) == EXIT_FAILURE)
 			return (EXIT_FAILURE);
@@ -48,18 +72,7 @@ int	export(char **args, t_data *data)
 		else
 			value = key_value[1];
 		single_export(key, value, data);
-		if (key)
-		{
-			free(key);
-			key = NULL;
-		}
-		if (value)
-		{
-			free(value);
-			value = NULL;
-		}
-		free(key_value);
-		key_value = NULL;
+		free_key_and_value(key, value);
 		i++;
 	}
 	return (EXIT_SUCCESS);
