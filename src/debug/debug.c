@@ -190,7 +190,8 @@ void	print_node(t_ast_node *node, int depth, bool is_last_sibling[])
 
 void	print_ast_new(t_ast_node *root)
 {
-	bool is_last_sibling[100] = {false};
+	bool	is_last_sibling[100] = {false};
+
 	// Assuming a max depth of 100; can be dynamically allocated if needed
 	print_node(root, 0, is_last_sibling);
 }
@@ -306,4 +307,36 @@ void	debug_ast(t_ast_node *root)
 	printf("------ DEBUGGING AST ------\n");
 	print_node_info(root);
 	printf("------ END OF AST ------\n");
+}
+
+void	print_hash_table(t_env_table *env_table)
+{
+	int			i;
+	t_env_var	*node;
+
+	i = 0;
+	while (i < TABLE_SIZE)
+	{
+		node = env_table->table[i];
+		while (node != NULL)
+		{
+			printf("key: %s\n", node->key);
+			printf("value: %s\n", node->value);
+			node = node->next;
+		}
+		i++;
+	}
+}
+
+void	print_envp_arr(char **envp)
+{
+	int i;
+
+	printf("print_envp_arr\n");
+	i = 0;
+	while (envp[i])
+	{
+		printf("envp[%d]: %s\n", i, envp[i]);
+		i++;
+	}
 }

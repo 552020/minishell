@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: slombard <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/15 17:46:41 by slombard          #+#    #+#             */
-/*   Updated: 2023/01/15 20:12:16 by slombard         ###   ########.fr       */
+/*   Updated: 2023/12/04 21:40:44 by slombard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int				ft_free_ret(char **ret, size_t i);
+int		ft_free_ret(char **ret, size_t i);
 
-static size_t	ft_count_word(const char *s, char c)
+size_t	ft_count_word(const char *s, char c)
 {
 	size_t	i;
 	size_t	words;
