@@ -202,6 +202,13 @@ void					undefined_wrapper(t_lexeme *lexeme_arr,
 char					*process_vars_in_str(const char *str, t_data *data);
 char					*strip_quotes(char *str, t_data *data);
 int						check_syntax_error(t_data *data);
+void					lexer_t_var_subs(t_data *data, size_t i);
+void					lexer_t_quotes_var_subs(t_data *data, size_t i);
+void					lexer_t_pipe(t_data *data, size_t i);
+void					lexer_t_redirects_and_word(t_data *data, size_t i);
+void					finalize_lexeme_array(t_data *data, size_t i);
+void					command_and_args(size_t token_count,
+							t_lexeme *lexeme_arr);
 
 /* Parser */
 

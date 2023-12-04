@@ -44,16 +44,27 @@ void	command_and_args(size_t token_count, t_lexeme *lexeme_arr)
 		i++;
 	}
 }
-
-void	finalize_lexeme_array(t_data *data, size_t i)
+/*
+t_lexeme	*lexer(t_data *data)
 {
-	data->lexeme_arr[i].type = L_END;
-	data->lexeme_arr[i].str = NULL;
-	command_and_args(data->token_count, data->lexeme_arr);
-	if (data->token_arr[i].type == T_END)
-		data->lexeme_arr[i].type = L_END;
-}
+	size_t	i;
 
+	i = 0;
+	while (i < data->token_count)
+	{
+		lexer_t_var_subs(data, i);
+		lexer_t_quotes_var_subs(data, i);
+		lexer_t_pipe(data, i);
+		lexer_t_redirects_and_word(data, i);
+		i++;
+	}
+	finalize_lexeme_array(data, i);
+	return (data->lexeme_arr);
+}
+*/
+/* ORIGINAL LEXER FUNCTION
+
+The original lexer function is below. The norminetted version is above. */
 t_lexeme	*lexer(t_data *data)
 {
 	size_t	i;
@@ -67,10 +78,10 @@ t_lexeme	*lexer(t_data *data)
 			data->lexeme_arr[i] = t_shell_var_subs(&data->token_arr[i], data);
 		else if (data->token_arr[i].type == T_DOUBLE_QUOTE)
 			data->lexeme_arr[i] = t_double_quotes_var_subs(&data->token_arr[i],
-					data);
+				data);
 		else if (data->token_arr[i].type == T_SINGLE_QUOTE)
 			data->lexeme_arr[i] = single_quote_lexeme(&data->token_arr[i],
-					data);
+				data);
 		else if (data->token_arr[i].type == T_PIPE)
 			data->lexeme_arr[i] = pipe_lexeme(&data->token_arr[i], data);
 		else if (data->token_arr[i].type == T_REDIRECT_IN)
@@ -87,10 +98,10 @@ t_lexeme	*lexer(t_data *data)
 			continue ;
 		i++;
 	}
-	finalise_lexeme_array(data, i);
+	finalize_lexeme_array(data, i);
 	return (data->lexeme_arr);
 }
-
+/**/
 int	lexemize(t_data *data)
 {
 	create_lexeme_arr(data);
