@@ -52,11 +52,24 @@ void	insert_node_ht(const char *key, const char *value, t_data *data)
 	}
 }
 
+void	init_t_split_envp(t_split_envp *envs, const char *s, char c,
+		t_data *data)
+{
+	envs->i = 0;
+	envs->len = 0;
+	envs->ret = NULL;
+	envs->ret = (char **)malloc(sizeof(char *) * (ft_count_word(s, c) + 2));
+	if (!envs->ret)
+		free_exit(data, "Error: malloc failed\n");
+}
+
 void	initialize_table(char **envp, t_data *data)
 {
-	int		i;
-	char	**key_value_pair;
+	t_split_envp	envs;
+	int				i;
+	char			**key_value_pair;
 
+	init_t_split_envp(&envs, *envp, '=', data);
 	i = -1;
 	while (++i < TABLE_SIZE)
 		data->env_table->table[i] = NULL;
@@ -64,7 +77,7 @@ void	initialize_table(char **envp, t_data *data)
 	i = 0;
 	while (envp[i] != NULL)
 	{
-		key_value_pair = ft_split_envp(envp[i], '=', data);
+		key_value_pair = ft_split_envp(envp[i], '=', data, &envs);
 		if (!key_value_pair)
 			free_exit(data, "Error: ft_split in init table failed\n");
 		if (!key_value_pair[0])

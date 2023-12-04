@@ -6,16 +6,16 @@
 /*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/15 17:46:41 by slombard          #+#    #+#             */
-/*   Updated: 2023/11/30 06:56:11 by slombard         ###   ########.fr       */
+/*   Updated: 2023/12/04 21:04:00 by slombard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 #include "minishell.h"
 
-int				ft_free_ret(char **ret, size_t i);
+int		ft_free_ret(char **ret, size_t i);
 
-static size_t	ft_count_word(const char *s, char c)
+size_t	ft_count_word(const char *s, char c)
 {
 	size_t	i;
 	size_t	words;
@@ -42,40 +42,32 @@ static size_t	ft_count_word(const char *s, char c)
 	return (words);
 }
 
-char	**ft_split_envp(const char *s, char c, t_data *data)
+char	**ft_split_envp(const char *s, char c, t_data *data, t_split_envp *envs)
 {
-	char	**ret;
-	size_t	len;
-	size_t	i;
-
-	i = 0;
-	ret = (char **)malloc(sizeof(char *) * (ft_count_word(s, c) + 2));
-	if (!ret)
-		free_exit(data, "Error: malloc failed\n");
 	while (*s)
 	{
 		if (*s != c)
 		{
-			len = 0;
-			while (*s && *s != c && ++len)
+			envs->len = 0;
+			while (*s && *s != c && ++envs->len)
 				s++;
-			ret[i] = ft_substr(s - len, 0, len);
-			if (!ret[i])
+			envs->ret[envs->i] = ft_substr(s - envs->len, 0, envs->len);
+			if (!envs->ret[envs->i])
 			{
-				ft_free_ret(ret, i);
+				ft_free_ret(envs->ret, envs->i);
 				free_exit(data, "Error: malloc failed\n");
 			}
-			i++;
+			envs->i++;
 		}
 		else
 		{
 			if (*(s + 1) == '\0')
-				ret[i++] = ft_strdup("");
+				envs->ret[envs->i++] = ft_strdup("");
 			s++;
 		}
 	}
-	ret[i] = 0;
-	return (ret);
+	envs->ret[envs->i] = 0;
+	return (envs->ret);
 }
 
 void	ft_free_ret_envp(char **ret, size_t i)

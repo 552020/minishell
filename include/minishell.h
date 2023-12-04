@@ -344,7 +344,16 @@ void					handle_command_node(t_ast_node *node, char **envp,
 void					free_token_arr(t_data *data);
 void					free_lexeme_arr(t_data *data);
 void					free_key_value_pair(char **key_value);
-char					**ft_split_envp(const char *s, char c, t_data *data);
+size_t					ft_count_word(const char *s, char c);
+typedef struct s_split_envp
+{
+	char				**ret;
+	size_t				len;
+	size_t				i;
+}						t_split_envp;
+
+char					**ft_split_envp(const char *s, char c, t_data *data,
+							t_split_envp *envs);
 void					free_data(t_data *data);
 void					initialize_data(char **envp, t_data *data);
 void					free_exit(t_data *data, char *error_message);
