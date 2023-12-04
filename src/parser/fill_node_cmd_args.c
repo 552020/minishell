@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   fill_node_cmd_args.c                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: bsengeze <bsengeze@student.42berlin.d      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/11/30 06:58:26 by bsengeze          #+#    #+#             */
+/*   Updated: 2023/11/30 06:58:28 by bsengeze         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 void	append_first_arg(t_ast_node *node, char *arg, t_data *data)
@@ -6,12 +18,19 @@ void	append_first_arg(t_ast_node *node, char *arg, t_data *data)
 	if (node->args == NULL)
 		free_exit(data, "Error: malloc failed\n");
 	node->args[0] = ft_strdup(arg);
-	// Should we use free_exit() here?
-	if (node->args[0] == NULL)
-	{
-		;
-	}
 	node->args[1] = NULL;
+}
+
+void	append_args_loop(t_ast_node *node, char **new_args, t_data *data, int i)
+{
+	new_args[i] = ft_strdup(node->args[i]);
+	if (new_args[i] == NULL)
+		free_exit(data, "Error: malloc failed\n");
+	if (node->args[i])
+	{
+		free(node->args[i]);
+		node->args[i] = NULL;
+	}
 }
 
 void	append_other_args(t_ast_node *node, char *arg, t_data *data)
@@ -29,14 +48,7 @@ void	append_other_args(t_ast_node *node, char *arg, t_data *data)
 	i = -1;
 	while (++i < size)
 	{
-		new_args[i] = ft_strdup(node->args[i]);
-		if (new_args[i] == NULL)
-			free_exit(data, "Error: malloc failed\n");
-		if (node->args[i])
-		{
-			free(node->args[i]);
-			node->args[i] = NULL;
-		}
+		append_args_loop(node, new_args, data, i);
 	}
 	free(node->args);
 	node->args = NULL;

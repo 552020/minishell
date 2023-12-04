@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   create_node.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: bsengeze <bsengeze@student.42berlin.d      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/11/30 06:57:46 by bsengeze          #+#    #+#             */
+/*   Updated: 2023/11/30 06:57:50 by bsengeze         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 t_ast_node	*create_node(t_node_type type, t_data *data)
@@ -10,8 +22,6 @@ t_ast_node	*create_node(t_node_type type, t_data *data)
 	new_node->type = type;
 	new_node->cmd = NULL;
 	new_node->args = NULL;
-	// new_node->input_file = NULL;
-	// new_node->output_file = NULL;
 	new_node->input_files = NULL;
 	new_node->output_files = NULL;
 	new_node->append = false;
@@ -27,8 +37,8 @@ t_ast_node	*create_node(t_node_type type, t_data *data)
 
 t_ast_node	*build_cmd_node(t_lexeme *lexemes, int start, int end, t_data *data)
 {
-	t_ast_node *node;
-	int i;
+	t_ast_node	*node;
+	int			i;
 
 	node = create_node(N_COMMAND, data);
 	if (node == NULL)
