@@ -34,8 +34,11 @@ void	single_unset(const char *key, t_data *data)
 int	unset(char **args, t_data *data)
 {
 	int i;
+
+
 	if (!args)
 		return (EXIT_SUCCESS);
+
 	i = 0;
 	while (args[i])
 	{

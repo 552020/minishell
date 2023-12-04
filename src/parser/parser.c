@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: bsengeze <bsengeze@student.42berlin.d      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/11/30 07:15:23 by bsengeze          #+#    #+#             */
+/*   Updated: 2023/11/30 07:15:25 by bsengeze         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 void	parse(t_data *data)
@@ -61,27 +73,31 @@ void	free_str_arr(char **arr)
 	arr = NULL;
 }
 
+void	free_cmd_node(t_ast_node *node)
+{
+	if (node->cmd)
+	{
+		free(node->cmd);
+		node->cmd = NULL;
+	}
+	if (node->args)
+		free_str_arr(node->args);
+	if (node->input_files)
+		free_str_arr(node->input_files);
+	if (node->output_files)
+		free_str_arr(node->output_files);
+	if (node->heredoc_del)
+	{
+		free(node->heredoc_del);
+		node->heredoc_del = NULL;
+	}
+}
+
 void	free_ast(t_ast_node *node)
 {
 	if (node->type == N_COMMAND)
 	{
-		if (node->cmd)
-		{
-			free(node->cmd);
-			node->cmd = NULL;
-		}
-		if (node->args)
-			free_str_arr(node->args);
-		if (node->input_files)
-			free_str_arr(node->input_files);
-		if (node->output_files)
-			free_str_arr(node->output_files);
-
-		if (node->heredoc_del)
-		{
-			free(node->heredoc_del);
-			node->heredoc_del = NULL;
-		}
+		free_cmd_node(node);
 	}
 	else if (node->type == N_PIPE)
 	{

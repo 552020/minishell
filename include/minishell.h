@@ -129,6 +129,13 @@ void					assign_quotes(const char **str_ptr, t_data *data,
 							size_t *idx);
 
 void					tokenize(t_data *data, char *input);
+char					*reshuffle_single_quotes(const char *input);
+char					*reshuffle_double_quotes(const char *input);
+char					*find_unpaired_quote(const char *str);
+int						count_single_or_double_quotes(const char *str,
+							char quote);
+char					*remove_single_or_double_quotes(char *str, char quote);
+char					*add_single_or_double_quotes(char *str, char quote);
 
 /* Lexer */
 
@@ -262,6 +269,9 @@ void					handle_double_redirects(t_lexeme *lexemes, int idx,
 							t_ast_node **node, t_data *data);
 void					print_and_exit(char *str);
 void					parse(t_data *data);
+void					*ft_realloc(void *ptr, size_t old_size,
+							size_t new_size);
+int						ft_arrlen(char **arr);
 
 /* Varia */
 void					check_input(int argc, char **argv);
@@ -352,7 +362,5 @@ int						handle_right_child(t_ast_node *node, t_data *data,
 							pid_t *right_pid, int pipe_fd);
 int						signal_status(int status);
 void					wait_ast(t_data *data, t_ast_node *node);
-char					*reshuffle_single_quotes(const char *input);
-char					*reshuffle_double_quotes(const char *input);
 
 #endif
