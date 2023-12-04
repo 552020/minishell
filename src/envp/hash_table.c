@@ -6,7 +6,7 @@
 /*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/04 21:35:16 by slombard          #+#    #+#             */
-/*   Updated: 2023/12/04 21:36:12 by slombard         ###   ########.fr       */
+/*   Updated: 2023/12/04 22:05:20 by slombard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,15 +43,13 @@ t_env_var	*create_node_ht(const char *key, const char *value, t_data *data)
 
 void	insert_node_ht(const char *key, const char *value, t_data *data)
 {
-	unsigned int idx;
-	t_env_var *node;
+	unsigned int	idx;
+	t_env_var		*node;
 
 	idx = hash(key);
 	node = data->env_table->table[idx];
 	if (node == NULL)
-	{
 		data->env_table->table[idx] = create_node_ht(key, value, data);
-	}
 	else
 	{
 		if (node->key == NULL)

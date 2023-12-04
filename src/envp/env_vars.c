@@ -1,39 +1,68 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   env_vars.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/12/04 22:04:13 by slombard          #+#    #+#             */
+/*   Updated: 2023/12/04 22:06:22 by slombard         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
+
+typedef struct s_envp_split
+{
+	char	**ret;
+	size_t	i;
+	size_t	len;
+}			t_envp_split;
+
+void	init_t_envp_split(t_envp_split *split, const char *s, char c,
+		t_data *data)
+{
+	split->ret = NULL;
+	split->i = 0;
+	split->len = 0;
+	split->ret = (char **)malloc(sizeof(char *) * (ft_count_word(s, c) + 2));
+	if (!split->ret)
+		free_exit(data, "Error: malloc failed\n");
+}
+
+void	entries_t_envp_split(t_envp_split *split, const char **s, char c,
+		t_data *data)
+{
+	if (**s != c)
+	{
+		split->len = 0;
+		while (**s && **s != c && ++split->len)
+			++*s;
+		split->ret[split->i] = ft_substr(*s - split->len, 0, split->len);
+		if (!split->ret[split->i])
+		{
+			ft_free_ret(split->ret, split->i);
+			free_exit(data, "Error: malloc failed\n");
+		}
+		split->i++;
+	}
+	else
+	{
+		if (*(*s + 1) == '\0')
+			split->ret[split->i++] = ft_strdup("");
+		(*s)++;
+	}
+}
 
 char	**ft_split_envp(const char *s, char c, t_data *data)
 {
-	char	**ret;
-	size_t	len;
-	size_t	i;
+	t_envp_split	split;
 
-	i = 0;
-	ret = (char **)malloc(sizeof(char *) * (ft_count_word(s, c) + 2));
-	if (!ret)
-		free_exit(data, "Error: malloc failed\n");
+	init_t_envp_split(&split, s, c, data);
 	while (*s)
-	{
-		if (*s != c)
-		{
-			len = 0;
-			while (*s && *s != c && ++len)
-				s++;
-			ret[i] = ft_substr(s - len, 0, len);
-			if (!ret[i])
-			{
-				ft_free_ret(ret, i);
-				free_exit(data, "Error: malloc failed\n");
-			}
-			i++;
-		}
-		else
-		{
-			if (*(s + 1) == '\0')
-				ret[i++] = ft_strdup("");
-			s++;
-		}
-	}
-	ret[i] = 0;
-	return (ret);
+		entries_t_envp_split(&split, &s, c, data);
+	split.ret[split.i] = 0;
+	return (split.ret);
 }
 
 void	initialize_table(char **envp, t_data *data)
@@ -59,66 +88,4 @@ void	initialize_table(char **envp, t_data *data)
 		free_key_value_pair(key_value_pair);
 		i++;
 	}
-}
-
-char	*ft_getenv(t_env_var **table, const char *key)
-{
-	unsigned int	idx;
-	t_env_var		*node;
-
-	idx = hash(key);
-	node = table[idx];
-	while (node != NULL)
-	{
-		if (ft_strncmp(node->key, key, ft_strlen(key)) == 0)
-		{
-			return (node->value);
-		}
-		node = node->next;
-	}
-	return (NULL); // key not found
-}
-
-char	**hash_table_to_arr(t_data *data)
-{
-	int			i;
-	int			j;
-	char		**envp;
-	char		*temp;
-	t_env_var	*node;
-
-	if (data->env_table->count == 0)
-		return (NULL);
-	if (data->env_arr != NULL)
-		free_envp(data->env_arr);
-	envp = (char **)malloc(sizeof(char *) * (data->env_table->count + 1));
-	if (envp == NULL)
-		free_exit(data, "Error: malloc in hash_table_to_arr failed\n");
-	data->env_arr = envp;
-	i = 0;
-	j = 0;
-	while (i < TABLE_SIZE)
-	{
-		node = data->env_table->table[i];
-		while (node != NULL)
-		{
-			temp = ft_strjoin(node->key, "=");
-			if (!temp)
-				free_exit(data, "Error: ft_strjoin failed\n");
-			envp[j] = ft_strjoin(temp, node->value);
-			if (!envp[j])
-			{
-				free(temp);
-				temp = NULL;
-				free_exit(data, "Error: ft_strjoin failed\n");
-			}
-			free(temp);
-			temp = NULL;
-			j++;
-			node = node->next;
-		}
-		i++;
-	}
-	envp[j] = NULL;
-	return (envp);
 }
