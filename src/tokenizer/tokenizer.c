@@ -70,7 +70,7 @@ void	tokenize(t_data *data, char *input)
 	char	*tmp;
 	char	*reshuffled;
 
-	if (g_DEBUG_LEVEL == DEBUG_ALL || g_DEBUG_LEVEL == DEBUG_TOKENIZER)
+	if (g_debug_level == DEBUG_ALL || g_debug_level == DEBUG_TOKENIZER)
 		printf("\n***Tokenization***\n\n");
 	trimmed = strip_ending_trailing_spaces(input);
 	tmp = reshuffle_single_quotes(trimmed);
@@ -80,7 +80,7 @@ void	tokenize(t_data *data, char *input)
 	input = NULL;
 	data->token_count = count_words_tokenizer(reshuffled);
 	free(trimmed);
-	if (g_DEBUG_LEVEL == DEBUG_ALL || g_DEBUG_LEVEL == DEBUG_TOKENIZER)
+	if (g_debug_level == DEBUG_ALL || g_debug_level == DEBUG_TOKENIZER)
 		printf("Token count: %zu\n\n", data->token_count);
 	data->token_arr = create_token_array(data);
 	data->token_arr = tokenizer(data, reshuffled);
@@ -89,6 +89,6 @@ void	tokenize(t_data *data, char *input)
 		free(reshuffled);
 		reshuffled = NULL;
 	}
-	if (g_DEBUG_LEVEL == DEBUG_ALL || g_DEBUG_LEVEL == DEBUG_TOKENIZER)
+	if (g_debug_level == DEBUG_ALL || g_debug_level == DEBUG_TOKENIZER)
 		print_token_arr(data->token_arr, data->token_count);
 }

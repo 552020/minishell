@@ -36,7 +36,7 @@ typedef enum e_debug_level
 	DEBUG_ALL        // Debug everything
 }						t_debug_level;
 
-extern t_debug_level	g_DEBUG_LEVEL;
+extern t_debug_level	g_debug_level;
 
 /* Error messages*/
 

@@ -12,8 +12,8 @@
 
 #include "minishell.h"
 
-// t_debug_level	g_DEBUG_LEVEL = DEBUG_ALL;
-t_debug_level	g_DEBUG_LEVEL = DEBUG_OFF;
+// t_debug_level	g_debug_level = DEBUG_ALL;
+t_debug_level	g_debug_level = DEBUG_OFF;
 
 int	main(int argc, char **argv, char **envp)
 {
