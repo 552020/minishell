@@ -12,13 +12,6 @@
 
 #include "minishell.h"
 
-typedef struct s_echo
-{
-	int	i;
-	int	j;
-	int	print_newline;
-}		t_echo;
-
 void	init_t_echo(t_echo *echo)
 {
 	echo->i = 0;
