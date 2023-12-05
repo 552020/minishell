@@ -1,7 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: slombard <slombard@student.42berlin.de>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/12/05 17:45:46 by slombard          #+#    #+#             */
+/*   Updated: 2023/12/05 17:45:52 by slombard         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-// t_debug_level	DEBUG_LEVEL = DEBUG_ALL;
-t_debug_level	DEBUG_LEVEL = DEBUG_OFF;
+// t_debug_level	g_DEBUG_LEVEL = DEBUG_ALL;
+t_debug_level	g_DEBUG_LEVEL = DEBUG_OFF;
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -19,13 +31,11 @@ int	main(int argc, char **argv, char **envp)
 		if (lexemize(&data) == SUCCESS)
 		{
 			parse(&data);
-			// handle_heredocs(data.ast_root, &data);
 			if (handle_heredocs(data.ast_root, &data) == SUCCESS)
 			{
 				execute(&data, data.ast_root);
 				wait_ast(&data, data.ast_root);
 				exit_status = data.ast_root->exit_status;
-				// printf("exit_status: %d\n", exit_status);
 				data.last_exit_status = exit_status;
 			}
 		}

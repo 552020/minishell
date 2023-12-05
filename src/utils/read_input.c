@@ -23,7 +23,7 @@ char	*read_input(void)
 		exit(0);
 	}
 	add_history(input);
-	if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_TOKENIZER)
+	if (g_DEBUG_LEVEL == DEBUG_ALL || g_DEBUG_LEVEL == DEBUG_TOKENIZER)
 		printf("readline: %s\n", input);
 	return (input);
 }
