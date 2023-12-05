@@ -15,6 +15,17 @@
 // t_debug_level	g_debug_level = DEBUG_ALL;
 t_debug_level	g_debug_level = DEBUG_OFF;
 
+void	execute_main(t_data *data, int *exit_status)
+{
+	if (handle_heredocs(data->ast_root, data) == SUCCESS)
+	{
+		execute(data, data->ast_root);
+		wait_ast(data, data->ast_root);
+		*exit_status = data->ast_root->exit_status;
+		data->last_exit_status = *exit_status;
+	}
+}
+
 int	main(int argc, char **argv, char **envp)
 {
 	char	*input;
@@ -31,13 +42,7 @@ int	main(int argc, char **argv, char **envp)
 		if (lexemize(&data) == SUCCESS)
 		{
 			parse(&data);
-			if (handle_heredocs(data.ast_root, &data) == SUCCESS)
-			{
-				execute(&data, data.ast_root);
-				wait_ast(&data, data.ast_root);
-				exit_status = data.ast_root->exit_status;
-				data.last_exit_status = exit_status;
-			}
+			execute_main(&data, &exit_status);
 		}
 		if (data.ast_root)
 			free_ast(data.ast_root);
