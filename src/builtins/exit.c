@@ -84,7 +84,7 @@ int	ft_exit(t_ast_node *node, char **envp, t_env_table *table)
 		num_str = ft_substr(node->cmd, 5, ft_strlen(node->cmd) - 6);
 		return_status = exit_input_check(num_str, &exit_code, node);
 	}
-	else if(node->args && !node->args[1])
+	else if (node->args && !node->args[1])
 		write_error_and_return("syntax error\n", &return_status);
 	if (num_str)
 		free(num_str);
