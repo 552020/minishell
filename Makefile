@@ -42,7 +42,7 @@ SRCS = minishell.c \
  parser/parser.c parser/create_node.c parser/fill_node_cmd_args.c parser/fill_node_redirects.c parser/parser_utils.c \
   utils/check_input.c utils/free_functions.c utils/init.c \
  builtins/pwd.c builtins/env.c builtins/export.c builtins/unset.c builtins/cd.c builtins/exit.c builtins/echo.c builtins/exit_utils.c utils/read_input.c  \
- executor/redirections.c executor/heredoc.c executor/execute_builtins.c executor/executor.c executor/utils.c executor/handle_pipe.c executor/handle_single_cmd.c executor/ft_realpath.c executor/path_finder.c \
+ executor/redirections.c executor/heredoc.c executor/execute_builtins.c executor/executor.c executor/utils.c executor/handle_pipe.c executor/handle_single_cmd.c executor/ft_realpath.c executor/path_finder.c executor/cmd_and_args_arr.c \
  envp/env_vars.c envp/free.c envp/hash_table.c envp/utils.c \
  utils/ft_isvalidvarname.c tokenizer/reshuffle_quotes.c \
  utils/signals.c executor/wait.c debug/debug.c  tokenizer/reshuffle_quotes_utils.c
