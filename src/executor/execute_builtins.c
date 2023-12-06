@@ -34,7 +34,6 @@ int	command_is_builtin(t_ast_node *node)
 		return (FAILURE);
 }
 
-// you don't need to create an array, data is already there with cmd and args
 int	builtin_with_args(t_ast_node *node, t_data *data)
 {
 	int	exit_status;
@@ -42,7 +41,6 @@ int	builtin_with_args(t_ast_node *node, t_data *data)
 	exit_status = 0;
 	if (ft_strncmp(node->cmd, "export", 6) == 0 && ft_strlen(node->cmd) == 6)
 	{
-		// TODO: implement ARG="arg" in the lexer
 		exit_status = export(node->args, data);
 		node->exit_status = exit_status;
 	}

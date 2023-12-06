@@ -37,7 +37,6 @@ int	handle_heredocs(t_ast_node *node, t_data *data)
 		}
 		if (ft_heredoc(node, node->heredoc_del, data) == FAILURE)
 			return (FAILURE);
-		// ft_heredoc(node, node->heredoc_del, data);
 	}
 	return (SUCCESS);
 }
@@ -66,7 +65,7 @@ int	ft_heredoc(t_ast_node *node, char *delimiter, t_data *data)
 			if (!line)
 			{
 				close(fd[1]);
-				printf("minishell: warning: here-document delimited by end-of-file ");
+				printf("warning: here-document delimited by end-of-file ");
 				printf("(wanted '%s')\n", delimiter);
 				exit(EXIT_FAILURE);
 			}
@@ -94,8 +93,6 @@ int	ft_heredoc(t_ast_node *node, char *delimiter, t_data *data)
 			printf("\n");
 			rl_on_new_line();
 			rl_replace_line("", 0);
-			// This was causing the double prompt
-			// rl_redisplay();
 			return (FAILURE);
 		}
 	}

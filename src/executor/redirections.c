@@ -19,11 +19,9 @@ int	infile_redirection(t_ast_node *node, t_data *data)
 
 	(void)data;
 	i = 0;
-	// print_envp_arr(node->input_files);
 	while (node->input_files[i])
 	{
 		filein = 0;
-		// printf("This is the input file[%d]: %s\n", i, node->input_files[i]);
 		if (access(node->input_files[i], F_OK) != 0)
 		{
 			perror(" ");
@@ -75,7 +73,7 @@ int	outfile_redirection(t_ast_node *node, t_data *data)
 		}
 		if (node->append)
 			fileout = open(node->output_files[i],
-					O_WRONLY | O_CREAT | O_APPEND);
+				O_WRONLY | O_CREAT | O_APPEND);
 		else if (!node->append)
 			fileout = open(node->output_files[i], O_WRONLY | O_CREAT | O_TRUNC);
 		if (fileout == -1)
@@ -114,7 +112,6 @@ int	handle_redirections(t_ast_node *node, t_data *data)
 		else
 			return_infile = FAILURE;
 	}
-	// printf("node->output_file: %s\n", node->output_file);
 	if (node->output_files)
 	{
 		if (outfile_redirection(node, data))
@@ -123,5 +120,4 @@ int	handle_redirections(t_ast_node *node, t_data *data)
 			return_outfile = FAILURE;
 	}
 	return (return_infile && return_outfile);
-	// printf("node->output_file: %s\n", node->output_file);
 }

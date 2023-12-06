@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   wait.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: slombard <slombard@student.42berlin.de>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/12/06 16:45:48 by slombard          #+#    #+#             */
+/*   Updated: 2023/12/06 16:45:52 by slombard         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 int	wait_pid(t_ast_node *node, t_data *data)
@@ -41,13 +53,11 @@ int	wait_pipe(t_ast_node *node, t_data *data)
 	int	exit_status;
 
 	exit_status = 0;
-	// Wait for right child
 	if (node->children[1]->type == N_PIPE)
 		wait_pipe(node->children[1], data);
 	else if (node->children[1]->type == N_COMMAND
 		&& node->children[1]->cmd != NULL)
 		exit_status = wait_single_command(node->children[1], data);
-	// Wait for left child
 	if (node->children[0]->type == N_PIPE)
 		wait_pipe(node->children[0], data);
 	else if (node->children[0]->type == N_COMMAND

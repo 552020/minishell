@@ -55,15 +55,13 @@ char	**build_cmd_and_args_arr(t_ast_node *node, int cmd_and_args_count,
 
 	i = 0;
 	cmd_and_args_count = count_cmd_and_args(node);
-	cmd_and_args_arr = (char **)malloc(sizeof(char *) * (cmd_and_args_count
-				+ 1));
+	cmd_and_args_arr = malloc(sizeof(char *) * (cmd_and_args_count + 1));
 	if (!cmd_and_args_arr)
 		free_exit(data, "Error: malloc failed\n");
 	if (node->cmd)
 		cmd_and_args_arr[0] = ft_strdup(node->cmd);
 	if (!cmd_and_args_arr[0])
 		free_exit(data, "Error: malloc failed\n");
-	// cmd_and_args_arr[0] = node->cmd;
 	if (node->args != NULL)
 	{
 		while (node->args[i] != NULL)
@@ -71,7 +69,6 @@ char	**build_cmd_and_args_arr(t_ast_node *node, int cmd_and_args_count,
 			cmd_and_args_arr[i + 1] = ft_strdup(node->args[i]);
 			if (!cmd_and_args_arr[i + 1])
 				free_exit(data, "Error: malloc failed\n");
-			// cmd_and_args_arr[i + 1] = node->args[i];
 			i++;
 		}
 	}
@@ -93,7 +90,6 @@ void	execute_cmd(t_ast_node *node, t_data *data)
 		path = path_finder(node->cmd, dir_paths, data);
 		if (!path)
 		{
-			// TODO:  add free probably
 			if (ft_strncmp(&node->cmd[0], "./", 2) == 0)
 			{
 				if (access(node->cmd, F_OK) == 0)
@@ -129,7 +125,6 @@ void	execute_cmd(t_ast_node *node, t_data *data)
 		free_exit(data, "Error: malloc failed\n");
 	if (node->cmd && cmd_and_args_arr)
 	{
-		// Check it if there is leak in case of error - There is!
 		if (execve(path, cmd_and_args_arr, data->env_arr) == -1)
 		{
 			if (path)
@@ -155,8 +150,6 @@ void	execute_cmd(t_ast_node *node, t_data *data)
 		free_cmd_and_args_arr(cmd_and_args_arr);
 }
 
-// We don't need the first check anymore data->ast_type == UNDEFINED
-// because we calling the execute_cmd somewhere else
 void	execute(t_data *data, t_ast_node *node)
 {
 	if (node->type == N_COMMAND && data->ast_type == UNDEFINED)
