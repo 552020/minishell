@@ -22,15 +22,15 @@ typedef struct ft_realpath_vars
 	size_t	cwd_len;
 }			t_ft_realpath_vars;
 
-void	init_ft_realpath_vars(t_ft_realpath_vars *vars)
-{
-	vars->tokens = NULL;
-	vars->last_slash = NULL;
-	vars->i = 0;
-	vars->abs_path = NULL;
-	vars->cwd = NULL;
-	vars->cwd_len = 0;
-}
+// void	init_ft_realpath_vars(t_ft_realpath_vars *vars)
+// {
+// 	vars->tokens = NULL;
+// 	vars->last_slash = NULL;
+// 	vars->i = 0;
+// 	vars->abs_path = NULL;
+// 	vars->cwd = NULL;
+// 	vars->cwd_len = 0;
+// }
 
 void	build_cwd_path(t_ft_realpath_vars *vars, t_data *data, const char *path)
 {
@@ -47,6 +47,24 @@ void	build_cwd_path(t_ft_realpath_vars *vars, t_data *data, const char *path)
 	free(vars->cwd);
 }
 
+void	process_each_token(t_ft_realpath_vars *vars, const char *token)
+{
+	if (ft_strncmp(token, "..", 2) == 0 && ft_strlen(token) == 2)
+	{
+		vars->last_slash = ft_strrchr(vars->abs_path, '/');
+		if (vars->last_slash != vars->abs_path)
+			*vars->last_slash = '\0';
+		else
+			ft_strlcpy(vars->abs_path, "/", vars->cwd_len);
+	}
+	else
+	{
+		if (ft_strlen(vars->abs_path) > 1)
+			ft_strlcat(vars->abs_path, "/", vars->cwd_len);
+		ft_strlcat(vars->abs_path, token, vars->cwd_len);
+	}
+}
+
 void	process_path_tokens(t_ft_realpath_vars *vars, t_data *data,
 		const char *path)
 {
@@ -56,21 +74,7 @@ void	process_path_tokens(t_ft_realpath_vars *vars, t_data *data,
 	vars->i = 0;
 	while (vars->tokens[vars->i] != NULL)
 	{
-		if (ft_strncmp(vars->tokens[vars->i], "..", 2) == 0
-			&& ft_strlen(vars->tokens[vars->i]) == 2)
-		{
-			vars->last_slash = ft_strrchr(vars->abs_path, '/');
-			if (vars->last_slash != vars->abs_path)
-				*vars->last_slash = '\0';
-			else
-				ft_strlcpy(vars->abs_path, "/", vars->cwd_len);
-		}
-		else
-		{
-			if (ft_strlen(vars->abs_path) > 1)
-				ft_strlcat(vars->abs_path, "/", vars->cwd_len);
-			ft_strlcat(vars->abs_path, vars->tokens[vars->i], vars->cwd_len);
-		}
+		process_each_token(vars, vars->tokens[vars->i]);
 		vars->i++;
 	}
 	vars->i = -1;
@@ -89,9 +93,14 @@ void	build_absolute_path(t_ft_realpath_vars *vars, char *path, t_data *data)
 
 char	*ft_realpath(const char *path, t_data *data)
 {
-	t_ft_realpath_vars vars;
+	t_ft_realpath_vars	vars;
 
-	init_ft_realpath_vars(&vars);
+	vars.tokens = NULL;
+	vars.last_slash = NULL;
+	vars.i = 0;
+	vars.abs_path = NULL;
+	vars.cwd = NULL;
+	vars.cwd_len = 0;
 	if (!path)
 		return (NULL);
 	build_cwd_path(&vars, data, path);

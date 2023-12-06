@@ -59,7 +59,7 @@ void	build_pathless_cmd(t_path_finder *vars, char *cmd, t_data *data)
 
 char	*path_finder(char *cmd, char *dir_paths, t_data *data)
 {
-	t_path_finder vars;
+	t_path_finder	vars;
 
 	init_vars_and_build_dir_path_arr(&vars, dir_paths, data);
 	while (vars.dir_path_arr[vars.i])
