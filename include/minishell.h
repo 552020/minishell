@@ -340,4 +340,5 @@ void free_hash_table(t_env_table *env_table);
 size_t ft_count_word(const char *s, char c);
 int ft_free_ret(char **ret, size_t i);
 int check_parenthesis(t_ast_node *cmd);
+void free_exit_code(t_data *data, char *error_message, int exit_code);
 #endif
