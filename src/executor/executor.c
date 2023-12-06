@@ -79,16 +79,19 @@ char	**build_cmd_and_args_arr(t_ast_node *node, int cmd_and_args_count,
 /* Logic for existing scripts is missing*/
 void	execute_script(t_ast_node *node, t_data *data)
 {
+	(void)data;
 	if (ft_strncmp(&node->cmd[0], "./", 2) == 0)
 	{
 		if (access(node->cmd, F_OK) == 0)
 		{
 			perror(" ");
+			// should we free before exit?
 			exit(126);
 		}
 		else
 		{
 			perror(" ");
+			// should we free before exit?
 			exit(127);
 		}
 	}
