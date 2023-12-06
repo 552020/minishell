@@ -76,6 +76,24 @@ char	**build_cmd_and_args_arr(t_ast_node *node, int cmd_and_args_count,
 	return (cmd_and_args_arr);
 }
 
+/* Logic for existing scripts is missing*/
+void	execute_script(t_ast_node *node, t_data *data)
+{
+	if (ft_strncmp(&node->cmd[0], "./", 2) == 0)
+	{
+		if (access(node->cmd, F_OK) == 0)
+		{
+			perror(" ");
+			exit(126);
+		}
+		else
+		{
+			perror(" ");
+			exit(127);
+		}
+	}
+}
+
 void	execute_cmd(t_ast_node *node, t_data *data)
 {
 	char	*path;
@@ -85,35 +103,16 @@ void	execute_cmd(t_ast_node *node, t_data *data)
 
 	dir_paths = ft_getenv(data->env_table->table, "PATH");
 	path = NULL;
-	if (node->cmd)
+	if (!node->cmd && !node->args)
+		return ;
+	else if (node->cmd)
 	{
 		path = path_finder(node->cmd, dir_paths, data);
 		if (!path)
-		{
-			if (ft_strncmp(&node->cmd[0], "./", 2) == 0)
-			{
-				if (access(node->cmd, F_OK) == 0)
-				{
-					perror(" ");
-					exit(126);
-				}
-				else
-				{
-					perror(" ");
-					exit(127);
-				}
-			}
-			else
-			{
-				perror(" ");
-				exit(127);
-			}
-		}
+			execute_script(node, data);
 	}
-	else if (!node->cmd && !node->args)
-	{
-		return ;
-	}
+	// When would be this the case?
+	// It seems never to be the case
 	else
 	{
 		perror(" ");
