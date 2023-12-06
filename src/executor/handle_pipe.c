@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int	handle_single_command(t_ast_node *node, t_data *data)
+int	handle_single_cmd(t_ast_node *node, t_data *data)
 {
 	pid_t	pid;
 	int		status;
@@ -59,11 +59,11 @@ int	handle_pipe(t_ast_node *node, t_data *data)
 	dup2(pipe_fd[1], STDOUT_FILENO);
 	close(pipe_fd[1]);
 	status_left = handle_left_child(node->children[0], data, &left_pid,
-			pipe_fd[0]);
+		pipe_fd[0]);
 	dup2(stdout_backup, STDOUT_FILENO);
 	close(stdout_backup);
 	status_right = handle_right_child(node->children[1], data, &right_pid,
-			pipe_fd[0]);
+		pipe_fd[0]);
 	close(pipe_fd[0]);
 	(void)status_left;
 	return (status_right);

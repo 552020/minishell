@@ -155,7 +155,7 @@ void	execute(t_data *data, t_ast_node *node)
 	if (node->type == N_COMMAND && data->ast_type == UNDEFINED)
 	{
 		data->ast_type = SINGLE_CMD_AST;
-		handle_single_command(node, data);
+		handle_single_cmd(node, data);
 	}
 	else if (node->type == N_PIPE)
 	{
