@@ -50,8 +50,8 @@ int	count_cmd_and_args(t_ast_node *node)
 char	**build_cmd_and_args_arr(t_ast_node *node, int cmd_and_args_count,
 		t_data *data)
 {
-	char **cmd_and_args_arr;
-	int i;
+	char	**cmd_and_args_arr;
+	int		i;
 
 	i = 0;
 	cmd_and_args_count = count_cmd_and_args(node);
