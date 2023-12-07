@@ -92,7 +92,7 @@ void	execute_cmd(t_ast_node *node, t_data *data)
 			execute_script(node, data);
 	}
 	vars.cmd_and_args_count = count_cmd_and_args(node);
-	vars.exec_arr = build_exec_arr(node, vars.cmd_and_args_count, data);
+	vars.exec_arr = build_cmd_and_args_arr(node, vars.cmd_and_args_count, data);
 	if (!vars.exec_arr)
 		free_exit(data, "Error: malloc failed\n");
 	if (node->cmd && vars.exec_arr)

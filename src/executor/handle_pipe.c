@@ -41,6 +41,21 @@ int	handle_pipe(t_ast_node *node, t_data *data)
 	return (vars.status_r);
 }
 
+void	execute_child_left(t_ast_node *node, t_data *data, int pipe_fd)
+{
+	close(pipe_fd);
+	if (command_is_builtin(node))
+		node->exit_status = execute_builtin(node, data);
+	else
+	{
+		if (handle_redirections(node, data))
+			execute_cmd(node, data);
+		else
+			exit(EXIT_FAILURE);
+	}
+	exit(EXIT_SUCCESS);
+}
+
 int	handle_l_child(t_ast_node *node, t_data *data, pid_t *l_pid, int pipe_fd)
 {
 	if (node->type == N_PIPE)
@@ -54,21 +69,25 @@ int	handle_l_child(t_ast_node *node, t_data *data, pid_t *l_pid, int pipe_fd)
 			node->pid = *l_pid;
 		handle_signals_child(*l_pid);
 		if (*l_pid == 0)
-		{
-			close(pipe_fd);
-			if (command_is_builtin(node))
-				node->exit_status = execute_builtin(node, data);
-			else
-			{
-				if (handle_redirections(node, data))
-					execute_cmd(node, data);
-				else
-					exit(EXIT_FAILURE);
-			}
-			exit(EXIT_SUCCESS);
-		}
+			execute_child_left(node, data, pipe_fd);
 	}
 	return (EXIT_SUCCESS);
+}
+
+void	execute_child_right(t_ast_node *node, t_data *data, int pipe_fd)
+{
+	dup2(pipe_fd, STDIN_FILENO);
+	close(pipe_fd);
+	if (command_is_builtin(node))
+		node->exit_status = execute_builtin(node, data);
+	else
+	{
+		if (handle_redirections(node, data))
+			execute_cmd(node, data);
+		else
+			exit(EXIT_FAILURE);
+	}
+	exit(EXIT_SUCCESS);
 }
 
 int	handle_r_child(t_ast_node *node, t_data *data, pid_t *r_pid, int pipe_fd)
@@ -84,20 +103,7 @@ int	handle_r_child(t_ast_node *node, t_data *data, pid_t *r_pid, int pipe_fd)
 			node->pid = *r_pid;
 		handle_signals_child(*r_pid);
 		if (*r_pid == 0)
-		{
-			dup2(pipe_fd, STDIN_FILENO);
-			close(pipe_fd);
-			if (command_is_builtin(node))
-				node->exit_status = execute_builtin(node, data);
-			else
-			{
-				if (handle_redirections(node, data))
-					execute_cmd(node, data);
-				else
-					exit(EXIT_FAILURE);
-			}
-			exit(EXIT_SUCCESS);
-		}
+			execute_child_right(node, data, pipe_fd);
 	}
 	return (EXIT_SUCCESS);
 }
