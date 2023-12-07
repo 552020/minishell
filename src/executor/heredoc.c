@@ -60,6 +60,7 @@ void	init_heredoc(t_heredoc *vars)
 	vars->termsig = 0;
 	vars->delimiter = NULL;
 }
+
 void	read_heredoc(t_heredoc *vars)
 {
 	while (1)
@@ -103,6 +104,7 @@ void	wait_heredoc(t_heredoc *vars)
 		}
 	}
 }
+
 int	ft_heredoc(t_ast_node *node, char *delimiter, t_data *data)
 {
 	t_heredoc	vars;
@@ -119,44 +121,9 @@ int	ft_heredoc(t_ast_node *node, char *delimiter, t_data *data)
 	{
 		close(vars.fd[0]);
 		read_heredoc(&vars);
-		// while (1)
-		// {
-		// 	line = readline("heredoc> ");
-		// 	if (!line)
-		// 	{
-		// 		close(fd[1]);
-		// 		printf("warning: here-document delimited by end-of-file ");
-		// 		printf("(wanted '%s')\n", delimiter);
-		// 		exit(EXIT_FAILURE);
-		// 	}
-		// 	if (ft_strncmp(line, delimiter, ft_strlen(delimiter)) == 0
-		// 		&& ft_strlen(delimiter) == ft_strlen(line))
-		// 	{
-		// 		free(line);
-		// 		line = NULL;
-		// 		exit(EXIT_SUCCESS);
-		// 	}
-		// 	write(fd[1], line, ft_strlen(line));
-		// 	write(fd[1], "\n", 1);
-		// 	free(line);
-		// 	line = NULL;
-		// }
 	}
 	close(vars.fd[1]);
 	wait_heredoc(&vars);
-	// waitpid(vars.pid, &vars.status, 0);
-	// if (WIFSIGNALED(status))
-	// {
-	// 	termsig = WTERMSIG(status);
-	// 	if (termsig == SIGINT)
-	// 	{
-	// 		close(fd[0]);
-	// 		printf("\n");
-	// 		rl_on_new_line();
-	// 		rl_replace_line("", 0);
-	// 		return (FAILURE);
-	// 	}
-	// }
 	node->heredoc_fd = vars.fd[0];
 	node->heredoc = true;
 	return (SUCCESS);
