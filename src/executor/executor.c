@@ -12,7 +12,8 @@
 
 #include "minishell.h"
 
-/* Notes and questions:
+/*
+Notes and questions:
 - Logic for existing scripts is missing
 - Question: should we free before exiting?
 - Now I did
@@ -42,7 +43,9 @@ void	handle_execve_fail(t_ast_node *node, t_data *data, char *path)
 		free_exit_code(data, " ", 126);
 	free_exit_code(data, " ", 127);
 }
-/* Some notes and questions:
+
+/*
+Some notes and questions:
 - path will be NULL if the command is not an executable file
 - it's not clear when the else case would be the case
 	else
@@ -55,15 +58,21 @@ void	handle_execve_fail(t_ast_node *node, t_data *data, char *path)
 typedef struct s_execute_cmd
 {
 	char	*path;
-	char	**cmd_and_args_arr;
+	char	**exec_arr;
 	int		cmd_and_args_count;
 	char	*dir_paths;
 }			t_execute_cmd;
 
+/*
+Achtung!
+cmd_and_args_arr has been renamed in exec_arr cause of norminette:
+the autoformatter would put otherwise the right tabs on line split
+rename is only in thi function
+*/
 void	init_execute_cmd_vars(t_execute_cmd *vars, t_data *data)
 {
 	vars->path = NULL;
-	vars->cmd_and_args_arr = NULL;
+	vars->exec_arr = NULL;
 	vars->cmd_and_args_count = 0;
 	vars->dir_paths = NULL;
 	vars->dir_paths = ft_getenv(data->env_table->table, "PATH");
@@ -83,17 +92,16 @@ void	execute_cmd(t_ast_node *node, t_data *data)
 			execute_script(node, data);
 	}
 	vars.cmd_and_args_count = count_cmd_and_args(node);
-	vars.cmd_and_args_arr = build_cmd_and_args_arr(node,
-		vars.cmd_and_args_count, data);
-	if (!vars.cmd_and_args_arr)
+	vars.exec_arr = build_exec_arr(node, vars.cmd_and_args_count, data);
+	if (!vars.exec_arr)
 		free_exit(data, "Error: malloc failed\n");
-	if (node->cmd && vars.cmd_and_args_arr)
+	if (node->cmd && vars.exec_arr)
 	{
-		if (execve(vars.path, vars.cmd_and_args_arr, data->env_arr) == -1)
+		if (execve(vars.path, vars.exec_arr, data->env_arr) == -1)
 			handle_execve_fail(node, data, vars.path);
 	}
-	if (vars.cmd_and_args_arr)
-		free_cmd_and_args_arr(vars.cmd_and_args_arr);
+	if (vars.exec_arr)
+		free_cmd_and_args_arr(vars.exec_arr);
 }
 
 void	execute(t_data *data, t_ast_node *node)
