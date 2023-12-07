@@ -14,15 +14,12 @@
 
 int	handle_single_cmd(t_ast_node *node, t_data *data)
 {
-	pid_t pid;
-	int status;
+	pid_t	pid;
 
-	status = 0;
 	if (node->cmd != NULL && command_is_builtin(node))
 	{
 		node->exit_status = execute_builtin(node, data);
-		status = node->exit_status;
-		return (status);
+		return (node->exit_status);
 	}
 	pid = fork();
 	if (pid == -1)
@@ -38,6 +35,5 @@ int	handle_single_cmd(t_ast_node *node, t_data *data)
 			exit(EXIT_FAILURE);
 		exit(EXIT_SUCCESS);
 	}
-	node->exit_status = status;
-	return (status);
+	return (node->exit_status);
 }
