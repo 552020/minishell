@@ -12,48 +12,48 @@
 
 #include "minishell.h"
 
-
-int	handle_pipe(t_ast_node *node, t_data *data)
+typedef struct s_handle_pipe
 {
 	int		pipe_fd[2];
 	int		stdout_backup;
-	pid_t	left_pid;
-	pid_t	right_pid;
-	int		status_left;
-	int		status_right;
+	pid_t	l_pid;
+	pid_t	r_pid;
+	int		status_l;
+	int		status_r;
+}			t_handle_pipe;
 
-	status_left = 0;
-	status_right = 0;
-	if (pipe(pipe_fd) == -1)
+int	handle_pipe(t_ast_node *node, t_data *data)
+{
+	t_handle_pipe	vars;
+
+	vars.status_r = 0;
+	if (pipe(vars.pipe_fd) == -1)
 		free_exit(data, "Error: pipe failed\n");
-	stdout_backup = dup(STDOUT_FILENO);
-	dup2(pipe_fd[1], STDOUT_FILENO);
-	close(pipe_fd[1]);
-	status_left = handle_left_child(node->children[0], data, &left_pid,
-		pipe_fd[0]);
-	dup2(stdout_backup, STDOUT_FILENO);
-	close(stdout_backup);
-	status_right = handle_right_child(node->children[1], data, &right_pid,
-		pipe_fd[0]);
-	close(pipe_fd[0]);
-	(void)status_left;
-	return (status_right);
+	vars.stdout_backup = dup(STDOUT_FILENO);
+	dup2(vars.pipe_fd[1], STDOUT_FILENO);
+	close(vars.pipe_fd[1]);
+	handle_l_child(node->children[0], data, &vars.l_pid, vars.pipe_fd[0]);
+	dup2(vars.stdout_backup, STDOUT_FILENO);
+	close(vars.stdout_backup);
+	vars.status_r = handle_r_child(node->children[1], data, &vars.r_pid,
+		vars.pipe_fd[0]);
+	close(vars.pipe_fd[0]);
+	return (vars.status_r);
 }
 
-int	handle_left_child(t_ast_node *node, t_data *data, pid_t *left_pid,
-		int pipe_fd)
+int	handle_l_child(t_ast_node *node, t_data *data, pid_t *l_pid, int pipe_fd)
 {
 	if (node->type == N_PIPE)
 		execute(data, node);
 	else if ((node->cmd != NULL) && (node->type == N_COMMAND))
 	{
-		*left_pid = fork();
-		if (*left_pid == -1)
+		*l_pid = fork();
+		if (*l_pid == -1)
 			free_exit(data, "Error: fork failed\n");
-		if (*left_pid != 0)
-			node->pid = *left_pid;
-		handle_signals_child(*left_pid);
-		if (*left_pid == 0)
+		if (*l_pid != 0)
+			node->pid = *l_pid;
+		handle_signals_child(*l_pid);
+		if (*l_pid == 0)
 		{
 			close(pipe_fd);
 			if (command_is_builtin(node))
@@ -71,20 +71,19 @@ int	handle_left_child(t_ast_node *node, t_data *data, pid_t *left_pid,
 	return (EXIT_SUCCESS);
 }
 
-int	handle_right_child(t_ast_node *node, t_data *data, pid_t *right_pid,
-		int pipe_fd)
+int	handle_r_child(t_ast_node *node, t_data *data, pid_t *r_pid, int pipe_fd)
 {
 	if (node->type == N_PIPE)
 		execute(data, node);
 	else if ((node->cmd != NULL) && (node->type == N_COMMAND))
 	{
-		*right_pid = fork();
-		if (*right_pid == -1)
+		*r_pid = fork();
+		if (*r_pid == -1)
 			free_exit(data, "Error: fork failed\n");
-		if (*right_pid != 0)
-			node->pid = *right_pid;
-		handle_signals_child(*right_pid);
-		if (*right_pid == 0)
+		if (*r_pid != 0)
+			node->pid = *r_pid;
+		handle_signals_child(*r_pid);
+		if (*r_pid == 0)
 		{
 			dup2(pipe_fd, STDIN_FILENO);
 			close(pipe_fd);

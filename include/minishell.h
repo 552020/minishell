@@ -329,9 +329,9 @@ void handle_signals_child(int pid);
 void disable_ctrl_c_main(void);
 char *trim_ending_trailing_spaces(char const *str);
 int handle_single_cmd(t_ast_node *node, t_data *data);
-int handle_left_child(t_ast_node *node, t_data *data, pid_t *left_pid,
+int handle_l_child(t_ast_node *node, t_data *data, pid_t *l_pid,
                       int pipe_fd);
-int handle_right_child(t_ast_node *node, t_data *data, pid_t *right_pid,
+int handle_r_child(t_ast_node *node, t_data *data, pid_t *r_pid,
                        int pipe_fd);
 int signal_status(int status);
 void wait_ast(t_data *data, t_ast_node *node);
