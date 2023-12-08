@@ -6,7 +6,7 @@
 /*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/08 20:06:58 by slombard          #+#    #+#             */
-/*   Updated: 2023/12/09 00:17:47 by slombard         ###   ########.fr       */
+/*   Updated: 2023/12/09 00:40:31 by slombard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,6 +119,7 @@ char	**entry_to_char(t_entry **matching, t_data *data)
 	int		size;
 	int		i;
 
+	printf("entry_to_char:\n");
 	size = 0;
 	while (matching[size]->entry)
 		size++;
@@ -146,6 +147,7 @@ char	*ft_strjoin_arr(char **arr)
 
 	idx = 0;
 	len = 0;
+	printf("ft_strjoin_arr:\n");
 	if (!arr)
 		return (ft_strdup(""));
 	if (!arr[0])
@@ -161,18 +163,19 @@ char	*ft_strjoin_arr(char **arr)
 		len += ft_strlen(arr[idx]);
 		idx++;
 	}
-	ret = malloc(sizeof(char) * (len + (idx - 1) + 1));
+	ret = malloc(sizeof(char) * (len + idx));
 	if (!ret)
 		return (NULL);
-	ft_strlcpy(ret, arr[0], len + (idx - 1) + 1);
+	ft_strlcpy(ret, arr[0], len + idx);
 	idx = 1;
 	while (arr[idx])
 	{
-		ft_strlcat(ret, arr[idx], len + (idx - 1) + 1);
 		if (arr[idx + 1])
-			ft_strlcat(ret, " ", len + (idx - 1) + 1);
+			ft_strlcat(ret, " ", len + idx);
+		ft_strlcat(ret, arr[idx], len + idx);
 		idx++;
 	}
+	printf("ret: %s\n", ret);
 	return (ret);
 }
 
