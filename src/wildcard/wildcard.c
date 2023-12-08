@@ -6,7 +6,7 @@
 /*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/08 20:06:58 by slombard          #+#    #+#             */
-/*   Updated: 2023/12/09 00:40:31 by slombard         ###   ########.fr       */
+/*   Updated: 2023/12/09 00:43:42 by slombard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,8 +170,7 @@ char	*ft_strjoin_arr(char **arr)
 	idx = 1;
 	while (arr[idx])
 	{
-		if (arr[idx + 1])
-			ft_strlcat(ret, " ", len + idx);
+		ft_strlcat(ret, " ", len + idx);
 		ft_strlcat(ret, arr[idx], len + idx);
 		idx++;
 	}
