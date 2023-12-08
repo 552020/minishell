@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wildcard.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: slombard <slombard@student.42berlin.de>    +#+  +:+       +#+        */
+/*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/08 20:06:58 by slombard          #+#    #+#             */
-/*   Updated: 2023/12/08 20:07:01 by slombard         ###   ########.fr       */
+/*   Updated: 2023/12/08 22:58:08 by slombard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ void	build_pattern(const char *input_asterisk, const char *input_start,
 	size_t		pattern_raw_len;
 	int			idx;
 
+	printf("input_asterisk: %s\n", input_asterisk);
 	pattern->prefix = NULL;
 	pattern->suffix = NULL;
 	pattern->midfixes = NULL;
@@ -44,10 +45,12 @@ void	build_pattern(const char *input_asterisk, const char *input_start,
 		&& !ft_isspace(*(pattern->input_pattern_start - 1))
 		&& *(pattern->input_pattern_start - 1) != '\0')
 		pattern->input_pattern_start--;
+	printf("pattern->input_pattern_start: %s\n", pattern->input_pattern_start);
 	pattern->input_pattern_end = pattern->input_pattern_start;
 	while (*pattern->input_pattern_end
 		&& !ft_isspace(*pattern->input_pattern_end))
 		pattern->input_pattern_end++;
+	printf("pattern->input_pattern_end: %s\n", pattern->input_pattern_end);
 	pattern_raw_len = pattern->input_pattern_end - pattern->input_pattern_start;
 	pattern_raw = ft_substr(pattern->input_pattern_start, 0, pattern_raw_len);
 	pattern->pattern = reduce_consecutive_char(pattern_raw, '*', data);
@@ -62,7 +65,7 @@ void	build_pattern(const char *input_asterisk, const char *input_start,
 	pattern->prefix_len = asterisk - pattern->start;
 	if (pattern->prefix_len > 0)
 		pattern->prefix = ft_substr(pattern->start, 0, asterisk
-			- pattern->start);
+				- pattern->start);
 	asterisk_reader = (char *)asterisk + 1;
 	while (*asterisk_reader && !ft_isspace(*asterisk_reader))
 	{
@@ -88,7 +91,7 @@ void	build_pattern(const char *input_asterisk, const char *input_start,
 				{
 					pattern->midfix_len = asterisk_reader - pattern->start;
 					pattern->midfixes[idx] = ft_substr(pattern->start, 0,
-						pattern->midfix_len);
+							pattern->midfix_len);
 					idx++;
 					break ;
 				}
@@ -319,7 +322,7 @@ void	check_midfix(t_entries *entries, t_pattern *pattern, char *midfix)
 		{
 			entries->matching[j]->entry = entries->matching[i]->entry;
 			entries->matching[j]->idx = ft_strnstr(entries->matching[i]->idx,
-				midfix, ft_strlen(entries->entries[i]->idx))
+					midfix, ft_strlen(entries->entries[i]->idx))
 				+ pattern->midfix_len;
 			j++;
 		}
@@ -470,7 +473,7 @@ char	*wildcard_expansion(char *input, t_data *data)
 			matched_files = get_matching_entries(&pattern, data);
 			before = ft_substr(input, 0, pattern.input_pattern_start - input);
 			after = ft_substr(pattern.input_pattern_end, 0,
-				ft_strlen(pattern.input_pattern_end));
+					ft_strlen(pattern.input_pattern_end));
 			tmp = ft_strjoin(before, matched_files);
 			ret = ft_strjoin(tmp, after);
 			free(before);
