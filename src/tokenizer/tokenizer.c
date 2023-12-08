@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   tokenizer.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/11/30 06:23:34 by slombard          #+#    #+#             */
+/*   Updated: 2023/11/30 06:24:07 by slombard         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 char	*strip_ending_trailing_spaces(char const *str)
@@ -5,6 +17,8 @@ char	*strip_ending_trailing_spaces(char const *str)
 	char	*trimmed;
 	int		end;
 
+	if (!str)
+		return (ft_strdup(""));
 	end = ft_strlen(str) - 1;
 	while (end >= 0 && ft_isspace(str[end]))
 		end--;
@@ -36,6 +50,8 @@ t_token	*tokenizer(t_data *data, const char *str)
 			assign_redirect_in_out_heredoc_append(&str, data, &idx);
 		else if (*str == '|')
 			assign_pipe(&str, data, &idx);
+		else if (*str == '$' && *(str + 1) == '?')
+			assign_shell_var(&str, data, &idx);
 		else if (*str == '$')
 			assign_env_var(&str, data, &idx);
 		else if (*str == '\'' || *str == '"')
@@ -50,22 +66,32 @@ t_token	*tokenizer(t_data *data, const char *str)
 
 void	tokenize(t_data *data, char *input)
 {
-	char *trimmed;
-	char *expanded;
+	char	*trimmed;
+	char	*tmp;
+	char	*reshuffled;
+	char	*expanded;
 
 	if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_TOKENIZER)
 		printf("\n***Tokenization***\n\n");
 	trimmed = strip_ending_trailing_spaces(input);
+	tmp = reshuffle_single_quotes(trimmed);
+	reshuffled = reshuffle_double_quotes(tmp);
+	free(tmp);
 	free(input);
-	expanded = wildcard_expansion(trimmed);
-	// free(trimmed);
+	expanded = wildcard_expansion(reshuffled);
 	printf("Expanded: %s\n", expanded);
+	input = NULL;
 	data->token_count = count_words_tokenizer(expanded);
+	free(reshuffled);
 	if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_TOKENIZER)
 		printf("Token count: %zu\n\n", data->token_count);
 	data->token_arr = create_token_array(data);
 	data->token_arr = tokenizer(data, expanded);
-	free(expanded);
+	if (expanded)
+	{
+		free(expanded);
+		expanded = NULL;
+	}
 	if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_TOKENIZER)
 		print_token_arr(data->token_arr, data->token_count);
 }

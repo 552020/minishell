@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: bsengeze <bsengeze@student.42berlin.d      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/11/30 07:15:23 by bsengeze          #+#    #+#             */
+/*   Updated: 2023/11/30 07:15:25 by bsengeze         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 void	parse(t_data *data)
@@ -14,8 +26,7 @@ void	parse(t_data *data)
 		printf("\n*** AST nodes content ***\n\n");
 		debug_ast(data->ast_root);
 	}
-	free_lexeme_arr(data->lexeme_arr);
-	data->lexeme_arr = NULL;
+	free_lexeme_arr(data);
 }
 
 t_ast_node	*parser(t_lexeme *lexemes, int start, int end, t_data *data)
@@ -29,7 +40,7 @@ t_ast_node	*parser(t_lexeme *lexemes, int start, int end, t_data *data)
 	{
 		if (lexemes[i].type == L_PIPE)
 		{
-			node = create_node(N_PIPE);
+			node = create_node(N_PIPE, data);
 			node->children[1] = build_cmd_node(lexemes, i + 1, end, data);
 			end = i - 1;
 			i = end;
@@ -55,33 +66,47 @@ void	free_str_arr(char **arr)
 	while (arr[i])
 	{
 		free(arr[i]);
+		arr[i] = NULL;
 		i++;
 	}
 	free(arr);
+	arr = NULL;
+}
+
+void	free_cmd_node(t_ast_node *node)
+{
+	if (node->cmd)
+	{
+		free(node->cmd);
+		node->cmd = NULL;
+	}
+	if (node->args)
+		free_str_arr(node->args);
+	if (node->input_files)
+		free_str_arr(node->input_files);
+	if (node->output_files)
+		free_str_arr(node->output_files);
+	if (node->heredoc_del)
+	{
+		free(node->heredoc_del);
+		node->heredoc_del = NULL;
+	}
 }
 
 void	free_ast(t_ast_node *node)
 {
-	if (node == NULL)
-		return ;
 	if (node->type == N_COMMAND)
 	{
-		if (node->cmd)
-			free(node->cmd);
-		if (node->args)
-			free_str_arr(node->args);
-		if (node->input_file)
-			free(node->input_file);
-		if (node->output_file)
-			free(node->output_file);
-		if (node->heredoc_del)
-			free(node->heredoc_del);
+		free_cmd_node(node);
 	}
 	else if (node->type == N_PIPE)
 	{
 		free_ast(node->children[0]);
 		free_ast(node->children[1]);
 	}
-	free(node);
-	node = NULL;
+	if (node)
+	{
+		free(node);
+		node = NULL;
+	}
 }

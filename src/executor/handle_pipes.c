@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   handle_pipes.c                                     :+:      :+:    :+:   */
+/*   handle_pipe.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bsengeze <bsengeze@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,79 +12,122 @@
 
 #include "minishell.h"
 
-void	handle_commands(t_ast_node *node, char *dir_paths, t_data *data)
+int	handle_single_command(t_ast_node *node, t_data *data)
 {
 	pid_t	pid;
+	int		status;
 
+	status = 0;
 	if (node->cmd != NULL && command_is_builtin(node))
 	{
-		execute_builtin(node, data);
-		return ;
+		node->exit_status = execute_builtin(node, data);
+		status = node->exit_status;
+		return (status);
 	}
 	pid = fork();
 	if (pid == -1)
 		free_exit(data, "Error: fork failed\n");
+	if (pid != 0)
+		node->pid = pid;
+	handle_signals_child(pid);
 	if (pid == 0)
-		execute_cmd(node, dir_paths, data);
-	waitpid(pid, NULL, 0);
+	{
+		if (handle_redirections(node, data))
+			execute_cmd(node, data);
+		else
+			exit(EXIT_FAILURE);
+		exit(EXIT_SUCCESS);
+	}
+	node->exit_status = status;
+	return (status);
 }
 
-void	handle_pipes(t_ast_node *node, char *dir_paths, t_data *data)
+int	handle_pipe(t_ast_node *node, t_data *data)
 {
 	int		pipe_fd[2];
+	int		stdout_backup;
 	pid_t	left_pid;
 	pid_t	right_pid;
+	int		status_left;
+	int		status_right;
 
-	// TODO: we don't need dir_paths here aymore
-	(void)dir_paths;
+	status_left = 0;
+	status_right = 0;
 	if (pipe(pipe_fd) == -1)
 		free_exit(data, "Error: pipe failed\n");
-	left_pid = fork();
-	if (left_pid == -1)
-		free_exit(data, "Error: fork failed\n");
-	if (left_pid == 0)
-	{
-		close(pipe_fd[0]);
-		dup2(pipe_fd[1], STDOUT_FILENO);
-		close(pipe_fd[1]);
-		handle_redirections(node->children[0], data);
-		execute(data, node->children[0]);
-		// handle_pipes(node->children[0], dir_paths, data);
-		exit(EXIT_SUCCESS);
-	}
-	right_pid = fork();
-	if (right_pid == -1)
-		free_exit(data, "Error: fork failed\n");
-	if (right_pid == 0)
-	{
-		close(pipe_fd[1]);
-		dup2(pipe_fd[0], STDIN_FILENO);
-		close(pipe_fd[0]);
-		handle_redirections(node->children[1], data);
-		execute(data, node->children[1]);
-		// handle_pipes(node->children[1], dir_paths, data);
-		exit(EXIT_SUCCESS);
-	}
-	close(pipe_fd[0]);
+	stdout_backup = dup(STDOUT_FILENO);
+	dup2(pipe_fd[1], STDOUT_FILENO);
 	close(pipe_fd[1]);
-	waitpid(left_pid, NULL, 0);
-	waitpid(right_pid, NULL, 0);
+	status_left = handle_left_child(node->children[0], data, &left_pid,
+			pipe_fd[0]);
+	dup2(stdout_backup, STDOUT_FILENO);
+	close(stdout_backup);
+	status_right = handle_right_child(node->children[1], data, &right_pid,
+			pipe_fd[0]);
+	close(pipe_fd[0]);
+	(void)status_left;
+	return (status_right);
 }
 
-// void	handle_nodes(t_ast_node *node, char *dir_paths, char **envp,
-// 		t_env_table *env_table, t_data *data)
-// {
-// 	if (node->type == N_PIPE)
-// 		handle_pipes(node, dir_paths, data);
-// 	else
-// 		handle_command_node(node, dir_paths, envp, env_table, data);
-// }
+int	handle_left_child(t_ast_node *node, t_data *data, pid_t *left_pid,
+		int pipe_fd)
+{
+	if (node->type == N_PIPE)
+		execute(data, node);
+	else if ((node->cmd != NULL) && (node->type == N_COMMAND))
+	{
+		*left_pid = fork();
+		if (*left_pid == -1)
+			free_exit(data, "Error: fork failed\n");
+		if (*left_pid != 0)
+			node->pid = *left_pid;
+		handle_signals_child(*left_pid);
+		if (*left_pid == 0)
+		{
+			close(pipe_fd);
+			if (command_is_builtin(node))
+				node->exit_status = execute_builtin(node, data);
+			else
+			{
+				if (handle_redirections(node, data))
+					execute_cmd(node, data);
+				else
+					exit(EXIT_FAILURE);
+			}
+			exit(EXIT_SUCCESS);
+		}
+	}
+	return (EXIT_SUCCESS);
+}
 
-// void	handle_command_node(t_ast_node *node, char *dir_paths, char **envp,
-// 		t_env_table *env_table, t_data *data)
-// {
-// 	if (command_is_builtin(node))
-// 		execute_builtin(node, data);
-// 	else
-// 		execute_cmd(node, dir_paths, envp, data);
-// }
+int	handle_right_child(t_ast_node *node, t_data *data, pid_t *right_pid,
+		int pipe_fd)
+{
+	if (node->type == N_PIPE)
+		execute(data, node);
+	else if ((node->cmd != NULL) && (node->type == N_COMMAND))
+	{
+		*right_pid = fork();
+		if (*right_pid == -1)
+			free_exit(data, "Error: fork failed\n");
+		if (*right_pid != 0)
+			node->pid = *right_pid;
+		handle_signals_child(*right_pid);
+		if (*right_pid == 0)
+		{
+			dup2(pipe_fd, STDIN_FILENO);
+			close(pipe_fd);
+			if (command_is_builtin(node))
+				node->exit_status = execute_builtin(node, data);
+			else
+			{
+				if (handle_redirections(node, data))
+					execute_cmd(node, data);
+				else
+					exit(EXIT_FAILURE);
+			}
+			exit(EXIT_SUCCESS);
+		}
+	}
+	return (EXIT_SUCCESS);
+}

@@ -1,28 +1,19 @@
-#include "minishell.h"
-
-int	ft_isvalidvarname(char c)
-{
-	// Check if the character is alphanumeric or an underscore
-	if (ft_isalnum(c) || c == '_')
-		return (1);
-	return (0);
-}
-
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_split.c                                         :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: slombard <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/15 17:46:41 by slombard          #+#    #+#             */
-/*   Updated: 2023/01/15 20:12:16 by slombard         ###   ########.fr       */
+/*   Updated: 2023/11/30 06:56:11 by slombard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
+#include "minishell.h"
 
-int	ft_free_ret(char **ret, size_t i);
+int				ft_free_ret(char **ret, size_t i);
 
 static size_t	ft_count_word(const char *s, char c)
 {
@@ -51,41 +42,49 @@ static size_t	ft_count_word(const char *s, char c)
 	return (words);
 }
 
-char **ft_split_envp(const char *s, char c) 
+char	**ft_split_envp(const char *s, char c, t_data *data)
 {
-    char **ret;
-    size_t len;
-    size_t i;
+	char	**ret;
+	size_t	len;
+	size_t	i;
 
-    i = 0;
-    ret = (char **)malloc(sizeof(char *) * (ft_count_word(s, c) + 2)); // Allocate one more for the possible empty string at the end.
-    if (!ret)
-        return (0);
-    while (*s) {
-        if (*s != c) {
-            len = 0;
-            while (*s && *s != c && ++len)
-                s++;
-            ret[i] = ft_substr(s - len, 0, len);
-            if (!ret[i] && ft_free_ret(ret, i))
-                return (0);
-            i++;
-        } 
-		else 
+	i = 0;
+	ret = (char **)malloc(sizeof(char *) * (ft_count_word(s, c) + 2));
+	if (!ret)
+		free_exit(data, "Error: malloc failed\n");
+	while (*s)
+	{
+		if (*s != c)
 		{
-            if (*(s + 1) == '\0')// Check if next character is the end of the string, indicating an empty value.
-                ret[i++] = ft_strdup(""); // Allocate an empty string for the value.
-            s++;
-        }
-    }
-    ret[i] = 0;
-    return (ret);
+			len = 0;
+			while (*s && *s != c && ++len)
+				s++;
+			ret[i] = ft_substr(s - len, 0, len);
+			if (!ret[i])
+			{
+				ft_free_ret(ret, i);
+				free_exit(data, "Error: malloc failed\n");
+			}
+			i++;
+		}
+		else
+		{
+			if (*(s + 1) == '\0')
+				ret[i++] = ft_strdup("");
+			s++;
+		}
+	}
+	ret[i] = 0;
+	return (ret);
 }
 
-int	ft_free_ret_envp(char **ret, size_t i)
+void	ft_free_ret_envp(char **ret, size_t i)
 {
 	while (i--)
+	{
 		free(ret[i]);
+		ret[i] = NULL;
+	}
 	free(ret);
-	return (1);
+	ret = NULL;
 }

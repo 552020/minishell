@@ -28,6 +28,8 @@ void	print_token_arr(t_token *token_arr, size_t token_count)
 			token_type = "T_SINGLE_QUOTE";
 		else if (token_arr[i].type == T_ENV_VAR)
 			token_type = "T_ENV_VAR";
+		else if (token_arr[i].type == T_SHELL_VAR)
+			token_type = "T_SHELL_VAR";
 		else if (token_arr[i].type == T_END)
 			token_type = "T_END";
 		else
@@ -239,17 +241,37 @@ void	print_node_info(t_ast_node *node)
 	}
 	else
 		printf("Arguments: NULL\n");
-	if (node->input_file)
-		printf("Input Redirection: %s\n", node->input_file);
-	else
-		printf("Input Redirection: NULL\n");
-	if (node->output_file)
+	if (node->input_files)
 	{
-		printf("Output Redirection: %s\n", node->output_file);
+		printf("Input Redirections: ");
+		i = 0;
+		while (node->input_files[i] != NULL)
+		{
+			printf("%s", node->input_files[i]);
+			if (node->input_files[i + 1] != NULL)
+				printf(", ");
+			i++;
+		}
+		printf("\n");
+	}
+	else
+		printf("Input Redirections: NULL\n");
+	if (node->output_files)
+	{
+		printf("Output Redirections: ");
+		i = 0;
+		while (node->output_files[i] != NULL)
+		{
+			printf("%s", node->output_files[i]);
+			if (node->output_files[i + 1] != NULL)
+				printf(", ");
+			i++;
+		}
+		printf("\n");
 		printf("Append Mode: %s\n", node->append ? "TRUE" : "FALSE");
 	}
 	else
-		printf("Output Redirection: NULL\n");
+		printf("Output Redirections: NULL\n");
 	if (node->heredoc)
 		printf("Heredoc: TRUE\n");
 	else

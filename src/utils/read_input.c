@@ -1,16 +1,28 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   read_input.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/11/30 06:46:59 by slombard          #+#    #+#             */
+/*   Updated: 2023/11/30 06:47:05 by slombard         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 char	*read_input(void)
 {
-	char *input;
+	char	*input;
+
 	input = readline("$> ");
-	add_history(input);
-	if (!input) // Handle EOF (End Of File, ctrl-D)
+	if (!input)
 	{
-		printf("\n");
-		// break:
-		// TODO: what to implement instead of this break
+		printf("exit\n");
+		exit(0);
 	}
+	add_history(input);
 	if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_TOKENIZER)
 		printf("readline: %s\n", input);
 	return (input);

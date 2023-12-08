@@ -64,7 +64,7 @@ void	initialize_table(char **envp, t_data *data)
 	i = 0;
 	while (envp[i] != NULL)
 	{
-		key_value_pair = ft_split_envp(envp[i], '=');
+		key_value_pair = ft_split_envp(envp[i], '=', data);
 		if (!key_value_pair)
 			free_exit(data, "Error: ft_split in init table failed\n");
 		if (!key_value_pair[0])
@@ -125,9 +125,11 @@ char	**hash_table_to_arr(t_data *data)
 			if (!envp[j])
 			{
 				free(temp);
+				temp = NULL;
 				free_exit(data, "Error: ft_strjoin failed\n");
 			}
 			free(temp);
+			temp = NULL;
 			j++;
 			node = node->next;
 		}
@@ -143,8 +145,13 @@ void	free_envp(char **envp)
 
 	i = 0;
 	while (envp[i])
-		free(envp[i++]);
+	{
+		free(envp[i]);
+		envp[i] = NULL;
+		i++;
+	}
 	free(envp);
+	envp = NULL;
 }
 
 void	free_hash_table(t_env_table *env_table)
@@ -162,12 +169,16 @@ void	free_hash_table(t_env_table *env_table)
 			temp = node;
 			node = node->next;
 			free(temp->key);
+			temp->key = NULL;
 			free(temp->value);
+			temp->value = NULL;
 			free(temp);
+			temp = NULL;
 		}
 		i++;
 	}
 	free(env_table);
+	env_table = NULL;
 }
 
 void	print_hash_table(t_env_table *env_table)

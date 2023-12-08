@@ -42,12 +42,14 @@ t_lexeme	*lexer(t_data *data)
 	{
 		if (data->token_arr[i].type == T_ENV_VAR)
 			data->lexeme_arr[i] = t_env_var_subs(&data->token_arr[i], data);
+		else if (data->token_arr[i].type == T_SHELL_VAR)
+			data->lexeme_arr[i] = t_shell_var_subs(&data->token_arr[i], data);
 		else if (data->token_arr[i].type == T_DOUBLE_QUOTE)
 			data->lexeme_arr[i] = t_double_quotes_var_subs(&data->token_arr[i],
-				data);
+					data);
 		else if (data->token_arr[i].type == T_SINGLE_QUOTE)
 			data->lexeme_arr[i] = single_quote_lexeme(&data->token_arr[i],
-				data);
+					data);
 		else if (data->token_arr[i].type == T_PIPE)
 			data->lexeme_arr[i] = pipe_lexeme(&data->token_arr[i], data);
 		else if (data->token_arr[i].type == T_REDIRECT_IN)
@@ -80,25 +82,41 @@ int	lexeme_is_operator(t_lexeme_type type)
 	return (0);
 }
 
-int	check_syntax_error(t_lexeme *lexeme_arr)
+int	check_syntax_error(t_data *data)
 {
-	int	i;
+	size_t	i;
 
 	i = 0;
-	while (lexeme_arr[i].type != L_END)
+	while (i < data->token_count + 1)
 	{
-		// printf("lexeme_arr[%d].type = %d\n", i, lexeme_arr[i].type);
-		if (lexeme_is_operator(lexeme_arr[i].type))
+		if (lexeme_is_operator(data->lexeme_arr[i].type))
 		{
-			if (lexeme_arr[i + 1].type == L_END)
+			if (i == 0 && data->lexeme_arr[i].type == L_PIPE)
 			{
-				printf("Syntax error: unexpected end of input\n");
+				printf("Syntax error: unexpected token %s\n",
+					data->lexeme_arr[i].str);
+				free_lexeme_arr(data);
 				return (1);
 			}
-			else if (lexeme_is_operator(lexeme_arr[i + 1].type))
+			else if (data->lexeme_arr[i + 1].type == L_END)
 			{
-				printf("Syntax error: unexpected token %s\n", lexeme_arr[i
+				printf("Syntax error: unexpected end of input\n");
+				free_lexeme_arr(data);
+				return (1);
+			}
+			else if (lexeme_is_operator(data->lexeme_arr[i + 1].type
+					&& data->lexeme_arr[i].type != L_PIPE))
+			{
+				printf("Syntax error: unexpected token %s\n", data->lexeme_arr[i
 					+ 1].str);
+				free_lexeme_arr(data);
+				return (1);
+			}
+			else if (data->lexeme_arr[i + 1].type == L_PIPE)
+			{
+				printf("Syntax error: unexpected token %s\n", data->lexeme_arr[i
+					+ 1].str);
+				free_lexeme_arr(data);
 				return (1);
 			}
 		}
@@ -116,9 +134,10 @@ int	lexemize(t_data *data)
 		printf("\n***Lexer***\n\n");
 		print_lexeme_arr(data->lexeme_arr, data->token_count);
 	}
-	free_token_arr(data->token_arr);
-	data->token_arr = NULL;
-	if (check_syntax_error(data->lexeme_arr))
+	if (data->token_arr)
+		free_token_arr(data);
+	if (check_syntax_error(data))
 		return (FAILURE);
+	// print_lexeme_arr(data->lexeme_arr, data->token_count);
 	return (SUCCESS);
 }

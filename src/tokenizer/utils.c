@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: slombard <slombard@student.42berlin.d      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/11/30 06:26:22 by slombard          #+#    #+#             */
+/*   Updated: 2023/11/30 06:26:45 by slombard         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 int	ft_isspace(int c)
@@ -8,24 +20,30 @@ int	ft_isspace(int c)
 		return (0);
 }
 
-int	isspecialchar(char c)
+int	isspecialchar(char c, const char *str)
 {
 	if (c == '<' || c == '>' || c == '|' || c == '$' || c == '"' || c == '\'')
-		return (1);
-	return (0);
+	{
+		if (c == '$')
+		{
+			if (*(str + 1) != '?' && !ft_isvalidvarname(*(str + 1)))
+				return (FAILURE);
+		}
+		if (c == '\'' || c == '"')
+		{
+			if (!ft_strrchr(str + 1, c))
+				return (FAILURE);
+		}
+		return (SUCCESS);
+	}
+	return (FAILURE);
 }
 
 int	isregularchar(char c, const char *str)
 {
-	if (ft_isspace(c) || isspecialchar(c))
-		return (0);
-	if (c == '\'' || c == '"')
-	{
-		if (!ft_strrchr(str, c))
-			return (1);
-		return (0);
-	}
-	return (1);
+	if (ft_isspace(c) || isspecialchar(c, str))
+		return (FAILURE);
+	return (SUCCESS);
 }
 
 void	skip_spaces(const char **str_ptr)
