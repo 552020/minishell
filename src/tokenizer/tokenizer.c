@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include "wildcard.h"
 
 char	*strip_ending_trailing_spaces(char const *str)
 {

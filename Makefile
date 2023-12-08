@@ -12,10 +12,10 @@ UNAME_S := $(shell uname -s)
 
 # # Set include paths conditionally
 ifeq ($(UNAME_S), Darwin)
-    INCLUDES = -I./include -I./libft/include -I/opt/homebrew/opt/readline/include -I./libft/include -I/usr/local/opt/readline/include
+    INCLUDES = -I./include -I./libft/include -I/opt/homebrew/opt/readline/include -I./libft/include -I/usr/local/opt/readline/include -I./src/tokenizer
 
 else
-    INCLUDES = -I./include -I./libft/include
+    INCLUDES = -I./include -I./libft/include -I./src/tokenizer
 endif
 
 ifeq ($(UNAME_S), Darwin)
@@ -38,7 +38,7 @@ endif
 # endif
 
 SRCS = minishell.c \
- tokenizer/tokenizer.c tokenizer/utils.c tokenizer/assign.c tokenizer/count_words.c tokenizer/assign_redirect.c \
+ tokenizer/tokenizer.c tokenizer/utils.c tokenizer/assign.c tokenizer/count_words.c tokenizer/assign_redirect.c tokenizer/wildcard.c \
  lexer/lexer.c lexer/lexemes_redirect.c lexer/lexemes.c lexer/quotes.c lexer/var_subs.c lexer/wrappers.c utils/utils.c \
  parser/parser.c parser/create_node.c parser/fill_node_cmd_args.c parser/fill_node_redirects.c parser/parser_utils.c \
   utils/check_input.c utils/free_functions.c utils/init.c \
