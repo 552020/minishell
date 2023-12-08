@@ -6,7 +6,7 @@
 /*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 06:23:34 by slombard          #+#    #+#             */
-/*   Updated: 2023/11/30 06:24:07 by slombard         ###   ########.fr       */
+/*   Updated: 2023/12/08 23:48:17 by slombard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,7 @@ void	tokenize(t_data *data, char *input)
 	trimmed = strip_ending_trailing_spaces(input);
 	tmp = reshuffle_single_quotes(trimmed);
 	reshuffled = reshuffle_double_quotes(tmp);
+	printf("Reshuffled: %s\n", reshuffled);
 	free(tmp);
 	free(input);
 	expanded = wildcard_expansion(reshuffled, data);

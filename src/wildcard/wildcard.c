@@ -6,7 +6,7 @@
 /*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/08 20:06:58 by slombard          #+#    #+#             */
-/*   Updated: 2023/12/08 22:58:08 by slombard         ###   ########.fr       */
+/*   Updated: 2023/12/09 00:17:47 by slombard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -421,13 +421,15 @@ char	*get_matching_entries(t_pattern *pattern, t_data *data)
 	if (pattern->suffix_len > 0)
 		check_suffix(&entries, pattern);
 	ret_arr = entry_to_char(entries.matching, data);
-	printf("ret_arr:\n");
+	printf("before ret_arr:\n");
 	i = 0;
 	while (ret_arr[i])
 	{
+		printf("idx: %d\n", i);
 		printf("%s\n", ret_arr[i]);
 		i++;
 	}
+	printf("after ret_arr:\n");
 	ret = ft_strjoin_arr(ret_arr);
 	free_entries(&entries);
 	return (ret);
@@ -445,50 +447,53 @@ typedef struct s_wilcard
 	const char	*quote;
 }				t_wildcard;
 
+void	wildcard_expansion_skip_quotes(t_wildcard *vars)
+{
+	vars->quote = ft_strchr(vars->str + 1, *vars->str);
+	if (vars->quote)
+		vars->str = vars->quote + 1;
+	else
+		vars->str++;
+}
+
+void	wildcard_expansion_build_expansion(t_wildcard *vars, char **input,
+		t_data *data)
+{
+	build_pattern(vars->str, *input, &vars->pattern, data);
+	vars->matched_files = get_matching_entries(&vars->pattern, data);
+	vars->before = ft_substr(*input, 0, vars->pattern.input_pattern_start
+			- *input);
+	vars->after = ft_substr(vars->pattern.input_pattern_end, 0,
+			ft_strlen(vars->pattern.input_pattern_end));
+	vars->tmp = ft_strjoin(vars->before, vars->matched_files);
+	vars->ret = ft_strjoin(vars->tmp, vars->after);
+	free(vars->before);
+	free(vars->after);
+	free(vars->tmp);
+	free(vars->matched_files);
+	vars->tmp = NULL;
+	vars->tmp = vars->ret;
+	free(*input);
+	*input = NULL;
+	*input = vars->ret;
+	vars->str = *input;
+}
+
 char	*wildcard_expansion(char *input, t_data *data)
 {
-	const char	*str;
-	char		*matched_files;
-	char		*ret;
-	char		*before;
-	char		*after;
-	char		*tmp;
-	t_pattern	pattern;
-	const char	*quote;
+	t_wildcard	vars;
 
-	str = input;
-	while (*str != '\0')
+	vars.str = input;
+	while (*vars.str != '\0')
 	{
-		if (*str == '\'' || *str == '\"')
-		{
-			quote = ft_strchr(str + 1, *str);
-			if (quote)
-				str = quote + 1;
-			else
-				str++;
-		}
-		else if (*str == '*')
-		{
-			build_pattern(str, input, &pattern, data);
-			matched_files = get_matching_entries(&pattern, data);
-			before = ft_substr(input, 0, pattern.input_pattern_start - input);
-			after = ft_substr(pattern.input_pattern_end, 0,
-					ft_strlen(pattern.input_pattern_end));
-			tmp = ft_strjoin(before, matched_files);
-			ret = ft_strjoin(tmp, after);
-			free(before);
-			free(after);
-			free(tmp);
-			free(matched_files);
-			tmp = NULL;
-			tmp = ret;
-			free(input);
-			input = NULL;
-			input = ret;
-			str = input;
-		}
+		printf("*vars.str: %c\n", *vars.str);
+		if (*vars.str == '\'' || *vars.str == '\"')
+			wildcard_expansion_skip_quotes(&vars);
+		else if (*vars.str == '*')
+			wildcard_expansion_build_expansion(&vars, &input, data);
 		else
-			str++;
+			vars.str++;
 	}
+	printf("input: %s\n", input);
 	return (input);
 }
