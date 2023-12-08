@@ -83,11 +83,15 @@ void	tokenize(t_data *data, char *input)
 	printf("Expanded: %s\n", expanded);
 	input = NULL;
 	data->token_count = count_words_tokenizer(expanded);
-	free(reshuffled);
 	if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_TOKENIZER)
 		printf("Token count: %zu\n\n", data->token_count);
 	data->token_arr = create_token_array(data);
 	data->token_arr = tokenizer(data, expanded);
+	if (reshuffled)
+	{
+		free(reshuffled);
+		reshuffled = NULL;
+	}
 	if (expanded)
 	{
 		free(expanded);
