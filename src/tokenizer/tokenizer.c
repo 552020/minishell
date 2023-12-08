@@ -79,7 +79,7 @@ void	tokenize(t_data *data, char *input)
 	reshuffled = reshuffle_double_quotes(tmp);
 	free(tmp);
 	free(input);
-	expanded = wildcard_expansion(reshuffled);
+	expanded = wildcard_expansion(reshuffled, data);
 	printf("Expanded: %s\n", expanded);
 	input = NULL;
 	data->token_count = count_words_tokenizer(expanded);
