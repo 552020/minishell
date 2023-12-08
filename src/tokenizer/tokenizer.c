@@ -92,11 +92,6 @@ void	tokenize(t_data *data, char *input)
 		free(reshuffled);
 		reshuffled = NULL;
 	}
-	if (expanded)
-	{
-		free(expanded);
-		expanded = NULL;
-	}
 	if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_TOKENIZER)
 		print_token_arr(data->token_arr, data->token_count);
 }
