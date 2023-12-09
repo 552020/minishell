@@ -311,6 +311,8 @@ void					print_lexeme_arr(t_lexeme *lexeme_arr,
 void					print_ast(t_ast_node *node, int depth);
 void					print_ast_new(t_ast_node *node);
 void					debug_ast(t_ast_node *node);
+void					print_hash_table(t_env_table *env_table);
+void					print_envp_arr(char **envp);
 t_ast_node				*create_node(t_node_type type, t_data *data);
 
 /* Heredoc */
@@ -371,5 +373,9 @@ int						handle_right_child(t_ast_node *node, t_data *data,
 							pid_t *right_pid, int pipe_fd);
 int						signal_status(int status);
 void					wait_ast(t_data *data, t_ast_node *node);
+void					free_envp(char **envp);
+void					free_hash_table(t_env_table *env_table);
+size_t					ft_count_word(const char *s, char c);
+int						ft_free_ret(char **ret, size_t i);
 
 #endif
