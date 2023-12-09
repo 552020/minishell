@@ -475,6 +475,8 @@ char	*get_matching_entries(t_pattern *pattern, t_data *data)
 	}
 	// printf("entries.matching's address: %p\n", entries.matching);
 	ret_arr = entry_to_char(entries.matching, data);
+	free(pattern->suffix);
+	free(pattern->prefix);
 	// printf("before ret_arr:\n");
 	// i = 0;
 	// while (ret_arr[i])
