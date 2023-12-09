@@ -12,6 +12,7 @@ UNAME_S := $(shell uname -s)
 
 # # Set include paths conditionally
 ifeq ($(UNAME_S), Darwin)
+	CFLAGS += -fsanitize=address -g -O1
     INCLUDES = -I./include -I./libft/include -I/opt/homebrew/opt/readline/include -I./libft/include -I/usr/local/opt/readline/include -I./src/wildcard
 
 else

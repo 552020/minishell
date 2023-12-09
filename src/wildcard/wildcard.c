@@ -40,6 +40,9 @@ void	build_pattern(const char *input_asterisk, const char *input_start,
 	pattern->suffix = NULL;
 	pattern->midfixes = NULL;
 	pattern->midfixes_nbr = 0;
+	pattern->prefix_len = 0;
+	pattern->suffix_len = 0;
+	pattern->midfix_len = 0;
 	pattern->input_pattern_start = (char *)input_asterisk;
 	while (pattern->input_pattern_start > input_start
 		&& !ft_isspace(*(pattern->input_pattern_start - 1))
@@ -65,7 +68,7 @@ void	build_pattern(const char *input_asterisk, const char *input_start,
 	pattern->prefix_len = asterisk - pattern->start;
 	if (pattern->prefix_len > 0)
 		pattern->prefix = ft_substr(pattern->start, 0, asterisk
-				- pattern->start);
+			- pattern->start);
 	asterisk_reader = (char *)asterisk + 1;
 	while (*asterisk_reader && !ft_isspace(*asterisk_reader))
 	{
@@ -91,7 +94,7 @@ void	build_pattern(const char *input_asterisk, const char *input_start,
 				{
 					pattern->midfix_len = asterisk_reader - pattern->start;
 					pattern->midfixes[idx] = ft_substr(pattern->start, 0,
-							pattern->midfix_len);
+						pattern->midfix_len);
 					idx++;
 					break ;
 				}
@@ -121,14 +124,19 @@ char	**entry_to_char(t_entry **matching, t_data *data)
 
 	printf("entry_to_char:\n");
 	size = 0;
-	while (matching[size]->entry)
+	while (matching[size])
+	{
+		printf("idx: %d\n", size);
 		size++;
+	}
 	ret = malloc(sizeof(char *) * (size + 1));
 	if (!ret)
 	{
 		free_exit(data, "Malloc failed");
 		return (NULL);
 	}
+	printf("before ret[size]: %p\n", ret[size]);
+	printf("ret[size]'s address: %p\n", ret[size]);
 	ret[size] = NULL;
 	i = 0;
 	while (i < size)
@@ -225,6 +233,7 @@ void	init_entries(t_entries *entries_ptr)
 	t_entry			**entries;
 	int				count;
 
+	printf("init_entries:\n");
 	count = 0;
 	entries = NULL;
 	dir = opendir(".");
@@ -261,6 +270,16 @@ void	init_entries(t_entries *entries_ptr)
 			idx++;
 		}
 	}
+	// print entries
+	printf("printing entries\n");
+	idx = 0;
+	while (entries[idx])
+	{
+		printf("idx: %d\n", idx);
+		printf("entries[idx]->entry: %s\n", entries[idx]->entry);
+		idx++;
+	}
+	printf("printing entries done\n");
 	entries[idx] = NULL;
 	closedir(dir);
 	entries_ptr->entries = entries;
@@ -324,7 +343,7 @@ void	check_midfix(t_entries *entries, t_pattern *pattern, char *midfix)
 		{
 			entries->matching[j]->entry = entries->matching[i]->entry;
 			entries->matching[j]->idx = ft_strnstr(entries->matching[i]->idx,
-					midfix, ft_strlen(entries->entries[i]->idx))
+				midfix, ft_strlen(entries->entries[i]->idx))
 				+ pattern->midfix_len;
 			j++;
 		}
@@ -387,6 +406,20 @@ void	check_suffix(t_entries *entries, t_pattern *pattern)
 	}
 }
 
+void	all_entries_to_matching(t_entries *entries)
+{
+	int	idx;
+
+	idx = 0;
+	while (entries->entries[idx])
+	{
+		entries->matching[idx]->entry = entries->entries[idx]->entry;
+		entries->matching[idx]->idx = entries->entries[idx]->idx;
+		idx++;
+	}
+	entries->matching[idx] = NULL;
+}
+
 void	free_entries(t_entries *entries)
 {
 	int	idx;
@@ -414,6 +447,14 @@ char	*get_matching_entries(t_pattern *pattern, t_data *data)
 	char		**ret_arr;
 	int			i;
 
+	printf("get_matching_entries:\n");
+	// print pattern
+	printf("prefix len: %zu\n", pattern->prefix_len);
+	printf("midfixes nbr: %zu\n", pattern->midfixes_nbr);
+	printf("midfix len: %zu\n", pattern->midfix_len);
+	printf("suffix len: %zu\n", pattern->suffix_len);
+	printf("pattern->prefix: %s\n", pattern->prefix);
+	printf("pattern->suffix: %s\n", pattern->suffix);
 	init_entries(&entries);
 	init_matching(&entries);
 	if (pattern->prefix_len > 0)
@@ -422,6 +463,16 @@ char	*get_matching_entries(t_pattern *pattern, t_data *data)
 		check_midfixes(&entries, pattern);
 	if (pattern->suffix_len > 0)
 		check_suffix(&entries, pattern);
+	if (pattern->prefix_len == 0 && pattern->midfixes_nbr == 0
+		&& pattern->suffix_len == 0)
+	{
+		all_entries_to_matching(&entries);
+		// ret_arr = entry_to_char(entries.entries, data);
+		// ret = ft_strjoin_arr(ret_arr);
+		// free_entries(&entries);
+		// return (ret);
+	}
+	printf("entries.matching's address: %p\n", entries.matching);
 	ret_arr = entry_to_char(entries.matching, data);
 	printf("before ret_arr:\n");
 	i = 0;
@@ -464,9 +515,9 @@ void	wildcard_expansion_build_expansion(t_wildcard *vars, char **input,
 	build_pattern(vars->str, *input, &vars->pattern, data);
 	vars->matched_files = get_matching_entries(&vars->pattern, data);
 	vars->before = ft_substr(*input, 0, vars->pattern.input_pattern_start
-			- *input);
+		- *input);
 	vars->after = ft_substr(vars->pattern.input_pattern_end, 0,
-			ft_strlen(vars->pattern.input_pattern_end));
+		ft_strlen(vars->pattern.input_pattern_end));
 	vars->tmp = ft_strjoin(vars->before, vars->matched_files);
 	vars->ret = ft_strjoin(vars->tmp, vars->after);
 	free(vars->before);
@@ -475,10 +526,22 @@ void	wildcard_expansion_build_expansion(t_wildcard *vars, char **input,
 	free(vars->matched_files);
 	vars->tmp = NULL;
 	vars->tmp = vars->ret;
-	free(*input);
+	if (*input)
+		free(*input);
 	*input = NULL;
 	*input = vars->ret;
 	vars->str = *input;
+}
+
+void	init_t_wildcard(t_wildcard *vars)
+{
+	vars->str = NULL;
+	vars->matched_files = NULL;
+	vars->ret = NULL;
+	vars->before = NULL;
+	vars->after = NULL;
+	vars->tmp = NULL;
+	vars->quote = NULL;
 }
 
 char	*wildcard_expansion(char *input, t_data *data)
