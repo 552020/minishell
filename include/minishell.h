@@ -1,12 +1,8 @@
 #include "libft.h"
 #include <stdio.h>
-// first <stdio.h>
-// then the rest of the includes
-// if you remove this comments the formatter
-// will put the includes in the alphabetical order
-// and it will be a mess
+// Comment needed to prevent autoformat to move the include above the comment
 #include <errno.h>
-#include <fcntl.h> // for O_RDONLY etc.
+#include <fcntl.h>
 #include <readline/history.h>
 #include <readline/readline.h>
 #include <signal.h>
@@ -24,7 +20,6 @@
 #define SUCCESS 1
 
 /* Debugger */
-/* Needs to be high */
 /* TODO: Achthung external variable*/
 
 typedef enum e_debug_level {
@@ -128,23 +123,43 @@ char *add_single_or_double_quotes(char *str, char quote);
 
 /* Lexer */
 
-#define NO_CMD_YET 0
-#define CMD_FOUND 1
-typedef enum e_lexeme_type {
-  L_COMMAND,
-  // Command to be executed (could be built-in or external)
-  L_ARGUMENT,          // Argument to a command
-  L_PIPE,              // Pipe operator, signaling chaining of commands
-  L_REDIRECT_INPUT,    // Input redirection operator (<)
-  L_REDIRECT_OUTPUT,   // Output redirection operator (>)
-  L_REDIRECT_APPEND,   // Append redirection operator (>>)
-  L_HEREDOC,           // Heredoc redirection operator (<<)
-  L_HEREDOC_DELIMITER, // Delimiter for heredoc (<<)
-  L_FILENAME_STDIN,    // Filename used in redirections
-  L_FILENAME_STDOUT,   // Filename used in redirections
-  L_UNDEFINED,         // Undefined lexeme type
-  L_END                // End of lexeme array
-} t_lexeme_type;
+// Variable substitution
+typedef struct s_var_subs
+{
+	const char			*str;
+	const char			*start;
+	const char			*end;
+	char				*before;
+	char				*var_name;
+	char				*before_and_value;
+	char				*value;
+	char				*after;
+	char				*result;
+}						t_var_subs;
+
+char					*strip_quotes(char *str, t_data *data);
+void					free_var_subs(t_var_subs *vars);
+void					free_var_subs_and_exit(t_var_subs *vars, t_data *data,
+							char *message);
+int						find_next_env_var_if_any(const char **str);
+
+# define NO_CMD_YET 0
+# define CMD_FOUND 1
+typedef enum e_lexeme_type
+{
+	L_COMMAND,           // Command to be executed
+	L_ARGUMENT,          // Argument to a command
+	L_PIPE,              // Pipe operdator, signaling chaining of commands
+	L_REDIRECT_INPUT,    // Input redirection operator (<)
+	L_REDIRECT_OUTPUT,   // Output redirection operator (>)
+	L_REDIRECT_APPEND,   // Append redirection operator (>>)
+	L_HEREDOC,           // Heredoc redirection operator (<<)
+	L_HEREDOC_DELIMITER, // Delimiter for heredoc (<<)
+	L_FILENAME_STDIN,    // Filename used in redirections
+	L_FILENAME_STDOUT,   // Filename used in redirections
+	L_UNDEFINED,         // Undefined lexeme type
+	L_END                // End of lexeme array
+}						t_lexeme_type;
 
 typedef enum e_lexeme_status { NOT_LEXED = 0, LEXED = 1 } t_lexeme_status;
 
@@ -155,31 +170,44 @@ typedef struct s_lexeme {
   t_lexeme_status status;
 } t_lexeme;
 
-t_lexeme word_lexeme(t_token *token, t_data *data);
-t_lexeme pipe_lexeme(t_token *token, t_data *data);
-t_lexeme redirect_in_lexeme(t_token *token, t_data *data);
-t_lexeme redirect_out_lexeme(t_token *token, t_data *data);
-t_lexeme redirect_in_target_lexeme(t_token *token, t_data *data);
-t_lexeme redirect_out_target_lexeme(t_token *token, t_data *data);
-t_lexeme redirect_append_lexeme(t_token *token, t_data *data);
-t_lexeme heredoc_lexeme(t_token *token, t_data *data);
-t_lexeme heredoc_delimiter_lexeme(t_token *token, t_data *data);
-t_lexeme t_double_quotes_var_subs(t_token *token, t_data *data);
-t_lexeme single_quote_lexeme(t_token *token, t_data *data);
-t_lexeme t_env_var_subs(t_token *token, t_data *data);
-t_lexeme t_shell_var_subs(t_token *token, t_data *data);
-char *lookup_env_value(char *var_name, char **envp);
-void create_lexeme_arr(t_data *data);
-t_lexeme *lexer(t_data *data);
-void redirect_in_wrapper(size_t *i, size_t token_count, t_data *data);
-void redirect_out_wrapper(size_t *i, size_t token_count, t_data *data);
-void redirect_append_wrapper(size_t *i, size_t token_count, t_data *data);
-void heredoc_wrapper(t_lexeme *lexeme_arr, t_token *token_arr, size_t *i,
-                     t_data *data);
-void undefined_wrapper(t_lexeme *lexeme_arr, t_token *token_arr, size_t *i,
-                       t_data *data);
-char *process_vars_in_str(const char *str, t_data *data);
-char *strip_quotes(char *str, t_data *data);
+t_lexeme				word_lexeme(t_token *token, t_data *data);
+t_lexeme				pipe_lexeme(t_token *token, t_data *data);
+t_lexeme				redirect_in_lexeme(t_token *token, t_data *data);
+t_lexeme				redirect_out_lexeme(t_token *token, t_data *data);
+t_lexeme				redirect_in_target_lexeme(t_token *token, t_data *data);
+t_lexeme				redirect_out_target_lexeme(t_token *token,
+							t_data *data);
+t_lexeme				redirect_append_lexeme(t_token *token, t_data *data);
+t_lexeme				heredoc_lexeme(t_token *token, t_data *data);
+t_lexeme				heredoc_delimiter_lexeme(t_token *token, t_data *data);
+t_lexeme				t_double_quotes_var_subs(t_token *token, t_data *data);
+t_lexeme				single_quote_lexeme(t_token *token, t_data *data);
+t_lexeme				t_env_var_subs(t_token *token, t_data *data);
+t_lexeme				t_shell_var_subs(t_token *token, t_data *data);
+char					*lookup_env_value(char *var_name, char **envp);
+void					create_lexeme_arr(t_data *data);
+t_lexeme				*lexer(t_data *data);
+void					redirect_in_wrapper(size_t *i, size_t token_count,
+							t_data *data);
+void					redirect_out_wrapper(size_t *i, size_t token_count,
+							t_data *data);
+void					redirect_append_wrapper(size_t *i, size_t token_count,
+							t_data *data);
+void					heredoc_wrapper(t_lexeme *lexeme_arr,
+							t_token *token_arr, size_t *i, t_data *data);
+void					undefined_wrapper(t_lexeme *lexeme_arr,
+							t_token *token_arr, size_t *i, t_data *data);
+char					*process_vars_in_str(const char *str, t_data *data);
+char					*strip_quotes(char *str, t_data *data);
+int						check_syntax_error(t_data *data);
+void					lexer_t_var_subs(t_data *data, size_t i);
+void					lexer_t_quotes_var_subs(t_data *data, size_t i);
+void					lexer_t_pipe(t_data *data, size_t i);
+void					lexer_t_redirects_and_word(t_data *data, size_t *i);
+
+void					finalize_lexeme_array(t_data *data, size_t i);
+void					command_and_args(size_t token_count,
+							t_lexeme *lexeme_arr);
 
 /* Parser */
 
@@ -266,27 +294,21 @@ t_ast_node *create_node(t_node_type type, t_data *data);
 
 int handle_heredocs(t_ast_node *node, t_data *data);
 
-/* Execution */
+/* Executor */
 
-// not using these
-size_t count_pipes(t_lexeme *lexeme_arr, size_t token_count);
-unsigned int hash(const char *key);
-// not using these
-// void handle_commands(t_ast_node *ast_root, t_data *data);
-int handle_pipe(t_ast_node *ast_root, t_data *data);
-int handle_redirections(t_ast_node *node, t_data *data);
+unsigned int			hash(const char *key);
+int						handle_pipe(t_ast_node *ast_root, t_data *data);
+int						handle_redirections(t_ast_node *node, t_data *data);
 
 void execute_cmd(t_ast_node *node, t_data *data);
 int print_working_directory(void);
 int ft_exit(t_ast_node *node, char **envp, t_env_table *table);
 
-void insert_node_ht(const char *key, const char *value, t_data *data);
-int lexemize(t_data *data);
-int change_directory(const char *path);
-
-/* Executor */
-
-void execute(t_data *data, t_ast_node *node);
+void					insert_node_ht(const char *key, const char *value,
+							t_data *data);
+int						lexemize(t_data *data);
+int						change_directory(const char *path);
+void					execute(t_data *data, t_ast_node *node);
 
 void error_exit(t_ast_node *node, char **envp, t_env_table *env_table);
 char *path_finder(char *cmd, char *dir_paths, t_data *data);
@@ -306,23 +328,22 @@ void handle_command_node(t_ast_node *node, char **envp, t_env_table *env_table,
 char *ft_realpath(const char *path, t_data *data);
 /* Builtins*/
 
-typedef struct s_echo {
-  int i;
-  int j;
-  int print_newline;
-} t_echo;
-// void					handle_nodes(t_ast_node *node, char
-// *dir_paths, 							char **envp,
-// t_env_table *env_table, t_data *data);
-void free_token_arr(t_data *data);
-void free_lexeme_arr(t_data *data);
-void free_key_value_pair(char **key_value);
-char **ft_split_envp(const char *s, char c, t_data *data);
-void free_data(t_data *data);
-void initialize_data(char **envp, t_data *data);
-void free_exit(t_data *data, char *error_message);
-void print_hash_table(t_env_table *env_table);
-void print_envp_arr(char **envp);
+typedef struct s_echo
+{
+	int					i;
+	int					j;
+	int					print_newline;
+}						t_echo;
+
+void					free_token_arr(t_data *data);
+void					free_lexeme_arr(t_data *data);
+void					free_key_value_pair(char **key_value);
+char					**ft_split_envp(const char *s, char c, t_data *data);
+void					free_data(t_data *data);
+void					initialize_data(char **envp, t_data *data);
+void					free_exit(t_data *data, char *error_message);
+void					print_hash_table(t_env_table *env_table);
+void					print_envp_arr(char **envp);
 
 void handle_signals_main(void);
 void handle_signals_child(int pid);
