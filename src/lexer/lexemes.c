@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   lexemes.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/11/30 07:11:43 by slombard          #+#    #+#             */
+/*   Updated: 2023/11/30 07:11:49 by slombard         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 t_lexeme	pipe_lexeme(t_token *token, t_data *data)
@@ -63,7 +75,7 @@ t_lexeme	heredoc_delimiter_lexeme(t_token *token, t_data *data)
 
 t_lexeme	word_lexeme(t_token *token, t_data *data)
 {
-	t_lexeme lexeme;
+	t_lexeme	lexeme;
 
 	lexeme.type = L_UNDEFINED;
 	lexeme.str = ft_strdup(token->str);
