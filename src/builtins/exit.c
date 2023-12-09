@@ -74,16 +74,17 @@ int	ft_exit(t_ast_node *node, char **envp, t_env_table *table)
 
 	num_str = NULL;
 	exit_code = 0;
-	if (node->args[1])
+	return_status = 0;
+	if (node->args && node->args[1])
 		return_status = exit_input_check(node->args[0], &exit_code, node);
-	else if (ft_strlen(node->cmd) == 4 && node->args[0])
+	else if (node->args && ft_strlen(node->cmd) == 4 && node->args[0])
 		return_status = exit_input_check(node->args[0], &exit_code, node);
 	else if (check_parenthesis(node) && !node->args)
 	{
 		num_str = ft_substr(node->cmd, 5, ft_strlen(node->cmd) - 6);
 		return_status = exit_input_check(num_str, &exit_code, node);
 	}
-	else
+	else if (node->args && !node->args[1])
 		write_error_and_return("syntax error\n", &return_status);
 	if (num_str)
 		free(num_str);

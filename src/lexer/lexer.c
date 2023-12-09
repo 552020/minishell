@@ -107,7 +107,7 @@ int	lexemize(t_data *data)
 {
 	create_lexeme_arr(data);
 	data->lexeme_arr = lexer(data);
-	if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_LEXER)
+	if (g_debug_level == DEBUG_ALL || g_debug_level == DEBUG_LEXER)
 	{
 		printf("\n***Lexer***\n\n");
 		print_lexeme_arr(data->lexeme_arr, data->token_count);
