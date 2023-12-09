@@ -352,6 +352,16 @@ char					**build_cmd_and_args_arr(t_ast_node *node,
 int						command_is_builtin(t_ast_node *node);
 void					handle_command_node(t_ast_node *node, char **envp,
 							t_env_table *env_table, t_data *data);
+
+/* Builtins*/
+
+typedef struct s_echo
+{
+	int					i;
+	int					j;
+	int					print_newline;
+}						t_echo;
+
 void					free_token_arr(t_data *data);
 void					free_lexeme_arr(t_data *data);
 void					free_key_value_pair(char **key_value);
@@ -377,5 +387,5 @@ void					free_envp(char **envp);
 void					free_hash_table(t_env_table *env_table);
 size_t					ft_count_word(const char *s, char c);
 int						ft_free_ret(char **ret, size_t i);
-
+int						check_parenthesis(t_ast_node *cmd);
 #endif

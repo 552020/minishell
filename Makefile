@@ -41,7 +41,8 @@ SRCS = minishell.c \
  lexer/lexer.c lexer/lexemes_redirect.c lexer/lexemes.c lexer/quotes.c lexer/var_subs.c lexer/wrappers.c lexer/lexer_helper.c lexer/check_syntax.c lexer/lexer_helper.c lexer/quotes_helper.c \
  parser/parser.c parser/create_node.c parser/fill_node_cmd_args.c parser/fill_node_redirects.c parser/parser_utils.c \
  utils/check_input.c utils/free_functions.c utils/init.c \
- builtins/pwd.c builtins/env.c builtins/export.c builtins/unset.c builtins/cd.c builtins/exit.c builtins/echo.c utils/read_input.c  \
+ builtins/pwd.c builtins/env.c builtins/export.c builtins/unset.c builtins/cd.c builtins/exit.c builtins/echo.c builtins/exit_utils.c utils/read_input.c  \
+
  executor/redirections.c executor/heredoc.c executor/execute_builtins.c executor/executor.c executor/utils.c executor/handle_pipes.c \
  envp/env_vars.c envp/free.c envp/hash_table.c envp/utils.c \
  utils/ft_isvalidvarname.c tokenizer/reshuffle_quotes.c \
