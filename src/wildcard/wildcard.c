@@ -35,7 +35,7 @@ void	build_pattern(const char *input_asterisk, const char *input_start,
 	size_t		pattern_raw_len;
 	int			idx;
 
-	printf("input_asterisk: %s\n", input_asterisk);
+	// printf("input_asterisk: %s\n", input_asterisk);
 	pattern->prefix = NULL;
 	pattern->suffix = NULL;
 	pattern->midfixes = NULL;
@@ -48,12 +48,13 @@ void	build_pattern(const char *input_asterisk, const char *input_start,
 		&& !ft_isspace(*(pattern->input_pattern_start - 1))
 		&& *(pattern->input_pattern_start - 1) != '\0')
 		pattern->input_pattern_start--;
-	printf("pattern->input_pattern_start: %s\n", pattern->input_pattern_start);
+	// printf("pattern->input_pattern_start: %s\n",
+	// pattern->input_pattern_start);
 	pattern->input_pattern_end = pattern->input_pattern_start;
 	while (*pattern->input_pattern_end
 		&& !ft_isspace(*pattern->input_pattern_end))
 		pattern->input_pattern_end++;
-	printf("pattern->input_pattern_end: %s\n", pattern->input_pattern_end);
+	// printf("pattern->input_pattern_end: %s\n", pattern->input_pattern_end);
 	pattern_raw_len = pattern->input_pattern_end - pattern->input_pattern_start;
 	pattern_raw = ft_substr(pattern->input_pattern_start, 0, pattern_raw_len);
 	pattern->pattern = reduce_consecutive_char(pattern_raw, '*', data);
@@ -122,11 +123,11 @@ char	**entry_to_char(t_entry **matching, t_data *data)
 	int		size;
 	int		i;
 
-	printf("entry_to_char:\n");
+	// printf("entry_to_char:\n");
 	size = 0;
 	while (matching[size])
 	{
-		printf("idx: %d\n", size);
+		// printf("idx: %d\n", size);
 		size++;
 	}
 	ret = malloc(sizeof(char *) * (size + 1));
@@ -135,8 +136,8 @@ char	**entry_to_char(t_entry **matching, t_data *data)
 		free_exit(data, "Malloc failed");
 		return (NULL);
 	}
-	printf("before ret[size]: %p\n", ret[size]);
-	printf("ret[size]'s address: %p\n", ret[size]);
+	// printf("before ret[size]: %p\n", ret[size]);
+	// printf("ret[size]'s address: %p\n", ret[size]);
 	ret[size] = NULL;
 	i = 0;
 	while (i < size)
@@ -155,14 +156,14 @@ char	*ft_strjoin_arr(char **arr)
 
 	idx = 0;
 	len = 0;
-	printf("ft_strjoin_arr:\n");
+	// printf("ft_strjoin_arr:\n");
 	if (!arr)
 		return (ft_strdup(""));
 	if (!arr[0])
 		return (ft_strdup(""));
 	while (arr[idx])
 	{
-		printf("%s\n", arr[idx]);
+		// printf("%s\n", arr[idx]);
 		idx++;
 	}
 	idx = 0;
@@ -171,18 +172,18 @@ char	*ft_strjoin_arr(char **arr)
 		len += ft_strlen(arr[idx]);
 		idx++;
 	}
-	ret = malloc(sizeof(char) * (len + idx));
+	ret = malloc(sizeof(char) * (len + idx + 1));
 	if (!ret)
 		return (NULL);
 	ft_strlcpy(ret, arr[0], len + idx);
 	idx = 1;
 	while (arr[idx])
 	{
-		ft_strlcat(ret, " ", len + idx);
-		ft_strlcat(ret, arr[idx], len + idx);
+		ft_strlcat(ret, " ", len + idx + 1);
+		ft_strlcat(ret, arr[idx], len + idx + 1);
 		idx++;
 	}
-	printf("ret: %s\n", ret);
+	// printf("ret: %s\n", ret);
 	return (ret);
 }
 
@@ -233,7 +234,7 @@ void	init_entries(t_entries *entries_ptr)
 	t_entry			**entries;
 	int				count;
 
-	printf("init_entries:\n");
+	// printf("init_entries:\n");
 	count = 0;
 	entries = NULL;
 	dir = opendir(".");
@@ -271,15 +272,15 @@ void	init_entries(t_entries *entries_ptr)
 		}
 	}
 	// print entries
-	printf("printing entries\n");
+	// printf("printing entries\n");
 	idx = 0;
 	while (entries[idx])
 	{
-		printf("idx: %d\n", idx);
-		printf("entries[idx]->entry: %s\n", entries[idx]->entry);
+		// printf("idx: %d\n", idx);
+		// printf("entries[idx]->entry: %s\n", entries[idx]->entry);
 		idx++;
 	}
-	printf("printing entries done\n");
+	// printf("printing entries done\n");
 	entries[idx] = NULL;
 	closedir(dir);
 	entries_ptr->entries = entries;
@@ -445,16 +446,16 @@ char	*get_matching_entries(t_pattern *pattern, t_data *data)
 	t_entries	entries;
 	char		*ret;
 	char		**ret_arr;
-	int			i;
 
-	printf("get_matching_entries:\n");
-	// print pattern
-	printf("prefix len: %zu\n", pattern->prefix_len);
-	printf("midfixes nbr: %zu\n", pattern->midfixes_nbr);
-	printf("midfix len: %zu\n", pattern->midfix_len);
-	printf("suffix len: %zu\n", pattern->suffix_len);
-	printf("pattern->prefix: %s\n", pattern->prefix);
-	printf("pattern->suffix: %s\n", pattern->suffix);
+	// int			i;
+	// printf("get_matching_entries:\n");
+	// // print pattern
+	// printf("prefix len: %zu\n", pattern->prefix_len);
+	// printf("midfixes nbr: %zu\n", pattern->midfixes_nbr);
+	// printf("midfix len: %zu\n", pattern->midfix_len);
+	// printf("suffix len: %zu\n", pattern->suffix_len);
+	// printf("pattern->prefix: %s\n", pattern->prefix);
+	// printf("pattern->suffix: %s\n", pattern->suffix);
 	init_entries(&entries);
 	init_matching(&entries);
 	if (pattern->prefix_len > 0)
@@ -472,17 +473,17 @@ char	*get_matching_entries(t_pattern *pattern, t_data *data)
 		// free_entries(&entries);
 		// return (ret);
 	}
-	printf("entries.matching's address: %p\n", entries.matching);
+	// printf("entries.matching's address: %p\n", entries.matching);
 	ret_arr = entry_to_char(entries.matching, data);
-	printf("before ret_arr:\n");
-	i = 0;
-	while (ret_arr[i])
-	{
-		printf("idx: %d\n", i);
-		printf("%s\n", ret_arr[i]);
-		i++;
-	}
-	printf("after ret_arr:\n");
+	// printf("before ret_arr:\n");
+	// i = 0;
+	// while (ret_arr[i])
+	// {
+	// 	printf("idx: %d\n", i);
+	// 	printf("%s\n", ret_arr[i]);
+	// 	i++;
+	// }
+	// printf("after ret_arr:\n");
 	ret = ft_strjoin_arr(ret_arr);
 	free_entries(&entries);
 	return (ret);
@@ -521,15 +522,22 @@ void	wildcard_expansion_build_expansion(t_wildcard *vars, char **input,
 	vars->tmp = ft_strjoin(vars->before, vars->matched_files);
 	vars->ret = ft_strjoin(vars->tmp, vars->after);
 	free(vars->before);
+	vars->before = NULL;
 	free(vars->after);
+	vars->after = NULL;
 	free(vars->tmp);
-	free(vars->matched_files);
 	vars->tmp = NULL;
+	free(vars->matched_files);
+	vars->matched_files = NULL;
 	vars->tmp = vars->ret;
 	if (*input)
+	{
 		free(*input);
-	*input = NULL;
+		*input = NULL;
+	}
+	// We do this so input points always to the beginning of the string
 	*input = vars->ret;
+	// We do this so that we can repeat the loop from the beginning in wildcard_expansion
 	vars->str = *input;
 }
 
@@ -548,17 +556,33 @@ char	*wildcard_expansion(char *input, t_data *data)
 {
 	t_wildcard	vars;
 
+	// char		*input_dup;
 	vars.str = input;
+	// vars.str = ft_strdup(input);
+	// input_dup = ft_strdup(input);
+	// free(input);
+	// input = NULL;
 	while (*vars.str != '\0')
 	{
-		printf("*vars.str: %c\n", *vars.str);
+		// printf("*vars.str: %c\n", *vars.str);
 		if (*vars.str == '\'' || *vars.str == '\"')
 			wildcard_expansion_skip_quotes(&vars);
 		else if (*vars.str == '*')
 			wildcard_expansion_build_expansion(&vars, &input, data);
+		// wildcard_expansion_build_expansion(&vars, &input, data);
+		// wildcard_expansion_build_expansion(&vars, &input_dup, data);
 		else
 			vars.str++;
 	}
-	printf("input: %s\n", input);
+	// if (input)
+	// {
+	// 	free(input);
+	// 	input = NULL;
+	// }
+	// printf("input: %s\n", input_dup);
+	// printf("input: %s\n", input);
+	// printf("vars.str: %s\n", vars.str);
+	// return (input_dup);
+	// return ((char *)vars.str);
 	return (input);
 }

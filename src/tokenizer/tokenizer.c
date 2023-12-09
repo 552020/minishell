@@ -77,22 +77,22 @@ void	tokenize(t_data *data, char *input)
 	trimmed = strip_ending_trailing_spaces(input);
 	tmp = reshuffle_single_quotes(trimmed);
 	reshuffled = reshuffle_double_quotes(tmp);
-	printf("Reshuffled: %s\n", reshuffled);
+	// printf("Reshuffled: %s\n", reshuffled);
 	free(tmp);
 	free(input);
 	expanded = wildcard_expansion(reshuffled, data);
-	printf("Expanded: %s\n", expanded);
+	// printf("Expanded: %s\n", expanded);
 	input = NULL;
 	data->token_count = count_words_tokenizer(expanded);
 	if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_TOKENIZER)
 		printf("Token count: %zu\n\n", data->token_count);
 	data->token_arr = create_token_array(data);
 	data->token_arr = tokenizer(data, expanded);
-	if (reshuffled)
-	{
-		free(reshuffled);
-		reshuffled = NULL;
-	}
+	// if (reshuffled)
+	// {
+	// 	free(reshuffled);
+	// 	reshuffled = NULL;
+	// }
 	if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_TOKENIZER)
 		print_token_arr(data->token_arr, data->token_count);
 }
