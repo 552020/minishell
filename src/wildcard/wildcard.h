@@ -20,6 +20,11 @@ typedef struct s_pattern
 	const char	*end;
 	char		*ret;
 	char		*tmp;
+	char		*pattern_raw;
+	size_t		pattern_raw_len;
+	char		*asterisk;
+	char		*asterisk_reader;
+	int			idx;
 }				t_pattern;
 
 typedef struct s_entry
@@ -39,6 +44,14 @@ char			*wildcard_expansion(char *input, t_data *data);
 
 void			build_pattern(const char *asterisk, const char *input_start,
 					t_pattern *pattern_ptr, t_data *data);
+char			*reduce_consecutive_char(const char *str, char c, t_data *data);
+void			build_pattern(const char *input_asterisk,
+					const char *input_start, t_pattern *pattern, t_data *data);
+void			all_entries_to_matching(t_entries *entries);
+void			init_pattern(t_pattern *pattern);
+void			free_pattern(t_pattern *pattern);
+char			**entry_to_char(t_entry **matching, t_data *data);
+char			*ft_strjoin_arr(char **arr);
 char			*reduce_consecutive_char(const char *str, char c, t_data *data);
 
 #endif

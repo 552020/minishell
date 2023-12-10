@@ -19,3 +19,28 @@ there are no midfixes. Examples of midfixes in a pattern like "file*hello*world*
 "hello" and "world". The reason to distinguish between them is that we can check prefix and suffix with ft_strncmp,
 but we need to check midfixes with ft_strstr.
 */
+
+## Notes to build pattern
+
+/*
+- First while: bring pattern->start to the beginning of the pattern
+- Second while; bring pattern->start to the beginning of the pattern
+- Clean the pattern from double asterisks
+	pattern->pattern = reduce_consecutive_char(pattern_raw, '*');
+- Reset pattern->start and pattern->end to the beginning and to the end of the pattern
+	pattern->start = pattern->pattern;
+- Build the prefix
+	asterisk = ft_strchr(pattern->pattern, '*')
+- Build the midfixes
+	asterisk_reader = (char *)asterisk + 0;
+*/
+
+## Notes to reduce_consecutive_char
+
+/*
+General idea:
+Reduce consecutive characters to one
+Partiuculare notses:
+- We use this pointer so that 'str' is always pointing to the beginning of the str. Same for this one.
+	while (*src_ptr)
+ */
