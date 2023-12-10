@@ -6,7 +6,7 @@
 /*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 06:23:34 by slombard          #+#    #+#             */
-/*   Updated: 2023/12/08 23:48:17 by slombard         ###   ########.fr       */
+/*   Updated: 2023/12/10 02:37:22 by slombard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,23 +76,30 @@ void	tokenize(t_data *data, char *input)
 		printf("\n***Tokenization***\n\n");
 	trimmed = strip_ending_trailing_spaces(input);
 	tmp = reshuffle_single_quotes(trimmed);
+	free(trimmed);
+	trimmed = NULL;
 	reshuffled = reshuffle_double_quotes(tmp);
-	// printf("Reshuffled: %s\n", reshuffled);
+	printf("Reshuffled: %s\n", reshuffled);
 	free(tmp);
 	free(input);
 	expanded = wildcard_expansion(reshuffled, data);
-	// printf("Expanded: %s\n", expanded);
+	printf("Expanded: %s\n", expanded);
 	input = NULL;
 	data->token_count = count_words_tokenizer(expanded);
 	if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_TOKENIZER)
 		printf("Token count: %zu\n\n", data->token_count);
 	data->token_arr = create_token_array(data);
 	data->token_arr = tokenizer(data, expanded);
-	// if (reshuffled)
-	// {
-	// 	free(reshuffled);
-	// 	reshuffled = NULL;
-	// }
+	if (reshuffled)
+	{
+		free(reshuffled);
+		reshuffled = NULL;
+	}
+	if (expanded)
+	{
+		free(expanded);
+		expanded = NULL;
+	}
 	if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_TOKENIZER)
 		print_token_arr(data->token_arr, data->token_count);
 }
