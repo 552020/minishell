@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   wildcard.h                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/12/10 05:19:01 by slombard          #+#    #+#             */
+/*   Updated: 2023/12/10 05:25:11 by slombard         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef WILDCARD_H
 # define WILDCARD_H
 
@@ -58,5 +70,8 @@ void			free_entries(t_entries *entries);
 char			*get_matching_entries(t_pattern *pattern, t_data *data);
 void			init_matching(t_entries *entries);
 void			check_suffix(t_entries *entries, t_pattern *pattern);
+
+void			free_get_matching_entries(t_entries *entries, char ***ret_arr,
+					t_pattern *pattern);
 
 #endif

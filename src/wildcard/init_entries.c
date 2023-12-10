@@ -6,7 +6,7 @@
 /*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/10 04:56:13 by slombard          #+#    #+#             */
-/*   Updated: 2023/12/10 04:57:05 by slombard         ###   ########.fr       */
+/*   Updated: 2023/12/10 05:21:38 by slombard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,13 @@ int	malloc_entries(t_init_entries *vars)
 	vars->dir = opendir(".");
 	if (!vars->dir)
 		return (1);
-	while ((vars->dir_entry = readdir(vars->dir)) != NULL)
+	vars->dir_entry = readdir(vars->dir);
+	while (vars->dir_entry != NULL)
 	{
 		if (ft_strncmp(vars->dir_entry->d_name, ".", 1) != 0
 			|| ft_strncmp(vars->dir_entry->d_name, "..", 2) != 0)
 			(vars->count)++;
+		vars->dir_entry = readdir(vars->dir);
 	}
 	closedir(vars->dir);
 	vars->entries = malloc(sizeof(t_entry *) * (vars->count + 1));
@@ -59,7 +61,7 @@ void	assign_entry(t_init_entries *vars)
 
 void	init_entries(t_entries *entries_ptr)
 {
-	t_init_entries vars;
+	t_init_entries	vars;
 
 	if (malloc_entries(&vars) != 0)
 		return ;
@@ -70,8 +72,12 @@ void	init_entries(t_entries *entries_ptr)
 		return ;
 	}
 	vars.idx = 0;
-	while ((vars.dir_entry = readdir(vars.dir)) != NULL)
+	vars.dir_entry = readdir(vars.dir);
+	while (vars.dir_entry != NULL)
+	{
 		assign_entry(&vars);
+		vars.dir_entry = readdir(vars.dir);
+	}
 	vars.entries[vars.idx] = NULL;
 	closedir(vars.dir);
 	entries_ptr->entries = vars.entries;

@@ -6,7 +6,7 @@
 /*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/10 05:08:40 by slombard          #+#    #+#             */
-/*   Updated: 2023/12/10 05:17:42 by slombard         ###   ########.fr       */
+/*   Updated: 2023/12/10 05:25:31 by slombard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,9 +57,8 @@ void	check_suffix_internal_while(t_entries *entries, t_pattern *pattern,
 
 void	check_suffix(t_entries *entries, t_pattern *pattern)
 {
-	int i;
-	int j;
-	// char *end;
+	int	i;
+	int	j;
 
 	i = 0;
 	j = 0;
@@ -73,4 +72,13 @@ void	check_suffix(t_entries *entries, t_pattern *pattern)
 		entries->matching[j]->idx = NULL;
 		j++;
 	}
+}
+
+void	free_get_matching_entries(t_entries *entries, char ***ret_arr,
+		t_pattern *pattern)
+{
+	free_entries(entries);
+	free(*ret_arr);
+	*ret_arr = NULL;
+	free_pattern(pattern);
 }

@@ -6,7 +6,7 @@
 /*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/08 20:06:58 by slombard          #+#    #+#             */
-/*   Updated: 2023/12/10 05:09:28 by slombard         ###   ########.fr       */
+/*   Updated: 2023/12/10 05:26:11 by slombard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,6 @@ void	wildcard_expansion_skip_quotes(t_wildcard *vars)
 	else
 		vars->str++;
 }
-
-// We do this so input points always to the beginning of the string
-//*input = vars->ret;
-// We do this so that we can repeat the loop from the beginning in wildcard_expansion
-// vars->str = *input;
 
 void	free_t_wildcard(t_wildcard *vars)
 {

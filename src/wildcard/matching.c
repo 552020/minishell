@@ -6,7 +6,7 @@
 /*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/10 05:04:14 by slombard          #+#    #+#             */
-/*   Updated: 2023/12/10 05:11:30 by slombard         ###   ########.fr       */
+/*   Updated: 2023/12/10 05:24:47 by slombard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,9 +91,9 @@ void	all_entries_to_matching(t_entries *entries)
 
 char	*get_matching_entries(t_pattern *pattern, t_data *data)
 {
-	t_entries entries;
-	char *ret;
-	char **ret_arr;
+	t_entries	entries;
+	char		*ret;
+	char		**ret_arr;
 
 	init_entries(&entries);
 	init_matching(&entries);
@@ -112,9 +112,6 @@ char	*get_matching_entries(t_pattern *pattern, t_data *data)
 		all_entries_to_matching(&entries);
 	ret_arr = entry_to_char(entries.matching, data);
 	ret = ft_strjoin_arr(ret_arr);
-	free_entries(&entries);
-	free(ret_arr);
-	ret_arr = NULL;
-	free_pattern(pattern);
+	free_get_matching_entries(&entries, &ret_arr, pattern);
 	return (ret);
 }

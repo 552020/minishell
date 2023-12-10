@@ -44,3 +44,34 @@ Partiuculare notses:
 - We use this pointer so that 'str' is always pointing to the beginning of the str. Same for this one.
 	while (*src_ptr)
  */
+
+
+```c
+ // We do this so input points always to the beginning of the string
+//*input = vars->ret;
+// We do this so that we can repeat the loop from the beginning in wildcard_expansion
+// vars->str = *input;
+
+void	wildcard_expansion_build_expansion(t_wildcard *vars, char **input,
+		t_data *data)
+{
+	build_pattern(vars->str, *input, &vars->pattern, data);
+	vars->matched_files = get_matching_entries(&vars->pattern, data);
+	vars->before = ft_substr(*input, 0, vars->pattern.input_pattern_start
+			- *input);
+	vars->after = ft_substr(vars->pattern.input_pattern_end, 0,
+			ft_strlen(vars->pattern.input_pattern_end));
+	vars->tmp = ft_strjoin(vars->before, vars->matched_files);
+	vars->ret = ft_strjoin(vars->tmp, vars->after);
+	free_t_wildcard(vars);
+	vars->tmp = vars->ret;
+	if (*input)
+	{
+		free(*input);
+		*input = NULL;
+	}
+	*input = vars->ret;
+	vars->str = *input;
+}
+
+```
