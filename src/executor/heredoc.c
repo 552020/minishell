@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int	ft_heredoc(t_ast_node *node, char *delimiter, t_data *data);
+int			ft_heredoc(t_ast_node *node, char *delimiter, t_data *data);
 
 int	handle_heredocs(t_ast_node *node, t_data *data)
 {
@@ -37,69 +37,94 @@ int	handle_heredocs(t_ast_node *node, t_data *data)
 		}
 		if (ft_heredoc(node, node->heredoc_del, data) == FAILURE)
 			return (FAILURE);
-		// ft_heredoc(node, node->heredoc_del, data);
 	}
 	return (SUCCESS);
 }
-
-int	ft_heredoc(t_ast_node *node, char *delimiter, t_data *data)
+typedef struct s_heredoc
 {
 	pid_t	pid;
 	int		fd[2];
 	char	*line;
 	int		status;
 	int		termsig;
+	char	*delimiter;
+}			t_heredoc;
 
-	line = NULL;
-	if (pipe(fd) == -1)
-		free_exit(data, "pipe error");
-	pid = fork();
-	if (pid == -1)
-		free_exit(data, "fork error");
-	handle_signals_child(pid);
-	if (pid == 0)
+void	init_heredoc(t_heredoc *vars)
+{
+	vars->pid = 0;
+	vars->fd[0] = 0;
+	vars->fd[1] = 0;
+	vars->line = NULL;
+	vars->status = 0;
+	vars->termsig = 0;
+	vars->delimiter = NULL;
+}
+
+void	read_heredoc(t_heredoc *vars)
+{
+	while (1)
 	{
-		close(fd[0]);
-		while (1)
+		vars->line = readline("heredoc> ");
+		if (!vars->line)
 		{
-			line = readline("heredoc> ");
-			if (!line)
-			{
-				close(fd[1]);
-				printf("minishell: warning: here-document delimited by end-of-file ");
-				printf("(wanted '%s')\n", delimiter);
-				exit(EXIT_FAILURE);
-			}
-			if (ft_strncmp(line, delimiter, ft_strlen(delimiter)) == 0
-				&& ft_strlen(delimiter) == ft_strlen(line))
-			{
-				free(line);
-				line = NULL;
-				exit(EXIT_SUCCESS);
-			}
-			write(fd[1], line, ft_strlen(line));
-			write(fd[1], "\n", 1);
-			free(line);
-			line = NULL;
+			close(vars->fd[1]);
+			printf("warning: here-document delimited by end-of-file ");
+			printf("(wanted '%s')\n", vars->delimiter);
+			exit(EXIT_FAILURE);
 		}
-	}
-	close(fd[1]);
-	waitpid(pid, &status, 0);
-	if (WIFSIGNALED(status))
-	{
-		termsig = WTERMSIG(status);
-		if (termsig == SIGINT)
+		if (ft_strncmp(vars->line, vars->delimiter,
+				ft_strlen(vars->delimiter)) == 0
+			&& ft_strlen(vars->delimiter) == ft_strlen(vars->line))
 		{
-			close(fd[0]);
+			free(vars->line);
+			vars->line = NULL;
+			exit(EXIT_SUCCESS);
+		}
+		write(vars->fd[1], vars->line, ft_strlen(vars->line));
+		write(vars->fd[1], "\n", 1);
+		free(vars->line);
+		vars->line = NULL;
+	}
+}
+
+void	wait_heredoc(t_heredoc *vars)
+{
+	waitpid(vars->pid, &vars->status, 0);
+	if (WIFSIGNALED(vars->status))
+	{
+		vars->termsig = WTERMSIG(vars->status);
+		if (vars->termsig == SIGINT)
+		{
+			close(vars->fd[0]);
 			printf("\n");
 			rl_on_new_line();
 			rl_replace_line("", 0);
-			// This was causing the double prompt
-			// rl_redisplay();
-			return (FAILURE);
+			exit(EXIT_FAILURE);
 		}
 	}
-	node->heredoc_fd = fd[0];
+}
+
+int	ft_heredoc(t_ast_node *node, char *delimiter, t_data *data)
+{
+	t_heredoc	vars;
+
+	vars.delimiter = delimiter;
+	init_heredoc(&vars);
+	if (pipe(vars.fd) == -1)
+		free_exit(data, "pipe error");
+	vars.pid = fork();
+	if (vars.pid == -1)
+		free_exit(data, "fork error");
+	handle_signals_child(vars.pid);
+	if (vars.pid == 0)
+	{
+		close(vars.fd[0]);
+		read_heredoc(&vars);
+	}
+	close(vars.fd[1]);
+	wait_heredoc(&vars);
+	node->heredoc_fd = vars.fd[0];
 	node->heredoc = true;
 	return (SUCCESS);
 }

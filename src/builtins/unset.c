@@ -1,4 +1,35 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   unset.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/12/04 23:07:44 by slombard          #+#    #+#             */
+/*   Updated: 2023/12/04 23:09:28 by slombard         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
+
+void	free_key_value_and_node(t_env_var *node)
+{
+	if (node->key)
+	{
+		free(node->key);
+		node->key = NULL;
+	}
+	if (node->value)
+	{
+		free(node->value);
+		node->value = NULL;
+	}
+	if (node)
+	{
+		free(node);
+		node = NULL;
+	}
+}
 
 void	single_unset(const char *key, t_data *data)
 {
@@ -17,12 +48,7 @@ void	single_unset(const char *key, t_data *data)
 				data->env_table->table[idx] = node->next;
 			else
 				prev->next = node->next;
-			free(node->key);
-			node->key = NULL;
-			free(node->value);
-			node->value = NULL;
-			free(node);
-			node = NULL;
+			free_key_value_and_node(node);
 			data->env_table->count--;
 			return ;
 		}
@@ -33,12 +59,10 @@ void	single_unset(const char *key, t_data *data)
 
 int	unset(char **args, t_data *data)
 {
-	int i;
-
+	int	i;
 
 	if (!args)
 		return (EXIT_SUCCESS);
-
 	i = 0;
 	while (args[i])
 	{

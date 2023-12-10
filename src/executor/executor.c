@@ -12,157 +12,104 @@
 
 #include "minishell.h"
 
-void	free_cmd_and_args_arr(char **cmd_and_args_arr)
+/*
+Notes and questions:
+- Logic for existing scripts is missing
+- Question: should we free before exiting?
+- Now I did
+*/
+void	execute_script(t_ast_node *node, t_data *data)
 {
-	int	i;
-
-	i = 0;
-	while (cmd_and_args_arr[i])
+	(void)data;
+	if (ft_strncmp(&node->cmd[0], "./", 2) == 0)
 	{
-		free(cmd_and_args_arr[i]);
-		cmd_and_args_arr[i] = NULL;
-		i++;
+		if (access(node->cmd, F_OK) == 0)
+			free_exit_code(data, " ", 126);
+		else
+			free_exit_code(data, " ", 127);
 	}
-	free(cmd_and_args_arr);
-	cmd_and_args_arr = NULL;
 }
 
-int	count_cmd_and_args(t_ast_node *node)
+void	handle_execve_fail(t_ast_node *node, t_data *data, char *path)
 {
-	int	count;
-	int	i;
-
-	count = 0;
-	i = 0;
-	if (node->cmd)
-		count++;
-	if (node->args)
+	if (path)
 	{
-		while (node->args[i])
-		{
-			count++;
-			i++;
-		}
+		free(path);
+		path = NULL;
 	}
-	return (count);
+	if (node->cmd[0] == '\0')
+		free_exit_code(data, " ", 0);
+	if (node->cmd[0] == '/')
+		free_exit_code(data, " ", 126);
+	free_exit_code(data, " ", 127);
 }
 
-char	**build_cmd_and_args_arr(t_ast_node *node, int cmd_and_args_count,
-		t_data *data)
-{
-	char	**cmd_and_args_arr;
-	int		i;
-
-	i = 0;
-	cmd_and_args_count = count_cmd_and_args(node);
-	cmd_and_args_arr = (char **)malloc(sizeof(char *) * (cmd_and_args_count
-				+ 1));
-	if (!cmd_and_args_arr)
-		free_exit(data, "Error: malloc failed\n");
-	if (node->cmd)
-		cmd_and_args_arr[0] = ft_strdup(node->cmd);
-	if (!cmd_and_args_arr[0])
-		free_exit(data, "Error: malloc failed\n");
-	// cmd_and_args_arr[0] = node->cmd;
-	if (node->args != NULL)
-	{
-		while (node->args[i] != NULL)
-		{
-			cmd_and_args_arr[i + 1] = ft_strdup(node->args[i]);
-			if (!cmd_and_args_arr[i + 1])
-				free_exit(data, "Error: malloc failed\n");
-			// cmd_and_args_arr[i + 1] = node->args[i];
-			i++;
-		}
-	}
-	cmd_and_args_arr[i + 1] = NULL;
-	return (cmd_and_args_arr);
-}
-
-void	execute_cmd(t_ast_node *node, t_data *data)
-{
-	char	*path;
-	char	**cmd_and_args_arr;
-	int		cmd_and_args_count;
-	char	*dir_paths;
-
-	dir_paths = ft_getenv(data->env_table->table, "PATH");
-	path = NULL;
-	if (node->cmd)
-	{
-		path = path_finder(node->cmd, dir_paths, data);
-		if (!path)
-		{
-			// TODO:  add free probably
-			if (ft_strncmp(&node->cmd[0], "./", 2) == 0)
-			{
-				if (access(node->cmd, F_OK) == 0)
-				{
-					perror(" ");
-					exit(126);
-				}
-				else
-				{
-					perror(" ");
-					exit(127);
-				}
-			}
-			else
-			{
-				perror(" ");
-				exit(127);
-			}
-		}
-	}
-	else if (!node->cmd && !node->args)
-	{
-		return ;
-	}
+/*
+Some notes and questions:
+- path will be NULL if the command is not an executable file
+- it's not clear when the else case would be the case
 	else
 	{
 		perror(" ");
 		exit(127);
 	}
-	cmd_and_args_count = count_cmd_and_args(node);
-	cmd_and_args_arr = build_cmd_and_args_arr(node, cmd_and_args_count, data);
-	if (!cmd_and_args_arr)
-		free_exit(data, "Error: malloc failed\n");
-	if (node->cmd && cmd_and_args_arr)
-	{
-		// Check it if there is leak in case of error - There is!
-		if (execve(path, cmd_and_args_arr, data->env_arr) == -1)
-		{
-			if (path)
-			{
-				free(path);
-				path = NULL;
-			}
-			if (node->cmd[0] == '\0')
-			{
-				perror(" ");
-				exit(0);
-			}
-			if (node->cmd[0] == '/')
-			{
-				perror(" ");
-				exit(126);
-			}
-			perror(" ");
-			exit(127);
-		}
-	}
-	if (cmd_and_args_arr)
-		free_cmd_and_args_arr(cmd_and_args_arr);
+- are we freeing path also if execve doesn't fail?
+*/
+typedef struct s_execute_cmd
+{
+	char	*path;
+	char	**exec_arr;
+	int		cmd_and_args_count;
+	char	*dir_paths;
+}			t_execute_cmd;
+
+/*
+Achtung!
+cmd_and_args_arr has been renamed in exec_arr cause of norminette:
+the autoformatter would put otherwise the right tabs on line split
+rename is only in thi function
+*/
+void	init_execute_cmd_vars(t_execute_cmd *vars, t_data *data)
+{
+	vars->path = NULL;
+	vars->exec_arr = NULL;
+	vars->cmd_and_args_count = 0;
+	vars->dir_paths = NULL;
+	vars->dir_paths = ft_getenv(data->env_table->table, "PATH");
 }
 
-// We don't need the first check anymore data->ast_type == UNDEFINED
-// because we calling the execute_cmd somewhere else
+void	execute_cmd(t_ast_node *node, t_data *data)
+{
+	t_execute_cmd	vars;
+
+	init_execute_cmd_vars(&vars, data);
+	if (!node->cmd && !node->args)
+		return ;
+	else if (node->cmd)
+	{
+		vars.path = path_finder(node->cmd, vars.dir_paths, data);
+		if (!vars.path)
+			execute_script(node, data);
+	}
+	vars.cmd_and_args_count = count_cmd_and_args(node);
+	vars.exec_arr = build_cmd_and_args_arr(node, vars.cmd_and_args_count, data);
+	if (!vars.exec_arr)
+		free_exit(data, "Error: malloc failed\n");
+	if (node->cmd && vars.exec_arr)
+	{
+		if (execve(vars.path, vars.exec_arr, data->env_arr) == -1)
+			handle_execve_fail(node, data, vars.path);
+	}
+	if (vars.exec_arr)
+		free_cmd_and_args_arr(vars.exec_arr);
+}
+
 void	execute(t_data *data, t_ast_node *node)
 {
 	if (node->type == N_COMMAND && data->ast_type == UNDEFINED)
 	{
 		data->ast_type = SINGLE_CMD_AST;
-		handle_single_command(node, data);
+		handle_single_cmd(node, data);
 	}
 	else if (node->type == N_PIPE)
 	{

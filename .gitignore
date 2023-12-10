@@ -1,5 +1,9 @@
 *.o
+.vscode/
 others/
 minishell
 libft/libft.a
 .DS_Store
+infile
+outfile
+

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   lexemes_redirect.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/11/30 07:10:02 by slombard          #+#    #+#             */
+/*   Updated: 2023/11/30 07:10:30 by slombard         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 t_lexeme	redirect_in_lexeme(t_token *token, t_data *data)
@@ -61,7 +73,7 @@ t_lexeme	redirect_out_lexeme(t_token *token, t_data *data)
 
 t_lexeme	redirect_out_target_lexeme(t_token *token, t_data *data)
 {
-	t_lexeme lexeme;
+	t_lexeme	lexeme;
 
 	lexeme.type = L_FILENAME_STDOUT;
 	lexeme.str = assign_redirect_target(token, data);

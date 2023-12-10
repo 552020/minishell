@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   var_subs.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: slombard <slombard@student.42berlin.de>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/12/04 17:29:43 by slombard          #+#    #+#             */
+/*   Updated: 2023/12/04 17:29:47 by slombard         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 /*
@@ -39,8 +51,8 @@ t_lexeme	t_env_var_subs(t_token *token, t_data *data)
 
 t_lexeme	t_shell_var_subs(t_token *token, t_data *data)
 {
-	t_lexeme lexeme;
-	char *value;
+	t_lexeme	lexeme;
+	char		*value;
 
 	lexeme.original = ft_strdup(token->str);
 	if (!lexeme.original)

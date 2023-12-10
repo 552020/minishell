@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   lexer.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/11/30 07:12:29 by slombard          #+#    #+#             */
+/*   Updated: 2023/11/30 07:53:34 by slombard         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 void	create_lexeme_arr(t_data *data)
@@ -40,16 +52,36 @@ t_lexeme	*lexer(t_data *data)
 	i = 0;
 	while (i < data->token_count)
 	{
+		lexer_t_var_subs(data, i);
+		lexer_t_quotes_var_subs(data, i);
+		lexer_t_pipe(data, i);
+		lexer_t_redirects_and_word(data, &i);
+		i++;
+	}
+	finalize_lexeme_array(data, i);
+	return (data->lexeme_arr);
+}
+
+/* ORIGINAL LEXER FUNCTION
+
+The original lexer function is below. The norminetted version is above.
+t_lexeme	*lexer(t_data *data)
+{
+	size_t	i;
+
+	i = 0;
+	while (i < data->token_count)
+	{
 		if (data->token_arr[i].type == T_ENV_VAR)
 			data->lexeme_arr[i] = t_env_var_subs(&data->token_arr[i], data);
 		else if (data->token_arr[i].type == T_SHELL_VAR)
 			data->lexeme_arr[i] = t_shell_var_subs(&data->token_arr[i], data);
 		else if (data->token_arr[i].type == T_DOUBLE_QUOTE)
 			data->lexeme_arr[i] = t_double_quotes_var_subs(&data->token_arr[i],
-					data);
+				data);
 		else if (data->token_arr[i].type == T_SINGLE_QUOTE)
 			data->lexeme_arr[i] = single_quote_lexeme(&data->token_arr[i],
-					data);
+				data);
 		else if (data->token_arr[i].type == T_PIPE)
 			data->lexeme_arr[i] = pipe_lexeme(&data->token_arr[i], data);
 		else if (data->token_arr[i].type == T_REDIRECT_IN)
@@ -66,70 +98,16 @@ t_lexeme	*lexer(t_data *data)
 			continue ;
 		i++;
 	}
-	data->lexeme_arr[i].type = L_END;
-	data->lexeme_arr[i].str = NULL;
-	command_and_args(data->token_count, data->lexeme_arr);
-	if (data->token_arr[i].type == T_END)
-		data->lexeme_arr[i].type = L_END;
+	finalize_lexeme_array(data, i);
 	return (data->lexeme_arr);
 }
 
-int	lexeme_is_operator(t_lexeme_type type)
-{
-	if (type == L_PIPE || type == L_REDIRECT_INPUT || type == L_REDIRECT_OUTPUT
-		|| type == L_REDIRECT_APPEND || type == L_HEREDOC)
-		return (1);
-	return (0);
-}
-
-int	check_syntax_error(t_data *data)
-{
-	size_t	i;
-
-	i = 0;
-	while (i < data->token_count + 1)
-	{
-		if (lexeme_is_operator(data->lexeme_arr[i].type))
-		{
-			if (i == 0 && data->lexeme_arr[i].type == L_PIPE)
-			{
-				printf("Syntax error: unexpected token %s\n",
-					data->lexeme_arr[i].str);
-				free_lexeme_arr(data);
-				return (1);
-			}
-			else if (data->lexeme_arr[i + 1].type == L_END)
-			{
-				printf("Syntax error: unexpected end of input\n");
-				free_lexeme_arr(data);
-				return (1);
-			}
-			else if (lexeme_is_operator(data->lexeme_arr[i + 1].type
-					&& data->lexeme_arr[i].type != L_PIPE))
-			{
-				printf("Syntax error: unexpected token %s\n", data->lexeme_arr[i
-					+ 1].str);
-				free_lexeme_arr(data);
-				return (1);
-			}
-			else if (data->lexeme_arr[i + 1].type == L_PIPE)
-			{
-				printf("Syntax error: unexpected token %s\n", data->lexeme_arr[i
-					+ 1].str);
-				free_lexeme_arr(data);
-				return (1);
-			}
-		}
-		i++;
-	}
-	return (0);
-}
-
+*/
 int	lexemize(t_data *data)
 {
 	create_lexeme_arr(data);
 	data->lexeme_arr = lexer(data);
-	if (DEBUG_LEVEL == DEBUG_ALL || DEBUG_LEVEL == DEBUG_LEXER)
+	if (g_debug_level == DEBUG_ALL || g_debug_level == DEBUG_LEXER)
 	{
 		printf("\n***Lexer***\n\n");
 		print_lexeme_arr(data->lexeme_arr, data->token_count);
@@ -138,6 +116,5 @@ int	lexemize(t_data *data)
 		free_token_arr(data);
 	if (check_syntax_error(data))
 		return (FAILURE);
-	// print_lexeme_arr(data->lexeme_arr, data->token_count);
 	return (SUCCESS);
 }

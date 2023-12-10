@@ -1,13 +1,8 @@
 #include "libft.h"
 #include <stdio.h>
-
-// first <stdio.h>
-// then the rest of the includes
-// if you remove this comments the formatter
-// will put the includes in the alphabetical order
-// and it will be a mess
+// Comment needed to prevent autoformat to move the include above the comment
 #include <errno.h>
-#include <fcntl.h> // for O_RDONLY etc.
+#include <fcntl.h>
 #include <readline/history.h>
 #include <readline/readline.h>
 #include <signal.h>
@@ -25,7 +20,6 @@
 # define SUCCESS 1
 
 /* Debugger */
-/* Needs to be high */
 /* TODO: Achthung external variable*/
 
 typedef enum e_debug_level
@@ -37,7 +31,7 @@ typedef enum e_debug_level
 	DEBUG_ALL        // Debug everything
 }						t_debug_level;
 
-extern t_debug_level	DEBUG_LEVEL;
+extern t_debug_level	g_debug_level;
 
 /* Error messages*/
 
@@ -140,14 +134,33 @@ char					*add_single_or_double_quotes(char *str, char quote);
 
 /* Lexer */
 
+// Variable substitution
+typedef struct s_var_subs
+{
+	const char			*str;
+	const char			*start;
+	const char			*end;
+	char				*before;
+	char				*var_name;
+	char				*before_and_value;
+	char				*value;
+	char				*after;
+	char				*result;
+}						t_var_subs;
+
+char					*strip_quotes(char *str, t_data *data);
+void					free_var_subs(t_var_subs *vars);
+void					free_var_subs_and_exit(t_var_subs *vars, t_data *data,
+							char *message);
+int						find_next_env_var_if_any(const char **str);
+
 # define NO_CMD_YET 0
 # define CMD_FOUND 1
 typedef enum e_lexeme_type
 {
-	L_COMMAND,
-	// Command to be executed (could be built-in or external)
+	L_COMMAND,           // Command to be executed
 	L_ARGUMENT,          // Argument to a command
-	L_PIPE,              // Pipe operator, signaling chaining of commands
+	L_PIPE,              // Pipe operdator, signaling chaining of commands
 	L_REDIRECT_INPUT,    // Input redirection operator (<)
 	L_REDIRECT_OUTPUT,   // Output redirection operator (>)
 	L_REDIRECT_APPEND,   // Append redirection operator (>>)
@@ -202,6 +215,15 @@ void					undefined_wrapper(t_lexeme *lexeme_arr,
 							t_token *token_arr, size_t *i, t_data *data);
 char					*process_vars_in_str(const char *str, t_data *data);
 char					*strip_quotes(char *str, t_data *data);
+int						check_syntax_error(t_data *data);
+void					lexer_t_var_subs(t_data *data, size_t i);
+void					lexer_t_quotes_var_subs(t_data *data, size_t i);
+void					lexer_t_pipe(t_data *data, size_t i);
+void					lexer_t_redirects_and_word(t_data *data, size_t *i);
+
+void					finalize_lexeme_array(t_data *data, size_t i);
+void					command_and_args(size_t token_count,
+							t_lexeme *lexeme_arr);
 
 /* Parser */
 
@@ -293,19 +315,17 @@ void					print_lexeme_arr(t_lexeme *lexeme_arr,
 void					print_ast(t_ast_node *node, int depth);
 void					print_ast_new(t_ast_node *node);
 void					debug_ast(t_ast_node *node);
+void					print_hash_table(t_env_table *env_table);
+void					print_envp_arr(char **envp);
 t_ast_node				*create_node(t_node_type type, t_data *data);
 
 /* Heredoc */
 
 int						handle_heredocs(t_ast_node *node, t_data *data);
 
-/* Execution */
+/* Executor */
 
-// not using these
-size_t					count_pipes(t_lexeme *lexeme_arr, size_t token_count);
 unsigned int			hash(const char *key);
-// not using these
-// void handle_commands(t_ast_node *ast_root, t_data *data);
 int						handle_pipe(t_ast_node *ast_root, t_data *data);
 int						handle_redirections(t_ast_node *node, t_data *data);
 
@@ -318,9 +338,6 @@ void					insert_node_ht(const char *key, const char *value,
 							t_data *data);
 int						lexemize(t_data *data);
 int						change_directory(const char *path);
-
-/* Executor */
-
 void					execute(t_data *data, t_ast_node *node);
 
 void					error_exit(t_ast_node *node, char **envp,
@@ -339,9 +356,16 @@ char					**build_cmd_and_args_arr(t_ast_node *node,
 int						command_is_builtin(t_ast_node *node);
 void					handle_command_node(t_ast_node *node, char **envp,
 							t_env_table *env_table, t_data *data);
-// void					handle_nodes(t_ast_node *node, char
-// *dir_paths, 							char **envp,
-// t_env_table *env_table, t_data *data);
+char					*ft_realpath(const char *path, t_data *data);
+/* Builtins*/
+
+typedef struct s_echo
+{
+	int					i;
+	int					j;
+	int					print_newline;
+}						t_echo;
+
 void					free_token_arr(t_data *data);
 void					free_lexeme_arr(t_data *data);
 void					free_key_value_pair(char **key_value);
@@ -351,18 +375,23 @@ void					initialize_data(char **envp, t_data *data);
 void					free_exit(t_data *data, char *error_message);
 void					print_hash_table(t_env_table *env_table);
 void					print_envp_arr(char **envp);
-// char					*wildcard_expansion(char *input);
 
 void					handle_signals_main(void);
 void					handle_signals_child(int pid);
 void					disable_ctrl_c_main(void);
 char					*trim_ending_trailing_spaces(char const *str);
-int						handle_single_command(t_ast_node *node, t_data *data);
-int						handle_left_child(t_ast_node *node, t_data *data,
-							pid_t *left_pid, int pipe_fd);
-int						handle_right_child(t_ast_node *node, t_data *data,
-							pid_t *right_pid, int pipe_fd);
+int						handle_single_cmd(t_ast_node *node, t_data *data);
+int						handle_l_child(t_ast_node *node, t_data *data,
+							pid_t *l_pid, int pipe_fd);
+int						handle_r_child(t_ast_node *node, t_data *data,
+							pid_t *r_pid, int pipe_fd);
 int						signal_status(int status);
 void					wait_ast(t_data *data, t_ast_node *node);
-
+void					free_envp(char **envp);
+void					free_hash_table(t_env_table *env_table);
+size_t					ft_count_word(const char *s, char c);
+int						ft_free_ret(char **ret, size_t i);
+int						check_parenthesis(t_ast_node *cmd);
+void					free_exit_code(t_data *data, char *error_message,
+							int exit_code);
 #endif
