@@ -6,7 +6,7 @@
 /*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/08 20:06:58 by slombard          #+#    #+#             */
-/*   Updated: 2023/12/10 02:27:57 by slombard         ###   ########.fr       */
+/*   Updated: 2023/12/10 02:55:18 by slombard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,8 @@ void	build_pattern(const char *input_asterisk, const char *input_start,
 		&& !ft_isspace(*(pattern->input_pattern_start - 1))
 		&& *(pattern->input_pattern_start - 1) != '\0')
 		pattern->input_pattern_start--;
-	printf("pattern->input_pattern_start: %s\n", pattern->input_pattern_start);
+	// printf("pattern->input_pattern_start: %s\n",
+	// pattern->input_pattern_start);
 	pattern->input_pattern_end = pattern->input_pattern_start;
 	while (*pattern->input_pattern_end
 		&& !ft_isspace(*pattern->input_pattern_end))
@@ -70,7 +71,7 @@ void	build_pattern(const char *input_asterisk, const char *input_start,
 	asterisk = ft_strchr(pattern->pattern, '*');
 	asterisk_reader = (char *)asterisk;
 	pattern->prefix_len = asterisk - pattern->start;
-	printf("pattern->prefix_len: %zu\n", pattern->prefix_len);
+	// printf("pattern->prefix_len: %zu\n", pattern->prefix_len);
 	if (pattern->prefix_len > 0)
 		pattern->prefix = ft_substr(pattern->start, 0, asterisk
 				- pattern->start);
@@ -81,7 +82,7 @@ void	build_pattern(const char *input_asterisk, const char *input_start,
 			pattern->midfixes_nbr++;
 		asterisk_reader++;
 	}
-	printf("pattern->midfixes_nbr: %zu\n", pattern->midfixes_nbr);
+	// printf("pattern->midfixes_nbr: %zu\n", pattern->midfixes_nbr);
 	asterisk_reader = (char *)asterisk + 1;
 	if (pattern->midfixes_nbr > 0)
 	{
@@ -107,16 +108,17 @@ void	build_pattern(const char *input_asterisk, const char *input_start,
 				}
 				asterisk_reader++;
 			}
-			asterisk_reader++;
+			if (*asterisk_reader != '\0')
+				asterisk_reader++;
 		}
 	}
 	asterisk_reader = ft_strrchr(pattern->pattern, '*');
-	printf("asterisk reader after midfixes: %s\n", asterisk_reader);
+	// printf("asterisk reader after midfixes: %s\n", asterisk_reader);
 	if (asterisk_reader + 1)
 	{
 		pattern->suffix = ft_strdup(asterisk_reader + 1);
 		pattern->suffix_len = ft_strlen(pattern->suffix);
-		printf("pattern->suffix: %s\n", pattern->suffix);
+		// printf("pattern->suffix: %s\n", pattern->suffix);
 	}
 	else
 	{
@@ -150,6 +152,7 @@ char	**entry_to_char(t_entry **matching, t_data *data)
 	i = 0;
 	while (i < size)
 	{
+		// ret[i] = ft_strdup(matching[i]->entry);
 		ret[i] = matching[i]->entry;
 		i++;
 	}
@@ -164,17 +167,17 @@ char	*ft_strjoin_arr(char **arr)
 
 	idx = 0;
 	len = 0;
-	printf("ft_strjoin_arr:\n");
+	// printf("ft_strjoin_arr:\n");
 	if (!arr)
 		return (ft_strdup(""));
 	if (!arr[0])
 		return (ft_strdup(""));
-	while (arr[idx])
-	{
-		printf("%s\n", arr[idx]);
-		idx++;
-	}
-	idx = 0;
+	// while (arr[idx])
+	//{
+	//	printf("%s\n", arr[idx]);
+	//	idx++;
+	//}
+	// idx = 0;
 	while (arr[idx])
 	{
 		len += ft_strlen(arr[idx]);
@@ -191,7 +194,7 @@ char	*ft_strjoin_arr(char **arr)
 		ft_strlcat(ret, arr[idx], len + idx + 1);
 		idx++;
 	}
-	printf("ret: %s\n", ret);
+	// printf("ret: %s\n", ret);
 	return (ret);
 }
 
@@ -387,7 +390,7 @@ void	check_suffix(t_entries *entries, t_pattern *pattern)
 
 	i = 0;
 	j = 0;
-	printf("check_suffix:\n");
+	// printf("check_suffix:\n");
 	if (pattern->prefix_len == 0 && pattern->midfixes_nbr == 0)
 		all_entries_to_matching(entries);
 	// while (entries->matching[i]->entry)
@@ -422,15 +425,15 @@ void	check_suffix(t_entries *entries, t_pattern *pattern)
 		entries->matching[j]->idx = NULL;
 		j++;
 	}
-	printf("Matching entries:\n");
-	i = 0;
-	while (entries->matching[i]->entry)
-	{
-		printf("idx: %d\n", i);
-		printf("entries->matching[i]->entry: %s\n",
-			entries->matching[i]->entry);
-		i++;
-	}
+	// printf("Matching entries:\n");
+	// i = 0;
+	// while (entries->matching[i]->entry)
+	//{
+	//	printf("idx: %d\n", i);
+	//	printf("entries->matching[i]->entry: %s\n",
+	//		entries->matching[i]->entry);
+	//	i++;
+	//}
 }
 
 void	all_entries_to_matching(t_entries *entries)
@@ -475,14 +478,14 @@ char	*get_matching_entries(t_pattern *pattern, t_data *data)
 	char		**ret_arr;
 	int			i;
 
-	printf("get_matching_entries:\n");
+	// printf("get_matching_entries:\n");
 	// print pattern
-	printf("prefix len: %zu\n", pattern->prefix_len);
-	printf("midfixes nbr: %zu\n", pattern->midfixes_nbr);
-	printf("midfix len: %zu\n", pattern->midfix_len);
-	printf("suffix len: %zu\n", pattern->suffix_len);
-	printf("pattern->prefix: %s\n", pattern->prefix);
-	printf("pattern->suffix: %s\n", pattern->suffix);
+	// printf("prefix len: %zu\n", pattern->prefix_len);
+	// printf("midfixes nbr: %zu\n", pattern->midfixes_nbr);
+	// printf("midfix len: %zu\n", pattern->midfix_len);
+	// printf("suffix len: %zu\n", pattern->suffix_len);
+	// printf("pattern->prefix: %s\n", pattern->prefix);
+	// printf("pattern->suffix: %s\n", pattern->suffix);
 	init_entries(&entries);
 	init_matching(&entries);
 	if (pattern->prefix_len != 0 || pattern->midfixes_nbr != 0
@@ -499,23 +502,23 @@ char	*get_matching_entries(t_pattern *pattern, t_data *data)
 		&& pattern->suffix_len == 0)
 		all_entries_to_matching(&entries);
 	ret_arr = entry_to_char(entries.matching, data);
-	printf("before ret_arr:\n");
-	i = 0;
-	while (ret_arr[i])
-	{
-		printf("idx: %d\n", i);
-		printf("%s\n", ret_arr[i]);
-		i++;
-	}
-	printf("after ret_arr:\n");
+	// printf("before ret_arr:\n");
+	// i = 0;
+	// while (ret_arr[i])
+	//{
+	// printf("idx: %d\n", i);
+	// printf("%s\n", ret_arr[i]);
+	// i++;
+	//}
+	// printf("after ret_arr:\n");
 	ret = ft_strjoin_arr(ret_arr);
 	free_entries(&entries);
 	i = 0;
-	while (ret_arr[i])
-	{
-		free(ret_arr[i]);
-		i++;
-	}
+	// while (ret_arr[i])
+	//{
+	//	free(ret_arr[i]);
+	//	i++;
+	//}
 	free(ret_arr);
 	if (pattern->prefix)
 	{
