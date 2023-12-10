@@ -6,7 +6,7 @@
 /*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/10 03:57:49 by slombard          #+#    #+#             */
-/*   Updated: 2023/12/10 03:59:36 by slombard         ###   ########.fr       */
+/*   Updated: 2023/12/10 04:59:47 by slombard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,4 +52,25 @@ void	free_pattern(t_pattern *pattern)
 		free(pattern->pattern_raw);
 		pattern->pattern_raw = NULL;
 	}
+}
+
+void	free_entries(t_entries *entries)
+{
+	int idx;
+
+	idx = 0;
+	while (entries->entries[idx])
+	{
+		free(entries->entries[idx]->entry);
+		free(entries->entries[idx]);
+		idx++;
+	}
+	free(entries->entries);
+	idx = 0;
+	while (entries->matching[idx])
+	{
+		free(entries->matching[idx]);
+		idx++;
+	}
+	free(entries->matching);
 }

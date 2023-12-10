@@ -53,5 +53,10 @@ void			free_pattern(t_pattern *pattern);
 char			**entry_to_char(t_entry **matching, t_data *data);
 char			*ft_strjoin_arr(char **arr);
 char			*reduce_consecutive_char(const char *str, char c, t_data *data);
+void			init_entries(t_entries *entries_ptr);
+void			free_entries(t_entries *entries);
+char			*get_matching_entries(t_pattern *pattern, t_data *data);
+void			init_matching(t_entries *entries);
+void			check_suffix(t_entries *entries, t_pattern *pattern);
 
 #endif
