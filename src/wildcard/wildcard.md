@@ -22,29 +22,30 @@ but we need to check midfixes with ft_strstr.
 
 ## Notes to build pattern
 
-/*
+/\*
+
 - First while: bring pattern->start to the beginning of the pattern
 - Second while; bring pattern->start to the beginning of the pattern
 - Clean the pattern from double asterisks
-	pattern->pattern = reduce_consecutive_char(pattern_raw, '*');
+  pattern->pattern = reduce_consecutive_char(pattern_raw, '\*');
 - Reset pattern->start and pattern->end to the beginning and to the end of the pattern
-	pattern->start = pattern->pattern;
+  pattern->start = pattern->pattern;
 - Build the prefix
-	asterisk = ft_strchr(pattern->pattern, '*')
+  asterisk = ft_strchr(pattern->pattern, '\*')
 - Build the midfixes
-	asterisk_reader = (char *)asterisk + 0;
-*/
+  asterisk*reader = (char *)asterisk + 0;
+  \_/
 
 ## Notes to reduce_consecutive_char
 
-/*
+/\*
 General idea:
 Reduce consecutive characters to one
 Partiuculare notses:
-- We use this pointer so that 'str' is always pointing to the beginning of the str. Same for this one.
-	while (*src_ptr)
- */
 
+- We use this pointer so that 'str' is always pointing to the beginning of the str. Same for this one.
+  while (_src_ptr)
+  _/
 
 ```c
  // We do this so input points always to the beginning of the string
@@ -74,4 +75,23 @@ void	wildcard_expansion_build_expansion(t_wildcard *vars, char **input,
 	vars->str = *input;
 }
 
+```
+
+## Why are the array entries and matching defined as `t_entry **`?
+
+The question is that we are going to rewrite matching, on every check with memcpy. We will create a new copy of the array holding the pointers to the t_entry structs, copy the matching structs in the new array and delete the previous array. For that we need a pointer 'behind' them.
+
+```c
+typedef struct s_entry
+{
+	char		*entry;
+	char		*idx;
+}				t_entry;
+
+typedef struct s_entries
+{
+	t_entry		**entries;
+	t_entry		**matching;
+	int			count;
+}				t_entries;
 ```

@@ -39,9 +39,20 @@ void	check_suffix_internal_while(t_entries *entries, t_pattern *pattern,
 {
 	char	*end;
 
+	// printf("entries->matching[*i]->entry: %s\n",
+	// entries->matching[*i]->entry);
+	// printf("entries->matching[*i]->idx: %s\n", entries->matching[*i]->idx);
 	end = entries->matching[*i]->idx;
-	while (*end && !ft_isspace(*end) && entries->matching[*i]->idx)
+	// printf("end: %c\n", *end);
+	// printf("end's address: %p\n", end);
+	while (*end && !ft_isspace(*end) && entries->matching[*i]->entry)
+	{
 		end++;
+		// printf("end: %c\n", *end);
+		// printf("end's address: %p\n", end);
+		if (*end == '\0')
+			break ;
+	}
 	if (end - pattern->suffix_len < entries->matching[*i]->idx)
 		(*i)++;
 	else if (ft_strncmp(end - pattern->suffix_len, pattern->suffix,
@@ -52,7 +63,8 @@ void	check_suffix_internal_while(t_entries *entries, t_pattern *pattern,
 			+ pattern->suffix_len;
 		(*j)++;
 	}
-	(*i)++;
+	if (entries->matching[*i])
+		(*i)++;
 }
 
 void	check_suffix(t_entries *entries, t_pattern *pattern)
@@ -64,7 +76,8 @@ void	check_suffix(t_entries *entries, t_pattern *pattern)
 	j = 0;
 	if (pattern->prefix_len == 0 && pattern->midfixes_nbr == 0)
 		all_entries_to_matching(entries);
-	while (entries->matching[i] && entries->matching[i]->idx)
+	// while (entries->matching[i] && entries->matching[i]->idx)
+	while (entries->matching[i] && entries->matching[i]->entry)
 		check_suffix_internal_while(entries, pattern, &i, &j);
 	while (entries->matching[j])
 	{

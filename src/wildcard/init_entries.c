@@ -69,6 +69,7 @@ void	init_entries(t_entries *entries_ptr)
 	if (!vars.dir)
 	{
 		free(vars.entries);
+		// Should we return or exit?
 		return ;
 	}
 	vars.idx = 0;
