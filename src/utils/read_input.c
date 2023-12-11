@@ -23,8 +23,7 @@ char	*read_input(t_data *data)
 		exit(0);
 	}
 	add_history(input);
-	if (data->g_debug_level == DEBUG_ALL
-		|| data->g_debug_level == DEBUG_TOKENIZER)
+	if (data->debug_level == DEBUG_ALL || data->debug_level == DEBUG_TOKENIZER)
 		printf("readline: %s\n", input);
 	return (input);
 }

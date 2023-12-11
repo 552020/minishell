@@ -14,10 +14,10 @@
 
 void	parse(t_data *data)
 {
-	if (data->g_debug_level == DEBUG_ALL || data->g_debug_level == DEBUG_AST)
+	if (data->debug_level == DEBUG_ALL || data->debug_level == DEBUG_AST)
 		printf("***Parsing***\n\n");
 	data->ast_root = parser(data->lexeme_arr, 0, data->token_count - 1, data);
-	if (data->g_debug_level == DEBUG_ALL || data->g_debug_level == DEBUG_AST)
+	if (data->debug_level == DEBUG_ALL || data->debug_level == DEBUG_AST)
 	{
 		printf("\n***Printing AST***\n\n");
 		print_ast(data->ast_root, 7);
