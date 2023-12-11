@@ -31,7 +31,7 @@ typedef enum e_debug_level
 	DEBUG_ALL        // Debug everything
 }						t_debug_level;
 
-extern t_debug_level	g_debug_level;
+// extern t_debug_level	g_debug_level;
 
 /* Error messages*/
 
@@ -272,6 +272,7 @@ typedef struct s_data
 	t_lexeme			*lexeme_arr;
 	t_ast_node			*ast_root;
 	int					last_exit_status;
+	t_debug_level		g_debug_level;
 }						t_data;
 
 t_ast_node				*parser(t_lexeme *lexemes, int start, int end,
@@ -298,7 +299,7 @@ int						ft_arrlen(char **arr);
 
 /* Varia */
 void					check_input(int argc, char **argv);
-char					*read_input(void);
+char					*read_input(t_data *data);
 t_token					*tokenizer(t_data *data, const char *input);
 size_t					count_words_tokenizer(const char *input);
 

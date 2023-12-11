@@ -31,4 +31,5 @@ void	initialize_data(char **envp, t_data *data)
 		free_exit(data, "Error: malloc data->env_table failed\n");
 	initialize_table(envp, data);
 	initialize_envp_arr(data);
+	data->g_debug_level = DEBUG_OFF;
 }

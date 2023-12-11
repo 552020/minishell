@@ -12,9 +12,6 @@
 
 #include "minishell.h"
 
-// t_debug_level	g_debug_level = DEBUG_ALL;
-t_debug_level	g_debug_level = DEBUG_OFF;
-
 void	execute_main(t_data *data, int *exit_status)
 {
 	if (handle_heredocs(data->ast_root, data) == SUCCESS)
@@ -34,10 +31,11 @@ int	main(int argc, char **argv, char **envp)
 
 	check_input(argc, argv);
 	initialize_data(envp, &data);
+	// data.g_debug_level = DEBUG_ALL;
 	while (1)
 	{
 		handle_signals_main();
-		input = read_input();
+		input = read_input(&data);
 		tokenize(&data, input);
 		if (lexemize(&data) == SUCCESS)
 		{
