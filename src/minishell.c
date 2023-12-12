@@ -23,6 +23,10 @@ void	execute_main(t_data *data, int *exit_status)
 	}
 }
 
+/*
+to debug add this line in main, before the while loop:
+data.debug_level = DEBUG_ALL;
+*/
 int	main(int argc, char **argv, char **envp)
 {
 	char	*input;
@@ -31,7 +35,6 @@ int	main(int argc, char **argv, char **envp)
 
 	check_input(argc, argv);
 	initialize_data(envp, &data);
-	// data.debug_level = DEBUG_ALL;
 	while (1)
 	{
 		handle_signals_main();
