@@ -30,6 +30,20 @@ void	print_token_arr(t_token *token_arr, size_t token_count)
 			token_type = "T_ENV_VAR";
 		else if (token_arr[i].type == T_SHELL_VAR)
 			token_type = "T_SHELL_VAR";
+		else if (token_arr[i].type == T_DOUBLE_QUOTE)
+			token_type = "T_DOUBLE_QUOTE";
+		else if (token_arr[i].type == T_SINGLE_QUOTE)
+			token_type = "T_SINGLE_QUOTE";
+		else if (token_arr[i].type == T_ENV_VAR)
+			token_type = "T_ENV_VAR";
+		else if (token_arr[i].type == T_LOG_OR)
+			token_type = "T_LOG_OR";
+		else if (token_arr[i].type == T_LOG_AND)
+			token_type = "T_LOG_AND";
+		else if (token_arr[i].type == T_PARENTHESES_OPEN)
+			token_type = "T_PARENTHESES_OPEN";
+		else if (token_arr[i].type == T_PARENTHESES_CLOSE)
+			token_type = "T_PARENTHESES_CLOSE";
 		else if (token_arr[i].type == T_END)
 			token_type = "T_END";
 		else
@@ -84,14 +98,16 @@ void	print_lexeme_arr(t_lexeme *lexeme_arr, size_t lexeme_count)
 // for is not allowed!!!
 void	print_ast(t_ast_node *node, int depth)
 {
-	// Print indentation
-	for (int i = 0; i < depth; ++i)
-		printf("- ");
-	// Print node type and cmd
-	if (node->type == N_PIPE)
+	int	i;
+
+	i = 0;
+	while (i < depth)
 	{
-		printf("|\n");
+		printf("- ");
+		i++;
 	}
+	if (node->type == N_PIPE)
+		printf("|\n");
 	else if (node->type == N_COMMAND)
 	{
 		printf("%s", node->cmd);
@@ -104,7 +120,6 @@ void	print_ast(t_ast_node *node, int depth)
 		}
 		printf("\n");
 	}
-	// Print children
 	if (node->children[0])
 		print_ast(node->children[0], depth + 1);
 	if (node->children[1])
@@ -119,9 +134,7 @@ int	get_max_depth(t_ast_node *node)
 		return (0);
 	if (node->type == N_COMMAND)
 		return (1);
-	// If it's a pipe node, we compute the depth of the left child
 	left_depth = get_max_depth(node->children[0]);
-	// Since it's a pipe, it means there's an additional depth
 	left_depth++;
 	return (left_depth);
 }
@@ -190,8 +203,7 @@ void	print_node(t_ast_node *node, int depth, bool is_last_sibling[])
 
 void	print_ast_new(t_ast_node *root)
 {
-	bool	is_last_sibling[100] = {false};
-
+	bool is_last_sibling[100] = {false};
 	// Assuming a max depth of 100; can be dynamically allocated if needed
 	print_node(root, 0, is_last_sibling);
 }
@@ -205,19 +217,12 @@ void	print_node_info(t_ast_node *node)
 		printf("Node is NULL\n");
 		return ;
 	}
-	switch (node->type)
-	{
-	case N_PIPE:
+	if (node->type == N_PIPE)
 		printf("Type: PIPE\n");
-		break ;
-	case N_COMMAND:
+	else if (node->type == N_COMMAND)
 		printf("Type: COMMAND\n");
-		break ;
-	default:
+	else
 		printf("Type: UNKNOWN\n");
-		break ;
-	}
-	// Print data
 	if (node->cmd)
 	{
 		printf("cmd: %s\n", node->cmd);
@@ -226,7 +231,6 @@ void	print_node_info(t_ast_node *node)
 	{
 		printf("Cmd: NULL\n");
 	}
-	// Print arguments
 	if (node->args)
 	{
 		printf("Arguments: ");

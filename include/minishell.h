@@ -1,4 +1,5 @@
 #include "libft.h"
+#include "tokenizer.h"
 #include <stdio.h>
 // Comment needed to prevent autoformat to move the include above the comment
 #include <errno.h>
@@ -86,9 +87,14 @@ typedef enum e_token_type
 	// 7 - " the whole string in between " quotes included
 	T_SINGLE_QUOTE,
 	// 8 - ' the whole string in between ' quotes included
-	T_ENV_VAR,   // 9 - $ followed by a valid variable name
-	T_SHELL_VAR, // 10 - $ followed by a shell variable symbol like $?
-	T_END,       // 11 - End of token array
+	T_ENV_VAR,           // 9 - $ followed by a valid variable name
+	T_SHELL_VAR,         // 10 - $ followed by a shell variable symbol like $?
+	T_END,               // 11 - End of token array
+	T_UNKNOWN,           // 12 - Unknown token
+	T_LOG_OR,            // 13 - ||
+	T_LOG_AND,           // 14 - &&
+	T_PARENTHESES_OPEN,  // 15 - (
+	T_PARENTHESES_CLOSE, // 16 - )
 }						t_token_type;
 
 typedef struct s_token

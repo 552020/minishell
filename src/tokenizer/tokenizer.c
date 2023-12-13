@@ -47,29 +47,29 @@ t_token	*create_token_array(t_data *data)
 	return (token_arr);
 }
 
-void	tokenizer_internal_loop(t_data *data, const char *str, size_t *idx)
+void	tokenizer_internal_loop(t_data *data, const char **str, size_t *idx)
 {
-	skip_spaces(&str);
-	if (isregularchar(*str, str))
-		assign_word(&str, data, &idx);
-	else if (*str == '(')
-		assign_parentheses_open(&str, data, &idx);
-	else if (*str == ')')
-		assign_parentheses_close(&str, data, &idx);
-	else if (*str == '&' && *(str + 1) == '&')
-		assign_log_and(&str, data, &idx);
-	else if (*str == '|' && *(str + 1) == '|')
-		assign_log_or(&str, data, &idx);
-	else if (*str == '<' || *str == '>')
-		assign_redirect_in_out_heredoc_append(&str, data, &idx);
-	else if (*str == '|')
-		assign_pipe(&str, data, &idx);
-	else if (*str == '$')
-		assign_env_var(&str, data, &idx);
-	else if (*str == '\'' || *str == '"')
-		assign_quotes(&str, data, &idx);
+	skip_spaces(str);
+	if (isregularchar(**str, *str))
+		assign_word(str, data, idx);
+	else if (**str == '(')
+		assign_parentheses_open(str, data, idx);
+	else if (**str == ')')
+		assign_parentheses_close(str, data, idx);
+	else if (**str == '&' && *(*str + 1) == '&')
+		assign_log_and(str, data, idx);
+	else if (**str == '|' && *(*str + 1) == '|')
+		assign_log_or(str, data, idx);
+	else if (**str == '<' || **str == '>')
+		assign_redirect_in_out_heredoc_append(str, data, idx);
+	else if (**str == '|')
+		assign_pipe(str, data, idx);
+	else if (**str == '$')
+		assign_env_var(str, data, idx);
+	else if (**str == '\'' || **str == '"')
+		assign_quotes(str, data, idx);
 	else
-		handle_unexpected_char(&str);
+		handle_unexpected_char(str);
 }
 
 t_token	*tokenizer(t_data *data, const char *str)
@@ -78,7 +78,7 @@ t_token	*tokenizer(t_data *data, const char *str)
 
 	idx = 0;
 	while (*str)
-		tokenizer_internal_loop(data, str, &idx);
+		tokenizer_internal_loop(data, &str, &idx);
 	// {
 	// 	skip_spaces(&str);
 	// 	if (isregularchar(*str, str))
