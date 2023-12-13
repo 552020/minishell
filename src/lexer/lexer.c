@@ -14,10 +14,20 @@
 
 void	create_lexeme_arr(t_data *data)
 {
+	size_t	i;
+
 	data->lexeme_arr = malloc(sizeof(t_lexeme) * (data->token_count + 1));
 	if (!data->lexeme_arr)
 		free_exit(data, "Error: malloc lexeme_arr failed\n");
 	ft_memset(data->lexeme_arr, 0, sizeof(t_lexeme) * (data->token_count + 1));
+	i = 0;
+	while (i < data->token_count)
+	{
+		data->lexeme_arr[i].status = NOT_LEXED;
+		data->lexeme_arr[i].type = L_UNDEFINED;
+		data->lexeme_arr[i].str = NULL;
+		i++;
+	}
 }
 
 void	command_and_args(size_t token_count, t_lexeme *lexeme_arr)
@@ -55,6 +65,8 @@ t_lexeme	*lexer(t_data *data)
 		lexer_t_var_subs(data, i);
 		lexer_t_quotes_var_subs(data, i);
 		lexer_t_pipe(data, i);
+		lexer_t_log_and_or(data, i);
+		lexer_t_parentheses(data, i);
 		lexer_t_redirects_and_word(data, &i);
 		i++;
 	}

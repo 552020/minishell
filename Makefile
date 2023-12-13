@@ -41,7 +41,7 @@ endif
 SRCS = minishell.c \
  tokenizer/tokenizer.c tokenizer/utils.c tokenizer/assign.c tokenizer/count_words.c tokenizer/assign_redirect.c tokenizer/reshuffle_quotes.c tokenizer/reshuffle_quotes_utils.c tokenizer/assign_bonus.c \
  wildcard/wildcard.c wildcard/build_pattern.c wildcard/build_pattern_init.c wildcard/free.c wildcard/utils.c wildcard/init_entries.c wildcard/matching.c wildcard/matching_utils.c \
- lexer/lexer.c lexer/lexemes_redirect.c lexer/lexemes.c lexer/quotes.c lexer/var_subs.c lexer/wrappers.c lexer/lexer_helper.c lexer/check_syntax.c lexer/lexer_helper.c lexer/quotes_helper.c \
+ lexer/lexer.c lexer/lexemes_redirect.c lexer/lexemes.c lexer/lexemes_bonus.c lexer/quotes.c lexer/var_subs.c lexer/wrappers.c lexer/lexer_helper.c lexer/lexer_helper_bonus.c lexer/check_syntax.c lexer/lexer_helper.c lexer/quotes_helper.c \
  parser/parser.c parser/create_node.c parser/fill_node_cmd_args.c parser/fill_node_redirects.c parser/parser_utils.c \
  utils/check_input.c utils/free_functions.c utils/init.c \
  builtins/pwd.c builtins/env.c builtins/export.c builtins/unset.c builtins/cd.c builtins/exit.c builtins/echo.c builtins/exit_utils.c utils/read_input.c  \

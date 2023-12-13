@@ -44,8 +44,6 @@ void	free_lexeme_arr(t_data *data)
 		{
 			free(data->lexeme_arr[i].str);
 			data->lexeme_arr[i].str = NULL;
-			free(data->lexeme_arr[i].original);
-			data->lexeme_arr[i].original = NULL;
 		}
 		i++;
 	}

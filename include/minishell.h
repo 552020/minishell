@@ -93,8 +93,8 @@ typedef enum e_token_type
 	T_UNKNOWN,           // 12 - Unknown token
 	T_LOG_OR,            // 13 - ||
 	T_LOG_AND,           // 14 - &&
-	T_PARENTHESES_OPEN,  // 15 - (
-	T_PARENTHESES_CLOSE, // 16 - )
+	T_PARENTHESIS_OPEN,  // 15 - (
+	T_PARENTHESIS_CLOSE, // 16 - )
 }						t_token_type;
 
 typedef struct s_token
@@ -164,18 +164,22 @@ int						find_next_env_var_if_any(const char **str);
 # define CMD_FOUND 1
 typedef enum e_lexeme_type
 {
-	L_COMMAND,           // Command to be executed
-	L_ARGUMENT,          // Argument to a command
-	L_PIPE,              // Pipe operdator, signaling chaining of commands
-	L_REDIRECT_INPUT,    // Input redirection operator (<)
-	L_REDIRECT_OUTPUT,   // Output redirection operator (>)
-	L_REDIRECT_APPEND,   // Append redirection operator (>>)
-	L_HEREDOC,           // Heredoc redirection operator (<<)
-	L_HEREDOC_DELIMITER, // Delimiter for heredoc (<<)
-	L_FILENAME_STDIN,    // Filename used in redirections
-	L_FILENAME_STDOUT,   // Filename used in redirections
-	L_UNDEFINED,         // Undefined lexeme type
-	L_END                // End of lexeme array
+	L_COMMAND,            // Command to be executed
+	L_ARGUMENT,           // Argument to a command
+	L_PIPE,               // Pipe operdator, signaling chaining of commands
+	L_REDIRECT_INPUT,     // Input redirection operator (<)
+	L_REDIRECT_OUTPUT,    // Output redirection operator (>)
+	L_REDIRECT_APPEND,    // Append redirection operator (>>)
+	L_HEREDOC,            // Heredoc redirection operator (<<)
+	L_HEREDOC_DELIMITER,  // Delimiter for heredoc (<<)
+	L_FILENAME_STDIN,     // Filename used in redirections
+	L_FILENAME_STDOUT,    // Filename used in redirections
+	L_LOG_AND,            // Logical AND operator (&&)
+	L_LOG_OR,             // Logical OR operator (||)
+	L_PARENTHESIS_OPEN,   // Open parentheses
+	L_PARENTHESIS_CLOSED, // Close parentheses
+	L_UNDEFINED,          // Undefined lexeme type
+	L_END                 // End of lexeme array
 }						t_lexeme_type;
 
 typedef enum e_lexeme_status
@@ -187,8 +191,7 @@ typedef enum e_lexeme_status
 typedef struct s_lexeme
 {
 	t_lexeme_type		type;
-	char *str;      // The actual value (could be after variable substitution)
-	char *original; // Original value (useful for environment variables)
+	char *str; // The actual value (could be after variable substitution)
 	t_lexeme_status		status;
 }						t_lexeme;
 
@@ -202,6 +205,10 @@ t_lexeme				redirect_out_target_lexeme(t_token *token,
 t_lexeme				redirect_append_lexeme(t_token *token, t_data *data);
 t_lexeme				heredoc_lexeme(t_token *token, t_data *data);
 t_lexeme				heredoc_delimiter_lexeme(t_token *token, t_data *data);
+t_lexeme				log_or_lexeme(t_token *token, t_data *data);
+t_lexeme				log_and_lexeme(t_token *token, t_data *data);
+t_lexeme				parentheses_open_lexeme(t_token *token, t_data *data);
+t_lexeme				parentheses_close_lexeme(t_token *token, t_data *data);
 t_lexeme				t_double_quotes_var_subs(t_token *token, t_data *data);
 t_lexeme				single_quote_lexeme(t_token *token, t_data *data);
 t_lexeme				t_env_var_subs(t_token *token, t_data *data);
@@ -226,6 +233,8 @@ void					lexer_t_var_subs(t_data *data, size_t i);
 void					lexer_t_quotes_var_subs(t_data *data, size_t i);
 void					lexer_t_pipe(t_data *data, size_t i);
 void					lexer_t_redirects_and_word(t_data *data, size_t *i);
+void					lexer_t_log_and_or(t_data *data, size_t i);
+void					lexer_t_parentheses(t_data *data, size_t i);
 
 void					finalize_lexeme_array(t_data *data, size_t i);
 void					command_and_args(size_t token_count,

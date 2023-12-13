@@ -68,7 +68,11 @@ void	lexer_t_redirects_and_word(t_data *data, size_t *i)
 		|| data->token_arr[*i].type == T_SHELL_VAR
 		|| data->token_arr[*i].type == T_DOUBLE_QUOTE
 		|| data->token_arr[*i].type == T_SINGLE_QUOTE
-		|| data->token_arr[*i].type == T_PIPE)
+		|| data->token_arr[*i].type == T_PIPE
+		|| data->token_arr[*i].type == T_LOG_OR
+		|| data->token_arr[*i].type == T_LOG_AND
+		|| data->token_arr[*i].type == T_PARENTHESIS_OPEN
+		|| data->token_arr[*i].type == T_PARENTHESIS_CLOSE)
 	{
 		return ;
 	}
