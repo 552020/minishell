@@ -51,6 +51,7 @@ t_lexeme	t_shell_var_subs(t_token *token, t_data *data)
 	t_lexeme	lexeme;
 	char		*value;
 
+	(void)token;
 	value = ft_itoa(data->last_exit_status);
 	if (!value)
 		free_exit(data, "Error: malloc value failed\n");

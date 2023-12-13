@@ -61,8 +61,8 @@ int	check_syntax_error(t_data *data)
 	size_t		i;
 	t_lexeme	curr;
 
-	curr = data->lexeme_arr[i];
 	i = 0;
+	curr = data->lexeme_arr[i];
 	while (i < data->token_count + 1)
 	{
 		curr = data->lexeme_arr[i];
