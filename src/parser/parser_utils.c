@@ -40,3 +40,32 @@ int	ft_arrlen(char **arr)
 		i++;
 	return (i);
 }
+
+void	init_parser_vars(t_parser *vars, int start, int end)
+{
+	vars->i = end;
+	vars->end = end;
+	vars->start = start;
+	vars->node = NULL;
+}
+
+int	find_parenthesis_sibling(t_lexeme *lexemes, int start, int end)
+{
+	int	i;
+	int	parentheses_balance;
+
+	(void)end;
+	i = start;
+	parentheses_balance = 0;
+	while (i >= start)
+	{
+		if (lexemes[i].type == L_PARENTHESIS_CLOSED)
+			parentheses_balance++;
+		else if (lexemes[i].type == L_PARENTHESIS_OPEN)
+			parentheses_balance--;
+		if (parentheses_balance == 0)
+			return (i);
+		i--;
+	}
+	return (-1);
+}

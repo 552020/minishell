@@ -246,6 +246,9 @@ typedef enum e_node_type
 {
 	N_PIPE,
 	N_COMMAND,
+	N_PARENTHESES,
+	N_LOG_OR,
+	N_LOG_AND,
 }						t_node_type;
 
 typedef struct s_ast_node
@@ -263,6 +266,15 @@ typedef struct s_ast_node
 	int exit_status;                // Exit status of the command.
 	struct s_ast_node *children[2]; // For output redirection.
 }						t_ast_node;
+
+typedef struct s_parser
+{
+	int					i;
+	t_ast_node			*node;
+	int					parenthesis_sibling;
+	int					end;
+	int					start;
+}						t_parser;
 
 typedef struct s_node_list
 {
@@ -334,7 +346,15 @@ void					debug_ast(t_ast_node *node);
 void					print_hash_table(t_env_table *env_table);
 void					print_envp_arr(char **envp);
 t_ast_node				*create_node(t_node_type type, t_data *data);
-
+void					free_str_arr(char **arr);
+void					free_cmd_node(t_ast_node *node);
+void					free_ast(t_ast_node *node);
+void					init_parser_vars(t_parser *vars, int start, int end);
+int						find_parenthesis_sibling(t_lexeme *lexemes, int start,
+							int end);
+t_ast_node				*build_parentheses_node(t_ast_node *node,
+							t_lexeme *lexemes, int start, int end,
+							t_data *data);
 /* Heredoc */
 
 int						handle_heredocs(t_ast_node *node, t_data *data);

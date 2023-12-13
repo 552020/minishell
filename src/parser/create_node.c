@@ -53,3 +53,13 @@ t_ast_node	*build_cmd_node(t_lexeme *lexemes, int start, int end, t_data *data)
 	}
 	return (node);
 }
+
+t_ast_node	*build_parentheses_node(t_ast_node *node, t_lexeme *lexemes,
+		int start, int end, t_data *data)
+{
+	node->cmd = ft_strdup("minishell");
+	if (node->cmd == NULL)
+		free_exit(data, "Error: ft_strdup failed\n");
+	node->args = build_args_arr(lexemes, start, end, data);
+	return (node);
+}
