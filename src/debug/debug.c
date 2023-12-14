@@ -95,7 +95,6 @@ void	print_lexeme_arr(t_lexeme *lexeme_arr, size_t lexeme_count)
 	printf("\n");
 }
 
-// for is not allowed!!!
 void	print_ast(t_ast_node *node, int depth)
 {
 	int	i;
@@ -113,13 +112,21 @@ void	print_ast(t_ast_node *node, int depth)
 		printf("%s", node->cmd);
 		if (node->args)
 		{
-			for (int i = 0; node->args[i] != NULL; ++i)
+			i = 0;
+			while (node->args[i] != NULL)
 			{
 				printf(" %s", node->args[i]);
+				i++;
 			}
 		}
 		printf("\n");
 	}
+	else if (node->type == N_LOG_OR)
+		printf("||\n");
+	else if (node->type == N_LOG_AND)
+		printf("&&\n");
+	else
+		printf("UNKNOWN\n");
 	if (node->children[0])
 		print_ast(node->children[0], depth + 1);
 	if (node->children[1])
@@ -173,11 +180,12 @@ void	print_node(t_ast_node *node, int depth, bool is_last_sibling[])
 	if (!node)
 		return ;
 	print_indentation(depth, is_last_sibling, depth - 1);
-	// Print node type and cmd
 	if (node->type == N_PIPE)
-	{
 		printf("|\n");
-	}
+	else if (node->type == N_LOG_OR)
+		printf("||\n");
+	else if (node->type == N_LOG_AND)
+		printf("&&\n");
 	else if (node->type == N_COMMAND)
 	{
 		printf("%s", node->cmd);
@@ -189,7 +197,6 @@ void	print_node(t_ast_node *node, int depth, bool is_last_sibling[])
 		}
 		printf("\n");
 	}
-	// Print children
 	if (node->children[0])
 	{
 		print_node(node->children[0], depth + 1, is_last_sibling);
