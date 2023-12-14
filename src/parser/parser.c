@@ -66,9 +66,7 @@ t_ast_node	*parser_pipe(t_parser *vars, t_lexeme *lexemes, t_data *data)
 			vars->end, data);
 		vars->end = vars->i - 1;
 		vars->i = vars->end;
-		while (vars->i >= vars->start && (lexemes[vars->i].type != L_PIPE
-				&& lexemes[vars->i].type != L_LOG_OR
-				&& lexemes[vars->i].type != L_LOG_AND))
+		while (vars->i >= vars->start && (lexemes[vars->i].type != L_PIPE))
 			vars->i--;
 		if (vars->i > vars->start)
 			vars->node->children[0] = parser(lexemes, vars->start, vars->end,
@@ -92,16 +90,12 @@ t_ast_node	*parser_log_and_or(t_parser *vars, t_lexeme *lexemes, t_data *data)
 		vars->node->children[1] = parser(lexemes, vars->i + 1, vars->end, data);
 		vars->end = vars->i - 1;
 		vars->i = vars->end;
-		while (vars->i >= vars->start && (lexemes[vars->i].type != L_PIPE
-				&& lexemes[vars->i].type != L_LOG_OR
+		while (vars->i >= vars->start && (lexemes[vars->i].type != L_LOG_OR
 				&& lexemes[vars->i].type != L_LOG_AND))
 			vars->i--;
 		if (vars->i > vars->start)
-			vars->node->children[0] = parser(lexemes, vars->start, vars->end,
-				data);
-		else
-			vars->node->children[0] = parser(lexemes, vars->start, vars->end,
-				data);
+			vars->start evars->node->children[0] = parser(lexemes, vars->start,
+				vars->end, data);
 		return (vars->node);
 	}
 	return (NULL);
@@ -117,12 +111,13 @@ t_ast_node	*parser(t_lexeme *lexemes, int start, int end, t_data *data)
 		vars.node = parser_parentheses(&vars, lexemes, data);
 		if (vars.node)
 			return (vars.node);
-		vars.node = parser_pipe(&vars, lexemes, data);
-		if (vars.node)
-			return (vars.node);
 		vars.node = parser_log_and_or(&vars, lexemes, data);
 		if (vars.node)
 			return (vars.node);
+		vars.node = parser_pipe(&vars, lexemes, data);
+		if (vars.node)
+			return (vars.node);
+
 		vars.i--;
 	}
 	vars.node = build_cmd_node(lexemes, start, end, data);
