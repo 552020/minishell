@@ -4,7 +4,7 @@ NAME =	minishell
 CFLAGS = -g -Wall -Wextra -Werror
 LIBFT = ./libft/libft.a
 LIBS = -lreadline
-INCLUDES = -I./include  -I./libft/include -I./src/wildcard
+INCLUDES = -I./include  -I./libft/include -I./src/wildcard -I./src/tokenizer
 SRC_DIR = src
 OBJ_DIR = obj
 
@@ -16,7 +16,7 @@ ifeq ($(UNAME_S), Darwin)
     INCLUDES = -I./include -I./libft/include -I/opt/homebrew/opt/readline/include -I./libft/include -I/usr/local/opt/readline/include -I./src/wildcard -I./src/tokenizer
 
 else
-    INCLUDES = -I./include -I./libft/include -I./src/wildcard
+    INCLUDES = -I./include -I./libft/include -I./src/wildcard -I./src/tokenizer
 endif
 
 ifeq ($(UNAME_S), Darwin)

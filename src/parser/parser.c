@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bsengeze <bsengeze@student.42berlin.d      +#+  +:+       +#+        */
+/*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 07:15:23 by bsengeze          #+#    #+#             */
-/*   Updated: 2023/11/30 07:15:25 by bsengeze         ###   ########.fr       */
+/*   Updated: 2023/12/14 18:25:41 by slombard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ t_ast_node	*parser_parentheses(t_parser *vars, t_lexeme *lexemes, t_data *data)
 	if (lexemes[vars->i].type == L_PARENTHESIS_CLOSED)
 	{
 		vars->parenthesis_sibling = find_parenthesis_sibling(lexemes,
-			vars->start, vars->end);
+				vars->start, vars->end);
 		if (vars->parenthesis_sibling == -1)
 			free_exit(data, "Error: parentheses not balanced\n");
 		else if (vars->parenthesis_sibling == vars->start)
@@ -63,17 +63,17 @@ t_ast_node	*parser_pipe(t_parser *vars, t_lexeme *lexemes, t_data *data)
 	{
 		vars->node = create_node(N_PIPE, data);
 		vars->node->children[1] = build_cmd_node(lexemes, vars->i + 1,
-			vars->end, data);
+				vars->end, data);
 		vars->end = vars->i - 1;
 		vars->i = vars->end;
 		while (vars->i >= vars->start && (lexemes[vars->i].type != L_PIPE))
 			vars->i--;
 		if (vars->i > vars->start)
 			vars->node->children[0] = parser(lexemes, vars->start, vars->end,
-				data);
+					data);
 		else
 			vars->node->children[0] = build_cmd_node(lexemes, vars->start,
-				vars->end, data);
+					vars->end, data);
 		return (vars->node);
 	}
 	return (NULL);
@@ -94,8 +94,8 @@ t_ast_node	*parser_log_and_or(t_parser *vars, t_lexeme *lexemes, t_data *data)
 				&& lexemes[vars->i].type != L_LOG_AND))
 			vars->i--;
 		if (vars->i > vars->start)
-			vars->start evars->node->children[0] = parser(lexemes, vars->start,
-				vars->end, data);
+			vars->start = vars->i;
+		vars->node->children[0] = parser(lexemes, vars->start, vars->end, data);
 		return (vars->node);
 	}
 	return (NULL);
