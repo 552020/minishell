@@ -6,7 +6,7 @@
 /*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 07:12:29 by slombard          #+#    #+#             */
-/*   Updated: 2023/11/30 07:53:34 by slombard         ###   ########.fr       */
+/*   Updated: 2023/12/14 18:31:26 by slombard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,17 +63,17 @@ t_lexeme	*lexer(t_data *data)
 	i = 0;
 	while (i < data->token_count)
 	{
-		printf("i: %zu\n", i);
-		printf("data->token_arr[i].str: %s\n", data->token_arr[i].str);
-		printf("data->token_arr[i].type: %d\n", data->token_arr[i].type);
+		// printf("i: %zu\n", i);
+		// printf("data->token_arr[i].str: %s\n", data->token_arr[i].str);
+		// printf("data->token_arr[i].type: %d\n", data->token_arr[i].type);
 		lexer_t_var_subs(data, i);
 		lexer_t_quotes_var_subs(data, i);
 		lexer_t_pipe(data, i);
 		lexer_t_log_and_or(data, i);
 		lexer_t_parentheses(data, i);
 		lexer_t_redirects_and_word(data, &i);
-		printf("data->lexeme_arr[i].str: %s\n", data->lexeme_arr[i].str);
-		printf("data->lexeme_arr[i].type: %d\n", data->lexeme_arr[i].type);
+		// printf("data->lexeme_arr[i].str: %s\n", data->lexeme_arr[i].str);
+		// printf("data->lexeme_arr[i].type: %d\n", data->lexeme_arr[i].type);
 		i++;
 	}
 	finalize_lexeme_array(data, i);

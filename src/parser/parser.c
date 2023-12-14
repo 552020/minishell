@@ -6,7 +6,7 @@
 /*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 07:15:23 by bsengeze          #+#    #+#             */
-/*   Updated: 2023/12/14 18:25:41 by slombard         ###   ########.fr       */
+/*   Updated: 2023/12/14 22:30:37 by slombard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,95 +29,99 @@ void	parse(t_data *data)
 	free_lexeme_arr(data);
 }
 
-t_ast_node	*parser_parentheses(t_parser *vars, t_lexeme *lexemes, t_data *data)
+// t_ast_node	*parser_parentheses(t_parser *vars, t_lexeme *lexemes,
+// t_data *data)
+t_ast_node	*parser_parentheses(t_lexeme *lexemes, int start, int end,
+		t_parser *vars, t_data *data)
 {
-	if (lexemes[vars->i].type == L_PARENTHESIS_CLOSED)
+	vars->parenthesis_sibling = find_parenthesis_sibling(lexemes, start, end);
+	if (vars->parenthesis_sibling == -1)
+		free_exit(data, "Error: parentheses not balanced\n");
+	else if (vars->parenthesis_sibling == start)
 	{
-		vars->parenthesis_sibling = find_parenthesis_sibling(lexemes,
-				vars->start, vars->end);
-		if (vars->parenthesis_sibling == -1)
-			free_exit(data, "Error: parentheses not balanced\n");
-		else if (vars->parenthesis_sibling == vars->start)
-		{
-			vars->node = create_node(N_PARENTHESES, data);
-			build_parentheses_node(vars->node, lexemes, vars->start + 1,
-				vars->end - 1, data);
-			return (vars->node);
-		}
-		else if (vars->parenthesis_sibling > vars->start)
-		{
-			vars->i = vars->parenthesis_sibling - 1;
-		}
+		vars->node = create_node(N_PARENTHESES, data);
+		build_parentheses_node(vars->node, lexemes, start + 1, end - 1, data);
+		return (vars->node);
 	}
-	// This sould be never be the case
-	if (lexemes[vars->i].type == L_PARENTHESIS_OPEN)
+	else if (vars->parenthesis_sibling > vars->start)
 	{
+		vars->i = vars->parenthesis_sibling - 1;
 		return (NULL);
 	}
 	return (NULL);
 }
 
-t_ast_node	*parser_pipe(t_parser *vars, t_lexeme *lexemes, t_data *data)
+// t_ast_node	*parser_pipe(t_parser *vars, t_lexeme *lexemes, t_data *data)
+t_ast_node	*parser_pipe(t_lexeme *lexemes, int start, int end, t_parser *vars,
+		t_data *data)
 {
-	if (lexemes[vars->i].type == L_PIPE)
-	{
-		vars->node = create_node(N_PIPE, data);
-		vars->node->children[1] = build_cmd_node(lexemes, vars->i + 1,
-				vars->end, data);
-		vars->end = vars->i - 1;
-		vars->i = vars->end;
-		while (vars->i >= vars->start && (lexemes[vars->i].type != L_PIPE))
-			vars->i--;
-		if (vars->i > vars->start)
-			vars->node->children[0] = parser(lexemes, vars->start, vars->end,
-					data);
-		else
-			vars->node->children[0] = build_cmd_node(lexemes, vars->start,
-					vars->end, data);
-		return (vars->node);
-	}
-	return (NULL);
+	printf("parser_pipe\n");
+	vars->node = create_node(N_PIPE, data);
+	vars->node->children[1] = build_cmd_node(lexemes, vars->i + 1, end, data);
+	end = vars->i - 1;
+	vars->i = end;
+	while (vars->i >= start && lexemes[vars->i].type != L_PIPE)
+		vars->i--;
+	if (vars->i > start)
+		vars->node->children[0] = parser(lexemes, start, end, data);
+	else
+		vars->node->children[0] = build_cmd_node(lexemes, start, end, data);
+	return (vars->node);
 }
 
-t_ast_node	*parser_log_and_or(t_parser *vars, t_lexeme *lexemes, t_data *data)
+// t_ast_node	*parser_log_and_or(t_parser *vars, t_lexeme *lexemes,
+// t_data *data)
+t_ast_node	*parser_log_and_or(t_lexeme *lexemes, int start, int end,
+		t_parser *vars, t_data *data)
 {
-	if (lexemes[vars->i].type == L_LOG_AND || lexemes[vars->i].type == L_LOG_OR)
-	{
-		if (lexemes[vars->i].type == L_LOG_OR)
-			vars->node = create_node(N_LOG_OR, data);
-		else
-			vars->node = create_node(N_LOG_AND, data);
-		vars->node->children[1] = parser(lexemes, vars->i + 1, vars->end, data);
-		vars->end = vars->i - 1;
-		vars->i = vars->end;
-		while (vars->i >= vars->start && (lexemes[vars->i].type != L_LOG_OR
-				&& lexemes[vars->i].type != L_LOG_AND))
-			vars->i--;
-		if (vars->i > vars->start)
-			vars->start = vars->i;
-		vars->node->children[0] = parser(lexemes, vars->start, vars->end, data);
-		return (vars->node);
-	}
-	return (NULL);
+	if (lexemes[vars->i].type == L_LOG_OR)
+		vars->node = create_node(N_LOG_OR, data);
+	else
+		vars->node = create_node(N_LOG_AND, data);
+	vars->node->children[1] = parser(lexemes, vars->i + 1, end, data);
+	end = vars->i - 1;
+	vars->i = end;
+	while (vars->i > start && (lexemes[vars->i].type != L_LOG_OR
+			&& lexemes[vars->i].type != L_LOG_AND))
+		vars->i--;
+	if (vars->i > start)
+		start = vars->i;
+	vars->node->children[0] = parser(lexemes, start, end, data);
+	return (vars->node);
 }
 
 t_ast_node	*parser(t_lexeme *lexemes, int start, int end, t_data *data)
 {
-	t_parser vars;
+	t_parser	vars;
 
 	init_parser_vars(&vars, start, end);
 	while (vars.i >= vars.start)
 	{
-		vars.node = parser_parentheses(&vars, lexemes, data);
-		if (vars.node)
+		if (lexemes[vars.i].type == L_PARENTHESIS_CLOSED)
+		{
+			vars.node = parser_parentheses(lexemes, start, end, &vars, data);
+			if (vars.node)
+				return (vars.node);
+		}
+		if (lexemes[vars.i].type == L_PARENTHESIS_OPEN)
+			return (NULL);
+		if (lexemes[vars.i].type == L_LOG_AND
+			|| lexemes[vars.i].type == L_LOG_OR)
+		{
+			vars.node = parser_log_and_or(lexemes, start, end, &vars, data);
 			return (vars.node);
-		vars.node = parser_log_and_or(&vars, lexemes, data);
-		if (vars.node)
+		}
+		vars.i--;
+	}
+	vars.i = end;
+	while (vars.i >= vars.start)
+	{
+		if (lexemes[vars.i].type == L_PIPE)
+		{
+			// vars.node = parser_pipe(&vars, lexemes, data);
+			vars.node = parser_pipe(lexemes, start, end, &vars, data);
 			return (vars.node);
-		vars.node = parser_pipe(&vars, lexemes, data);
-		if (vars.node)
-			return (vars.node);
-
+		}
 		vars.i--;
 	}
 	vars.node = build_cmd_node(lexemes, start, end, data);

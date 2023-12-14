@@ -154,7 +154,7 @@ void	print_ast(t_ast_node *node, int depth)
 // 	return (left_depth);
 // }
 
-void	print_node_info(t_ast_node *node)
+void	print_node_info(t_ast_node *node, int level)
 {
 	int	i;
 
@@ -175,14 +175,11 @@ void	print_node_info(t_ast_node *node)
 		printf("Type: PARENTHESIS\n");
 	else
 		printf("Type: UNKNOWN\n");
+	printf("Level: %i\n", level);
 	if (node->cmd)
-	{
 		printf("cmd: %s\n", node->cmd);
-	}
 	else
-	{
 		printf("Cmd: NULL\n");
-	}
 	if (node->args)
 	{
 		printf("Arguments: ");
@@ -243,15 +240,18 @@ void	print_node_info(t_ast_node *node)
 		printf("Heredoc FD: -1\n");
 	if (node->children[0])
 	{
-		printf("Child 1:\n");
-		print_node_info(node->children[0]);
+		level = level + 1;
+		printf("\n");
+		printf("Child 1/%i:\n", level);
+		print_node_info(node->children[0], level);
 	}
 	else
 		printf("Child 1: NULL\n");
 	if (node->children[1])
 	{
-		printf("Child 2:\n");
-		print_node_info(node->children[1]);
+		printf("\n");
+		printf("Child 2/%i:\n", level);
+		print_node_info(node->children[1], level);
 	}
 	else
 		printf("Child 2: NULL\n");
@@ -260,9 +260,9 @@ void	print_node_info(t_ast_node *node)
 
 void	debug_ast(t_ast_node *root)
 {
-	printf("------ DEBUGGING AST ------\n");
-	print_node_info(root);
-	printf("------ END OF AST ------\n");
+	printf("------ NODES INFO ------\n");
+	print_node_info(root, 0);
+	printf("------ END OF NODES INFO ------\n");
 }
 
 void	print_hash_table(t_env_table *env_table)
