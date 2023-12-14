@@ -35,6 +35,7 @@ int	main(int argc, char **argv, char **envp)
 
 	check_input(argc, argv);
 	initialize_data(envp, &data);
+	data.debug_level = DEBUG_ALL;
 	while (1)
 	{
 		handle_signals_main();

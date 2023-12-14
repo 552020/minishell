@@ -33,7 +33,7 @@ int	check_initial_pipe(t_data *data, size_t index)
 	return (0);
 }
 
-int	check_unexpected_enf_of_input(t_data *data, size_t index)
+int	check_unexpected_end_of_input(t_data *data, size_t index)
 {
 	if (data->lexeme_arr[index + 1].type == L_END)
 	{
@@ -59,23 +59,25 @@ int	check_unexpected_token(t_data *data, size_t index)
 int	check_syntax_error(t_data *data)
 {
 	size_t		i;
-	t_lexeme	curr;
+	t_lexeme	next;
 
 	i = 0;
-	curr = data->lexeme_arr[i];
 	while (i < data->token_count + 1)
 	{
-		curr = data->lexeme_arr[i];
+		if (i == data->token_count)
+			next.type = L_END;
+		else
+			next = data->lexeme_arr[i + 1];
 		if (lexeme_is_operator(data->lexeme_arr[i].type))
 		{
 			if (check_initial_pipe(data, i))
 				return (1);
-			else if (check_unexpected_enf_of_input(data, i))
+			else if (check_unexpected_end_of_input(data, i))
 				return (1);
 			else if (check_unexpected_token(data, i))
 				return (1);
-			else if (curr.type == L_PIPE || curr.type == L_LOG_OR
-				|| curr.type == L_LOG_AND)
+			else if (next.type == L_PIPE || next.type == L_LOG_OR
+				|| next.type == L_LOG_AND)
 			{
 				printf("Syntax error: unexpected token %s\n", data->lexeme_arr[i
 					+ 1].str);
