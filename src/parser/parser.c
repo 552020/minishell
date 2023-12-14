@@ -49,10 +49,12 @@ t_ast_node	*parser_parentheses(t_parser *vars, t_lexeme *lexemes, t_data *data)
 			vars->i = vars->parenthesis_sibling - 1;
 		}
 	}
+	// This sould be never be the case
 	if (lexemes[vars->i].type == L_PARENTHESIS_OPEN)
 	{
-		return ;
+		return (NULL);
 	}
+	return (NULL);
 }
 
 t_ast_node	*parser_pipe(t_parser *vars, t_lexeme *lexemes, t_data *data)
@@ -74,6 +76,7 @@ t_ast_node	*parser_pipe(t_parser *vars, t_lexeme *lexemes, t_data *data)
 				vars->end, data);
 		return (vars->node);
 	}
+	return (NULL);
 }
 
 void	parser_log_and_or(t_parser *vars, t_lexeme *lexemes, t_data *data)
@@ -91,15 +94,19 @@ void	parser_log_and_or(t_parser *vars, t_lexeme *lexemes, t_data *data)
 	}
 }
 
-parser(t_lexeme *lexemes, int start, int end, t_data *data)
+t_ast_node	*parser(t_lexeme *lexemes, int start, int end, t_data *data)
 {
 	t_parser vars;
 
 	init_parser_vars(&vars, start, end);
 	while (vars.i >= vars.start)
 	{
-		parser_parentheses(&vars, lexemes, data);
-		parser_pipe(&vars, lexemes, data);
+		vars.node = parser_parentheses(&vars, lexemes, data);
+		if (vars.node)
+			return (vars.node);
+		vars.node = parser_pipe(&vars, lexemes, data);
+		if (vars.node)
+			return (vars.node);
 		parser_log_and_or(&vars, lexemes, data);
 		vars.i--;
 	}
