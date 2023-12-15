@@ -12,6 +12,8 @@
 
 #include "minishell.h"
 
+#define HISTORY_PATH "./.minishell_history"
+
 void	execute_main(t_data *data, int *exit_status)
 {
 	if (handle_heredocs(data->ast_root, data) == SUCCESS)
@@ -35,6 +37,7 @@ int	main(int argc, char **argv, char **envp)
 
 	check_input(argc, argv);
 	initialize_data(envp, &data);
+	read_history(HISTORY_PATH); // Load history
 	data.debug_level = DEBUG_ALL;
 	while (1)
 	{
@@ -50,5 +53,6 @@ int	main(int argc, char **argv, char **envp)
 			free_ast(data.ast_root);
 		data.ast_type = UNDEFINED;
 	}
+	write_history(HISTORY_PATH); // Save history on exit
 	return (exit_status);
 }
