@@ -6,7 +6,7 @@
 /*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 07:15:23 by bsengeze          #+#    #+#             */
-/*   Updated: 2023/12/14 22:30:37 by slombard         ###   ########.fr       */
+/*   Updated: 2023/12/15 22:10:05 by slombard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,18 +55,29 @@ t_ast_node	*parser_parentheses(t_lexeme *lexemes, int start, int end,
 t_ast_node	*parser_pipe(t_lexeme *lexemes, int start, int end, t_parser *vars,
 		t_data *data)
 {
+	int	l_pipe_found;
+
+	l_pipe_found = 0;
 	printf("parser_pipe\n");
 	printf("start: %d\n", start);
 	printf("end: %d\n", end);
 	vars->node = create_node(N_PIPE, data);
+	printf("build_cmd_node\n");
+	printf("start: %d\n", start + 1);
+	printf("end: %d\n", end);
 	vars->node->children[1] = build_cmd_node(lexemes, start + 1, end, data);
 	end = vars->i - 1;
 	vars->i = end;
-	while (vars->i >= vars->start && lexemes[vars->i].type != L_PIPE
-		&& lexemes[vars->i].type != L_LOG_AND
+	// while (vars->i >= vars->start && lexemes[vars->i].type != L_PIPE
+	while (vars->i >= vars->start && lexemes[vars->i].type != L_LOG_AND
 		&& lexemes[vars->i].type != L_LOG_OR)
+	{
 		vars->i--;
-	if (vars->i > vars->start)
+		if (lexemes[vars->i].type == L_PIPE)
+			l_pipe_found = 1;
+		printf("vars->i: %d\n", vars->i);
+	}
+	if (vars->i > vars->start || l_pipe_found)
 	{
 		start = vars->i + 1;
 		printf("calling parser in parser_pipe\n");
@@ -74,6 +85,7 @@ t_ast_node	*parser_pipe(t_lexeme *lexemes, int start, int end, t_parser *vars,
 	}
 	else
 	{
+		start = vars->i + 1;
 		printf("start: %d\n", start);
 		printf("end: %d\n", end);
 		printf("calling build_cmd_node in parser_pipe\n");
