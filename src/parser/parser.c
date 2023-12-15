@@ -6,7 +6,7 @@
 /*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 07:15:23 by bsengeze          #+#    #+#             */
-/*   Updated: 2023/12/15 22:10:05 by slombard         ###   ########.fr       */
+/*   Updated: 2023/12/16 00:11:53 by slombard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,13 +58,13 @@ t_ast_node	*parser_pipe(t_lexeme *lexemes, int start, int end, t_parser *vars,
 	int	l_pipe_found;
 
 	l_pipe_found = 0;
-	printf("parser_pipe\n");
-	printf("start: %d\n", start);
-	printf("end: %d\n", end);
+	// printf("parser_pipe\n");
+	// printf("start: %d\n", start);
+	// printf("end: %d\n", end);
 	vars->node = create_node(N_PIPE, data);
-	printf("build_cmd_node\n");
-	printf("start: %d\n", start + 1);
-	printf("end: %d\n", end);
+	// printf("build_cmd_node\n");
+	// printf("start: %d\n", start + 1);
+	// printf("end: %d\n", end);
 	vars->node->children[1] = build_cmd_node(lexemes, start + 1, end, data);
 	end = vars->i - 1;
 	vars->i = end;
@@ -75,20 +75,20 @@ t_ast_node	*parser_pipe(t_lexeme *lexemes, int start, int end, t_parser *vars,
 		vars->i--;
 		if (lexemes[vars->i].type == L_PIPE)
 			l_pipe_found = 1;
-		printf("vars->i: %d\n", vars->i);
+		// printf("vars->i: %d\n", vars->i);
 	}
 	if (vars->i > vars->start || l_pipe_found)
 	{
 		start = vars->i + 1;
-		printf("calling parser in parser_pipe\n");
+		// printf("calling parser in parser_pipe\n");
 		vars->node->children[0] = parser(lexemes, start, end, data);
 	}
 	else
 	{
 		start = vars->i + 1;
-		printf("start: %d\n", start);
-		printf("end: %d\n", end);
-		printf("calling build_cmd_node in parser_pipe\n");
+		// printf("start: %d\n", start);
+		// printf("end: %d\n", end);
+		// printf("calling build_cmd_node in parser_pipe\n");
 		vars->node->children[0] = build_cmd_node(lexemes, start, end, data);
 	}
 	return (vars->node);
@@ -100,9 +100,9 @@ t_ast_node	*parser_pipe(t_lexeme *lexemes, int start, int end, t_parser *vars,
 t_ast_node	*parser_log_and_or(t_lexeme *lexemes, int start, int end,
 		t_parser *vars, t_data *data)
 {
-	printf("parser_log_and_or\n");
-	printf("start: %d\n", start);
-	printf("end: %d\n", end);
+	// printf("parser_log_and_or\n");
+	// printf("start: %d\n", start);
+	// printf("end: %d\n", end);
 	if (lexemes[vars->i].type == L_LOG_OR)
 		vars->node = create_node(N_LOG_OR, data);
 	else
@@ -124,9 +124,9 @@ t_ast_node	*parser(t_lexeme *lexemes, int start, int end, t_data *data)
 {
 	t_parser	vars;
 
-	printf("parser\n");
-	printf("start: %d\n", start);
-	printf("end: %d\n", end);
+	// printf("parser\n");
+	// printf("start: %d\n", start);
+	// printf("end: %d\n", end);
 	init_parser_vars(&vars, start, end);
 	while (vars.i >= vars.start)
 	{

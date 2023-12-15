@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer_helper_bonus.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: slombard <slombard@student.42berlin.de>    +#+  +:+       +#+        */
+/*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/13 14:29:09 by slombard          #+#    #+#             */
-/*   Updated: 2023/12/13 14:29:11 by slombard         ###   ########.fr       */
+/*   Updated: 2023/12/15 23:58:14 by slombard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,8 @@ void	lexer_t_parentheses(t_data *data, size_t i)
 	}
 	else if (data->token_arr[i].type == T_PARENTHESIS_OPEN)
 		data->lexeme_arr[i] = parentheses_open_lexeme(&data->token_arr[i],
-			data);
-	else if (data->token_arr[i].type == T_PARENTHESIS_CLOSE)
+				data);
+	else if (data->token_arr[i].type == T_PARENTHESIS_CLOSED)
 		data->lexeme_arr[i] = parentheses_close_lexeme(&data->token_arr[i],
-			data);
+				data);
 }

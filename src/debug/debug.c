@@ -42,8 +42,8 @@ void	print_token_arr(t_token *token_arr, size_t token_count)
 			token_type = "T_LOG_AND";
 		else if (token_arr[i].type == T_PARENTHESIS_OPEN)
 			token_type = "T_PARENTHESIS_OPEN";
-		else if (token_arr[i].type == T_PARENTHESIS_CLOSE)
-			token_type = "T_PARENTHESIS_CLOSE";
+		else if (token_arr[i].type == T_PARENTHESIS_CLOSED)
+			token_type = "T_PARENTHESIS_CLOSED";
 		else if (token_arr[i].type == T_END)
 			token_type = "T_END";
 		else
@@ -91,7 +91,7 @@ void	print_lexeme_arr(t_lexeme *lexeme_arr, size_t lexeme_count)
 		else if (lexeme_arr[i].type == L_PARENTHESIS_OPEN)
 			lexeme_type = "L_PARENTHESIS_OPEN";
 		else if (lexeme_arr[i].type == L_PARENTHESIS_CLOSED)
-			lexeme_type = "L_PARENTHESIS_CLOSE";
+			lexeme_type = "L_PARENTHESIS_CLOSED";
 		else if (lexeme_arr[i].type == L_END)
 			lexeme_type = "L_END";
 		else

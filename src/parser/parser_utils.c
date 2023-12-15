@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   fill_node_redirects.c                              :+:      :+:    :+:   */
+/*   parser_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bsengeze <bsengeze@student.42berlin.d      +#+  +:+       +#+        */
+/*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 07:10:36 by bsengeze          #+#    #+#             */
-/*   Updated: 2023/11/30 07:10:38 by bsengeze         ###   ########.fr       */
+/*   Updated: 2023/12/16 00:15:19 by slombard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,10 +55,15 @@ int	find_parenthesis_sibling(t_lexeme *lexemes, int start, int end)
 	int	parentheses_balance;
 
 	(void)end;
-	i = start;
+	i = end;
+	printf("find_parenthesis_sibling\n");
+	printf("start: %d\n", start);
+	printf("end: %d\n", end);
 	parentheses_balance = 0;
 	while (i >= start)
 	{
+		printf("i: %d\n", i);
+		printf("lexemes[i].type: %d\n", lexemes[i].type);
 		if (lexemes[i].type == L_PARENTHESIS_CLOSED)
 			parentheses_balance++;
 		else if (lexemes[i].type == L_PARENTHESIS_OPEN)

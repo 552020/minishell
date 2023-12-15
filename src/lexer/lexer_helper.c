@@ -3,12 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   lexer_helper.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: slombard <slombard@student.42berlin.de>    +#+  +:+       +#+        */
+/*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 18:59:11 by slombard          #+#    #+#             */
-/*   Updated: 2023/11/30 18:59:14 by slombard         ###   ########.fr       */
+/*   Updated: 2023/12/16 00:09:37 by slombard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "minishell.h"
 
 void	finalize_lexeme_array(t_data *data, size_t i)
@@ -72,7 +73,7 @@ void	lexer_t_redirects_and_word(t_data *data, size_t *i)
 		|| data->token_arr[*i].type == T_LOG_OR
 		|| data->token_arr[*i].type == T_LOG_AND
 		|| data->token_arr[*i].type == T_PARENTHESIS_OPEN
-		|| data->token_arr[*i].type == T_PARENTHESIS_CLOSE)
+		|| data->token_arr[*i].type == T_PARENTHESIS_CLOSED)
 	{
 		return ;
 	}
