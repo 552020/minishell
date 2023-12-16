@@ -16,7 +16,9 @@ void	parse(t_data *data)
 {
 	if (data->debug_level == DEBUG_ALL || data->debug_level == DEBUG_AST)
 		printf("***Parsing***\n\n");
-	data->ast_root = parser(data->lexeme_arr, 0, data->token_count - 1, data);
+	// data->ast_root = parser(data->lexeme_arr, 0, data->token_count - 1,
+	// data);
+	data->ast_root = parser(data->lexeme_arr, 0, data->token_count, data);
 	if (data->debug_level == DEBUG_ALL || data->debug_level == DEBUG_AST)
 	{
 		printf("\n***Printing AST***\n\n");
@@ -34,6 +36,7 @@ void	parse(t_data *data)
 t_ast_node	*parser_parentheses(t_lexeme *lexemes, int start, int end,
 		t_parser *vars, t_data *data)
 {
+	printf("parser_parentheses\n");
 	vars->parenthesis_sibling = find_parenthesis_sibling(lexemes, start, end);
 	if (vars->parenthesis_sibling == -1)
 		free_exit(data, "Error: parentheses not balanced\n");
@@ -45,6 +48,10 @@ t_ast_node	*parser_parentheses(t_lexeme *lexemes, int start, int end,
 	}
 	else if (vars->parenthesis_sibling > vars->start)
 	{
+		printf("else if (vars->parenthesis_sibling > vars->start)\n");
+		printf("vars->parenthesis_sibling: %d\n", vars->parenthesis_sibling);
+		// this is the case where the parentheses are not the first lexemA
+		// i.e. they will not be the root node
 		vars->i = vars->parenthesis_sibling - 1;
 		return (NULL);
 	}
@@ -124,20 +131,26 @@ t_ast_node	*parser(t_lexeme *lexemes, int start, int end, t_data *data)
 {
 	t_parser	vars;
 
-	// printf("parser\n");
-	// printf("start: %d\n", start);
-	// printf("end: %d\n", end);
+	printf("parser\n");
+	printf("start: %d\n", start);
+	printf("end: %d\n", end);
 	init_parser_vars(&vars, start, end);
+	printf("before while loop in parser\n");
+	printf("lexemes[vars.i].type: %d\n", lexemes[vars.i].type);
 	while (vars.i >= vars.start)
 	{
+		printf("while loop in parser\n");
+		printf("vars.i: %d\n", vars.i);
+		printf("vars.start: %d\n", vars.start);
 		if (lexemes[vars.i].type == L_PARENTHESIS_CLOSED)
 		{
-			vars.node = parser_parentheses(lexemes, start, end, &vars, data);
+			vars.node = parser_parentheses(lexemes, start, vars.i, &vars, data);
 			if (vars.node)
 				return (vars.node);
 		}
 		if (lexemes[vars.i].type == L_PARENTHESIS_OPEN)
-			return (NULL);
+			continue ;
+		// return (NULL);
 		if (lexemes[vars.i].type == L_LOG_AND
 			|| lexemes[vars.i].type == L_LOG_OR)
 		{
