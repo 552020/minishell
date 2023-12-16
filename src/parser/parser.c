@@ -171,12 +171,20 @@ t_ast_node	*parser(t_lexeme *lexemes, int start, int end, t_data *data)
 		vars.i--;
 	}
 	vars.i = end;
+	pritnf("before second while loop in parser\n");
+	printf("vars.i: %d\n", vars.i);
+	printf("end: %d\n", end);
 	while (vars.i >= vars.start)
 	{
+		printf("vars.i: %d\n", vars.i);
+		printf("lexemes[vars.i].type: %d\n", lexemes[vars.i].type);
 		printf("second while loop in parser for L_PIPE\n");
 		if (lexemes[vars.i].type == L_PIPE)
 		{
 			// vars.node = parser_pipe(&vars, lexemes, data);
+			printf("calling parser_pipe\n");
+			printf("vars.i: %d\n", vars.i);
+			printf("end: %d\n", end);
 			vars.node = parser_pipe(lexemes, vars.i, end, &vars, data);
 			return (vars.node);
 		}
