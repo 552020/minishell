@@ -127,10 +127,16 @@ t_ast_node	*parser_log_and_or(t_lexeme *lexemes, int start, int end,
 	return (vars->node);
 }
 
+// The problem we face in this loop now is that if we find a paranteses
+// which doesn't take the whole command, after finding the matching opening one
+// we want to check also for pipes
+
 t_ast_node	*parser(t_lexeme *lexemes, int start, int end, t_data *data)
 {
 	t_parser	vars;
+	bool		enclosed_cmd;
 
+	enclosed_cmd = is_command_entirely_enclosed(lexemes, start, end);
 	printf("parser\n");
 	printf("start: %d\n", start);
 	printf("end: %d\n", end);
@@ -142,18 +148,23 @@ t_ast_node	*parser(t_lexeme *lexemes, int start, int end, t_data *data)
 		printf("while loop in parser\n");
 		printf("vars.i: %d\n", vars.i);
 		printf("vars.start: %d\n", vars.start);
-		if (lexemes[vars.i].type == L_PARENTHESIS_CLOSED)
+		printf("lexemes[vars.i].type: %d\n", lexemes[vars.i].type);
+		if (lexemes[vars.i].type == L_PARENTHESIS_CLOSED && enclosed_cmd)
 		{
 			vars.node = parser_parentheses(lexemes, start, vars.i, &vars, data);
 			if (vars.node)
 				return (vars.node);
 		}
-		if (lexemes[vars.i].type == L_PARENTHESIS_OPEN)
-			continue ;
+		printf("after if (lexemes[vars.i].type == L_PARENTHESIS_CLOSED)\n");
+		printf("vars.i: %d\n", vars.i);
+		printf("lexemes[vars.i].type: %d\n", lexemes[vars.i].type);
+		// if (lexemes[vars.i].type == L_PARENTHESIS_OPEN)
+		// 	continue ;
 		// return (NULL);
 		if (lexemes[vars.i].type == L_LOG_AND
 			|| lexemes[vars.i].type == L_LOG_OR)
 		{
+			printf("if (lexemes[vars.i].type == L_LOG_AND ...\n");
 			vars.node = parser_log_and_or(lexemes, vars.i, end, &vars, data);
 			return (vars.node);
 		}
@@ -162,6 +173,7 @@ t_ast_node	*parser(t_lexeme *lexemes, int start, int end, t_data *data)
 	vars.i = end;
 	while (vars.i >= vars.start)
 	{
+		printf("second while loop in parser for L_PIPE\n");
 		if (lexemes[vars.i].type == L_PIPE)
 		{
 			// vars.node = parser_pipe(&vars, lexemes, data);

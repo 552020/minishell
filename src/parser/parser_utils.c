@@ -74,3 +74,16 @@ int	find_parenthesis_sibling(t_lexeme *lexemes, int start, int end)
 	}
 	return (-1);
 }
+bool	is_command_entirely_enclosed(t_lexeme *lexemes, int start, int end)
+{
+	int	sibling_index;
+
+	if (lexemes[start].type != L_PARENTHESIS_OPEN)
+	{
+		return (false);
+	}
+	// find_parenthesis_sibling finds the matching opening parenthesis for the first closing one.
+	sibling_index = find_parenthesis_sibling(lexemes, start, end);
+	// Check if the matching parenthesis is the first lexeme in the current segment.
+	return (sibling_index == start);
+}

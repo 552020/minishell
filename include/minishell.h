@@ -430,4 +430,6 @@ int						ft_free_ret(char **ret, size_t i);
 int						check_parenthesis(t_ast_node *cmd);
 void					free_exit_code(t_data *data, char *error_message,
 							int exit_code);
+bool					is_command_entirely_enclosed(t_lexeme *lexemes,
+							int start, int end);
 #endif
