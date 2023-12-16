@@ -60,7 +60,10 @@ char	**build_args_arr(t_lexeme *lexemes, int start, int end, t_data *data)
 	int		i;
 	int		j;
 
-	args = (char **)malloc(sizeof(char *) * (end - start + 1));
+	printf("build_args_arr\n");
+	printf("start: %d\n", start);
+	printf("end: %d\n", end);
+	args = (char **)malloc(sizeof(char *) * (end - start + 2));
 	if (args == NULL)
 		free_exit(data, "Error: malloc args failed\n");
 	i = start;
