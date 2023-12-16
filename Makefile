@@ -4,6 +4,7 @@ NAME =	minishell
 CFLAGS = -g -Wall -Wextra -Werror
 LIBFT = ./libft/libft.a
 LIBS = -lreadline
+INCLUDES = -I./include  -I./libft/include -I./src/wildcard
 SRC_DIR = src
 OBJ_DIR = obj
 
@@ -11,10 +12,11 @@ UNAME_S := $(shell uname -s)
 
 # # Set include paths conditionally
 ifeq ($(UNAME_S), Darwin)
-    INCLUDES = -I./include -I./libft/include -I/opt/homebrew/opt/readline/include -I./libft/include -I/usr/local/opt/readline/include
+	CFLAGS += -fsanitize=address -g -O1
+    INCLUDES = -I./include -I./libft/include -I/opt/homebrew/opt/readline/include -I./libft/include -I/usr/local/opt/readline/include -I./src/wildcard
 
 else
-    INCLUDES = -I./include -I./libft/include
+    INCLUDES = -I./include -I./libft/include -I./src/wildcard
 endif
 
 ifeq ($(UNAME_S), Darwin)
@@ -38,6 +40,7 @@ endif
 
 SRCS = minishell.c \
  tokenizer/tokenizer.c tokenizer/utils.c tokenizer/assign.c tokenizer/count_words.c tokenizer/assign_redirect.c tokenizer/reshuffle_quotes.c tokenizer/reshuffle_quotes_utils.c \
+ wildcard/wildcard.c wildcard/build_pattern.c wildcard/build_pattern_init.c wildcard/free.c wildcard/utils.c wildcard/init_entries.c wildcard/matching.c wildcard/matching_utils.c \
  lexer/lexer.c lexer/lexemes_redirect.c lexer/lexemes.c lexer/quotes.c lexer/var_subs.c lexer/wrappers.c lexer/lexer_helper.c lexer/check_syntax.c lexer/lexer_helper.c lexer/quotes_helper.c \
  parser/parser.c parser/create_node.c parser/fill_node_cmd_args.c parser/fill_node_redirects.c parser/parser_utils.c \
  utils/check_input.c utils/free_functions.c utils/init.c \

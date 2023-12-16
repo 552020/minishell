@@ -6,11 +6,12 @@
 /*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 06:23:34 by slombard          #+#    #+#             */
-/*   Updated: 2023/11/30 06:24:07 by slombard         ###   ########.fr       */
+/*   Updated: 2023/12/10 22:07:35 by slombard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include "wildcard.h"
 
 char	*strip_ending_trailing_spaces(char const *str)
 {
@@ -69,25 +70,30 @@ void	tokenize(t_data *data, char *input)
 	char	*trimmed;
 	char	*tmp;
 	char	*reshuffled;
+	char	*expanded;
 
 	if (g_debug_level == DEBUG_ALL || g_debug_level == DEBUG_TOKENIZER)
 		printf("\n***Tokenization***\n\n");
 	trimmed = strip_ending_trailing_spaces(input);
 	tmp = reshuffle_single_quotes(trimmed);
+	free(trimmed);
+	trimmed = NULL;
 	reshuffled = reshuffle_double_quotes(tmp);
+	// printf("Reshuffled: %s\n", reshuffled);
 	free(tmp);
 	free(input);
+	expanded = wildcard_expansion(reshuffled, data);
+	// printf("Expanded: %s\n", expanded);
 	input = NULL;
-	data->token_count = count_words_tokenizer(reshuffled);
-	free(trimmed);
+	data->token_count = count_words_tokenizer(expanded);
 	if (g_debug_level == DEBUG_ALL || g_debug_level == DEBUG_TOKENIZER)
 		printf("Token count: %zu\n\n", data->token_count);
 	data->token_arr = create_token_array(data);
-	data->token_arr = tokenizer(data, reshuffled);
-	if (reshuffled)
+	data->token_arr = tokenizer(data, expanded);
+	if (expanded)
 	{
-		free(reshuffled);
-		reshuffled = NULL;
+		free(expanded);
+		expanded = NULL;
 	}
 	if (g_debug_level == DEBUG_ALL || g_debug_level == DEBUG_TOKENIZER)
 		print_token_arr(data->token_arr, data->token_count);
