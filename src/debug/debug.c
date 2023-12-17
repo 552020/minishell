@@ -133,6 +133,8 @@ void	print_ast(t_ast_node *node, int depth)
 		printf("||\n");
 	else if (node->type == N_LOG_AND)
 		printf("&&\n");
+	else if (node->type == N_PARENTHESES)
+		printf("()\n");
 	else
 		printf("UNKNOWN\n");
 	if (node->children[0])
@@ -243,7 +245,7 @@ void	print_node_info(t_ast_node *node, int level)
 		level = level + 1;
 		printf("\n");
 		printf("Child 1/%i:\n", level);
-		print_node_info(node->children[0], level);
+		// print_node_info(node->children[0], level);
 	}
 	else
 		printf("Child 1: NULL\n");
@@ -251,7 +253,7 @@ void	print_node_info(t_ast_node *node, int level)
 	{
 		printf("\n");
 		printf("Child 2/%i:\n", level);
-		print_node_info(node->children[1], level);
+		// print_node_info(node->children[1], level);
 	}
 	else
 		printf("Child 2: NULL\n");

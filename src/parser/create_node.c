@@ -118,5 +118,7 @@ t_ast_node	*build_parentheses_node(t_ast_node *node, t_lexeme *lexemes,
 	if (node->cmd == NULL)
 		free_exit(data, "Error: ft_strdup failed\n");
 	node->args = build_args_arr(lexemes, start, end, data);
+	node->children[0] = NULL;
+	node->children[1] = NULL;
 	return (node);
 }

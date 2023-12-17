@@ -56,14 +56,18 @@ int	find_parenthesis_sibling(t_lexeme *lexemes, int start, int end)
 
 	(void)end;
 	i = end;
-	printf("find_parenthesis_sibling\n");
-	printf("start: %d\n", start);
-	printf("end: %d\n", end);
+	// printf("find_parenthesis_sibling\n");
+	// printf("start: %d\n", start);
+	// printf("end: %d\n", end);
 	parentheses_balance = 0;
+	// printf("lexemes[i].type: %d\n", lexemes[i].type);
+	if (lexemes[i].type == L_END)
+		i--;
+	// printf("lexemes[i].type: %d\n", lexemes[i].type);
 	while (i >= start)
 	{
-		printf("i: %d\n", i);
-		printf("lexemes[i].type: %d\n", lexemes[i].type);
+		// printf("i: %d\n", i);
+		// printf("lexemes[i].type: %d\n", lexemes[i].type);
 		if (lexemes[i].type == L_PARENTHESIS_CLOSED)
 			parentheses_balance++;
 		else if (lexemes[i].type == L_PARENTHESIS_OPEN)
@@ -78,12 +82,17 @@ bool	is_command_entirely_enclosed(t_lexeme *lexemes, int start, int end)
 {
 	int	sibling_index;
 
+	// printf("is_command_entirely_enclosed\n");
+	// printf("start: %d\n", start);
+	// printf("end: %d\n", end);
 	if (lexemes[start].type != L_PARENTHESIS_OPEN)
 	{
 		return (false);
 	}
 	// find_parenthesis_sibling finds the matching opening parenthesis for the first closing one.
 	sibling_index = find_parenthesis_sibling(lexemes, start, end);
+	// printf("sibling_index: %d\n", sibling_index);
+	// printf("start: %d\n", start);
 	// Check if the matching parenthesis is the first lexeme in the current segment.
 	return (sibling_index == start);
 }

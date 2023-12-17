@@ -82,4 +82,7 @@ void	print_ast_new(t_ast_node *root)
 	bool is_last_sibling[100] = {false};
 	// Assuming a max depth of 100; can be dynamically allocated if needed
 	print_node(root, 0, is_last_sibling);
+	// (void)root;
+	// (void)is_last_sibling;
+	// printf("hello print_ast_new\n");
 }
