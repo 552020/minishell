@@ -54,6 +54,18 @@ void	count_word_special_char(const char **str_ptr, size_t *words)
 			parse_redirect(str_ptr);
 		else if (**str_ptr == '\'' || **str_ptr == '"')
 			parse_quotes(str_ptr);
+		else if (**str_ptr == '&' && *(*str_ptr + 1) == '&')
+			(*str_ptr) += 2;
+		else if (**str_ptr == '|')
+		{
+			(*str_ptr)++;
+			if (**str_ptr == '|')
+				(*str_ptr)++;
+		}
+		else if (**str_ptr == '(')
+			(*str_ptr)++;
+		else if (**str_ptr == ')')
+			(*str_ptr)++;
 		else
 		{
 			if (**str_ptr)

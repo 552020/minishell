@@ -1,4 +1,5 @@
 #include "libft.h"
+#include "tokenizer.h"
 #include <stdio.h>
 // Comment needed to prevent autoformat to move the include above the comment
 #include <errno.h>
@@ -31,7 +32,7 @@ typedef enum e_debug_level
 	DEBUG_ALL        // Debug everything
 }						t_debug_level;
 
-extern t_debug_level	g_debug_level;
+// extern t_debug_level	debug_level;
 
 /* Error messages*/
 
@@ -86,9 +87,14 @@ typedef enum e_token_type
 	// 7 - " the whole string in between " quotes included
 	T_SINGLE_QUOTE,
 	// 8 - ' the whole string in between ' quotes included
-	T_ENV_VAR,   // 9 - $ followed by a valid variable name
-	T_SHELL_VAR, // 10 - $ followed by a shell variable symbol like $?
-	T_END,       // 11 - End of token array
+	T_ENV_VAR,            // 9 - $ followed by a valid variable name
+	T_SHELL_VAR,          // 10 - $ followed by a shell variable symbol like $?
+	T_END,                // 11 - End of token array
+	T_UNKNOWN,            // 12 - Unknown token
+	T_LOG_OR,             // 13 - ||
+	T_LOG_AND,            // 14 - &&
+	T_PARENTHESIS_OPEN,   // 15 - (
+	T_PARENTHESIS_CLOSED, // 16 - )
 }						t_token_type;
 
 typedef struct s_token
@@ -158,18 +164,22 @@ int						find_next_env_var_if_any(const char **str);
 # define CMD_FOUND 1
 typedef enum e_lexeme_type
 {
-	L_COMMAND,           // Command to be executed
-	L_ARGUMENT,          // Argument to a command
-	L_PIPE,              // Pipe operdator, signaling chaining of commands
-	L_REDIRECT_INPUT,    // Input redirection operator (<)
-	L_REDIRECT_OUTPUT,   // Output redirection operator (>)
-	L_REDIRECT_APPEND,   // Append redirection operator (>>)
-	L_HEREDOC,           // Heredoc redirection operator (<<)
-	L_HEREDOC_DELIMITER, // Delimiter for heredoc (<<)
-	L_FILENAME_STDIN,    // Filename used in redirections
-	L_FILENAME_STDOUT,   // Filename used in redirections
-	L_UNDEFINED,         // Undefined lexeme type
-	L_END                // End of lexeme array
+	L_COMMAND,            // Command to be executed
+	L_ARGUMENT,           // Argument to a command
+	L_PIPE,               // Pipe operdator, signaling chaining of commands
+	L_REDIRECT_INPUT,     // Input redirection operator (<)
+	L_REDIRECT_OUTPUT,    // Output redirection operator (>)
+	L_REDIRECT_APPEND,    // Append redirection operator (>>)
+	L_HEREDOC,            // Heredoc redirection operator (<<)
+	L_HEREDOC_DELIMITER,  // Delimiter for heredoc (<<)
+	L_FILENAME_STDIN,     // Filename used in redirections
+	L_FILENAME_STDOUT,    // Filename used in redirections
+	L_LOG_AND,            // Logical AND operator (&&)
+	L_LOG_OR,             // Logical OR operator (||)
+	L_PARENTHESIS_OPEN,   // Open parentheses
+	L_PARENTHESIS_CLOSED, // Close parentheses
+	L_UNDEFINED,          // Undefined lexeme type
+	L_END                 // End of lexeme array
 }						t_lexeme_type;
 
 typedef enum e_lexeme_status
@@ -181,8 +191,7 @@ typedef enum e_lexeme_status
 typedef struct s_lexeme
 {
 	t_lexeme_type		type;
-	char *str;      // The actual value (could be after variable substitution)
-	char *original; // Original value (useful for environment variables)
+	char *str; // The actual value (could be after variable substitution)
 	t_lexeme_status		status;
 }						t_lexeme;
 
@@ -196,6 +205,10 @@ t_lexeme				redirect_out_target_lexeme(t_token *token,
 t_lexeme				redirect_append_lexeme(t_token *token, t_data *data);
 t_lexeme				heredoc_lexeme(t_token *token, t_data *data);
 t_lexeme				heredoc_delimiter_lexeme(t_token *token, t_data *data);
+t_lexeme				log_or_lexeme(t_token *token, t_data *data);
+t_lexeme				log_and_lexeme(t_token *token, t_data *data);
+t_lexeme				parentheses_open_lexeme(t_token *token, t_data *data);
+t_lexeme				parentheses_close_lexeme(t_token *token, t_data *data);
 t_lexeme				t_double_quotes_var_subs(t_token *token, t_data *data);
 t_lexeme				single_quote_lexeme(t_token *token, t_data *data);
 t_lexeme				t_env_var_subs(t_token *token, t_data *data);
@@ -220,6 +233,8 @@ void					lexer_t_var_subs(t_data *data, size_t i);
 void					lexer_t_quotes_var_subs(t_data *data, size_t i);
 void					lexer_t_pipe(t_data *data, size_t i);
 void					lexer_t_redirects_and_word(t_data *data, size_t *i);
+void					lexer_t_log_and_or(t_data *data, size_t i);
+void					lexer_t_parentheses(t_data *data, size_t i);
 
 void					finalize_lexeme_array(t_data *data, size_t i);
 void					command_and_args(size_t token_count,
@@ -231,6 +246,9 @@ typedef enum e_node_type
 {
 	N_PIPE,
 	N_COMMAND,
+	N_PARENTHESES,
+	N_LOG_OR,
+	N_LOG_AND,
 }						t_node_type;
 
 typedef struct s_ast_node
@@ -248,6 +266,15 @@ typedef struct s_ast_node
 	int exit_status;                // Exit status of the command.
 	struct s_ast_node *children[2]; // For output redirection.
 }						t_ast_node;
+
+typedef struct s_parser
+{
+	int					i;
+	t_ast_node			*node;
+	int					parenthesis_sibling;
+	int					end;
+	int					start;
+}						t_parser;
 
 typedef struct s_node_list
 {
@@ -272,6 +299,7 @@ typedef struct s_data
 	t_lexeme			*lexeme_arr;
 	t_ast_node			*ast_root;
 	int					last_exit_status;
+	t_debug_level		debug_level;
 }						t_data;
 
 t_ast_node				*parser(t_lexeme *lexemes, int start, int end,
@@ -298,7 +326,7 @@ int						ft_arrlen(char **arr);
 
 /* Varia */
 void					check_input(int argc, char **argv);
-char					*read_input(void);
+char					*read_input(t_data *data);
 t_token					*tokenizer(t_data *data, const char *input);
 size_t					count_words_tokenizer(const char *input);
 
@@ -318,7 +346,15 @@ void					debug_ast(t_ast_node *node);
 void					print_hash_table(t_env_table *env_table);
 void					print_envp_arr(char **envp);
 t_ast_node				*create_node(t_node_type type, t_data *data);
-
+void					free_str_arr(char **arr);
+void					free_cmd_node(t_ast_node *node);
+void					free_ast(t_ast_node *node);
+void					init_parser_vars(t_parser *vars, int start, int end);
+int						find_parenthesis_sibling(t_lexeme *lexemes, int start,
+							int end);
+t_ast_node				*build_parentheses_node(t_ast_node *node,
+							t_lexeme *lexemes, int start, int end,
+							t_data *data);
 /* Heredoc */
 
 int						handle_heredocs(t_ast_node *node, t_data *data);
@@ -394,4 +430,7 @@ int						ft_free_ret(char **ret, size_t i);
 int						check_parenthesis(t_ast_node *cmd);
 void					free_exit_code(t_data *data, char *error_message,
 							int exit_code);
+bool					is_command_entirely_enclosed(t_lexeme *lexemes,
+							int start, int end);
+void					print_node_info(t_ast_node *node, int level);
 #endif

@@ -15,7 +15,8 @@
 int	lexeme_is_operator(t_lexeme_type type)
 {
 	if (type == L_PIPE || type == L_REDIRECT_INPUT || type == L_REDIRECT_OUTPUT
-		|| type == L_REDIRECT_APPEND || type == L_HEREDOC)
+		|| type == L_REDIRECT_APPEND || type == L_HEREDOC || type == L_LOG_OR
+		|| type == L_LOG_AND)
 		return (1);
 	return (0);
 }
@@ -32,7 +33,7 @@ int	check_initial_pipe(t_data *data, size_t index)
 	return (0);
 }
 
-int	check_unexpected_enf_of_input(t_data *data, size_t index)
+int	check_unexpected_end_of_input(t_data *data, size_t index)
 {
 	if (data->lexeme_arr[index + 1].type == L_END)
 	{
@@ -57,20 +58,26 @@ int	check_unexpected_token(t_data *data, size_t index)
 
 int	check_syntax_error(t_data *data)
 {
-	size_t	i;
+	size_t		i;
+	t_lexeme	next;
 
 	i = 0;
 	while (i < data->token_count + 1)
 	{
+		if (i == data->token_count)
+			next.type = L_END;
+		else
+			next = data->lexeme_arr[i + 1];
 		if (lexeme_is_operator(data->lexeme_arr[i].type))
 		{
 			if (check_initial_pipe(data, i))
 				return (1);
-			else if (check_unexpected_enf_of_input(data, i))
+			else if (check_unexpected_end_of_input(data, i))
 				return (1);
 			else if (check_unexpected_token(data, i))
 				return (1);
-			else if (data->lexeme_arr[i + 1].type == L_PIPE)
+			else if (next.type == L_PIPE || next.type == L_LOG_OR
+				|| next.type == L_LOG_AND)
 			{
 				printf("Syntax error: unexpected token %s\n", data->lexeme_arr[i
 					+ 1].str);

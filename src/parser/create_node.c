@@ -53,3 +53,72 @@ t_ast_node	*build_cmd_node(t_lexeme *lexemes, int start, int end, t_data *data)
 	}
 	return (node);
 }
+
+char	**build_args_arr(t_lexeme *lexemes, int start, int end, t_data *data)
+{
+	char	**args;
+	int		i;
+	int		j;
+
+	printf("build_args_arr\n");
+	printf("start: %d\n", start);
+	printf("end: %d\n", end);
+	args = (char **)malloc(sizeof(char *) * (end - start + 2));
+	if (args == NULL)
+		free_exit(data, "Error: malloc args failed\n");
+	i = start;
+	j = 0;
+	while (i <= end)
+	{
+		if (lexemes[i].type == L_COMMAND || lexemes[i].type == L_ARGUMENT)
+			args[j] = ft_strdup(lexemes[i].str);
+		else if (lexemes[i].type == L_PIPE)
+			args[j] = ft_strdup("|");
+		else if (lexemes[i].type == L_REDIRECT_INPUT)
+			args[j] = ft_strdup("<");
+		else if (lexemes[i].type == L_REDIRECT_OUTPUT)
+			args[j] = ft_strdup(">");
+		else if (lexemes[i].type == L_REDIRECT_APPEND)
+			args[j] = ft_strdup(">>");
+		else if (lexemes[i].type == L_HEREDOC)
+			args[j] = ft_strdup("<<");
+		else if (lexemes[i].type == L_HEREDOC_DELIMITER)
+			args[j] = ft_strdup(lexemes[i].str);
+		else if (lexemes[i].type == L_FILENAME_STDIN)
+			args[j] = ft_strdup(lexemes[i].str);
+		else if (lexemes[i].type == L_FILENAME_STDOUT)
+			args[j] = ft_strdup(lexemes[i].str);
+		else if (lexemes[i].type == L_PARENTHESIS_OPEN)
+			args[j] = ft_strdup("(");
+		else if (lexemes[i].type == L_PARENTHESIS_CLOSED)
+			args[j] = ft_strdup(")");
+		else if (lexemes[i].type == L_LOG_AND)
+			args[j] = ft_strdup("&&");
+		else if (lexemes[i].type == L_LOG_OR)
+			args[j] = ft_strdup("||");
+		else
+		{
+			// This should never happen
+			args[j] = ft_strdup("ERROR");
+			free_exit(data, "Error: Parenthesis node: unknown lexeme type\n");
+		}
+		if (args[j] == NULL)
+			free_exit(data, "Error: ft_strdup failed\n");
+		j++;
+		i++;
+	}
+	args[j] = NULL;
+	return (args);
+}
+
+t_ast_node	*build_parentheses_node(t_ast_node *node, t_lexeme *lexemes,
+		int start, int end, t_data *data)
+{
+	node->cmd = ft_strdup("minishell");
+	if (node->cmd == NULL)
+		free_exit(data, "Error: ft_strdup failed\n");
+	node->args = build_args_arr(lexemes, start, end, data);
+	node->children[0] = NULL;
+	node->children[1] = NULL;
+	return (node);
+}

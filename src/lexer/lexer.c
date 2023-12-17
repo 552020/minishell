@@ -6,7 +6,7 @@
 /*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 07:12:29 by slombard          #+#    #+#             */
-/*   Updated: 2023/11/30 07:53:34 by slombard         ###   ########.fr       */
+/*   Updated: 2023/12/14 18:31:26 by slombard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,20 @@
 
 void	create_lexeme_arr(t_data *data)
 {
+	size_t	i;
+
 	data->lexeme_arr = malloc(sizeof(t_lexeme) * (data->token_count + 1));
 	if (!data->lexeme_arr)
 		free_exit(data, "Error: malloc lexeme_arr failed\n");
 	ft_memset(data->lexeme_arr, 0, sizeof(t_lexeme) * (data->token_count + 1));
+	i = 0;
+	while (i < data->token_count)
+	{
+		data->lexeme_arr[i].status = NOT_LEXED;
+		data->lexeme_arr[i].type = L_UNDEFINED;
+		data->lexeme_arr[i].str = NULL;
+		i++;
+	}
 }
 
 void	command_and_args(size_t token_count, t_lexeme *lexeme_arr)
@@ -39,7 +49,8 @@ void	command_and_args(size_t token_count, t_lexeme *lexeme_arr)
 			else
 				lexeme_arr[i].type = L_ARGUMENT;
 		}
-		else if (lexeme_arr[i].type == L_PIPE)
+		else if (lexeme_arr[i].type == L_PIPE || lexeme_arr[i].type == L_LOG_AND
+			|| lexeme_arr[i].type == L_LOG_OR)
 			command_flag = NO_CMD_YET;
 		i++;
 	}
@@ -52,10 +63,17 @@ t_lexeme	*lexer(t_data *data)
 	i = 0;
 	while (i < data->token_count)
 	{
+		// printf("i: %zu\n", i);
+		// printf("data->token_arr[i].str: %s\n", data->token_arr[i].str);
+		// printf("data->token_arr[i].type: %d\n", data->token_arr[i].type);
 		lexer_t_var_subs(data, i);
 		lexer_t_quotes_var_subs(data, i);
 		lexer_t_pipe(data, i);
+		lexer_t_log_and_or(data, i);
+		lexer_t_parentheses(data, i);
 		lexer_t_redirects_and_word(data, &i);
+		// printf("data->lexeme_arr[i].str: %s\n", data->lexeme_arr[i].str);
+		// printf("data->lexeme_arr[i].type: %d\n", data->lexeme_arr[i].type);
 		i++;
 	}
 	finalize_lexeme_array(data, i);
@@ -107,7 +125,7 @@ int	lexemize(t_data *data)
 {
 	create_lexeme_arr(data);
 	data->lexeme_arr = lexer(data);
-	if (g_debug_level == DEBUG_ALL || g_debug_level == DEBUG_LEXER)
+	if (data->debug_level == DEBUG_ALL || data->debug_level == DEBUG_LEXER)
 	{
 		printf("\n***Lexer***\n\n");
 		print_lexeme_arr(data->lexeme_arr, data->token_count);

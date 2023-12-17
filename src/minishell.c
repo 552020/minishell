@@ -3,17 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: slombard <slombard@student.42berlin.de>    +#+  +:+       +#+        */
+/*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/05 17:45:46 by slombard          #+#    #+#             */
-/*   Updated: 2023/12/05 17:45:52 by slombard         ###   ########.fr       */
+/*   Updated: 2023/12/15 22:18:17 by slombard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// t_debug_level	g_debug_level = DEBUG_ALL;
-t_debug_level	g_debug_level = DEBUG_OFF;
+#define HISTORY_PATH "./.minishell_history"
 
 void	execute_main(t_data *data, int *exit_status)
 {
@@ -26,6 +25,10 @@ void	execute_main(t_data *data, int *exit_status)
 	}
 }
 
+/*
+to debug add this line in main, before the while loop:
+data.debug_level = DEBUG_ALL;
+*/
 int	main(int argc, char **argv, char **envp)
 {
 	char	*input;
@@ -34,10 +37,12 @@ int	main(int argc, char **argv, char **envp)
 
 	check_input(argc, argv);
 	initialize_data(envp, &data);
+	read_history(HISTORY_PATH); // Load history
+	data.debug_level = DEBUG_ALL;
 	while (1)
 	{
 		handle_signals_main();
-		input = read_input();
+		input = read_input(&data);
 		tokenize(&data, input);
 		if (lexemize(&data) == SUCCESS)
 		{
@@ -48,5 +53,6 @@ int	main(int argc, char **argv, char **envp)
 			free_ast(data.ast_root);
 		data.ast_type = UNDEFINED;
 	}
+	write_history(HISTORY_PATH); // Save history on exit
 	return (exit_status);
 }

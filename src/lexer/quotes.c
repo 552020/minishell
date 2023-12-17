@@ -89,7 +89,6 @@ t_lexeme	t_double_quotes_var_subs(t_token *token, t_data *data)
 		free_exit(data, "Error: malloc lexeme.str failed\n");
 	lexeme.type = L_UNDEFINED;
 	lexeme.status = NOT_LEXED;
-	lexeme.original = NULL;
 	return (lexeme);
 }
 
@@ -98,9 +97,6 @@ t_lexeme	single_quote_lexeme(t_token *token, t_data *data)
 	t_lexeme	lexeme;
 
 	lexeme.type = L_UNDEFINED;
-	lexeme.original = ft_strdup(token->str);
-	if (!lexeme.original)
-		free_exit(data, "Error: malloc lexeme.original failed\n");
 	lexeme.str = strip_quotes(token->str, data);
 	lexeme.status = NOT_LEXED;
 	return (lexeme);

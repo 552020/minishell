@@ -19,10 +19,12 @@ int	ft_isspace(int c)
 	else
 		return (0);
 }
-
+// TODO: the logic for parentheses could be improved
+// we should check if the parentheses are balanced
 int	isspecialchar(char c, const char *str)
 {
-	if (c == '<' || c == '>' || c == '|' || c == '$' || c == '"' || c == '\'')
+	if (c == '<' || c == '>' || c == '|' || c == '$' || c == '"' || c == '\''
+		|| c == '(' || c == ')' || (c == '&' && *(str + 1) == '&'))
 	{
 		if (c == '$')
 		{
