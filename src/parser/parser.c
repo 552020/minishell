@@ -79,9 +79,10 @@ t_ast_node	*parser_pipe(t_lexeme *lexemes, int start, int end, t_parser *vars,
 	while (vars->i >= vars->start && lexemes[vars->i].type != L_LOG_AND
 		&& lexemes[vars->i].type != L_LOG_OR)
 	{
-		vars->i--;
+		printf("lexemes[vars->i].type: %d\n", lexemes[vars->i].type);
 		if (lexemes[vars->i].type == L_PIPE)
 			l_pipe_found = 1;
+		vars->i--;
 		// printf("vars->i: %d\n", vars->i);
 	}
 	if (vars->i > vars->start || l_pipe_found)
@@ -171,7 +172,7 @@ t_ast_node	*parser(t_lexeme *lexemes, int start, int end, t_data *data)
 		vars.i--;
 	}
 	vars.i = end;
-	pritnf("before second while loop in parser\n");
+	printf("before second while loop in parser\n");
 	printf("vars.i: %d\n", vars.i);
 	printf("end: %d\n", end);
 	while (vars.i >= vars.start)
