@@ -65,35 +65,44 @@ t_token	*tokenizer(t_data *data, const char *str)
 	return (data->token_arr);
 }
 
-void	tokenize(t_data *data, char *input)
+typedef struct s_tokenize_vars
 {
 	char	*trimmed;
 	char	*tmp;
 	char	*reshuffled;
 	char	*expanded;
 
+}			t_tokenize_vars;
+
+void	trim_reshuffle_expand(t_tokenize_vars *vars, char *input, t_data *data)
+{
+	vars->trimmed = strip_ending_trailing_spaces(input);
+	vars->tmp = reshuffle_single_quotes(vars->trimmed);
+	free(vars->trimmed);
+	vars->trimmed = NULL;
+	vars->reshuffled = reshuffle_double_quotes(vars->tmp);
+	free(vars->tmp);
+	free(input);
+	vars->expanded = wildcard_expansion(vars->reshuffled, data);
+	input = NULL;
+}
+
+void	tokenize(t_data *data, char *input)
+{
+	t_tokenize_vars	vars;
+
 	if (g_debug_level == DEBUG_ALL || g_debug_level == DEBUG_TOKENIZER)
 		printf("\n***Tokenization***\n\n");
-	trimmed = strip_ending_trailing_spaces(input);
-	tmp = reshuffle_single_quotes(trimmed);
-	free(trimmed);
-	trimmed = NULL;
-	reshuffled = reshuffle_double_quotes(tmp);
-	// printf("Reshuffled: %s\n", reshuffled);
-	free(tmp);
-	free(input);
-	expanded = wildcard_expansion(reshuffled, data);
-	// printf("Expanded: %s\n", expanded);
-	input = NULL;
-	data->token_count = count_words_tokenizer(expanded);
+	trim_reshuffle_expand(&vars, input, data);
+	data->token_count = count_words_tokenizer(vars.expanded);
 	if (g_debug_level == DEBUG_ALL || g_debug_level == DEBUG_TOKENIZER)
 		printf("Token count: %zu\n\n", data->token_count);
 	data->token_arr = create_token_array(data);
-	data->token_arr = tokenizer(data, expanded);
-	if (expanded)
+	data->token_arr = tokenizer(data, vars.expanded);
+	if (vars.expanded)
 	{
-		free(expanded);
-		expanded = NULL;
+		free(vars.expanded);
+		vars.expanded = NULL;
 	}
 	if (g_debug_level == DEBUG_ALL || g_debug_level == DEBUG_TOKENIZER)
 		print_token_arr(data->token_arr, data->token_count);
