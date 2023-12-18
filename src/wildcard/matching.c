@@ -41,40 +41,14 @@ void	check_midfix(t_entries *entries, t_pattern *pattern, char *midfix)
 
 	i = 0;
 	j = 0;
-	// printf("midfix: %s\n", midfix);
-	// print entries
-	// while (entries->entries[i])
-	// {
-	// printf("entries->entries[%d]->entry: %s\n", i,
-	// 		entries->entries[i]->entry);
-	// 	printf("entries->entries[%d]->idx: %s\n", i, entries->entries[i]->idx);
-	// 	i++;
-	// }
-	// printf("finished printing entries\n");
-	// i = 0;
-	// print matching
-	// while (entries->matching[i])
-	// {
-	// 	// printf("entries->matching[%d]->entry: %s\n", i,
-	// 		entries->matching[i]->entry);
-	// 		// printf("entries->matching[%d]->idx: %s\n", i,
-	// 			// entries->matching[i]->idx);
-	// 		i++;
-	// }
-	// printf("finished printing matching\n");
-	// i = 0;
-	// We want to loop on entries->matching->entry not just on entries->matching
 	while (entries->matching[i]->entry)
 	{
 		if (ft_strnstr(entries->matching[i]->idx, midfix,
 				ft_strlen(entries->matching[i]->idx)) != NULL)
 		{
 			entries->matching[j]->entry = entries->matching[i]->entry;
-			// entries->matching[j]->idx = ft_strnstr(entries->matching[i]->idx,
-			// midfix, ft_strlen(entries->entries[i]->idx))
-			// + pattern->midfix_len;
 			entries->matching[j]->idx = ft_strnstr(entries->matching[i]->idx,
-				midfix, ft_strlen(entries->matching[i]->idx))
+					midfix, ft_strlen(entries->matching[i]->idx))
 				+ pattern->midfix_len;
 			j++;
 		}
