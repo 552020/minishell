@@ -54,10 +54,10 @@ int	open_outfile(t_redirections *vars, t_ast_node *node)
 	}
 	if (node->append)
 		vars->outfile = open(node->output_files[vars->i],
-			O_WRONLY | O_CREAT | O_APPEND);
+				O_WRONLY | O_CREAT | O_APPEND);
 	else if (!node->append)
 		vars->outfile = open(node->output_files[vars->i],
-			O_WRONLY | O_CREAT | O_TRUNC);
+				O_WRONLY | O_CREAT | O_TRUNC);
 	if (vars->outfile == -1)
 		return (FAILURE);
 	vars->i++;

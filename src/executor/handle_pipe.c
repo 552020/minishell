@@ -36,7 +36,7 @@ int	handle_pipe(t_ast_node *node, t_data *data)
 	dup2(vars.stdout_backup, STDOUT_FILENO);
 	close(vars.stdout_backup);
 	vars.status_r = handle_r_child(node->children[1], data, &vars.r_pid,
-		vars.pipe_fd[0]);
+			vars.pipe_fd[0]);
 	close(vars.pipe_fd[0]);
 	return (vars.status_r);
 }
