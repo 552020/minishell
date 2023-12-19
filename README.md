@@ -6,12 +6,9 @@ A 'simple' Unix shell in C for the School 42 curriculum.
 
 - [Introduction](#introduction)
 - [Features](#features)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Built-in Commands](#built-in-commands)
-- [Development](#development)
-  - [Dependencies](#dependencies)
-  - [Building from Source](#building-from-source)
+- [Installation & Usage](#installation--usage)
+- [Constratints](#constraints)
+- [Architecture](#architecture)
 - [Contributors](#contributors)
 
 ## Introduction
@@ -29,7 +26,7 @@ A 'simple' Unix shell in C for the School 42 curriculum.
 - [x] Quotation handling for both single (`'`) and double (`"`) quotes
 - [x] Piping between commands using `|`
 - [x] Expansion for `$?` to show exit status of the last executed command
-      ...
+- [x] ...
 
 ## Installation & Usage
 
@@ -69,3 +66,5 @@ The most notable restrictions of the norm are:
 - All variables must be declared and set at the top of the function​​.
 
 The entire set of rules and guidelines established by the Norm can be found in the document [`en.norm.pdf`](./docs/en.norm.pdf) within the repository.
+
+## Architecture
