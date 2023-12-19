@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-char	*read_input(void)
+char	*read_input(t_data *data)
 {
 	char	*input;
 
@@ -23,7 +23,7 @@ char	*read_input(void)
 		exit(0);
 	}
 	add_history(input);
-	if (g_debug_level == DEBUG_ALL || g_debug_level == DEBUG_TOKENIZER)
+	if (data->debug_level == DEBUG_ALL || data->debug_level == DEBUG_TOKENIZER)
 		printf("readline: %s\n", input);
 	return (input);
 }
