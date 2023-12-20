@@ -30,12 +30,12 @@ int	handle_pipe(t_ast_node *node, t_data *data, int old_read_fd)
 	// vars.old_read_fd = -1;
 	// if (vars.old_read_fd != -1)
 	// close(vars.old_read_fd);
-	vars.old_read_fd = old_read_fd;
-	node->old_read_fd = old_read_fd;
+	// vars.old_read_fd = old_read_fd;
+	// node->old_read_fd = old_read_fd;
 	if (node->children[0])
-		node->children[0]->old_read_fd = vars.old_read_fd;
+		node->children[0]->old_read_fd = old_read_fd;
 	if (node->children[1])
-		node->children[1]->old_read_fd = vars.old_read_fd;
+		node->children[1]->old_read_fd = old_read_fd;
 	if (vars.old_read_fd != -1)
 	{
 		close(vars.old_read_fd);
@@ -45,6 +45,7 @@ int	handle_pipe(t_ast_node *node, t_data *data, int old_read_fd)
 	if (pipe(vars.pipe_fd) == -1)
 		free_exit(data, "Error: pipe failed\n");
 	vars.old_read_fd = vars.pipe_fd[0];
+	node->old_read_fd = vars.pipe_fd[0];
 	vars.stdout_backup = dup(STDOUT_FILENO);
 	dup2(vars.pipe_fd[1], STDOUT_FILENO);
 	close(vars.pipe_fd[1]);
