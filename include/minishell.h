@@ -245,6 +245,7 @@ typedef struct s_ast_node
 	bool heredoc;                   // For heredoc redirection.
 	char *heredoc_del;              // For heredoc redirection.
 	pid_t pid;                      // Process ID of the command.
+	int old_read_fd;                // For pipe.
 	int exit_status;                // Exit status of the command.
 	struct s_ast_node *children[2]; // For output redirection.
 }						t_ast_node;
@@ -327,7 +328,8 @@ int						handle_heredocs(t_ast_node *node, t_data *data);
 /* Executor */
 
 unsigned int			hash(const char *key);
-int						handle_pipe(t_ast_node *ast_root, t_data *data);
+int						handle_pipe(t_ast_node *ast_root, t_data *data,
+							int old_read_fd);
 int						handle_redirections(t_ast_node *node, t_data *data);
 
 void					execute_cmd(t_ast_node *node, t_data *data);
@@ -339,7 +341,8 @@ void					insert_node_ht(const char *key, const char *value,
 							t_data *data);
 int						lexemize(t_data *data);
 int						change_directory(const char *path);
-void					execute(t_data *data, t_ast_node *node);
+void					execute(t_data *data, t_ast_node *node,
+							int old_read_fd);
 
 void					error_exit(t_ast_node *node, char **envp,
 							t_env_table *env_table);

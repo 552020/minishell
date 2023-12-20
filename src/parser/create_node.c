@@ -31,6 +31,7 @@ t_ast_node	*create_node(t_node_type type, t_data *data)
 	new_node->children[0] = NULL;
 	new_node->children[1] = NULL;
 	new_node->pid = -1;
+	new_node->old_read_fd = -1;
 	new_node->exit_status = 0;
 	return (new_node);
 }

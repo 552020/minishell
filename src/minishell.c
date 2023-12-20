@@ -16,7 +16,7 @@ void	execute_main(t_data *data, int *exit_status)
 {
 	if (handle_heredocs(data->ast_root, data) == SUCCESS)
 	{
-		execute(data, data->ast_root);
+		execute(data, data->ast_root, -1);
 		wait_ast(data, data->ast_root);
 		*exit_status = data->ast_root->exit_status;
 		data->last_exit_status = *exit_status;

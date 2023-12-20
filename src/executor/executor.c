@@ -104,7 +104,7 @@ void	execute_cmd(t_ast_node *node, t_data *data)
 		free_cmd_and_args_arr(vars.exec_arr);
 }
 
-void	execute(t_data *data, t_ast_node *node)
+void	execute(t_data *data, t_ast_node *node, int old_read_fd)
 {
 	if (node->type == N_COMMAND && data->ast_type == UNDEFINED)
 	{
@@ -113,7 +113,12 @@ void	execute(t_data *data, t_ast_node *node)
 	}
 	else if (node->type == N_PIPE)
 	{
-		data->ast_type = NOT_SINGLE_CMD_AST;
-		handle_pipe(node, data);
+		if (data->ast_type == UNDEFINED)
+		{
+			handle_pipe(node, data, -1);
+			data->ast_type = NOT_SINGLE_CMD_AST;
+		}
+		else
+			handle_pipe(node, data, old_read_fd);
 	}
 }

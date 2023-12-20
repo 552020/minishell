@@ -16,19 +16,35 @@ typedef struct s_handle_pipe
 {
 	int		pipe_fd[2];
 	int		stdout_backup;
+	int		old_read_fd;
 	pid_t	l_pid;
 	pid_t	r_pid;
 	int		status_l;
 	int		status_r;
 }			t_handle_pipe;
 
-int	handle_pipe(t_ast_node *node, t_data *data)
+int	handle_pipe(t_ast_node *node, t_data *data, int old_read_fd)
 {
 	t_handle_pipe	vars;
 
+	// vars.old_read_fd = -1;
+	// if (vars.old_read_fd != -1)
+	// close(vars.old_read_fd);
+	vars.old_read_fd = old_read_fd;
+	node->old_read_fd = old_read_fd;
+	if (node->children[0])
+		node->children[0]->old_read_fd = vars.old_read_fd;
+	if (node->children[1])
+		node->children[1]->old_read_fd = vars.old_read_fd;
+	if (vars.old_read_fd != -1)
+	{
+		close(vars.old_read_fd);
+		vars.old_read_fd = -1;
+	}
 	vars.status_r = 0;
 	if (pipe(vars.pipe_fd) == -1)
 		free_exit(data, "Error: pipe failed\n");
+	vars.old_read_fd = vars.pipe_fd[0];
 	vars.stdout_backup = dup(STDOUT_FILENO);
 	dup2(vars.pipe_fd[1], STDOUT_FILENO);
 	close(vars.pipe_fd[1]);
@@ -44,6 +60,7 @@ int	handle_pipe(t_ast_node *node, t_data *data)
 void	execute_child_left(t_ast_node *node, t_data *data, int pipe_fd)
 {
 	close(pipe_fd);
+	close(node->old_read_fd);
 	if (command_is_builtin(node))
 		node->exit_status = execute_builtin(node, data);
 	else
@@ -59,7 +76,7 @@ void	execute_child_left(t_ast_node *node, t_data *data, int pipe_fd)
 int	handle_l_child(t_ast_node *node, t_data *data, pid_t *l_pid, int pipe_fd)
 {
 	if (node->type == N_PIPE)
-		execute(data, node);
+		execute(data, node, node->old_read_fd);
 	else if ((node->cmd != NULL) && (node->type == N_COMMAND))
 	{
 		*l_pid = fork();
@@ -78,6 +95,7 @@ void	execute_child_right(t_ast_node *node, t_data *data, int pipe_fd)
 {
 	dup2(pipe_fd, STDIN_FILENO);
 	close(pipe_fd);
+	close(node->old_read_fd);
 	if (command_is_builtin(node))
 		node->exit_status = execute_builtin(node, data);
 	else
@@ -93,7 +111,7 @@ void	execute_child_right(t_ast_node *node, t_data *data, int pipe_fd)
 int	handle_r_child(t_ast_node *node, t_data *data, pid_t *r_pid, int pipe_fd)
 {
 	if (node->type == N_PIPE)
-		execute(data, node);
+		execute(data, node, node->old_read_fd);
 	else if ((node->cmd != NULL) && (node->type == N_COMMAND))
 	{
 		*r_pid = fork();
