@@ -23,30 +23,49 @@ typedef struct s_handle_pipe
 	int		status_r;
 }			t_handle_pipe;
 
+int			default_stdout = -1;
+
 int	handle_pipe(t_ast_node *node, t_data *data, int old_read_fd)
 {
 	t_handle_pipe	vars;
 
+	if (default_stdout == -1)
+		default_stdout = dup(STDOUT_FILENO);
+	ft_putstr_fd("handle_pipe\n", default_stdout);
+	ft_putstr_fd("old_read_fd: ", default_stdout);
+	ft_putnbr_fd(old_read_fd, default_stdout);
+	write(default_stdout, "\n", 1);
 	vars.status_r = 0;
 	if (pipe(vars.pipe_fd) == -1)
 		free_exit(data, "Error: pipe failed\n");
 	if (node->children[0]->type == N_PIPE)
 	{
+		// node->children[0]->old_read_fd = old_read_fd;
 		node->children[0]->old_read_fd = vars.pipe_fd[0];
-		printf("node->children[0]->old_read_fd: %d\n",
-			node->children[0]->old_read_fd);
+		// printf("node->children[0]->old_read_fd: %d\n",
+		// 	node->children[0]->old_read_fd);
+		ft_putstr_fd("node->children[0]->old_read_fd: ", default_stdout);
+		ft_putnbr_fd(node->children[0]->old_read_fd, default_stdout);
+		write(default_stdout, "\n", 1);
 	}
 	else
 	{
 		node->children[0]->old_read_fd = old_read_fd;
-		printf("node->children[0]->old_read_fd: %d\n",
-			node->children[0]->old_read_fd);
+		// node->children[0]->old_read_fd = vars.pipe_fd[0];
+		// printf("node->children[0]->old_read_fd: %d\n",
+		// 	node->children[0]->old_read_fd);
+		ft_putstr_fd("node->children[0]->old_read_fd: ", default_stdout);
+		ft_putnbr_fd(node->children[0]->old_read_fd, default_stdout);
+		write(default_stdout, "\n", 1);
 	}
 	if (node->children[1])
 	{
 		node->children[1]->old_read_fd = old_read_fd;
-		printf("node->children[1]->old_read_fd: %d\n",
-			node->children[1]->old_read_fd);
+		// printf("node->children[1]->old_read_fd: %d\n",
+		// 	node->children[1]->old_read_fd);
+		ft_putstr_fd("\nnode->children[1]->old_read_fd: ", default_stdout);
+		ft_putnbr_fd(node->children[1]->old_read_fd, default_stdout);
+		write(default_stdout, "\n", 1);
 	}
 	vars.stdout_backup = dup(STDOUT_FILENO);
 	dup2(vars.pipe_fd[1], STDOUT_FILENO);
@@ -55,17 +74,23 @@ int	handle_pipe(t_ast_node *node, t_data *data, int old_read_fd)
 	dup2(vars.stdout_backup, STDOUT_FILENO);
 	close(vars.stdout_backup);
 	vars.status_r = handle_r_child(node->children[1], data, &vars.r_pid,
-			vars.pipe_fd[0]);
+		vars.pipe_fd[0]);
 	close(vars.pipe_fd[0]);
 	return (vars.status_r);
 }
 
 void	execute_child_left(t_ast_node *node, t_data *data, int pipe_fd)
 {
+	ft_putstr_fd("execute_child_left\n", default_stdout);
 	close(pipe_fd);
+	ft_putstr_fd("pipe_fd is closed\n", default_stdout);
+	ft_putnbr_fd(pipe_fd, default_stdout);
+	ft_putstr_fd("\nnode->old_read_fd: ", default_stdout);
+	ft_putnbr_fd(node->old_read_fd, default_stdout);
+	write(default_stdout, "\n", 1);
 	if (node->old_read_fd != -1)
 	{
-		printf("node->old_read_fd is closed");
+		// printf("node->old_read_fd is closed");
 		close(node->old_read_fd);
 	}
 	if (command_is_builtin(node))
@@ -82,8 +107,15 @@ void	execute_child_left(t_ast_node *node, t_data *data, int pipe_fd)
 
 int	handle_l_child(t_ast_node *node, t_data *data, pid_t *l_pid, int pipe_fd)
 {
+	ft_putstr_fd("handle_l_child\n", default_stdout);
 	if (node->type == N_PIPE)
+	{
+		ft_putstr_fd("node->type == N_PIPE\n", default_stdout);
+		ft_putstr_fd("node->old_read_fd: ", default_stdout);
+		ft_putnbr_fd(node->old_read_fd, default_stdout);
+		write(default_stdout, "\n", 1);
 		execute(data, node, node->old_read_fd);
+	}
 	else if ((node->cmd != NULL) && (node->type == N_COMMAND))
 	{
 		*l_pid = fork();
@@ -102,6 +134,10 @@ void	execute_child_right(t_ast_node *node, t_data *data, int pipe_fd)
 {
 	dup2(pipe_fd, STDIN_FILENO);
 	close(pipe_fd);
+	ft_putstr_fd("pipe_fd is closed\n", default_stdout);
+	ft_putnbr_fd(pipe_fd, default_stdout);
+	ft_putstr_fd("\nnode->old_read_fd: ", default_stdout);
+	ft_putnbr_fd(node->old_read_fd, default_stdout);
 	if (node->old_read_fd != -1)
 	{
 		// printf("node->old_read_fd is closed");

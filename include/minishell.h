@@ -19,6 +19,8 @@
 # define FAILURE 0
 # define SUCCESS 1
 
+// int						default_stdout = -1;
+
 /* Debugger */
 /* TODO: Achthung external variable*/
 
