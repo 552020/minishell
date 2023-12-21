@@ -86,17 +86,3 @@ void	free_data(t_data *data)
 		free_lexeme_arr(data);
 	data->lexeme_arr = NULL;
 }
-
-void	free_exit_code(t_data *data, char *error_message, int exit_code)
-{
-	perror(error_message);
-	free_data(data);
-	exit(exit_code);
-}
-
-void	free_exit(t_data *data, char *error_message)
-{
-	perror(error_message);
-	free_data(data);
-	exit(EXIT_FAILURE);
-}

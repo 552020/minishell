@@ -6,7 +6,7 @@
 /*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 23:44:16 by bsengeze          #+#    #+#             */
-/*   Updated: 2023/11/30 04:47:39 by slombard         ###   ########.fr       */
+/*   Updated: 2023/12/21 19:11:32 by slombard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,34 +82,46 @@ int	builtin_without_args(t_ast_node *node, t_data *data)
 	return (exit_status);
 }
 
-int	execute_builtin(t_ast_node *node, t_data *data)
+typedef struct s_exec_builtin
 {
 	int	exit_status;
 	int	stdout_backup;
 	int	stdin_backup;
+}		t_exec_builtin;
 
-	exit_status = 0;
-	stdout_backup = dup(STDOUT_FILENO);
-	if (stdout_backup == -1)
+void	init_exec_builtin(t_exec_builtin *vars, t_data *data)
+{
+	vars->exit_status = 0;
+	vars->stdout_backup = 0;
+	vars->stdin_backup = 0;
+	vars->stdout_backup = dup(STDOUT_FILENO);
+	if (vars->stdout_backup == -1)
 		free_exit(data, "Error: dup failed\n");
-	stdin_backup = dup(STDIN_FILENO);
-	if (stdin_backup == -1)
+	vars->stdin_backup = dup(STDIN_FILENO);
+	if (vars->stdin_backup == -1)
 		free_exit(data, "Error: dup failed\n");
+}
+
+int	execute_builtin(t_ast_node *node, t_data *data)
+{
+	t_exec_builtin	vars;
+
+	init_exec_builtin(&vars, data);
 	if (!handle_redirections(node, data))
 		exit(EXIT_FAILURE);
 	if ((ft_strncmp(node->cmd, "export", 6) == 0 && ft_strlen(node->cmd) == 6)
 		|| (ft_strncmp(node->cmd, "unset", 5) == 0
 			&& ft_strlen(node->cmd) == 5))
-		exit_status = builtin_with_args(node, data);
+		vars.exit_status = builtin_with_args(node, data);
 	else
-		exit_status = builtin_without_args(node, data);
-	dup2(stdout_backup, STDOUT_FILENO);
-	if (stdout_backup == -1)
+		vars.exit_status = builtin_without_args(node, data);
+	dup2(vars.stdout_backup, STDOUT_FILENO);
+	if (vars.stdout_backup == -1)
 		free_exit(data, "Error: dup2 failed\n");
-	close(stdout_backup);
-	dup2(stdin_backup, STDIN_FILENO);
-	if (stdin_backup == -1)
+	close(vars.stdout_backup);
+	dup2(vars.stdin_backup, STDIN_FILENO);
+	if (vars.stdin_backup == -1)
 		free_exit(data, "Error: dup2 failed\n");
-	close(stdin_backup);
-	return (exit_status);
+	close(vars.stdin_backup);
+	return (vars.exit_status);
 }
