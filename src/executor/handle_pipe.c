@@ -64,7 +64,10 @@ void	execute_child_left(t_ast_node *node, t_data *data, int pipe_fd)
 		if (handle_redirections(node, data))
 			execute_cmd(node, data);
 		else
+		{
+			perror(" ");
 			exit(EXIT_FAILURE);
+		}
 	}
 	exit(EXIT_SUCCESS);
 }
@@ -107,7 +110,10 @@ void	execute_child_right(t_ast_node *node, t_data *data, int pipe_fd)
 		if (handle_redirections(node, data))
 			execute_cmd(node, data);
 		else
+		{
+			perror(" ");
 			exit(EXIT_FAILURE);
+		}
 	}
 	exit(EXIT_SUCCESS);
 }
