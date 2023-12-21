@@ -33,6 +33,19 @@ void	write_error_and_return(char *str, int *return_status)
 		*return_status = 2;
 }
 
+int	check_num_args(t_ast_node *node, int *exit_code, int *return_status)
+{
+	if (node->args[1])
+	{
+		write_error_and_return(" too many arguments\n", return_status);
+		*exit_code = 1;
+		*return_status = 1;
+		return (*return_status);
+	}
+	else
+		return (*return_status);
+}
+
 int	exit_input_check(char *str, int *exit_code, t_ast_node *node)
 {
 	int	i;
@@ -40,13 +53,7 @@ int	exit_input_check(char *str, int *exit_code, t_ast_node *node)
 
 	return_status = 0;
 	i = 0;
-	if (node->args[1])
-	{
-		write_error_and_return(" too many arguments\n", &return_status);
-		*exit_code = 1;
-		return_status = 1;
-		return (return_status);
-	}
+	return_status = check_num_args(node, exit_code, &return_status);
 	while (str && str[i])
 	{
 		if (str[i] == '+' || str[i] == '-')
