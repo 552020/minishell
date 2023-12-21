@@ -6,7 +6,7 @@
 /*   By: bsengeze <bsengeze@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 06:57:46 by bsengeze          #+#    #+#             */
-/*   Updated: 2023/12/21 02:01:31 by bsengeze         ###   ########.fr       */
+/*   Updated: 2023/12/21 02:33:05 by bsengeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ t_ast_node	*create_node(t_node_type type, t_data *data)
 	new_node->old_read_fd = -1;
 	new_node->exit_status = 0;
 	new_node->old_read_fd_arr = NULL;
+	new_node->arr_size = 0;
 	return (new_node);
 }
 
