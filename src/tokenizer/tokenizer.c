@@ -71,7 +71,6 @@ typedef struct s_tokenize_vars
 	char	*tmp;
 	char	*reshuffled;
 	char	*expanded;
-
 }			t_tokenize_vars;
 
 void	trim_reshuffle_expand(t_tokenize_vars *vars, char *input, t_data *data)
@@ -89,14 +88,14 @@ void	trim_reshuffle_expand(t_tokenize_vars *vars, char *input, t_data *data)
 
 void	tokenize(t_data *data, char *input)
 {
-	t_tokenize_vars	vars;
+	t_tokenize_vars vars;
 
-	// if (g_debug_level == DEBUG_ALL || g_debug_level == DEBUG_TOKENIZER)
-	// 	printf("\n***Tokenization***\n\n");
+	if (g_debug_level == DEBUG_ALL || g_debug_level == DEBUG_TOKENIZER)
+		printf("\n***Tokenization***\n\n");
 	trim_reshuffle_expand(&vars, input, data);
 	data->token_count = count_words_tokenizer(vars.expanded);
-	// if (g_debug_level == DEBUG_ALL || g_debug_level == DEBUG_TOKENIZER)
-	// 	printf("Token count: %zu\n\n", data->token_count);
+	if (g_debug_level == DEBUG_ALL || g_debug_level == DEBUG_TOKENIZER)
+		printf("Token count: %zu\n\n", data->token_count);
 	data->token_arr = create_token_array(data);
 	data->token_arr = tokenizer(data, vars.expanded);
 	if (vars.expanded)
@@ -104,6 +103,6 @@ void	tokenize(t_data *data, char *input)
 		free(vars.expanded);
 		vars.expanded = NULL;
 	}
-	if (data->debug_level == DEBUG_ALL || data->debug_level == DEBUG_TOKENIZER)
+	if (g_debug_level == DEBUG_ALL || g_debug_level == DEBUG_TOKENIZER)
 		print_token_arr(data->token_arr, data->token_count);
 }
