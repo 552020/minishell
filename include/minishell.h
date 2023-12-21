@@ -395,4 +395,6 @@ int						ft_free_ret(char **ret, size_t i);
 int						check_parenthesis(t_ast_node *cmd);
 void					free_exit_code(t_data *data, char *error_message,
 							int exit_code);
+void					print_node_info(t_ast_node *node);
+void					print_ast_new(t_ast_node *root);
 #endif

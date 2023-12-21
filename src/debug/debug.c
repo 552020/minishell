@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   debug.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: slombard <slombard@student.42berlin.de>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/12/18 17:42:28 by slombard          #+#    #+#             */
+/*   Updated: 2023/12/18 17:42:31 by slombard         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 void	print_token_arr(t_token *token_arr, size_t token_count)
@@ -81,226 +93,30 @@ void	print_lexeme_arr(t_lexeme *lexeme_arr, size_t lexeme_count)
 	printf("\n");
 }
 
-// for is not allowed!!!
 void	print_ast(t_ast_node *node, int depth)
 {
-	// Print indentation
 	for (int i = 0; i < depth; ++i)
 		printf("- ");
-	// Print node type and cmd
 	if (node->type == N_PIPE)
-	{
 		printf("|\n");
-	}
 	else if (node->type == N_COMMAND)
 	{
 		printf("%s", node->cmd);
 		if (node->args)
 		{
 			for (int i = 0; node->args[i] != NULL; ++i)
-			{
 				printf(" %s", node->args[i]);
-			}
 		}
 		printf("\n");
 	}
-	// Print children
 	if (node->children[0])
 		print_ast(node->children[0], depth + 1);
 	if (node->children[1])
 		print_ast(node->children[1], depth + 1);
 }
 
-int	get_max_depth(t_ast_node *node)
-{
-	int	left_depth;
 
-	if (!node)
-		return (0);
-	if (node->type == N_COMMAND)
-		return (1);
-	// If it's a pipe node, we compute the depth of the left child
-	left_depth = get_max_depth(node->children[0]);
-	// Since it's a pipe, it means there's an additional depth
-	left_depth++;
-	return (left_depth);
-}
 
-void	print_indentation(int depth, bool is_last_sibling[], int last_index)
-{
-	int	i;
-
-	i = 0;
-	while (i < depth - 1)
-	{
-		if (i == last_index)
-		{
-			if (is_last_sibling[i])
-				printf("    ");
-			else
-				printf("│   ");
-		}
-		else
-			printf("    ");
-		i++;
-	}
-	if (depth > 0)
-	{
-		if (is_last_sibling[last_index])
-			printf("└── ");
-		else
-			printf("├── ");
-	}
-}
-
-void	print_node(t_ast_node *node, int depth, bool is_last_sibling[])
-{
-	int	i;
-
-	if (!node)
-		return ;
-	print_indentation(depth, is_last_sibling, depth - 1);
-	// Print node type and cmd
-	if (node->type == N_PIPE)
-	{
-		printf("|\n");
-	}
-	else if (node->type == N_COMMAND)
-	{
-		printf("%s", node->cmd);
-		i = 0;
-		while (node->args && node->args[i] != NULL)
-		{
-			printf(" %s", node->args[i]);
-			i++;
-		}
-		printf("\n");
-	}
-	// Print children
-	if (node->children[0])
-	{
-		print_node(node->children[0], depth + 1, is_last_sibling);
-	}
-	if (node->children[1])
-	{
-		is_last_sibling[depth] = true;
-		print_node(node->children[1], depth + 1, is_last_sibling);
-	}
-}
-
-void	print_ast_new(t_ast_node *root)
-{
-	bool	is_last_sibling[100] = {false};
-
-	// Assuming a max depth of 100; can be dynamically allocated if needed
-	print_node(root, 0, is_last_sibling);
-}
-
-void	print_node_info(t_ast_node *node)
-{
-	int	i;
-
-	if (!node)
-	{
-		printf("Node is NULL\n");
-		return ;
-	}
-	switch (node->type)
-	{
-	case N_PIPE:
-		printf("Type: PIPE\n");
-		break ;
-	case N_COMMAND:
-		printf("Type: COMMAND\n");
-		break ;
-	default:
-		printf("Type: UNKNOWN\n");
-		break ;
-	}
-	// Print data
-	if (node->cmd)
-	{
-		printf("cmd: %s\n", node->cmd);
-	}
-	else
-	{
-		printf("Cmd: NULL\n");
-	}
-	// Print arguments
-	if (node->args)
-	{
-		printf("Arguments: ");
-		i = 0;
-		while (node->args[i] != NULL)
-		{
-			printf("%s", node->args[i]);
-			if (node->args[i + 1] != NULL)
-				printf(", ");
-			i++;
-		}
-		printf("\n");
-	}
-	else
-		printf("Arguments: NULL\n");
-	if (node->input_files)
-	{
-		printf("Input Redirections: ");
-		i = 0;
-		while (node->input_files[i] != NULL)
-		{
-			printf("%s", node->input_files[i]);
-			if (node->input_files[i + 1] != NULL)
-				printf(", ");
-			i++;
-		}
-		printf("\n");
-	}
-	else
-		printf("Input Redirections: NULL\n");
-	if (node->output_files)
-	{
-		printf("Output Redirections: ");
-		i = 0;
-		while (node->output_files[i] != NULL)
-		{
-			printf("%s", node->output_files[i]);
-			if (node->output_files[i + 1] != NULL)
-				printf(", ");
-			i++;
-		}
-		printf("\n");
-		printf("Append Mode: %s\n", node->append ? "TRUE" : "FALSE");
-	}
-	else
-		printf("Output Redirections: NULL\n");
-	if (node->heredoc)
-		printf("Heredoc: TRUE\n");
-	else
-		printf("Heredoc: FALSE\n");
-	if (node->heredoc_del)
-		printf("Heredoc Delimiter: %s\n", node->heredoc_del);
-	else
-		printf("Heredoc Delimiter: NULL\n");
-	if (node->heredoc_fd != -1)
-		printf("Heredoc FD: %d\n", node->heredoc_fd);
-	else
-		printf("Heredoc FD: -1\n");
-	if (node->children[0])
-	{
-		printf("Child 1:\n");
-		print_node_info(node->children[0]);
-	}
-	else
-		printf("Child 1: NULL\n");
-	if (node->children[1])
-	{
-		printf("Child 2:\n");
-		print_node_info(node->children[1]);
-	}
-	else
-		printf("Child 2: NULL\n");
-	printf("-----------\n");
-}
 
 void	debug_ast(t_ast_node *root)
 {
