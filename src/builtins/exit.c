@@ -44,7 +44,7 @@ int	exit_input_check(char *str, int *exit_code, t_ast_node *node)
 		if (!ft_isdigit(str[i]))
 			write_error_and_return("numeric argument requied\n",
 				&return_status);
-		write_error_and_return(" \n", &return_status);
+		write_error_and_return("\n", &return_status);
 		i++;
 	}
 	if (node->args[1])
