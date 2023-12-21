@@ -25,17 +25,22 @@ typedef struct s_handle_pipe {
 
 int default_stdout = -1;
 
-int handle_pipe(t_ast_node *node, t_data *data, int old_read_fd) {
+int handle_pipe(t_ast_node *node, t_data *data, int old_read_fd,
+                int *old_read_fd_arr) {
   t_handle_pipe vars;
   static size_t i = 1;
 
-  if (old_read_fd == -1) {
-    vars.old_read_fd_arr = malloc(sizeof(int) * 1);
-    if (!vars.old_read_fd_arr)
-      free_exit(data, "Error: malloc failed\n");
-  }
+  node->old_read_fd_arr = old_read_fd_arr;
   if (default_stdout == -1)
     default_stdout = dup(STDOUT_FILENO);
+  if (old_read_fd == -1) {
+    vars.old_read_fd_arr = malloc(sizeof(int) * 1);
+    i = 1;
+    if (!vars.old_read_fd_arr)
+      free_exit(data, "Error: malloc failed\n");
+  } else {
+    vars.old_read_fd_arr = old_read_fd_arr;
+  }
   // ft_putstr_fd("handle_pipe\n", default_stdout);
   // ft_putstr_fd("old_read_fd: ", default_stdout);
   // ft_putnbr_fd(old_read_fd, default_stdout);
@@ -47,7 +52,7 @@ int handle_pipe(t_ast_node *node, t_data *data, int old_read_fd) {
     if (old_read_fd != -1) {
       if (vars.old_read_fd_arr) {
         ft_realloc(vars.old_read_fd_arr, i, i + 1);
-        i += 1;
+        i++;
       }
     }
     vars.old_read_fd_arr[i - 1] = old_read_fd;
@@ -93,6 +98,7 @@ void execute_child_left(t_ast_node *node, t_data *data, int pipe_fd) {
   // ft_putstr_fd("execute_child_left\n", default_stdout);
   close(pipe_fd);
   if (node->old_read_fd != -1) {
+    close(node->old_read_fd);
     while (node->old_read_fd_arr && node->arr_size > 0) {
       close(node->old_read_fd_arr[node->arr_size - 1]);
       node->arr_size -= 1;
@@ -103,11 +109,9 @@ void execute_child_left(t_ast_node *node, t_data *data, int pipe_fd) {
   // ft_putstr_fd("\nnode->old_read_fd: ", default_stdout);
   // ft_putnbr_fd(node->old_read_fd, default_stdout);
   // write(default_stdout, "\n", 1);
-  if (node->old_read_fd != -1) {
-    // ft_putstr_fd("node->old_read_fd is closed in left child\n",
-    // 	default_stdout);
-    close(node->old_read_fd);
-  }
+  // ft_putstr_fd("node->old_read_fd is closed in left child\n",
+  // 	default_stdout);
+  // }
   if (command_is_builtin(node))
     node->exit_status = execute_builtin(node, data);
   else {
@@ -126,7 +130,7 @@ int handle_l_child(t_ast_node *node, t_data *data, pid_t *l_pid, int pipe_fd) {
     // ft_putstr_fd("node->old_read_fd: ", default_stdout);
     // ft_putnbr_fd(node->old_read_fd, default_stdout);
     // write(default_stdout, "\n", 1);
-    execute(data, node, node->old_read_fd);
+    execute(data, node, node->old_read_fd, node->old_read_fd_arr);
   } else if ((node->cmd != NULL) && (node->type == N_COMMAND)) {
     *l_pid = fork();
     if (*l_pid == -1)
@@ -145,6 +149,7 @@ void execute_child_right(t_ast_node *node, t_data *data, int pipe_fd) {
   dup2(pipe_fd, STDIN_FILENO);
   close(pipe_fd);
   if (node->old_read_fd != -1) {
+    close(node->old_read_fd);
     while (node->old_read_fd_arr && node->arr_size > 0) {
       close(node->old_read_fd_arr[node->arr_size - 1]);
       node->arr_size -= 1;
@@ -155,11 +160,10 @@ void execute_child_right(t_ast_node *node, t_data *data, int pipe_fd) {
   // ft_putstr_fd("\nnode->old_read_fd: ", default_stdout);
   // ft_putnbr_fd(node->old_read_fd, default_stdout);
   // write(default_stdout, "\n", 1);
-  if (node->old_read_fd != -1) {
-    // ft_putstr_fd("node->old_read_fd is closed*********\n",
-    // default_stdout);
-    close(node->old_read_fd);
-  }
+  //   if (node->old_read_fd != -1) {
+  // ft_putstr_fd("node->old_read_fd is closed*********\n",
+  // default_stdout);
+  //   }
   if (command_is_builtin(node))
     node->exit_status = execute_builtin(node, data);
   else {
@@ -174,7 +178,7 @@ void execute_child_right(t_ast_node *node, t_data *data, int pipe_fd) {
 int handle_r_child(t_ast_node *node, t_data *data, pid_t *r_pid, int pipe_fd) {
   // ft_putstr_fd("handle_r_child\n\n", default_stdout);
   if (node->type == N_PIPE)
-    execute(data, node, node->old_read_fd);
+    execute(data, node, node->old_read_fd, node->old_read_fd_arr);
   else if ((node->cmd != NULL) && (node->type == N_COMMAND)) {
     *r_pid = fork();
     if (*r_pid == -1)
