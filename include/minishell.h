@@ -295,8 +295,7 @@ int handle_heredocs(t_ast_node *node, t_data *data);
 /* Executor */
 
 unsigned int hash(const char *key);
-int handle_pipe(t_ast_node *ast_root, t_data *data, int old_read_fd,
-                int *old_read_fd_arr);
+int handle_pipe(t_ast_node *ast_root, t_data *data, int *old_read_fd_arr);
 int handle_redirections(t_ast_node *node, t_data *data);
 
 void execute_cmd(t_ast_node *node, t_data *data);
@@ -306,8 +305,7 @@ int ft_exit(t_ast_node *node, char **envp, t_env_table *table);
 void insert_node_ht(const char *key, const char *value, t_data *data);
 int lexemize(t_data *data);
 int change_directory(const char *path);
-void execute(t_data *data, t_ast_node *node, int old_read_fd,
-             int *old_read_fd_arr);
+void execute(t_data *data, t_ast_node *node, int *old_read_fd_arr);
 
 void error_exit(t_ast_node *node, char **envp, t_env_table *env_table);
 char *path_finder(char *cmd, char *dir_paths, t_data *data);

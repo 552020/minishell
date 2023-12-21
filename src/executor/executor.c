@@ -97,8 +97,9 @@ void execute_cmd(t_ast_node *node, t_data *data) {
 
 int def_stdout = -1;
 
-void execute(t_data *data, t_ast_node *node, int old_read_fd,
-             int *old_read_fd_arr) {
+// void execute(t_data *data, t_ast_node *node, int old_read_fd,
+//  int *old_read_fd_arr) {
+void execute(t_data *data, t_ast_node *node, int *old_read_fd_arr) {
   if (def_stdout == -1)
     def_stdout = dup(STDOUT_FILENO);
   // ft_putstr_fd("execute\n", def_stdout);
@@ -109,13 +110,13 @@ void execute(t_data *data, t_ast_node *node, int old_read_fd,
     if (data->ast_type == UNDEFINED) {
       // ft_putstr_fd("data->ast_type == UNDEFINED\n", def_stdout);
       data->ast_type = NOT_SINGLE_CMD_AST;
-      handle_pipe(node, data, -1, NULL);
+      handle_pipe(node, data, NULL);
     } else {
       // ft_putstr_fd("data->ast_type != UNDEFINED\n", def_stdout);
       // ft_putstr_fd("old_read_fd: ", def_stdout);
       // ft_putnbr_fd(old_read_fd, def_stdout);
       // write(def_stdout, "\n", 1);
-      handle_pipe(node, data, old_read_fd, old_read_fd_arr);
+      handle_pipe(node, data, old_read_fd_arr);
     }
   }
 }
