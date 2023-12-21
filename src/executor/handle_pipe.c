@@ -45,8 +45,10 @@ int handle_pipe(t_ast_node *node, t_data *data, int old_read_fd) {
     free_exit(data, "Error: pipe failed\n");
   if (node->children[0]->type == N_PIPE) {
     if (old_read_fd != -1) {
-      ft_realloc(vars.old_read_fd_arr, i, i + 1);
-      i += 1;
+      if (vars.old_read_fd_arr) {
+        ft_realloc(vars.old_read_fd_arr, i, i + 1);
+        i += 1;
+      }
     }
     vars.old_read_fd_arr[i - 1] = old_read_fd;
     node->children[0]->old_read_fd = vars.pipe_fd[0];
@@ -67,6 +69,8 @@ int handle_pipe(t_ast_node *node, t_data *data, int old_read_fd) {
   }
   if (node->children[1]) {
     node->children[1]->old_read_fd = old_read_fd;
+    node->children[1]->old_read_fd_arr = vars.old_read_fd_arr;
+    node->children[1]->arr_size = i;
     // printf("node->children[1]->old_read_fd: %d\n",
     // 	node->children[1]->old_read_fd);
     // ft_putstr_fd("\nnode->children[1]->old_read_fd: ", default_stdout);
