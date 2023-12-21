@@ -88,7 +88,7 @@ void	trim_reshuffle_expand(t_tokenize_vars *vars, char *input, t_data *data)
 
 void	tokenize(t_data *data, char *input)
 {
-	t_tokenize_vars vars;
+	t_tokenize_vars	vars;
 
 	if (data->debug_level == DEBUG_ALL || data->debug_level == DEBUG_TOKENIZER)
 		printf("\n***Tokenization***\n\n");

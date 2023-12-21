@@ -56,7 +56,6 @@ int	exit_input_check(char *str, int *exit_code, t_ast_node *node)
 			write_error_and_return(" numeric argument required\n",
 				&return_status);
 			*exit_code = 2;
-			return_status = 2;
 			return (return_status);
 		}
 		i++;
