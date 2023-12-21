@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bsengeze <bsengeze@student.42berlin.de>    +#+  +:+       +#+        */
+/*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 06:23:34 by slombard          #+#    #+#             */
-/*   Updated: 2023/12/19 12:54:48 by bsengeze         ###   ########.fr       */
+/*   Updated: 2023/12/21 19:05:54 by slombard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,11 +90,11 @@ void	tokenize(t_data *data, char *input)
 {
 	t_tokenize_vars vars;
 
-	if (g_debug_level == DEBUG_ALL || g_debug_level == DEBUG_TOKENIZER)
+	if (data->debug_level == DEBUG_ALL || data->debug_level == DEBUG_TOKENIZER)
 		printf("\n***Tokenization***\n\n");
 	trim_reshuffle_expand(&vars, input, data);
 	data->token_count = count_words_tokenizer(vars.expanded);
-	if (g_debug_level == DEBUG_ALL || g_debug_level == DEBUG_TOKENIZER)
+	if (data->debug_level == DEBUG_ALL || data->debug_level == DEBUG_TOKENIZER)
 		printf("Token count: %zu\n\n", data->token_count);
 	data->token_arr = create_token_array(data);
 	data->token_arr = tokenizer(data, vars.expanded);
@@ -103,6 +103,6 @@ void	tokenize(t_data *data, char *input)
 		free(vars.expanded);
 		vars.expanded = NULL;
 	}
-	if (g_debug_level == DEBUG_ALL || g_debug_level == DEBUG_TOKENIZER)
+	if (data->debug_level == DEBUG_ALL || data->debug_level == DEBUG_TOKENIZER)
 		print_token_arr(data->token_arr, data->token_count);
 }

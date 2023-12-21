@@ -6,7 +6,7 @@
 /*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 23:44:16 by bsengeze          #+#    #+#             */
-/*   Updated: 2023/11/30 04:47:39 by slombard         ###   ########.fr       */
+/*   Updated: 2023/12/21 19:11:32 by slombard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,7 @@ void	init_exec_builtin(t_exec_builtin *vars, t_data *data)
 	vars->exit_status = 0;
 	vars->stdout_backup = 0;
 	vars->stdin_backup = 0;
+	vars->stdout_backup = dup(STDOUT_FILENO);
 	if (vars->stdout_backup == -1)
 		free_exit(data, "Error: dup failed\n");
 	vars->stdin_backup = dup(STDIN_FILENO);
