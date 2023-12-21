@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: slombard <slombard@student.42berlin.de>    +#+  +:+       +#+        */
+/*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 16:44:43 by slombard          #+#    #+#             */
-/*   Updated: 2023/12/06 16:44:45 by slombard         ###   ########.fr       */
+/*   Updated: 2023/12/22 00:35:49 by slombard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,4 +40,18 @@ void	free_dir_path_arr(char **dir_path_arr)
 		free(dir_path_arr);
 		dir_path_arr = NULL;
 	}
+}
+
+void	handle_execve_fail(t_ast_node *node, t_data *data, char *path)
+{
+	if (path)
+	{
+		free(path);
+		path = NULL;
+	}
+	if (node->cmd[0] == '\0')
+		free_exit_code(data, " ", 0);
+	if (node->cmd[0] == '/')
+		free_exit_code(data, " ", 126);
+	free_exit_code(data, " ", 127);
 }

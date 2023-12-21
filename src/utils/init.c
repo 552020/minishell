@@ -6,7 +6,7 @@
 /*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 06:46:11 by slombard          #+#    #+#             */
-/*   Updated: 2023/11/30 06:46:30 by slombard         ###   ########.fr       */
+/*   Updated: 2023/12/21 22:41:10 by slombard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,4 +32,6 @@ void	initialize_data(char **envp, t_data *data)
 	initialize_table(envp, data);
 	initialize_envp_arr(data);
 	data->debug_level = DEBUG_OFF;
+	data->pipes_count = 0;
+	data->pipe_fds = NULL;
 }

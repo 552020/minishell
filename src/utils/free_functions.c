@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free_functions.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: slombard <slombard@student.42berlin.d      +#+  +:+       +#+        */
+/*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 06:43:13 by slombard          #+#    #+#             */
-/*   Updated: 2023/11/30 06:43:16 by slombard         ###   ########.fr       */
+/*   Updated: 2023/12/22 00:20:40 by slombard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,21 @@ void	free_key_value_pair(char **key_value)
 	key_value = NULL;
 }
 
+void	free_pipe_fds(int **pipe_fds, int pipes_count)
+{
+	int	i;
+
+	i = 0;
+	while (i < pipes_count)
+	{
+		free(pipe_fds[i]);
+		pipe_fds[i] = NULL;
+		i++;
+	}
+	free(pipe_fds);
+	pipe_fds = NULL;
+}
+
 void	free_data(t_data *data)
 {
 	if (data->env_table)
@@ -85,4 +100,7 @@ void	free_data(t_data *data)
 	if (data->lexeme_arr)
 		free_lexeme_arr(data);
 	data->lexeme_arr = NULL;
+	if (data->pipe_fds)
+		free_pipe_fds(data->pipe_fds, data->pipes_count);
+	data->pipe_fds = NULL;
 }

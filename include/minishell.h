@@ -236,16 +236,17 @@ typedef enum e_node_type
 typedef struct s_ast_node
 {
 	t_node_type			type;
-	char *cmd;                      // Data: command, filename
-	char **args;                    // Arguments: command arguments
-	char **input_files;             // For input redirection.
-	char **output_files;            // For output redirection.
-	bool append;                    // For output redirection.
-	int heredoc_fd;                 // For heredoc redirection.
-	bool heredoc;                   // For heredoc redirection.
-	char *heredoc_del;              // For heredoc redirection.
-	pid_t pid;                      // Process ID of the command.
-	int exit_status;                // Exit status of the command.
+	char *cmd;           // Data: command, filename
+	char **args;         // Arguments: command arguments
+	char **input_files;  // For input redirection.
+	char **output_files; // For output redirection.
+	bool append;         // For output redirection.
+	int heredoc_fd;      // For heredoc redirection.
+	bool heredoc;        // For heredoc redirection.
+	char *heredoc_del;   // For heredoc redirection.
+	pid_t pid;           // Process ID of the command.
+	int exit_status;     // Exit status of the command.
+	int					pipe_id;
 	struct s_ast_node *children[2]; // For output redirection.
 }						t_ast_node;
 
@@ -273,6 +274,8 @@ typedef struct s_data
 	t_ast_node			*ast_root;
 	int					last_exit_status;
 	t_debug_level		debug_level;
+	int					pipes_count;
+	int					**pipe_fds;
 }						t_data;
 
 t_ast_node				*parser(t_lexeme *lexemes, int start, int end,
@@ -307,6 +310,7 @@ int						ft_isvalidvarname(char c);
 void					collect_heredoc_content(t_token *token_arr,
 							size_t token_count);
 void					free_ast(t_ast_node *node);
+void					free_pipe_fds(int **pipe_fds, int pipes_count);
 void					free_hash_table(t_env_table *env_table);
 void					free_envp(char **envp);
 /* Debug */
@@ -397,4 +401,6 @@ void					free_exit_code(t_data *data, char *error_message,
 							int exit_code);
 void					print_node_info(t_ast_node *node);
 void					print_ast_new(t_ast_node *root);
+void					handle_execve_fail(t_ast_node *node, t_data *data,
+							char *path);
 #endif
