@@ -32,7 +32,10 @@ int	handle_single_cmd(t_ast_node *node, t_data *data)
 		if (handle_redirections(node, data))
 			execute_cmd(node, data);
 		else
+		{
+			perror(" ");
 			exit(EXIT_FAILURE);
+		}
 		exit(EXIT_SUCCESS);
 	}
 	return (node->exit_status);

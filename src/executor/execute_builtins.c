@@ -108,7 +108,10 @@ int	execute_builtin(t_ast_node *node, t_data *data)
 
 	init_exec_builtin(&vars, data);
 	if (!handle_redirections(node, data))
+	{
+		perror(" ");
 		exit(EXIT_FAILURE);
+	}
 	if ((ft_strncmp(node->cmd, "export", 6) == 0 && ft_strlen(node->cmd) == 6)
 		|| (ft_strncmp(node->cmd, "unset", 5) == 0
 			&& ft_strlen(node->cmd) == 5))
