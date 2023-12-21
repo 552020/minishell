@@ -27,14 +27,18 @@ int	handle_pipe(t_ast_node *node, t_data *data)
 	t_handle_pipe	vars;
 
 	vars.status_r = 0;
-	if (pipe(vars.pipe_fd) == -1)
+	if (pipe(data->pipe_fds[data->pipes_count - 1]) == -1)
 		free_exit(data, "Error: pipe failed\n");
+	vars.pipe_fd[0] = data->pipe_fds[data->pipes_count - 1][0];
+	vars.pipe_fd[1] = data->pipe_fds[data->pipes_count - 1][1];
 	vars.stdout_backup = dup(STDOUT_FILENO);
 	dup2(vars.pipe_fd[1], STDOUT_FILENO);
 	close(vars.pipe_fd[1]);
+	node->children[0]->pipe_id = node->pipe_id;
 	handle_l_child(node->children[0], data, &vars.l_pid, vars.pipe_fd[0]);
 	dup2(vars.stdout_backup, STDOUT_FILENO);
 	close(vars.stdout_backup);
+	node->children[1]->pipe_id = node->pipe_id;
 	vars.status_r = handle_r_child(node->children[1], data, &vars.r_pid,
 			vars.pipe_fd[0]);
 	close(vars.pipe_fd[0]);
@@ -43,7 +47,16 @@ int	handle_pipe(t_ast_node *node, t_data *data)
 
 void	execute_child_left(t_ast_node *node, t_data *data, int pipe_fd)
 {
-	close(pipe_fd);
+	int	i;
+
+	i = 0;
+	(void)pipe_fd;
+	while (i < data->pipes_count)
+	{
+		close(data->pipe_fds[i][0]);
+		close(data->pipe_fds[i][1]);
+		i++;
+	}
 	if (command_is_builtin(node))
 		node->exit_status = execute_builtin(node, data);
 	else
@@ -79,8 +92,17 @@ int	handle_l_child(t_ast_node *node, t_data *data, pid_t *l_pid, int pipe_fd)
 
 void	execute_child_right(t_ast_node *node, t_data *data, int pipe_fd)
 {
+	int	i;
+
+	i = 0;
 	dup2(pipe_fd, STDIN_FILENO);
-	close(pipe_fd);
+	(void)pipe_fd;
+	while (i < data->pipes_count)
+	{
+		close(data->pipe_fds[i][0]);
+		close(data->pipe_fds[i][1]);
+		i++;
+	}
 	if (command_is_builtin(node))
 		node->exit_status = execute_builtin(node, data);
 	else

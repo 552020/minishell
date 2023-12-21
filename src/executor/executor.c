@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bsengeze <bsengeze@student.42berlin.de>    +#+  +:+       +#+        */
+/*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 23:40:23 by bsengeze          #+#    #+#             */
-/*   Updated: 2023/11/29 20:20:23 by bsengeze         ###   ########.fr       */
+/*   Updated: 2023/12/22 00:34:33 by slombard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,20 +28,6 @@ void	execute_script(t_ast_node *node, t_data *data)
 		else
 			free_exit_code(data, " ", 127);
 	}
-}
-
-void	handle_execve_fail(t_ast_node *node, t_data *data, char *path)
-{
-	if (path)
-	{
-		free(path);
-		path = NULL;
-	}
-	if (node->cmd[0] == '\0')
-		free_exit_code(data, " ", 0);
-	if (node->cmd[0] == '/')
-		free_exit_code(data, " ", 126);
-	free_exit_code(data, " ", 127);
 }
 
 /*
@@ -104,6 +90,29 @@ void	execute_cmd(t_ast_node *node, t_data *data)
 		free_cmd_and_args_arr(vars.exec_arr);
 }
 
+void	execute_pipe(t_data *data, t_ast_node *node)
+{
+	(void)node;
+	if (data->ast_type == UNDEFINED)
+	{
+		data->pipe_fds = (int **)malloc(sizeof(int *) * 2);
+		if (!data->pipe_fds)
+			free_exit(data, "Error: malloc failed\n");
+		data->pipe_fds[0] = (int *)malloc(sizeof(int) * 2);
+		data->pipe_fds[1] = NULL;
+	}
+	else
+	{
+		data->pipe_fds = (int **)ft_realloc(data->pipe_fds, sizeof(int *)
+				* (data->pipes_count + 1), sizeof(int *) * (data->pipes_count
+					+ 2));
+		if (!data->pipe_fds)
+			free_exit(data, "Error: malloc failed\n");
+		data->pipe_fds[data->pipes_count] = (int *)malloc(sizeof(int) * 2);
+		data->pipe_fds[data->pipes_count + 1] = NULL;
+	}
+}
+
 void	execute(t_data *data, t_ast_node *node)
 {
 	if (node->type == N_COMMAND && data->ast_type == UNDEFINED)
@@ -113,7 +122,10 @@ void	execute(t_data *data, t_ast_node *node)
 	}
 	else if (node->type == N_PIPE)
 	{
+		execute_pipe(data, node);
 		data->ast_type = NOT_SINGLE_CMD_AST;
+		data->pipes_count++;
+		node->pipe_id = data->pipes_count;
 		handle_pipe(node, data);
 	}
 }
