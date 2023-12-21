@@ -6,7 +6,7 @@
 /*   By: bsengeze <bsengeze@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 23:40:23 by bsengeze          #+#    #+#             */
-/*   Updated: 2023/11/29 20:20:23 by bsengeze         ###   ########.fr       */
+/*   Updated: 2023/12/21 00:02:53 by bsengeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ void	execute(t_data *data, t_ast_node *node, int old_read_fd)
 {
 	if (def_stdout == -1)
 		def_stdout = dup(STDOUT_FILENO);
-	// ft_putstr_fd("execute\n", def_stdout);
+	ft_putstr_fd("execute\n", def_stdout);
 	if (node->type == N_COMMAND && data->ast_type == UNDEFINED)
 	{
 		data->ast_type = SINGLE_CMD_AST;
@@ -120,16 +120,16 @@ void	execute(t_data *data, t_ast_node *node, int old_read_fd)
 	{
 		if (data->ast_type == UNDEFINED)
 		{
-			// ft_putstr_fd("data->ast_type == UNDEFINED\n", def_stdout);
+			ft_putstr_fd("data->ast_type == UNDEFINED\n", def_stdout);
 			data->ast_type = NOT_SINGLE_CMD_AST;
 			handle_pipe(node, data, -1);
 		}
 		else
 		{
-			// ft_putstr_fd("data->ast_type != UNDEFINED\n", def_stdout);
-			// ft_putstr_fd("old_read_fd: ", def_stdout);
-			// ft_putnbr_fd(old_read_fd, def_stdout);
-			// write(def_stdout, "\n", 1);
+			ft_putstr_fd("data->ast_type != UNDEFINED\n", def_stdout);
+			ft_putstr_fd("old_read_fd: ", def_stdout);
+			ft_putnbr_fd(old_read_fd, def_stdout);
+			write(def_stdout, "\n", 1);
 			handle_pipe(node, data, old_read_fd);
 		}
 	}

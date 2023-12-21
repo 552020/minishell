@@ -250,6 +250,8 @@ typedef struct s_ast_node
 	int old_read_fd;                // For pipe.
 	int exit_status;                // Exit status of the command.
 	struct s_ast_node *children[2]; // For output redirection.
+	int *old_read_fd_arr;           // For pipe.
+	int arr_size;                   // For pipe.
 }						t_ast_node;
 
 typedef struct s_node_list
