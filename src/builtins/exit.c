@@ -27,7 +27,23 @@ int	build_exit_code(char *str)
 void	write_error_and_return(char *str, int *return_status)
 {
 	ft_putstr_fd(str, STDERR_FILENO);
-	*return_status = 2;
+	if (*str == 't')
+		*return_status = 1;
+	else
+		*return_status = 2;
+}
+
+int	check_num_args(t_ast_node *node, int *exit_code, int *return_status)
+{
+	if (node->args[1])
+	{
+		write_error_and_return(" too many arguments\n", return_status);
+		*exit_code = 1;
+		*return_status = 1;
+		return (*return_status);
+	}
+	else
+		return (*return_status);
 }
 
 int	exit_input_check(char *str, int *exit_code, t_ast_node *node)
@@ -37,23 +53,23 @@ int	exit_input_check(char *str, int *exit_code, t_ast_node *node)
 
 	return_status = 0;
 	i = 0;
-	while (str[i])
+	return_status = check_num_args(node, exit_code, &return_status);
+	while (str && str[i])
 	{
 		if (str[i] == '+' || str[i] == '-')
 			i++;
 		if (!ft_isdigit(str[i]))
-			write_error_and_return("numeric argument requied\n",
+		{
+			write_error_and_return(" numeric argument required\n",
 				&return_status);
-		write_error_and_return(" \n", &return_status);
+			*exit_code = 2;
+			return (return_status);
+		}
 		i++;
 	}
-	if (node->args[1])
-		write_error_and_return(" too many arguments\n", &return_status);
-	if (node->args[0])
-		*exit_code = build_exit_code(node->args[0]);
-	if (check_parenthesis(node) && !node->args)
+	if (str)
 		*exit_code = build_exit_code(str);
-	return (0);
+	return (return_status);
 }
 
 void	free_ft_exit(t_ast_node *node, char **envp, t_env_table *table)
