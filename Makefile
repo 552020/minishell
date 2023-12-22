@@ -55,6 +55,10 @@ OBJS := $(OBJS:/=_)
 
 all: $(NAME) $(LIBFT)
 
+bonus: $(OBJS) $(LIBFT)
+	$(CC) $(CFLAGS) $(INCLUDES) -o minishell_bonus $^ $(LIBS) $(LDFLAGS)
+
+
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(@D)  
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@  
@@ -78,8 +82,9 @@ fclean: clean
 re:
 	make fclean 
 	make all
+	
+.PHONY: all clean fclean re bonus
 
-.PHONY: all clean fclean re
 
 
 
