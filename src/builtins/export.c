@@ -73,7 +73,10 @@ int	export(char **args, t_data *data)
 			free_exit(data, "Error: malloc failed\n");
 		vars.key = vars.key_value[0];
 		if (is_valid_env_var_name(vars.key) == EXIT_FAILURE)
+		{
+			free_ft_split(vars.key_value);
 			return (EXIT_FAILURE);
+		}
 		if (vars.key_value[1] == NULL)
 			key_value_one_null(&vars);
 		else
