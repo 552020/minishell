@@ -33,25 +33,28 @@ void	init_t_envp_split(t_envp_split *split, const char *s, char c,
 void	entries_t_envp_split(t_envp_split *split, const char **s, char c,
 		t_data *data)
 {
-	if (**s != c)
+	const char	*equal_pos;
+
+	equal_pos = ft_strchr(*s, c);
+	if (!equal_pos)
 	{
-		split->len = 0;
-		while (**s && **s != c && ++split->len)
-			++*s;
-		split->ret[split->i] = ft_substr(*s - split->len, 0, split->len);
-		if (!split->ret[split->i])
-		{
-			ft_free_ret(split->ret, split->i);
-			free_exit(data, "Error: malloc failed\n");
-		}
-		split->i++;
+		split->ret[split->i++] = ft_strdup(*s);
+		*s += ft_strlen(*s);
+		return ;
 	}
-	else
+	split->ret[split->i++] = ft_substr(*s, 0, equal_pos - *s);
+	if (!split->ret[split->i - 1])
 	{
-		if (*(*s + 1) == '\0')
-			split->ret[split->i++] = ft_strdup("");
-		(*s)++;
+		ft_free_ret(split->ret, split->i);
+		free_exit(data, "Error: malloc failed\n");
 	}
+	split->ret[split->i++] = ft_strdup(equal_pos + 1);
+	if (!split->ret[split->i - 1])
+	{
+		ft_free_ret(split->ret, split->i);
+		free_exit(data, "Error: malloc failed\n");
+	}
+	*s += ft_strlen(*s);
 }
 
 char	**ft_split_envp(const char *s, char c, t_data *data)
@@ -59,8 +62,7 @@ char	**ft_split_envp(const char *s, char c, t_data *data)
 	t_envp_split	split;
 
 	init_t_envp_split(&split, s, c, data);
-	while (*s)
-		entries_t_envp_split(&split, &s, c, data);
+	entries_t_envp_split(&split, &s, c, data);
 	split.ret[split.i] = 0;
 	return (split.ret);
 }
