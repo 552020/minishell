@@ -88,6 +88,7 @@ int	ft_exit(t_ast_node *node, char **envp, t_env_table *table)
 	int		return_status;
 	char	*num_str;
 
+	printf("exit\n");
 	num_str = NULL;
 	exit_code = 0;
 	return_status = 0;
