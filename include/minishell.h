@@ -322,7 +322,7 @@ void					execute_cmd(t_ast_node *node, t_data *data);
 int						print_working_directory(void);
 int						ft_exit(t_ast_node *node, char **envp,
 							t_env_table *table);
-
+void					execute_script(t_ast_node *node, t_data *data);
 void					insert_node_ht(const char *key, const char *value,
 							t_data *data);
 int						lexemize(t_data *data);

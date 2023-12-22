@@ -61,6 +61,8 @@ char	*path_finder(char *cmd, char *dir_paths, t_data *data)
 {
 	t_path_finder	vars;
 
+	if (!dir_paths)
+		return (NULL);
 	init_vars_and_build_dir_path_arr(&vars, dir_paths, data);
 	while (vars.dir_path_arr[vars.i])
 	{
