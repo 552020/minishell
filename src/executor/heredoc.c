@@ -109,8 +109,8 @@ int	ft_heredoc(t_ast_node *node, char *delimiter, t_data *data)
 {
 	t_heredoc	vars;
 
-	vars.delimiter = delimiter;
 	init_heredoc(&vars);
+	vars.delimiter = delimiter;
 	if (pipe(vars.fd) == -1)
 		free_exit(data, "pipe error");
 	vars.pid = fork();
