@@ -6,7 +6,7 @@
 /*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/22 06:20:16 by slombard          #+#    #+#             */
-/*   Updated: 2023/12/22 06:39:30 by slombard         ###   ########.fr       */
+/*   Updated: 2023/12/22 06:43:08 by slombard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,7 +148,7 @@ int						find_next_env_var_if_any(const char **str);
 
 # define NO_CMD_YET 0
 # define CMD_FOUND 1
-typedef enum e_lexeme_type
+typedef enum	e_lexeme_type
 {
 	L_COMMAND,
 	L_ARGUMENT,
@@ -173,8 +173,8 @@ typedef enum e_lexeme_status
 typedef struct s_lexeme
 {
 	t_lexeme_type		type;
-	char *str;      // The actual value (could be after variable substitution)
-	char *original; // Original value (useful for environment variables)
+	char *str;
+	char *original;
 	t_lexeme_status		status;
 }						t_lexeme;
 
@@ -226,18 +226,18 @@ typedef enum e_node_type
 typedef struct s_ast_node
 {
 	t_node_type			type;
-	char *cmd;           // Data: command, filename
-	char **args;         // Arguments: command arguments
-	char **input_files;  // For input redirection.
-	char **output_files; // For output redirection.
-	bool append;         // For output redirection.
-	int heredoc_fd;      // For heredoc redirection.
-	bool heredoc;        // For heredoc redirection.
-	char *heredoc_del;   // For heredoc redirection.
-	pid_t pid;           // Process ID of the command.
-	int exit_status;     // Exit status of the command.
+	char *cmd;
+	char **args;
+	char **input_files;
+	char **output_files;
+	bool append;
+	int heredoc_fd;
+	bool heredoc;
+	char *heredoc_del;
+	pid_t pid;
+	int exit_status;
 	int					pipe_id;
-	struct s_ast_node *children[2]; // For output redirection.
+	struct s_ast_node *children[2];
 }						t_ast_node;
 
 typedef struct s_node_list
