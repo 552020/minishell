@@ -29,7 +29,8 @@ void	free_after_execute(t_data *data)
 		free_ast(data->ast_root);
 		if (data->pipes_count > 0)
 		{
-			free_pipe_fds(data->pipe_fds, data->pipes_count);
+			if (data->pipe_fds)
+				free_pipe_fds(data);
 			data->pipes_count = 0;
 		}
 		data->ast_root = NULL;

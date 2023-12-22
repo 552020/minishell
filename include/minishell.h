@@ -310,7 +310,8 @@ int						ft_isvalidvarname(char c);
 void					collect_heredoc_content(t_token *token_arr,
 							size_t token_count);
 void					free_ast(t_ast_node *node);
-void					free_pipe_fds(int **pipe_fds, int pipes_count);
+// void					free_pipe_fds(int **pipe_fds, int pipes_count);
+void					free_pipe_fds(t_data *data);
 void					free_hash_table(t_env_table *env_table);
 void					free_envp(char **envp);
 /* Debug */
