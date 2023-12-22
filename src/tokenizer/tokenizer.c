@@ -82,9 +82,7 @@ void	trim_reshuffle_expand(t_tokenize_vars *vars, char *input, t_data *data)
 	vars->reshuffled = reshuffle_double_quotes(vars->tmp);
 	free(vars->tmp);
 	free(input);
-	printf("reshuffled: %s\n", vars->reshuffled);
 	vars->expanded = wildcard_expansion(vars->reshuffled, data);
-	printf("expanded: %s\n", vars->expanded);
 	input = NULL;
 }
 
