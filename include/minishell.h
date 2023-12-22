@@ -44,8 +44,7 @@ typedef enum e_debug_level
 
 # define TABLE_SIZE 42
 
-struct	s_data;
-
+struct					s_data;
 typedef struct s_data	t_data;
 
 typedef struct s_env_var
@@ -104,8 +103,8 @@ void					assign_redirect_in_heredoc(const char **str_ptr,
 							t_data *data, size_t *idx);
 void					assign_redirect_out_append(const char **str_ptr,
 							t_data *data, size_t *idx);
-void					assign_redirect_in_out_heredoc_append(const char **str_ptr,
-							t_data *data, size_t *idx);
+void					assign_redirect_in_out_heredoc_append(const char
+							**str_ptr, t_data *data, size_t *idx);
 void					handle_unexpected_char(const char **str_ptr);
 void					assign_word(const char **str_ptr, t_data *data,
 							size_t *idx);
@@ -125,7 +124,7 @@ char					*find_unpaired_quote(const char *str);
 int						count_single_or_double_quotes(const char *str,
 							char quote);
 char					*remove_single_or_double_quotes(char *str, char quote);
-char *add_single_or_double_quotes(char *str, char quote);
+char					*add_single_or_double_quotes(char *str, char quote);
 
 typedef struct s_var_subs
 {
@@ -148,7 +147,8 @@ int						find_next_env_var_if_any(const char **str);
 
 # define NO_CMD_YET 0
 # define CMD_FOUND 1
-typedef enum	e_lexeme_type
+
+typedef enum e_lexeme_type
 {
 	L_COMMAND,
 	L_ARGUMENT,
@@ -173,8 +173,8 @@ typedef enum e_lexeme_status
 typedef struct s_lexeme
 {
 	t_lexeme_type		type;
-	char *str;
-	char *original;
+	char				*str;
+	char				*original;
 	t_lexeme_status		status;
 }						t_lexeme;
 
@@ -226,18 +226,18 @@ typedef enum e_node_type
 typedef struct s_ast_node
 {
 	t_node_type			type;
-	char *cmd;
-	char **args;
-	char **input_files;
-	char **output_files;
-	bool append;
-	int heredoc_fd;
-	bool heredoc;
-	char *heredoc_del;
-	pid_t pid;
-	int exit_status;
+	char				*cmd;
+	char				**args;
+	char				**input_files;
+	char				**output_files;
+	bool				append;
+	int					heredoc_fd;
+	bool				heredoc;
+	char				*heredoc_del;
+	pid_t				pid;
+	int					exit_status;
 	int					pipe_id;
-	struct s_ast_node *children[2];
+	struct s_ast_node	*children[2];
 }						t_ast_node;
 
 typedef struct s_node_list
