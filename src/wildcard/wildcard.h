@@ -52,6 +52,20 @@ typedef struct s_entries
 	int			count;
 }				t_entries;
 
+typedef struct s_wilcard
+{
+	const char	*str;
+	char		*matched_files;
+	char		*ret;
+	char		*before;
+	char		*after;
+	char		*tmp;
+	t_pattern	pattern;
+	const char	*quote;
+	int			asterisks_to_skip;
+}				t_wildcard;
+
+
 char			*wildcard_expansion(char *input, t_data *data);
 
 void			build_pattern(const char *asterisk, const char *input_start,
@@ -67,7 +81,7 @@ char			*ft_strjoin_arr(char **arr);
 char			*reduce_consecutive_char(const char *str, char c, t_data *data);
 void			init_entries(t_entries *entries_ptr);
 void			free_entries(t_entries *entries);
-char			*get_matching_entries(t_pattern *pattern, t_data *data);
+char			*get_matching_entries(t_pattern *pattern, t_data *data, t_wildcard *wildcard);
 void			init_matching(t_entries *entries);
 void			check_suffix(t_entries *entries, t_pattern *pattern);
 

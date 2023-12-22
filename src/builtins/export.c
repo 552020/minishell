@@ -51,6 +51,21 @@ void	free_key_and_value(char *key, char *value)
 	}
 }
 
+void	free_ft_split(char **key_value)
+{
+	int	i;
+
+	i = 0;
+	while (key_value[i])
+	{
+		free(key_value[i]);
+		key_value[i] = NULL;
+		i++;
+	}
+	free(key_value);
+	key_value = NULL;
+}
+
 int	export(char **args, t_data *data)
 {
 	int		i;
@@ -72,7 +87,7 @@ int	export(char **args, t_data *data)
 		else
 			value = key_value[1];
 		single_export(key, value, data);
-		free_key_and_value(key, value);
+		free_ft_split(key_value);
 		i++;
 	}
 	return (EXIT_SUCCESS);

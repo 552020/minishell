@@ -23,21 +23,6 @@ void	execute_main(t_data *data, int *exit_status)
 	}
 }
 
-void	free_after_execute(t_data *data)
-{
-	if (data->ast_root)
-	{
-		free_ast(data->ast_root);
-		if (data->pipes_count > 0)
-		{
-			free_pipe_fds(data->pipe_fds, data->pipes_count);
-			data->pipes_count = 0;
-		}
-		data->ast_root = NULL;
-		data->ast_type = UNDEFINED;
-	}
-}
-
 int	main(int argc, char **argv, char **envp)
 {
 	char	*input;
@@ -46,6 +31,7 @@ int	main(int argc, char **argv, char **envp)
 
 	check_input(argc, argv);
 	initialize_data(envp, &data);
+	data.debug_level = DEBUG_ALL;
 	while (1)
 	{
 		handle_signals_main();

@@ -89,7 +89,8 @@ void	all_entries_to_matching(t_entries *entries)
 	entries->matching[i] = NULL;
 }
 
-char	*get_matching_entries(t_pattern *pattern, t_data *data)
+char	*get_matching_entries(t_pattern *pattern, t_data *data,
+		t_wildcard *vars)
 {
 	t_entries	entries;
 	char		*ret;
@@ -112,6 +113,17 @@ char	*get_matching_entries(t_pattern *pattern, t_data *data)
 		all_entries_to_matching(&entries);
 	ret_arr = entry_to_char(entries.matching, data);
 	ret = ft_strjoin_arr(ret_arr);
+	printf("pattern: %s\n", pattern->pattern);
+	if (ret[0] == '\0')
+	{
+		free(ret);
+		ret = NULL;
+		ret = ft_strdup(pattern->pattern);
+		free_get_matching_entries(&entries, &ret_arr, pattern);
+		vars->asterisks_to_skip += 1;
+		return (ret);
+	}
+	printf("ret: %s\n", ret);
 	free_get_matching_entries(&entries, &ret_arr, pattern);
 	return (ret);
 }
