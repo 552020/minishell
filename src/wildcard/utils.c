@@ -110,3 +110,13 @@ char	*reduce_consecutive_char(const char *str, char c, t_data *data)
 	*vars.dest_ptr = '\0';
 	return (vars.ret);
 }
+
+void	check_prefix_midfixes_suffix(t_entries *entries, t_pattern *pattern)
+{
+	if (pattern->prefix_len > 0)
+		check_prefix(entries, pattern);
+	if (pattern->midfixes_nbr > 0)
+		check_midfixes(entries, pattern);
+	if (pattern->suffix_len > 0)
+		check_suffix(entries, pattern);
+}

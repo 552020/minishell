@@ -100,14 +100,7 @@ char	*get_matching_entries(t_pattern *pattern, t_data *data,
 	init_matching(&entries);
 	if (pattern->prefix_len != 0 || pattern->midfixes_nbr != 0
 		|| pattern->suffix_len != 0)
-	{
-		if (pattern->prefix_len > 0)
-			check_prefix(&entries, pattern);
-		if (pattern->midfixes_nbr > 0)
-			check_midfixes(&entries, pattern);
-		if (pattern->suffix_len > 0)
-			check_suffix(&entries, pattern);
-	}
+		check_prefix_midfixes_suffix(&entries, pattern);
 	else if (pattern->prefix_len == 0 && pattern->midfixes_nbr == 0
 		&& pattern->suffix_len == 0)
 		all_entries_to_matching(&entries);
@@ -118,9 +111,7 @@ char	*get_matching_entries(t_pattern *pattern, t_data *data,
 		free(ret);
 		ret = NULL;
 		ret = ft_strdup(pattern->pattern);
-		free_get_matching_entries(&entries, &ret_arr, pattern);
 		vars->asterisks_to_skip += 1;
-		return (ret);
 	}
 	free_get_matching_entries(&entries, &ret_arr, pattern);
 	return (ret);

@@ -116,8 +116,6 @@ int	handle_redirections(t_ast_node *node, t_data *data)
 	if (node->input_files)
 	{
 		return_infile = infile_redirection(node);
-		// if (return_infile == FAILURE) // Check if infile redirection failed
-		// 	return (FAILURE);
 	}
 	if (node->output_files)
 		return_outfile = outfile_redirection(node);

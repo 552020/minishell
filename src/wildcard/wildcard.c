@@ -81,18 +81,6 @@ void	wildcard_expansion_build_expansion(t_wildcard *vars, char **input,
 	vars->str = *input;
 }
 
-void	init_t_wildcard(t_wildcard *vars)
-{
-	vars->str = NULL;
-	vars->matched_files = NULL;
-	vars->ret = NULL;
-	vars->before = NULL;
-	vars->after = NULL;
-	vars->tmp = NULL;
-	vars->quote = NULL;
-	vars->asterisks_to_skip = 0;
-}
-
 char	*wildcard_expansion(char *input, t_data *data)
 {
 	t_wildcard	vars;
