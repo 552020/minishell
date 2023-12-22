@@ -30,7 +30,7 @@ int	wait_pid(t_ast_node *node, t_data *data)
 			if (termsig == SIGINT)
 				ft_putstr_fd("\n", STDOUT_FILENO);
 			if (termsig == SIGQUIT)
-				ft_putstr_fd("Quit\n", STDOUT_FILENO);
+				ft_putstr_fd("Quit (core dumped)\n", STDOUT_FILENO);
 			exit_status = termsig + 128;
 		}
 		node->exit_status = exit_status;
