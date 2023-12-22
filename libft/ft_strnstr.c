@@ -30,7 +30,7 @@ char	*ft_strnstr(const char *big, const char *lit, size_t len)
 				if (!lit[j])
 					return ((char *) &big[i]);
 				j++;
-			}	
+			}
 		}
 		j = 0;
 		i++;
