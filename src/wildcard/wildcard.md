@@ -57,7 +57,7 @@ void	wildcard_expansion_build_expansion(t_wildcard *vars, char **input,
 		t_data *data)
 {
 	build_pattern(vars->str, *input, &vars->pattern, data);
-	vars->matched_files = get_matching_entries(&vars->pattern, data);
+	vars->matched_files = get_matching_entries(&vars->pattern, data, vars);
 	vars->before = ft_substr(*input, 0, vars->pattern.input_pattern_start
 			- *input);
 	vars->after = ft_substr(vars->pattern.input_pattern_end, 0,

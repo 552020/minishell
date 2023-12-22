@@ -13,17 +13,18 @@
 #include "minishell.h"
 #include "wildcard.h"
 
-typedef struct s_wilcard
-{
-	const char	*str;
-	char		*matched_files;
-	char		*ret;
-	char		*before;
-	char		*after;
-	char		*tmp;
-	t_pattern	pattern;
-	const char	*quote;
-}				t_wildcard;
+// typedef struct s_wilcard
+// {
+// 	const char	*str;
+// 	char		*matched_files;
+// 	char		*ret;
+// 	char		*before;
+// 	char		*after;
+// 	char		*tmp;
+// 	t_pattern	pattern;
+// 	const char	*quote;
+// 	int			asterisks_to_skip;
+// }				t_wildcard;
 
 void	wildcard_expansion_skip_quotes(t_wildcard *vars)
 {
@@ -62,7 +63,7 @@ void	wildcard_expansion_build_expansion(t_wildcard *vars, char **input,
 		t_data *data)
 {
 	build_pattern(vars->str, *input, &vars->pattern, data);
-	vars->matched_files = get_matching_entries(&vars->pattern, data);
+	vars->matched_files = get_matching_entries(&vars->pattern, data, vars);
 	vars->before = ft_substr(*input, 0, vars->pattern.input_pattern_start
 			- *input);
 	vars->after = ft_substr(vars->pattern.input_pattern_end, 0,
@@ -80,28 +81,28 @@ void	wildcard_expansion_build_expansion(t_wildcard *vars, char **input,
 	vars->str = *input;
 }
 
-void	init_t_wildcard(t_wildcard *vars)
-{
-	vars->str = NULL;
-	vars->matched_files = NULL;
-	vars->ret = NULL;
-	vars->before = NULL;
-	vars->after = NULL;
-	vars->tmp = NULL;
-	vars->quote = NULL;
-}
-
 char	*wildcard_expansion(char *input, t_data *data)
 {
 	t_wildcard	vars;
+	int			tmp_asterisks_to_skip;
 
 	vars.str = input;
+	vars.asterisks_to_skip = 0;
 	while (*vars.str != '\0')
 	{
 		if (*vars.str == '\'' || *vars.str == '\"')
 			wildcard_expansion_skip_quotes(&vars);
 		else if (*vars.str == '*')
+		{
+			if (vars.asterisks_to_skip > 0)
+			{
+				tmp_asterisks_to_skip = vars.asterisks_to_skip;
+				tmp_asterisks_to_skip--;
+				vars.str++;
+				continue ;
+			}
 			wildcard_expansion_build_expansion(&vars, &input, data);
+		}
 		else
 			vars.str++;
 	}

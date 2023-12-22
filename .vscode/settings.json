@@ -13,7 +13,12 @@
       "when": "editorFocus"
     }
   ],
-  "cSpell.words": ["isregularchar", "isspecialchar", "isvalidvarname", "putendl"],
+  "cSpell.words": [
+    "isregularchar",
+    "isspecialchar",
+    "isvalidvarname",
+    "putendl"
+  ],
   "workbench.colorCustomizations": {
     "activityBar.background": "#203210",
     "titleBar.activeBackground": "#2D4717",

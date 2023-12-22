@@ -72,16 +72,6 @@ int	exit_input_check(char *str, int *exit_code, t_ast_node *node)
 	return (return_status);
 }
 
-void	free_ft_exit(t_ast_node *node, char **envp, t_env_table *table)
-{
-	if (node)
-		free_ast(node);
-	if (table)
-		free_hash_table(table);
-	if (envp)
-		free_envp(envp);
-}
-
 int	ft_exit(t_ast_node *node, char **envp, t_env_table *table)
 {
 	int		exit_code;
