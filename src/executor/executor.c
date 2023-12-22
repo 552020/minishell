@@ -13,24 +13,6 @@
 #include "minishell.h"
 
 /*
-Notes and questions:
-- Logic for existing scripts is missing
-- Question: should we free before exiting?
-- Now I did
-*/
-void	execute_script(t_ast_node *node, t_data *data)
-{
-	(void)data;
-	if (ft_strncmp(&node->cmd[0], "./", 2) == 0)
-	{
-		if (access(node->cmd, F_OK) == 0)
-			free_exit_code(data, " ", 126);
-		else
-			free_exit_code(data, " ", 127);
-	}
-}
-
-/*
 Some notes and questions:
 - path will be NULL if the command is not an executable file
 - it's not clear when the else case would be the case
@@ -64,6 +46,19 @@ void	init_execute_cmd_vars(t_execute_cmd *vars, t_data *data)
 	vars->dir_paths = ft_getenv(data->env_table->table, "PATH");
 }
 
+void	if_node_cmd_and_vars_exec_arr(t_ast_node *node, t_execute_cmd *vars,
+		t_data *data)
+{
+	if (!vars->path)
+	{
+		ft_putstr_fd(": command not found\n", 2);
+		free_data(data);
+		exit(127);
+	}
+	if (execve(vars->path, vars->exec_arr, data->env_arr) == -1)
+		handle_execve_fail(node, data, vars->path);
+}
+
 void	execute_cmd(t_ast_node *node, t_data *data)
 {
 	t_execute_cmd	vars;
@@ -82,10 +77,7 @@ void	execute_cmd(t_ast_node *node, t_data *data)
 	if (!vars.exec_arr)
 		free_exit(data, "Error: malloc failed\n");
 	if (node->cmd && vars.exec_arr)
-	{
-		if (execve(vars.path, vars.exec_arr, data->env_arr) == -1)
-			handle_execve_fail(node, data, vars.path);
-	}
+		if_node_cmd_and_vars_exec_arr(node, &vars, data);
 	if (vars.exec_arr)
 		free_cmd_and_args_arr(vars.exec_arr);
 }

@@ -68,20 +68,36 @@ void	free_key_value_pair(char **key_value)
 	key_value = NULL;
 }
 
-void	free_pipe_fds(int **pipe_fds, int pipes_count)
+// void	free_pipe_fds(int **pipe_fds, int pipes_count)
+void	free_pipe_fds(t_data *data)
 {
 	int	i;
 
 	i = 0;
-	while (i < pipes_count)
+	while (i < data->pipes_count)
 	{
-		free(pipe_fds[i]);
-		pipe_fds[i] = NULL;
+		if (data->pipe_fds[i])
+			free(data->pipe_fds[i]);
+		data->pipe_fds[i] = NULL;
 		i++;
 	}
-	free(pipe_fds);
-	pipe_fds = NULL;
+	free(data->pipe_fds);
+	data->pipe_fds = NULL;
 }
+// {
+// 	int	i;
+
+// 	i = 0;
+// 	while (i < pipes_count)
+// 	{
+// 		if (pipe_fds[i])
+// 			free(pipe_fds[i]);
+// 		pipe_fds[i] = NULL;
+// 		i++;
+// 	}
+// 	free(pipe_fds);
+// 	pipe_fds = NULL;
+// }
 
 void	free_data(t_data *data)
 {
@@ -101,6 +117,6 @@ void	free_data(t_data *data)
 		free_lexeme_arr(data);
 	data->lexeme_arr = NULL;
 	if (data->pipe_fds)
-		free_pipe_fds(data->pipe_fds, data->pipes_count);
+		free_pipe_fds(data);
 	data->pipe_fds = NULL;
 }

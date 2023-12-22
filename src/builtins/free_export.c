@@ -1,39 +1,46 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   free_functions_2.c                                 :+:      :+:    :+:   */
+/*   free_export.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bsengeze <bsengeze@student.42berlin.d      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/12/22 03:13:54 by bsengeze          #+#    #+#             */
-/*   Updated: 2023/12/22 03:13:58 by bsengeze         ###   ########.fr       */
+/*   Created: 2023/12/22 08:48:53 by bsengeze          #+#    #+#             */
+/*   Updated: 2023/12/22 08:48:58 by bsengeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	free_ft_exit(t_ast_node *node, char **envp, t_env_table *table)
+void	free_key_and_value(char *key, char *value)
 {
-	if (node)
-		free_ast(node);
-	if (table)
-		free_hash_table(table);
-	if (envp)
-		free_envp(envp);
+	if (key)
+	{
+		free(key);
+		key = NULL;
+	}
+	if (value)
+	{
+		free(value);
+		value = NULL;
+	}
 }
 
-void	free_after_execute(t_data *data)
+void	free_ft_split(char **key_value)
 {
-	if (data->ast_root)
+	int	i;
+
+	i = 0;
+	if (key_value[i])
 	{
-		free_ast(data->ast_root);
-		if (data->pipes_count > 0)
+		while (key_value[i])
 		{
-			if (data->pipe_fds)
-				free_pipe_fds(data);
-			data->pipes_count = 0;
+			free(key_value[i]);
+			key_value[i] = NULL;
+			i++;
 		}
-		data->ast_root = NULL;
-		data->ast_type = UNDEFINED;
 	}
+	if (key_value)
+		free(key_value);
+	key_value = NULL;
 }

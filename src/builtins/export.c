@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int		is_valid_env_var_name(const char *str);
+int			is_valid_env_var_name(const char *str);
 
 void	single_export(const char *key, const char *value, t_data *data)
 {
@@ -37,58 +37,53 @@ void	single_export(const char *key, const char *value, t_data *data)
 	data->env_arr = hash_table_to_arr(data);
 }
 
-void	free_key_and_value(char *key, char *value)
-{
-	if (key)
-	{
-		free(key);
-		key = NULL;
-	}
-	if (value)
-	{
-		free(value);
-		value = NULL;
-	}
-}
-
-void	free_ft_split(char **key_value)
-{
-	int	i;
-
-	i = 0;
-	while (key_value[i])
-	{
-		free(key_value[i]);
-		key_value[i] = NULL;
-		i++;
-	}
-	free(key_value);
-	key_value = NULL;
-}
-
-int	export(char **args, t_data *data)
+typedef struct s_export
 {
 	int		i;
 	char	*key;
 	char	*value;
 	char	**key_value;
+	char	**tmp_key_value;
+}			t_export;
 
-	i = 0;
-	while (args[i])
+void	key_value_one_null(t_export *vars)
+{
+	vars->tmp_key_value = malloc(sizeof(char *) * 3);
+	vars->tmp_key_value[0] = ft_strdup(vars->key);
+	vars->tmp_key_value[1] = ft_strdup("");
+	vars->tmp_key_value[2] = NULL;
+	free(vars->key_value[0]);
+	vars->key_value[0] = NULL;
+	free(vars->key_value);
+	vars->key_value = NULL;
+	vars->key_value = vars->tmp_key_value;
+	vars->key = vars->tmp_key_value[0];
+	vars->value = vars->tmp_key_value[1];
+}
+
+int	export(char **args, t_data *data)
+{
+	t_export	vars;
+
+	vars.i = 0;
+	while (args[vars.i])
 	{
-		key_value = ft_split(args[i], '=');
-		if (key_value == NULL)
+		vars.key_value = ft_split(args[vars.i], '=');
+		if (vars.key_value == NULL)
 			free_exit(data, "Error: malloc failed\n");
-		key = key_value[0];
-		if (is_valid_env_var_name(key) == EXIT_FAILURE)
+		vars.key = vars.key_value[0];
+		if (is_valid_env_var_name(vars.key) == EXIT_FAILURE)
+		{
+			free_ft_split(vars.key_value);
 			return (EXIT_FAILURE);
-		if (key_value[1] == NULL)
-			value = ft_strdup("");
+		}
+		if (vars.key_value[1] == NULL)
+			key_value_one_null(&vars);
 		else
-			value = key_value[1];
-		single_export(key, value, data);
-		free_ft_split(key_value);
-		i++;
+			vars.value = vars.key_value[1];
+		single_export(vars.key, vars.value, data);
+		free_ft_split(vars.key_value);
+		vars.i++;
 	}
 	return (EXIT_SUCCESS);
 }

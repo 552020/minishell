@@ -310,7 +310,8 @@ int						ft_isvalidvarname(char c);
 void					collect_heredoc_content(t_token *token_arr,
 							size_t token_count);
 void					free_ast(t_ast_node *node);
-void					free_pipe_fds(int **pipe_fds, int pipes_count);
+// void					free_pipe_fds(int **pipe_fds, int pipes_count);
+void					free_pipe_fds(t_data *data);
 void					free_hash_table(t_env_table *env_table);
 void					free_envp(char **envp);
 /* Debug */
@@ -338,7 +339,7 @@ void					execute_cmd(t_ast_node *node, t_data *data);
 int						print_working_directory(void);
 int						ft_exit(t_ast_node *node, char **envp,
 							t_env_table *table);
-
+void					execute_script(t_ast_node *node, t_data *data);
 void					insert_node_ht(const char *key, const char *value,
 							t_data *data);
 int						lexemize(t_data *data);
@@ -374,6 +375,8 @@ typedef struct s_echo
 void					free_token_arr(t_data *data);
 void					free_lexeme_arr(t_data *data);
 void					free_key_value_pair(char **key_value);
+void					free_key_and_value(char *key, char *value);
+void					free_ft_split(char **key_value);
 void					free_ft_exit(t_ast_node *node, char **envp,
 							t_env_table *table);
 void					free_after_execute(t_data *data);
