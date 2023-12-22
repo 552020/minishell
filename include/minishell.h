@@ -6,59 +6,47 @@
 /*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/22 06:20:16 by slombard          #+#    #+#             */
-/*   Updated: 2023/12/22 06:20:24 by slombard         ###   ########.fr       */
+/*   Updated: 2023/12/22 06:39:30 by slombard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-#include "libft.h"
-#include <stdio.h>
-// Comment needed to prevent autoformat to move the include above the comment
-#include <errno.h>
-#include <fcntl.h>
-#include <readline/history.h>
-#include <readline/readline.h>
-#include <signal.h>
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/wait.h>
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+# include "libft.h"
+# include <stdio.h>
+// Comment needed to prevent autoformat to move the include above the comment
+# include <errno.h>
+# include <fcntl.h>
+# include <readline/history.h>
+# include <readline/readline.h>
+# include <signal.h>
+# include <stdbool.h>
+# include <stddef.h>
+# include <stdio.h>
+# include <stdlib.h>
+# include <string.h>
+# include <sys/wait.h>
+
 # define FAILURE 0
 # define SUCCESS 1
 
-/* Debugger */
-/* TODO: Achthung external variable*/
-
 typedef enum e_debug_level
 {
-	DEBUG_OFF,       // No debugging
-	DEBUG_TOKENIZER, // Debug the tokenizer
-	DEBUG_LEXER,     // Debug the lexer
-	DEBUG_AST,       // Debug the AST
-	DEBUG_ALL        // Debug everything
+	DEBUG_OFF,
+	DEBUG_TOKENIZER,
+	DEBUG_LEXER,
+	DEBUG_AST,
+	DEBUG_ALL
 }						t_debug_level;
 
-// extern t_debug_level	debug_level;
-
-/* Error messages*/
-
-# define UNEXPECTED_CHAR_WARNING "Warning: Unexpected character during tokenization."
-
-/* Environment Variables*/
+# define UNEXPECTED_CHAR_WARNING "Unexpected char during tokenization."
 
 # define TABLE_SIZE 42
 
-/* Forward Declare Free */
-struct s_data;
+struct	s_data;
 
 typedef struct s_data	t_data;
-
-/* envp */
 
 typedef struct s_env_var
 {
@@ -70,7 +58,7 @@ typedef struct s_env_var
 typedef struct s_env_table
 {
 	t_env_var			*table[TABLE_SIZE];
-	int count; // This will keep track of the number of environment variables.
+	int					count;
 }						t_env_table;
 
 void					initialize_table(char **envp, t_data *data);
@@ -82,25 +70,20 @@ int						unset(char **args, t_data *data);
 char					**hash_table_to_arr(t_data *data);
 char					*ft_getenv(t_env_var **table, const char *key);
 
-/* Tokenizer */
 typedef enum e_token_type
 {
-	// Maybe change T_WORD to T_CMD_OR_ARG
-	// T_WORD could also represent a filename though
-	T_WORD,              // 0 - Command argument or filename
-	T_PIPE,              // 1 - |
-	T_REDIRECT_IN,       // 2 - <
-	T_REDIRECT_OUT,      // 3 - >
-	T_REDIRECT_APPEND,   // 4 - >>
-	T_HEREDOC,           // 5 - <<
-	T_HEREDOC_DELIMITER, // 6 - << delimiter
+	T_WORD,
+	T_PIPE,
+	T_REDIRECT_IN,
+	T_REDIRECT_OUT,
+	T_REDIRECT_APPEND,
+	T_HEREDOC,
+	T_HEREDOC_DELIMITER,
 	T_DOUBLE_QUOTE,
-	// 7 - " the whole string in between " quotes included
 	T_SINGLE_QUOTE,
-	// 8 - ' the whole string in between ' quotes included
-	T_ENV_VAR,   // 9 - $ followed by a valid variable name
-	T_SHELL_VAR, // 10 - $ followed by a shell variable symbol like $?
-	T_END,       // 11 - End of token array
+	T_ENV_VAR,
+	T_SHELL_VAR,
+	T_END,
 }						t_token_type;
 
 typedef struct s_token
@@ -142,11 +125,8 @@ char					*find_unpaired_quote(const char *str);
 int						count_single_or_double_quotes(const char *str,
 							char quote);
 char					*remove_single_or_double_quotes(char *str, char quote);
-char					*add_single_or_double_quotes(char *str, char quote);
+char *add_single_or_double_quotes(char *str, char quote);
 
-/* Lexer */
-
-// Variable substitution
 typedef struct s_var_subs
 {
 	const char			*str;
@@ -170,18 +150,18 @@ int						find_next_env_var_if_any(const char **str);
 # define CMD_FOUND 1
 typedef enum e_lexeme_type
 {
-	L_COMMAND,           // Command to be executed
-	L_ARGUMENT,          // Argument to a command
-	L_PIPE,              // Pipe operdator, signaling chaining of commands
-	L_REDIRECT_INPUT,    // Input redirection operator (<)
-	L_REDIRECT_OUTPUT,   // Output redirection operator (>)
-	L_REDIRECT_APPEND,   // Append redirection operator (>>)
-	L_HEREDOC,           // Heredoc redirection operator (<<)
-	L_HEREDOC_DELIMITER, // Delimiter for heredoc (<<)
-	L_FILENAME_STDIN,    // Filename used in redirections
-	L_FILENAME_STDOUT,   // Filename used in redirections
-	L_UNDEFINED,         // Undefined lexeme type
-	L_END                // End of lexeme array
+	L_COMMAND,
+	L_ARGUMENT,
+	L_PIPE,
+	L_REDIRECT_INPUT,
+	L_REDIRECT_OUTPUT,
+	L_REDIRECT_APPEND,
+	L_HEREDOC,
+	L_HEREDOC_DELIMITER,
+	L_FILENAME_STDIN,
+	L_FILENAME_STDOUT,
+	L_UNDEFINED,
+	L_END
 }						t_lexeme_type;
 
 typedef enum e_lexeme_status
@@ -236,8 +216,6 @@ void					lexer_t_redirects_and_word(t_data *data, size_t *i);
 void					finalize_lexeme_array(t_data *data, size_t i);
 void					command_and_args(size_t token_count,
 							t_lexeme *lexeme_arr);
-
-/* Parser */
 
 typedef enum e_node_type
 {
@@ -312,7 +290,6 @@ void					*ft_realloc(void *ptr, size_t old_size,
 							size_t new_size);
 int						ft_arrlen(char **arr);
 
-/* Varia */
 void					check_input(int argc, char **argv);
 char					*read_input(t_data *data);
 t_token					*tokenizer(t_data *data, const char *input);
@@ -325,7 +302,6 @@ void					free_ast(t_ast_node *node);
 void					free_pipe_fds(int **pipe_fds, int pipes_count);
 void					free_hash_table(t_env_table *env_table);
 void					free_envp(char **envp);
-/* Debug */
 void					print_token_arr(t_token *token_arr, size_t token_count);
 void					print_lexeme_arr(t_lexeme *lexeme_arr,
 							size_t lexeme_count);
@@ -336,11 +312,7 @@ void					print_hash_table(t_env_table *env_table);
 void					print_envp_arr(char **envp);
 t_ast_node				*create_node(t_node_type type, t_data *data);
 
-/* Heredoc */
-
 int						handle_heredocs(t_ast_node *node, t_data *data);
-
-/* Executor */
 
 unsigned int			hash(const char *key);
 int						handle_pipe(t_ast_node *ast_root, t_data *data);
@@ -374,8 +346,6 @@ int						command_is_builtin(t_ast_node *node);
 void					handle_command_node(t_ast_node *node, char **envp,
 							t_env_table *env_table, t_data *data);
 char					*ft_realpath(const char *path, t_data *data);
-/* Builtins*/
-
 typedef struct s_echo
 {
 	int					i;
