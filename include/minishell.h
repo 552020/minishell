@@ -356,6 +356,8 @@ typedef struct s_echo
 void					free_token_arr(t_data *data);
 void					free_lexeme_arr(t_data *data);
 void					free_key_value_pair(char **key_value);
+void					free_key_and_value(char *key, char *value);
+void					free_ft_split(char **key_value);
 void					free_ft_exit(t_ast_node *node, char **envp,
 							t_env_table *table);
 void					free_after_execute(t_data *data);
