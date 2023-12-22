@@ -96,6 +96,7 @@ void	init_t_wildcard(t_wildcard *vars)
 char	*wildcard_expansion(char *input, t_data *data)
 {
 	t_wildcard	vars;
+	int			tmp_asterisks_to_skip;
 
 	vars.str = input;
 	vars.asterisks_to_skip = 0;
@@ -107,7 +108,8 @@ char	*wildcard_expansion(char *input, t_data *data)
 		{
 			if (vars.asterisks_to_skip > 0)
 			{
-				vars.asterisks_to_skip--;
+				tmp_asterisks_to_skip = vars.asterisks_to_skip;
+				tmp_asterisks_to_skip--;
 				vars.str++;
 				continue ;
 			}
