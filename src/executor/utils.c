@@ -55,3 +55,21 @@ void	handle_execve_fail(t_ast_node *node, t_data *data, char *path)
 		free_exit_code(data, " ", 126);
 	free_exit_code(data, " ", 127);
 }
+
+/*
+Notes and questions:
+- Logic for existing scripts is missing
+- Question: should we free before exiting?
+- Now I did
+*/
+void	execute_script(t_ast_node *node, t_data *data)
+{
+	(void)data;
+	if (ft_strncmp(&node->cmd[0], "./", 2) == 0)
+	{
+		if (access(node->cmd, F_OK) == 0)
+			free_exit_code(data, " ", 126);
+		else
+			free_exit_code(data, " ", 127);
+	}
+}
