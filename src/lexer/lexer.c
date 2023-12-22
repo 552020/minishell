@@ -6,7 +6,7 @@
 /*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 07:12:29 by slombard          #+#    #+#             */
-/*   Updated: 2023/11/30 07:53:34 by slombard         ###   ########.fr       */
+/*   Updated: 2023/12/22 06:01:25 by slombard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,11 +107,6 @@ int	lexemize(t_data *data)
 {
 	create_lexeme_arr(data);
 	data->lexeme_arr = lexer(data);
-	if (data->debug_level == DEBUG_ALL || data->debug_level == DEBUG_LEXER)
-	{
-		printf("\n***Lexer***\n\n");
-		print_lexeme_arr(data->lexeme_arr, data->token_count);
-	}
 	if (data->token_arr)
 		free_token_arr(data);
 	if (check_syntax_error(data))

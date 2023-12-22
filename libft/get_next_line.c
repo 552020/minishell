@@ -2,25 +2,21 @@
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
-/*                                                    +:+ +:+        
-	+:+     */
-/*   By: slombard <slombard@student.42berlin.de>    +#+  +:+      
-	+#+        */
-/*                                                +#+#+#+#+#+  
-	+#+           */
+/*                                                    +:+ +:+         +:+     */
+/*   By: slombard <slombard@student.42berlin.de>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/02 04:10:30 by slombard          #+#    #+#             */
 /*   Updated: 2023/02/03 22:06:47 by slombard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-
+#include "get_next_line.h"
 
 char	*get_next_line(int fd)
 {
-	char *n_idx;
-	char *line;
-	static char *stash;
+	char			*n_idx;
+	char			*line;
+	static char		*stash;
 
 	stash = ft_read(fd, stash);
 	if (!stash || fd < 0)
@@ -36,7 +32,7 @@ char	*get_next_line(int fd)
 	line = ft_substr(stash, 0, n_idx - stash + 1);
 	if (!line)
 	{
-		free(stash);
+		free (stash);
 		stash = NULL;
 		return (NULL);
 	}
@@ -46,7 +42,7 @@ char	*get_next_line(int fd)
 
 char	*ft_n_idx(char *s)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (s[i] != '\0')
@@ -60,7 +56,7 @@ char	*ft_n_idx(char *s)
 
 char	*ft_write_new(char **ptr_stash, char *ptr_buff)
 {
-	char *str;
+	char	*str;
 
 	if (*ptr_stash == NULL)
 	{
@@ -104,9 +100,9 @@ int	ft_read_check(char **stash_ptr, int buff_len)
 
 char	*ft_read(int fd, char *stash)
 {
-	int buff_len;
-	int read_check;
-	char *buffer;
+	int		buff_len;
+	int		read_check;
+	char	*buffer;	
 
 	buffer = malloc(sizeof(char) * BUFFER_SIZE + 1);
 	while (1)
@@ -124,7 +120,7 @@ char	*ft_read(int fd, char *stash)
 		if (ft_n_idx(stash) || buff_len < BUFFER_SIZE)
 			break ;
 	}
-	free(buffer);
+	free (buffer);
 	buffer = NULL;
 	return (stash);
 }

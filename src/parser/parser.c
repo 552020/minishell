@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bsengeze <bsengeze@student.42berlin.d      +#+  +:+       +#+        */
+/*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 07:15:23 by bsengeze          #+#    #+#             */
-/*   Updated: 2023/11/30 07:15:25 by bsengeze         ###   ########.fr       */
+/*   Updated: 2023/12/22 06:01:38 by slombard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,7 @@
 
 void	parse(t_data *data)
 {
-	if (data->debug_level == DEBUG_ALL || data->debug_level == DEBUG_AST)
-		printf("***Parsing***\n\n");
 	data->ast_root = parser(data->lexeme_arr, 0, data->token_count - 1, data);
-	if (data->debug_level == DEBUG_ALL || data->debug_level == DEBUG_AST)
-	{
-		printf("\n***Printing AST***\n\n");
-		print_ast(data->ast_root, 7);
-		printf("\n***Printing AST NEW***\n\n");
-		print_ast_new(data->ast_root);
-		printf("\n*** AST nodes content ***\n\n");
-		debug_ast(data->ast_root);
-	}
 	free_lexeme_arr(data);
 }
 

@@ -6,7 +6,7 @@
 /*   By: slombard <slombard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 06:46:59 by slombard          #+#    #+#             */
-/*   Updated: 2023/11/30 06:47:05 by slombard         ###   ########.fr       */
+/*   Updated: 2023/12/22 06:02:30 by slombard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ char	*read_input(t_data *data)
 {
 	char	*input;
 
+	(void)data;
 	input = readline("$> ");
 	if (!input)
 	{
@@ -23,7 +24,5 @@ char	*read_input(t_data *data)
 		exit(0);
 	}
 	add_history(input);
-	if (data->debug_level == DEBUG_ALL || data->debug_level == DEBUG_TOKENIZER)
-		printf("readline: %s\n", input);
 	return (input);
 }
