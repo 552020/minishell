@@ -13,7 +13,7 @@ A 'simple' Unix shell in C for the School 42 curriculum.
 
 ## Introduction
 
-`Minishell` is a simple Unix shell developed in C as part of the School 42 curriculum. It is a collaborative project developed by [Batu](https://github.com/BatuSengezer) and [Stefano](https://github.com/552020). The program is being developed with certain constraints: - the strictly adherence to the so called `Normi`, which imposes certain (at times questionable) limitations such as a maximum function length of 25 lines, the prohibition of for-loops, and [more](add_internal_link/to_the_norm), a restricted set of allowed functions.
+`Minishell` is a simple Unix shell developed in C as part of the School 42 curriculum. It is a collaborative project developed by [Batu](https://github.com/BatuSengezer) and [Stefano](https://github.com/552020). The program is being developed with certain constraints: - the strictly adherence to the so called `Norm`, which imposes certain (at times questionable) limitations such as a maximum function length of 25 lines, the prohibition of for-loops, and [more](add_internal_link/to_the_norm), a restricted set of allowed functions.
 
 ## Features
 
